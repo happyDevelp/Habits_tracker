@@ -1,4 +1,4 @@
-package com.example.habittracker.ui.theme
+package com.example.habitstracker.ui.theme
 import androidx.compose.ui.graphics.Color
 
 val primaryLight = Color(0xFF226488)
@@ -111,11 +111,11 @@ val surfaceContainerHighestLightHighContrast = Color(0xFFDFE3E7)
 
 val primaryDark = Color(0xFF92CEF6)
 val onPrimaryDark = Color(0xFF00344C)
-val primaryContainerDark = Color(0xFF004C6C)
+val primaryContainerDark = Color(0xFF154491)
 val onPrimaryContainerDark = Color(0xFFC7E7FF)
 val secondaryDark = Color(0xFFB6C9D8)
 val onSecondaryDark = Color(0xFF21323E)
-val secondaryContainerDark = Color(0xFF374955)
+val secondaryContainerDark = Color(0xFF242C33)
 val onSecondaryContainerDark = Color(0xFFD2E5F5)
 val tertiaryDark = Color(0xFFA5C8FF)
 val onTertiaryDark = Color(0xFF00315E)

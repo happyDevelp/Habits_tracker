@@ -1,4 +1,4 @@
-package com.example.habittracker.ui.theme
+package com.example.habitstracker.ui.theme
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
