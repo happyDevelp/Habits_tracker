@@ -217,6 +217,7 @@ val surfaceContainerDarkHighContrast = Color(0xFF1C2024)
 val surfaceContainerHighDarkHighContrast = Color(0xFF262A2E)
 val surfaceContainerHighestDarkHighContrast = Color(0xFF313539)
 
+val buttonAddNewHabit = Color(0xFF40454B)
 
 
 

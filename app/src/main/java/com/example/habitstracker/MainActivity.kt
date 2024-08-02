@@ -6,18 +6,12 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
@@ -25,6 +19,8 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,30 +33,23 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.constraintlayout.compose.ConstraintLayout
-import com.example.habitstracker.Calendar.CalendarItem
 import com.example.habitstracker.Calendar.CalendarRowList
+import com.example.habitstracker.layouts.HabitLayout
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.AppTypography
+import com.example.habitstracker.ui.theme.buttonAddNewHabit
 import com.example.habitstracker.utils.generateDateSequence
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
@@ -112,15 +101,15 @@ fun MyScaffold() {
                                 style = MaterialTheme.typography.titleSmall
                             )
 
+                            val today = LocalDate.now()
+                            val formatter = DateTimeFormatter.ofPattern("MMMM")
+                            val month = today.format(formatter)
                             Text(
-                                text = "31 Juli",
+                                text = "${today.dayOfMonth} $month",
                                 fontSize = 12.sp,
                             )
                         }
-
-
                     }
-
                 },
 
                 navigationIcon = {
@@ -211,8 +200,7 @@ fun MyScaffold() {
 
             colors = CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.secondaryContainer,
-
-                ),
+            ),
 
             shape = RoundedCornerShape(
                 topStart = 25.dp,
@@ -221,35 +209,54 @@ fun MyScaffold() {
         )
         {
 
-            ConstraintLayout {
 
-                val (
-                    calendar,
-                    habitsList,
-                    createHabitsButton,
-                ) = createRefs()
+            Box(
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .fillMaxSize(),
+                contentAlignment = Alignment.TopCenter
+                /*verticalArrangement = Arrangement.Top,
+                horizontalAlignment = Alignment.CenterHorizontally*/
+            ) {
+
+                Column {
+                    val dateSet = generateDateSequence(LocalDate.now(), 500)
+                    CalendarRowList(dateSet.toMutableList())
+                }
 
 
                 Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 20.dp)
-                        .constrainAs(calendar) {  }
+                        .align(Alignment.BottomCenter)
+                        .padding(bottom = 20.dp),
+                    verticalArrangement = Arrangement.Bottom,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    val dateSet = generateDateSequence(LocalDate.now(), 500)
-
-                    CalendarRowList(dateSet.toMutableList())
-
+                    Button(
+                        modifier = Modifier,
+                        onClick = { },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = buttonAddNewHabit
+                        ),
+                        shape = RoundedCornerShape(10.dp)
+                    ) {
+                        Text(
+                            text = stringResource(R.string.create_a_new_habit),
+                            modifier = Modifier.padding(horizontal = 8.dp),
+                            fontSize = 16.sp,
+                            color = Color.White.copy(alpha = 0.75f),
+                            fontWeight = FontWeight.Bold,
+                            style = MaterialTheme.typography.titleSmall,
+                        )
+                    }
                 }
 
-
+                HabitLayout()
 
 
             }
-
         }
     }
 }
-
 
 

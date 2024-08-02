@@ -4,4 +4,6 @@
     <string name="today">Today</string>
     <string name="history">History</string>
     <string name="me">Me</string>
+    <string name="create_a_new_habit">CREATE A NEW HABIT</string>
+    <string name="healthy_eating">Healthy eating</string>
 </resources>

@@ -15,3 +15,7 @@ val MyFontFamily = FontFamily(
 val QuickSandFontFamily = FontFamily(
     Font(R.font.quicksand_rubik_wght, FontWeight.Normal),
 )
+
+val BoldFontFamily = FontFamily(
+    Font(R.font.robotoslab_variablefont_wght)
+)
