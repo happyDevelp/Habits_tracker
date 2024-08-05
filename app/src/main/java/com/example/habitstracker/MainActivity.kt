@@ -9,15 +9,22 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -33,6 +40,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -215,48 +224,61 @@ fun MyScaffold() {
                     .padding(top = 20.dp)
                     .fillMaxSize(),
                 contentAlignment = Alignment.TopCenter
-                /*verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally*/
+
             ) {
+
 
                 Column {
                     val dateSet = generateDateSequence(LocalDate.now(), 500)
                     CalendarRowList(dateSet.toMutableList())
                 }
 
-
-                Column(
-                    modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 20.dp),
-                    verticalArrangement = Arrangement.Bottom,
-                    horizontalAlignment = Alignment.CenterHorizontally
+                CompositionLocalProvider(
+                    value = LocalRippleTheme provides CustomRippleTheme(color = Color.Black)
                 ) {
-                    Button(
-                        modifier = Modifier,
-                        onClick = { },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = buttonAddNewHabit
-                        ),
-                        shape = RoundedCornerShape(10.dp)
+                    LazyColumn(
+                        modifier = Modifier
+                            .padding(top = 95.dp)
+                            .fillMaxHeight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Text(
-                            text = stringResource(R.string.create_a_new_habit),
-                            modifier = Modifier.padding(horizontal = 8.dp),
-                            fontSize = 16.sp,
-                            color = Color.White.copy(alpha = 0.75f),
-                            fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.titleSmall,
-                        )
+                        items(4) {
+                            HabitLayout()
+                        }
+
+                        item {
+
+                            Spacer(modifier = Modifier.padding(bottom = 30.dp))
+
+                            Button(
+                                modifier = Modifier
+                                    .padding(bottom = 20.dp)
+                                    .fillMaxWidth(0.7f)
+                                    .height(50.dp),
+                                onClick = { },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = buttonAddNewHabit,
+                                    contentColor = Color.White.copy(alpha = 0.75f)
+                                ),
+                                shape = RoundedCornerShape(10.dp),
+                                elevation = ButtonDefaults.buttonElevation(
+                                    defaultElevation = 6.dp,
+                                    pressedElevation = 16.dp
+                                ),
+                                //interactionSource =
+                            ) {
+                                Text(
+                                    text = stringResource(R.string.create_a_new_habit),
+                                    modifier = Modifier.padding(horizontal = 8.dp),
+                                    fontSize = 16.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    style = MaterialTheme.typography.titleSmall,
+                                )
+                            }
+                        }
                     }
                 }
-
-                HabitLayout()
-
-
             }
         }
     }
 }
-
-
