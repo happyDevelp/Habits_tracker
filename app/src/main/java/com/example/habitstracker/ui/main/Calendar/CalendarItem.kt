@@ -1,4 +1,4 @@
-package com.example.habitstracker.Calendar
+package com.example.habitstracker.ui.main.Calendar
 
 import android.os.Build
 import androidx.annotation.RequiresApi

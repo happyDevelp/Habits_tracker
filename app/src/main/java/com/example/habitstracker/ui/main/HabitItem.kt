@@ -1,4 +1,4 @@
-package com.example.habitstracker.layouts
+package com.example.habitstracker.ui.main
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

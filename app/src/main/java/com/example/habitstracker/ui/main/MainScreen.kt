@@ -1,22 +1,15 @@
-package com.example.habitstracker
+package com.example.habitstracker.ui.main
 
 import android.os.Build
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -41,7 +34,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.compositionLocalOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -51,26 +43,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.habitstracker.Calendar.CalendarRowList
-import com.example.habitstracker.layouts.HabitLayout
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
+import com.example.habitstracker.R
+import com.example.habitstracker.ui.custom.CustomRippleTheme
+import com.example.habitstracker.ui.main.Calendar.CalendarRowList
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.AppTypography
 import com.example.habitstracker.ui.theme.buttonAddNewHabit
 import com.example.habitstracker.utils.generateDateSequence
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
-class MainActivity : ComponentActivity() {
-    @RequiresApi(Build.VERSION_CODES.O)
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            AppScreen()
-        }
-    }
-}
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Preview(showSystemUi = true)
@@ -95,7 +78,6 @@ fun MyScaffold() {
                         modifier = Modifier.fillMaxWidth(),
                         contentAlignment = Alignment.CenterStart
                     ) {
-
 
                         Column(
                             modifier = Modifier
@@ -201,6 +183,7 @@ fun MyScaffold() {
     ) { paddingValues ->
 
         val context = LocalContext.current
+        val navController = LocalNavController.current
 
         Card(
             modifier = Modifier
@@ -218,7 +201,6 @@ fun MyScaffold() {
         )
         {
 
-
             Box(
                 modifier = Modifier
                     .padding(top = 20.dp)
@@ -226,7 +208,6 @@ fun MyScaffold() {
                 contentAlignment = Alignment.TopCenter
 
             ) {
-
 
                 Column {
                     val dateSet = generateDateSequence(LocalDate.now(), 500)
@@ -255,7 +236,9 @@ fun MyScaffold() {
                                     .padding(bottom = 20.dp)
                                     .fillMaxWidth(0.7f)
                                     .height(50.dp),
-                                onClick = { },
+                                onClick = {
+                                    navController.navigate("CreateNewHabit")
+                                },
                                 colors = ButtonDefaults.buttonColors(
                                     containerColor = buttonAddNewHabit,
                                     contentColor = Color.White.copy(alpha = 0.75f)

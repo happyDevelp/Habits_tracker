@@ -1,4 +1,4 @@
-package com.example.habitstracker
+package com.example.habitstracker.ui.custom
 
 import androidx.compose.material.ripple.RippleAlpha
 import androidx.compose.material.ripple.RippleTheme
