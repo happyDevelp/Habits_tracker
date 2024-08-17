@@ -13,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.ui.newHabit.CreateNewHabit
+import com.example.habitstracker.ui.theme.AppTheme
 
 val LocalNavController = compositionLocalOf<NavController> {
     error("No NavController provided")
@@ -27,15 +28,22 @@ class MainActivity : ComponentActivity() {
 
             CompositionLocalProvider(value = LocalNavController provides navController) {
 
-                NavHost(navController = navController, startDestination = "AppScreen", builder = {
-                    composable("AppScreen") {
-                        AppScreen()
-                    }
-                    composable("CreateNewHabit") {
-                        CreateNewHabit()
-                    }
+                AppTheme(darkTheme = true) {
+
+
+                    NavHost(
+                        navController = navController,
+                        startDestination = "AppScreen",
+                        builder = {
+                            composable("AppScreen") {
+                                MainScreen()
+                            }
+                            composable("CreateNewHabit") {
+                                CreateNewHabit()
+                            }
+                        }
+                    )
                 }
-                )
             }
         }
     }

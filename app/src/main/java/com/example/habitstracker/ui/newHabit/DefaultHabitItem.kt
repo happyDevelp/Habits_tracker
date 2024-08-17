@@ -1,10 +1,11 @@
-package com.example.habitstracker.ui.main
+package com.example.habitstracker.ui.newHabit
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,8 +15,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.rounded.ArrowCircleRight
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -26,9 +28,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
@@ -37,17 +43,22 @@ import com.example.habitstracker.ui.theme.buttonAddNewHabit
 
 @Preview(showSystemUi = true)
 @Composable
-fun HabitItem(
-    habitName: String = "Health eating",
+fun DefaultHabitItem(
+    groupName: String = "Eat",
+    groupDescribe: String = "default describe manu afa kotu na barkoto makoro",
+    verticalPadding: Dp = 6.dp,
+    icon: Painter = painterResource(id = R.drawable.food),
 ) {
     AppTheme(darkTheme = true) {
         Card(
             modifier = Modifier
-                .padding(top = 20.dp)
-                .clip(RoundedCornerShape(size = 20.dp))
-                .height(80.dp)
+                .padding(bottom = 12.dp)
+                .clip(RoundedCornerShape(size = 12.dp))
+                .height(IntrinsicSize.Max)
                 .fillMaxWidth(0.9f)
-                .clickable { /*TODO()*/ },
+                .clickable {
+                    /*TODO()*/
+                },
 
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 60.dp,
@@ -56,63 +67,67 @@ fun HabitItem(
 
             colors = CardDefaults.cardColors(
                 containerColor = buttonAddNewHabit,
-            )
+                )
         ) {
             Box(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxSize()
             ) {
 
                 Row(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(vertical = verticalPadding),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
 
                     Icon(
                         modifier = Modifier
-                            .padding(start = 20.dp)
+                            .padding(start = 20.dp, end = 20.dp)
                             .size(32.dp),
                         tint = Color.White.copy(alpha = 0.75f),
-                        painter = painterResource(id = R.drawable.food),
-                        contentDescription = "Icon of habit",
+                        painter = icon,
+                        contentDescription = "Eat",
                     )
 
                     Column(
-                        modifier = Modifier.padding(end = 30.dp)
+                        modifier = Modifier
+                            .padding(end = 12.dp)
+                            .weight(1f),
+                        horizontalAlignment = Alignment.Start
                     ) {
                         Text(
-                            modifier = Modifier.padding(bottom = 10.dp),
-                            text = habitName,
-                            fontSize = 20.sp,
+                            modifier = Modifier.padding(bottom = 6.dp),
+                            text = groupName,
+                            fontSize = 22.sp,
                             color = Color.White.copy(alpha = 0.75f),
                             fontWeight = FontWeight.Bold,
                             style = MaterialTheme.typography.titleSmall,
                         )
 
                         Text(
-                            text = "execution status",
-                            fontSize = 14.sp //Failed, Completed
-                        )
-                    }
-
-
-                    IconButton(
-                        onClick = { /*TODO*/ },
-                        Modifier
-                            .fillMaxHeight()
-                    ) {
-                        Icon(
-                            modifier = Modifier.fillMaxHeight(),
-                            tint = Color.White.copy(alpha = 0.75f),
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "More about habit"
+                            modifier = Modifier.padding(),
+                            text = groupDescribe,
+                            fontSize = 13.sp,
+                            maxLines = 3,
+                            overflow = TextOverflow.Ellipsis
                         )
 
                     }
 
+                    Icon(
+                        modifier = Modifier
+                            .padding(end = 20.dp)
+                            .size(38.dp),
+                        tint = Color.White.copy(alpha = 0.6f),
+                        imageVector = Icons.Rounded.ArrowCircleRight,
+                        contentDescription = "More about habit"
+                    )
 
                 }
             }
         }
+
     }
+
 }

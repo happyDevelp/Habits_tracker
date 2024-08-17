@@ -43,11 +43,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.ui.custom.CustomRippleTheme
 import com.example.habitstracker.ui.main.Calendar.CalendarRowList
+import com.example.habitstracker.ui.newHabit.DefaultHabitItem
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.AppTypography
 import com.example.habitstracker.ui.theme.buttonAddNewHabit
@@ -56,12 +56,19 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Preview(showSystemUi = true)
 @Composable
-fun AppScreen() {
-    AppTheme(darkTheme = true) {
-        MyScaffold()
+@Preview(showSystemUi = true)
+fun PreviewMainScreen() {
+    val mockNavController = rememberNavController()
+    CompositionLocalProvider(value = LocalNavController provides mockNavController) {
+        MainScreen()
     }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun MainScreen() {
+        MyScaffold()
 }
 
 
@@ -69,6 +76,9 @@ fun AppScreen() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyScaffold() {
+
+    val navController = LocalNavController.current
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -114,7 +124,7 @@ fun MyScaffold() {
 
                 actions = {
                     IconButton(
-                        onClick = { /*TODO*/ },
+                        onClick = { navController.navigate("CreateNewHabit") },
                         colors = IconButtonDefaults.iconButtonColors(
                             containerColor = MaterialTheme.colorScheme.primaryContainer,
                             contentColor = Color.White
@@ -183,7 +193,6 @@ fun MyScaffold() {
     ) { paddingValues ->
 
         val context = LocalContext.current
-        val navController = LocalNavController.current
 
         Card(
             modifier = Modifier
@@ -224,7 +233,7 @@ fun MyScaffold() {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         items(4) {
-                            HabitLayout()
+                            HabitItem()
                         }
 
                         item {

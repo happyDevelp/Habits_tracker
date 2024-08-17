@@ -111,11 +111,11 @@ val surfaceContainerHighestLightHighContrast = Color(0xFFDFE3E7)
 
 val primaryDark = Color(0xFF92CEF6)
 val onPrimaryDark = Color(0xFF00344C)
-val primaryContainerDark = Color(0xFF154491)
+val primaryContainerDark = Color(0xFF1D51A5)
 val onPrimaryContainerDark = Color(0xFFC7E7FF)
 val secondaryDark = Color(0xFFB6C9D8)
 val onSecondaryDark = Color(0xFF21323E)
-val secondaryContainerDark = Color(0xFF242C33)
+val secondaryContainerDark = Color(0xFF1D2831) //background
 val onSecondaryContainerDark = Color(0xFFD2E5F5)
 val tertiaryDark = Color(0xFFA5C8FF)
 val onTertiaryDark = Color(0xFF00315E)
@@ -217,10 +217,6 @@ val surfaceContainerDarkHighContrast = Color(0xFF1C2024)
 val surfaceContainerHighDarkHighContrast = Color(0xFF262A2E)
 val surfaceContainerHighestDarkHighContrast = Color(0xFF313539)
 
-val buttonAddNewHabit = Color(0xFF40454B)
-
-
-
-
+val buttonAddNewHabit = Color(0xDC303D4D)
 
 
