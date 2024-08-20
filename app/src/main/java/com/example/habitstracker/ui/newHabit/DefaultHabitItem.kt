@@ -1,5 +1,6 @@
 package com.example.habitstracker.ui.newHabit
 
+import android.widget.CheckBox
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -19,6 +20,7 @@ import androidx.compose.material.icons.rounded.ArrowCircleRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -44,6 +46,7 @@ import com.example.habitstracker.ui.theme.buttonAddNewHabit
 @Preview(showSystemUi = true)
 @Composable
 fun DefaultHabitItem(
+    modifier: Modifier = Modifier,
     groupName: String = "Eat",
     groupDescribe: String = "default describe manu afa kotu na barkoto makoro",
     verticalPadding: Dp = 6.dp,
@@ -51,7 +54,7 @@ fun DefaultHabitItem(
 ) {
     AppTheme(darkTheme = true) {
         Card(
-            modifier = Modifier
+            modifier = modifier
                 .padding(bottom = 12.dp)
                 .clip(RoundedCornerShape(size = 12.dp))
                 .height(IntrinsicSize.Max)
@@ -70,19 +73,18 @@ fun DefaultHabitItem(
                 )
         ) {
             Box(
-                modifier = Modifier.fillMaxSize()
+                modifier = modifier.fillMaxSize()
             ) {
 
                 Row(
-                    modifier = Modifier
+                    modifier = modifier
                         .fillMaxSize()
                         .padding(vertical = verticalPadding),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-
                     Icon(
-                        modifier = Modifier
+                        modifier = modifier
                             .padding(start = 20.dp, end = 20.dp)
                             .size(32.dp),
                         tint = Color.White.copy(alpha = 0.75f),
@@ -91,13 +93,13 @@ fun DefaultHabitItem(
                     )
 
                     Column(
-                        modifier = Modifier
+                        modifier = modifier
                             .padding(end = 12.dp)
                             .weight(1f),
                         horizontalAlignment = Alignment.Start
                     ) {
                         Text(
-                            modifier = Modifier.padding(bottom = 6.dp),
+                            modifier = modifier.padding(bottom = 6.dp),
                             text = groupName,
                             fontSize = 22.sp,
                             color = Color.White.copy(alpha = 0.75f),
@@ -106,17 +108,16 @@ fun DefaultHabitItem(
                         )
 
                         Text(
-                            modifier = Modifier.padding(),
+                            modifier = modifier.padding(),
                             text = groupDescribe,
                             fontSize = 13.sp,
                             maxLines = 3,
                             overflow = TextOverflow.Ellipsis
                         )
-
                     }
 
                     Icon(
-                        modifier = Modifier
+                        modifier = modifier
                             .padding(end = 20.dp)
                             .size(38.dp),
                         tint = Color.White.copy(alpha = 0.6f),

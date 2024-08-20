@@ -1,7 +1,15 @@
 package com.example.habitstracker.ui.main
 
-import androidx.compose.foundation.background
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +22,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -22,95 +31,121 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.integerResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
+import com.example.habitstracker.ui.custom.CustomCheckbox
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.buttonAddNewHabit
 
 @Preview(showSystemUi = true)
 @Composable
 fun HabitItem(
+    modifier: Modifier = Modifier,
     habitName: String = "Health eating",
 ) {
     AppTheme(darkTheme = true) {
-        Card(
-            modifier = Modifier
-                .padding(top = 20.dp)
-                .clip(RoundedCornerShape(size = 20.dp))
-                .height(80.dp)
-                .fillMaxWidth(0.9f)
-                .clickable { /*TODO()*/ },
+        Box(modifier = modifier.fillMaxSize()) {
 
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 60.dp,
-                pressedElevation = 26.dp
-            ),
-
-            colors = CardDefaults.cardColors(
-                containerColor = buttonAddNewHabit,
-            )
-        ) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
+            Row(
+                modifier = modifier.fillMaxWidth(0.9f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
 
                 Row(
-                    modifier = Modifier.fillMaxSize(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = modifier
+                        .height(80.dp)
+                        .weight(1f),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
                 ) {
+                    CustomCheckbox()
+                }
 
-                    Icon(
-                        modifier = Modifier
-                            .padding(start = 20.dp)
-                            .size(32.dp),
-                        tint = Color.White.copy(alpha = 0.75f),
-                        painter = painterResource(id = R.drawable.food),
-                        contentDescription = "Icon of habit",
+                Card(
+                    modifier = modifier
+                        .clip(RoundedCornerShape(size = 20.dp))
+                        .height(80.dp)
+                        .fillMaxWidth(0.85f)
+                        .clickable { /*TODO()*/ }
+                        .weight(4f),
+
+                    elevation = CardDefaults.cardElevation(
+                        defaultElevation = 60.dp,
+                        pressedElevation = 26.dp
+                    ),
+
+                    colors = CardDefaults.cardColors(
+                        containerColor = buttonAddNewHabit,
                     )
-
-                    Column(
-                        modifier = Modifier.padding(end = 30.dp)
+                ) {
+                    Box(
+                        modifier = modifier.fillMaxSize(),
                     ) {
-                        Text(
-                            modifier = Modifier.padding(bottom = 10.dp),
-                            text = habitName,
-                            fontSize = 20.sp,
-                            color = Color.White.copy(alpha = 0.75f),
-                            fontWeight = FontWeight.Bold,
-                            style = MaterialTheme.typography.titleSmall,
-                        )
 
-                        Text(
-                            text = "execution status",
-                            fontSize = 14.sp //Failed, Completed
-                        )
+                        Row(
+                            modifier = modifier.fillMaxSize(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+
+                            Icon(
+                                modifier = modifier
+                                    .padding(start = 20.dp)
+                                    .size(32.dp),
+                                tint = Color.White.copy(alpha = 0.75f),
+                                painter = painterResource(id = R.drawable.food),
+                                contentDescription = "Icon of habit",
+                            )
+
+                            Column(
+                                modifier = modifier.padding(end = 30.dp)
+                            ) {
+                                Text(
+                                    modifier = modifier.padding(bottom = 10.dp),
+                                    text = habitName,
+                                    fontSize = 20.sp,
+                                    color = Color.White.copy(alpha = 0.75f),
+                                    fontWeight = FontWeight.Bold,
+                                    style = MaterialTheme.typography.titleSmall,
+                                )
+
+                                Text(
+                                    text = "execution status",
+                                    fontSize = 14.sp //Failed, Completed
+                                )
+                            }
+
+                            IconButton(
+                                onClick = { /*TODO*/ },
+                                Modifier
+                                    .fillMaxHeight()
+                            ) {
+                                Icon(
+                                    modifier = modifier.fillMaxHeight(),
+                                    tint = Color.White.copy(alpha = 0.75f),
+                                    imageVector = Icons.Default.MoreVert,
+                                    contentDescription = "More about habit"
+                                )
+                            }
+                        }
                     }
-
-
-                    IconButton(
-                        onClick = { /*TODO*/ },
-                        Modifier
-                            .fillMaxHeight()
-                    ) {
-                        Icon(
-                            modifier = Modifier.fillMaxHeight(),
-                            tint = Color.White.copy(alpha = 0.75f),
-                            imageVector = Icons.Default.MoreVert,
-                            contentDescription = "More about habit"
-                        )
-
-                    }
-
-
                 }
             }
         }

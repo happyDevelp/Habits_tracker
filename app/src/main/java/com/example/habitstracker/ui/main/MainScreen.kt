@@ -2,6 +2,7 @@ package com.example.habitstracker.ui.main
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -57,11 +59,13 @@ import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-@Preview(showSystemUi = true)
+@Preview(showSystemUi = false)
 fun PreviewMainScreen() {
     val mockNavController = rememberNavController()
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
-        MainScreen()
+        AppTheme(darkTheme = true) {
+            MainScreen()
+        }
     }
 }
 
@@ -70,7 +74,6 @@ fun PreviewMainScreen() {
 fun MainScreen() {
         MyScaffold()
 }
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -229,22 +232,23 @@ fun MyScaffold() {
                     LazyColumn(
                         modifier = Modifier
                             .padding(top = 95.dp)
-                            .fillMaxHeight(1f),
+                            .fillMaxHeight(1f)
+                            .fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         items(4) {
                             HabitItem()
+                            Spacer(modifier = Modifier.height(20.dp))
                         }
 
                         item {
-
-                            Spacer(modifier = Modifier.padding(bottom = 30.dp))
-
+                            Spacer(modifier = Modifier.size(6.dp))
                             Button(
                                 modifier = Modifier
                                     .padding(bottom = 20.dp)
                                     .fillMaxWidth(0.7f)
-                                    .height(50.dp),
+                                    .height(50.dp)
+                                    /*.border(1.dp, color = Color.Black)*/,
                                 onClick = {
                                     navController.navigate("CreateNewHabit")
                                 },

@@ -1,5 +1,6 @@
 package com.example.habitstracker.ui.newHabit
 
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowCircleRight
 import androidx.compose.material3.Button
@@ -86,7 +89,12 @@ fun CreateNewHabit() {
                     modifier = Modifier
                         .padding(top = 20.dp)
                         .fillMaxWidth(0.9f)
-                        .height(60.dp),
+                        .height(60.dp)
+                        .border(
+                            1.dp,
+                            color = Color.Black,
+                            shape = RoundedCornerShape(corner = CornerSize(50.dp))
+                        ),
 
                     onClick = { /*TODO*/ },
 
@@ -167,8 +175,6 @@ fun CreateNewHabit() {
                     }
                 }
             }
-
-
         }
     }
 }
