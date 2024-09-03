@@ -4,16 +4,21 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.compositionLocalOf
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.habitstracker.ui.newHabit.CreateNewHabit
+import com.example.habitstracker.R
+import com.example.habitstracker.ui.addHabit.AddHabitScreen
+import com.example.habitstracker.ui.сreateOwnHabit.CreateOwnHabitScreen
 import com.example.habitstracker.ui.theme.AppTheme
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 val LocalNavController = compositionLocalOf<NavController> {
     error("No NavController provided")
@@ -23,6 +28,7 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
             val navController = rememberNavController()
 
@@ -30,21 +36,27 @@ class MainActivity : ComponentActivity() {
 
                 AppTheme(darkTheme = true) {
 
-
                     NavHost(
                         navController = navController,
                         startDestination = "AppScreen",
                         builder = {
-                            composable("AppScreen") {
+                            composable(getString(R.string.app_screen_navigation)) {
                                 MainScreen()
                             }
-                            composable("CreateNewHabit") {
-                                CreateNewHabit()
+                            composable(getString(R.string.add_habit_screen_navigation)) {
+                                AddHabitScreen()
+                            }
+                            composable(getString(R.string.create_own_habit_navigation)) {
+                                CreateOwnHabitScreen()
                             }
                         }
+
                     )
+
                 }
+
             }
+
         }
     }
 }

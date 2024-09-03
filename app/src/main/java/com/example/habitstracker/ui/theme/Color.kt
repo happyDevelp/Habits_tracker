@@ -125,9 +125,9 @@ val errorDark = Color(0xFFFFB4AB)
 val onErrorDark = Color(0xFF690005)
 val errorContainerDark = Color(0xFF93000A)
 val onErrorContainerDark = Color(0xFFFFDAD6)
-val backgroundDark = Color(0xFF101417)
+val backgroundDark = Color(0xFF0C1D2B) // changed
 val onBackgroundDark = Color(0xFFDFE3E7)
-val surfaceDark = Color(0xFF101417)
+val surfaceDark = Color(0xFF0C1D2B) // changed
 val onSurfaceDark = Color(0xFFDFE3E7)
 val surfaceVariantDark = Color(0xFF41484D)
 val onSurfaceVariantDark = Color(0xFFC1C7CE)
@@ -218,5 +218,6 @@ val surfaceContainerHighDarkHighContrast = Color(0xFF262A2E)
 val surfaceContainerHighestDarkHighContrast = Color(0xFF313539)
 
 val buttonAddNewHabit = Color(0xDC303D4D)
+val thirtyContainerDark = Color(0xFF2A3B47) //background
 
 

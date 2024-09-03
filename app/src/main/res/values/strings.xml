@@ -6,4 +6,13 @@
     <string name="me">Me</string>
     <string name="create_a_new_habit">CREATE A NEW HABIT</string>
     <string name="healthy_eating">Healthy eating</string>
+    <string name="create_own_habit_navigation">CreateOwnHabit</string>
+    <string name="add_habit_screen_navigation">AddHabitScreen</string>
+    <string name="app_screen_navigation">AppScreen</string>
+    <string name="create_button">+ Create</string>
+    <string name="a_reminder_for_this_habit">A reminder for this habit</string>
+    <string name="doesnt_matter_create_habit">Doesn\'t matter</string>
+    <string name="morning_create_habit">Morning</string>
+    <string name="day_create_habit">Day</string>
+    <string name="evening_create_habit">Evening</string>
 </resources>

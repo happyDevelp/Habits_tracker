@@ -2,7 +2,7 @@ package com.example.habitstracker.ui.main
 
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.border
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -34,12 +33,12 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -49,10 +48,11 @@ import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.ui.custom.CustomRippleTheme
 import com.example.habitstracker.ui.main.Calendar.CalendarRowList
-import com.example.habitstracker.ui.newHabit.DefaultHabitItem
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.AppTypography
-import com.example.habitstracker.ui.theme.buttonAddNewHabit
+import com.example.habitstracker.ui.theme.PoppinsFontFamily
+import com.example.habitstracker.ui.theme.surfaceDark
+import com.example.habitstracker.ui.theme.thirtyContainerDark
 import com.example.habitstracker.utils.generateDateSequence
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -60,40 +60,38 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @Preview(showSystemUi = false)
-fun PreviewMainScreen() {
+private fun Preview() {
     val mockNavController = rememberNavController()
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
         AppTheme(darkTheme = true) {
+
             MainScreen()
+
         }
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun MainScreen() {
-        MyScaffold()
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyScaffold() {
+fun MainScreen(modifier: Modifier = Modifier) {
 
     val navController = LocalNavController.current
 
     Scaffold(
         topBar = {
             TopAppBar(
+                modifier = modifier.padding(vertical = 5.dp),
+
                 title = {
 
                     Box(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = modifier.fillMaxWidth(),
                         contentAlignment = Alignment.CenterStart
                     ) {
 
                         Column(
-                            modifier = Modifier
+                            modifier = modifier
                                 .align(Alignment.CenterStart)
                                 .padding(top = 10.dp),
                             horizontalAlignment = Alignment.CenterHorizontally
@@ -116,22 +114,20 @@ fun MyScaffold() {
                     }
                 },
 
-                navigationIcon = {
-                    /*IconButton(onClick = { *//*TODO*//* }) {
-                        Icon(
-                            imageVector = Icons.Default.Add,
-                            contentDescription = stringResource(R.string.add_habit)
-                        )
-                    }*/
-                },
-
+                // FloatButton
                 actions = {
+                    val add_habit_navigation =
+                        stringResource(id = R.string.add_habit_screen_navigation)
+
                     IconButton(
-                        onClick = { navController.navigate("CreateNewHabit") },
+                        onClick = {
+                            navController.navigate(add_habit_navigation)
+                        },
+
                         colors = IconButtonDefaults.iconButtonColors(
                             containerColor = MaterialTheme.colorScheme.primaryContainer,
                             contentColor = Color.White
-                        )
+                        ),
                     ) {
                         Icon(
                             imageVector = Icons.Default.Add,
@@ -139,8 +135,6 @@ fun MyScaffold() {
                         )
                     }
                 },
-
-                modifier = Modifier.padding(top = 5.dp, bottom = 5.dp)
             )
         },
 
@@ -195,10 +189,8 @@ fun MyScaffold() {
 
     ) { paddingValues ->
 
-        val context = LocalContext.current
-
         Card(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
                 .padding(paddingValues),
 
@@ -207,14 +199,14 @@ fun MyScaffold() {
             ),
 
             shape = RoundedCornerShape(
-                topStart = 25.dp,
-                topEnd = 25.dp,
+                topStart = 27.dp,
+                topEnd = 27.dp,
             )
         )
         {
 
             Box(
-                modifier = Modifier
+                modifier = modifier
                     .padding(top = 20.dp)
                     .fillMaxSize(),
                 contentAlignment = Alignment.TopCenter
@@ -230,7 +222,7 @@ fun MyScaffold() {
                     value = LocalRippleTheme provides CustomRippleTheme(color = Color.Black)
                 ) {
                     LazyColumn(
-                        modifier = Modifier
+                        modifier = modifier
                             .padding(top = 95.dp)
                             .fillMaxHeight(1f)
                             .fillMaxWidth(),
@@ -238,40 +230,50 @@ fun MyScaffold() {
                     ) {
                         items(4) {
                             HabitItem()
-                            Spacer(modifier = Modifier.height(20.dp))
+                            Spacer(modifier = modifier.height(20.dp))
                         }
 
                         item {
-                            Spacer(modifier = Modifier.size(6.dp))
+                            val add_habit_navigation =
+                                stringResource(id = R.string.add_habit_screen_navigation)
+
+                            Spacer(modifier = modifier.height(6.dp))
+
                             Button(
-                                modifier = Modifier
+                                modifier = modifier
                                     .padding(bottom = 20.dp)
                                     .fillMaxWidth(0.7f)
-                                    .height(50.dp)
-                                    /*.border(1.dp, color = Color.Black)*/,
+                                    .height(50.dp),
+
                                 onClick = {
-                                    navController.navigate("CreateNewHabit")
+                                    navController.navigate(add_habit_navigation)
                                 },
+
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = buttonAddNewHabit,
+                                    containerColor = thirtyContainerDark,
                                     contentColor = Color.White.copy(alpha = 0.75f)
                                 ),
+
                                 shape = RoundedCornerShape(10.dp),
+
                                 elevation = ButtonDefaults.buttonElevation(
                                     defaultElevation = 6.dp,
                                     pressedElevation = 16.dp
                                 ),
-                                //interactionSource =
-                            ) {
+
+                                ) {
                                 Text(
                                     text = stringResource(R.string.create_a_new_habit),
-                                    modifier = Modifier.padding(horizontal = 8.dp),
-                                    fontSize = 16.sp,
+                                    modifier = modifier.padding(horizontal = 8.dp),
+                                    fontSize = 15.sp,
                                     fontWeight = FontWeight.Bold,
-                                    style = MaterialTheme.typography.titleSmall,
+                                    fontFamily = PoppinsFontFamily,
+                                    color = Color.White.copy(alpha = 0.9f),
                                 )
                             }
                         }
+
+
                     }
                 }
             }
