@@ -316,7 +316,7 @@ fun CreateOwnHabitScreen(modifier: Modifier = Modifier) {
                 Spacer(modifier = modifier.height(12.dp))
 
                 Text(
-                    text = "REPEAT",
+                    text = "REPEAT (Long-term habits)",
                     fontFamily = PoppinsFontFamily,
                     fontSize = 13.sp,
                     color = Color.White.copy(alpha = 0.50f),
@@ -324,6 +324,11 @@ fun CreateOwnHabitScreen(modifier: Modifier = Modifier) {
 
                 Spacer(modifier = modifier.height(12.dp))
 
+                val repeat_picker_navigation = stringResource(id = R.string.repeat_picker_navigation)
+
+                var selectedDaysText by remember {
+                  mutableStateOf("Mon, Tue. Wed...")
+                }
                 Row(
                     modifier = modifier
                         .fillMaxWidth()
@@ -332,7 +337,7 @@ fun CreateOwnHabitScreen(modifier: Modifier = Modifier) {
                         .background(color = thirtyContainerDark)
                         .clickWithRipple(
                             color = Color.White
-                        ) { /*TODO*/ },
+                        ) { navController.navigate( repeat_picker_navigation) },
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -349,7 +354,7 @@ fun CreateOwnHabitScreen(modifier: Modifier = Modifier) {
                         horizontalArrangement = Arrangement.End
                     ) {
                         Text(
-                            text = "Mon, Tue. Tue...",
+                            text = selectedDaysText,
                             fontFamily = PoppinsFontFamily,
                             fontSize = 12.sp,
                             color = Color.White.copy(alpha = 0.5f),

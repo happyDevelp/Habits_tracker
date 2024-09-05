@@ -18,6 +18,7 @@ import com.example.habitstracker.R
 import com.example.habitstracker.ui.addHabit.AddHabitScreen
 import com.example.habitstracker.ui.сreateOwnHabit.CreateOwnHabitScreen
 import com.example.habitstracker.ui.theme.AppTheme
+import com.example.habitstracker.ui.сreateOwnHabit.RepeatPicker
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 val LocalNavController = compositionLocalOf<NavController> {
@@ -48,6 +49,9 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(getString(R.string.create_own_habit_navigation)) {
                                 CreateOwnHabitScreen()
+                            }
+                            composable(getString(R.string.repeat_picker_navigation)) {
+                                RepeatPicker()
                             }
                         }
 

@@ -15,4 +15,10 @@
     <string name="morning_create_habit">Morning</string>
     <string name="day_create_habit">Day</string>
     <string name="evening_create_habit">Evening</string>
+    <string name="repeat_picker_navigation">RepeatPicker</string>
+    <string name="define_habit_days">Define habit days</string>
+    <string name="quantity_per_week">Quantity per week</string>
+    <string name="how_often_per_week">How often per week</string>
+    <string name="firstOption_repeatPicer">1</string>
+    <string name="secondOption_repeatPicker">2</string>
 </resources>
