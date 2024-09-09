@@ -1,4 +1,4 @@
-package com.example.habitstracker.ui.сreateOwnHabit
+package com.example.habitstracker.ui.screens.create_own_habit.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

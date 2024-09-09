@@ -1,4 +1,4 @@
-package com.example.habitstracker.ui.addHabit
+package com.example.habitstracker.ui.screens.add_habit.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

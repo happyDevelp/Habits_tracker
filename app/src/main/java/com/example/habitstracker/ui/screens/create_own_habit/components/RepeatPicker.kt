@@ -1,4 +1,4 @@
-package com.example.habitstracker.ui.сreateOwnHabit
+package com.example.habitstracker.ui.screens.create_own_habit.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -17,7 +17,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -51,9 +50,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.ui.custom.MyButton
 import com.example.habitstracker.ui.custom.MyText
-import com.example.habitstracker.ui.main.LocalNavController
+import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.ui.theme.AppTheme
-import com.example.habitstracker.ui.theme.buttonAddNewHabit
 import com.example.habitstracker.ui.theme.thirtyContainerDark
 import com.example.habitstracker.utils.clickWithRipple
 

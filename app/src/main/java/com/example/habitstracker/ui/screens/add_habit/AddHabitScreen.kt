@@ -1,4 +1,4 @@
-package com.example.habitstracker.ui.addHabit
+package com.example.habitstracker.ui.screens.add_habit
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -14,12 +14,9 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SmallTopAppBar
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
@@ -32,7 +29,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
-import com.example.habitstracker.ui.main.LocalNavController
+import com.example.habitstracker.app.LocalNavController
+import com.example.habitstracker.navigation.RoutesMainScreen
+import com.example.habitstracker.ui.screens.add_habit.components.DefaultChooseHabitItem
+import com.example.habitstracker.ui.screens.add_habit.scaffold.TopBarAddHabitScreen
 import com.example.habitstracker.ui.theme.AppTheme
 
 @Composable
@@ -46,31 +46,13 @@ private fun Preview() {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddHabitScreen(modifier: Modifier = Modifier) {
     val navController = LocalNavController.current
 
     Scaffold(
-        topBar = {
-            SmallTopAppBar(
-                title = {
-                    Text(
-                        text = "Add a new habit",
-                        fontSize = 24.sp,
-                        style = MaterialTheme.typography.titleSmall,
-                        color = Color.White
-                    )
-                },
-
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
-                )
-            )
-        },
-
+        topBar = { TopBarAddHabitScreen() },
         containerColor = MaterialTheme.colorScheme.secondaryContainer,
-
         ) { paddingValues ->
 
         Box(
@@ -90,9 +72,6 @@ fun AddHabitScreen(modifier: Modifier = Modifier) {
                     color = Color.White
                 )
 
-                val create_own_habit_navigation =
-                    stringResource(id = R.string.create_own_habit_navigation)
-
                 Button(
                     modifier = modifier
                         .padding(top = 20.dp)
@@ -105,7 +84,7 @@ fun AddHabitScreen(modifier: Modifier = Modifier) {
                         ),
 
                     onClick = {
-                        navController.navigate(create_own_habit_navigation)
+                        navController.navigate(RoutesMainScreen.CreateNewHabit.route)
                     },
 
                     colors = ButtonDefaults.buttonColors(

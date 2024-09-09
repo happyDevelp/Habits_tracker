@@ -1,4 +1,4 @@
-package com.example.habitstracker.ui.сreateOwnHabit
+package com.example.habitstracker.ui.screens.create_own_habit
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -17,16 +17,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Cancel
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.SentimentVerySatisfied
 import androidx.compose.material.icons.outlined.DarkMode
 import androidx.compose.material.icons.outlined.WbSunny
 import androidx.compose.material.icons.outlined.WbTwilight
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -34,10 +31,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -52,16 +45,20 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
-import com.example.habitstracker.ui.main.LocalNavController
+import com.example.habitstracker.app.LocalNavController
+import com.example.habitstracker.navigation.RoutesMainScreen
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.PoppinsFontFamily
 import com.example.habitstracker.ui.theme.thirtyContainerDark
+import com.example.habitstracker.ui.screens.create_own_habit.components.ColorPicker
+import com.example.habitstracker.ui.screens.create_own_habit.components.HabitNameTextField
+import com.example.habitstracker.ui.screens.create_own_habit.components.IconPicker
+import com.example.habitstracker.ui.screens.create_own_habit.scaffold.TopBarCreateOwnHabitScreen
 import com.example.habitstracker.utils.clickWithRipple
 
 @Preview(showSystemUi = true)
@@ -75,41 +72,13 @@ private fun Preview() {
     }
 }
 
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateOwnHabitScreen(modifier: Modifier = Modifier) {
     val navController = LocalNavController.current
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-
-                title = { Text(text = "") },
-
-                navigationIcon = {
-                    val add_habit_screen_navigation =
-                        stringResource(R.string.add_habit_screen_navigation)
-                    IconButton(
-                        onClick = { navController.navigate(add_habit_screen_navigation) }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Cancel,
-                            contentDescription = "Cancel",
-                            modifier = modifier.size(26.dp)
-                        )
-                    }
-                },
-
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
-                )
-            )
-
-        },
+        topBar = { TopBarCreateOwnHabitScreen() },
         containerColor = MaterialTheme.colorScheme.secondaryContainer
-
-
     ) { paddingValues ->
 
         Box(
@@ -117,7 +86,6 @@ fun CreateOwnHabitScreen(modifier: Modifier = Modifier) {
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-
 
             Column(
                 modifier = modifier
@@ -128,49 +96,9 @@ fun CreateOwnHabitScreen(modifier: Modifier = Modifier) {
                 verticalArrangement = Arrangement.Top
             ) {
 
-                var currentText by remember {
-                    mutableStateOf("")
-                }
 
-                TextField(
-                    modifier = modifier.fillMaxWidth(),
-                    value = currentText,
-                    onValueChange = { newText ->
-                        if (newText.length < 30)
-                            currentText = newText
-                    },
 
-                    textStyle = TextStyle(
-                        color = Color.White.copy(alpha = 0.85f),
-                        fontFamily = PoppinsFontFamily,
-                        fontSize = 22.sp,
-                    ),
-
-                    placeholder = {
-                        Text(
-                            text = "Name of habit",
-                            color = Color.White.copy(alpha = 0.85f),
-                            fontFamily = PoppinsFontFamily,
-                            fontSize = 22.sp,
-                        )
-                    },
-
-                    trailingIcon = {
-                        Icon(
-                            modifier = Modifier.padding(end = 0.dp),
-                            imageVector = Icons.Default.Edit, contentDescription = null
-                        )
-                    },
-
-                    colors = TextFieldDefaults.colors(
-                        unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        focusedIndicatorColor = Color.Transparent,
-                    ),
-
-                    singleLine = true,
-                )
+                HabitNameTextField(modifier)
 
                 Spacer(modifier = modifier.height(16.dp))
 
@@ -324,11 +252,10 @@ fun CreateOwnHabitScreen(modifier: Modifier = Modifier) {
 
                 Spacer(modifier = modifier.height(12.dp))
 
-                val repeat_picker_navigation = stringResource(id = R.string.repeat_picker_navigation)
-
                 var selectedDaysText by remember {
                   mutableStateOf("Mon, Tue. Wed...")
                 }
+
                 Row(
                     modifier = modifier
                         .fillMaxWidth()
@@ -337,7 +264,7 @@ fun CreateOwnHabitScreen(modifier: Modifier = Modifier) {
                         .background(color = thirtyContainerDark)
                         .clickWithRipple(
                             color = Color.White
-                        ) { navController.navigate( repeat_picker_navigation) },
+                        ) { navController.navigate(RoutesMainScreen.RepeatPicker.route) },
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -479,7 +406,6 @@ fun CreateOwnHabitScreen(modifier: Modifier = Modifier) {
 
                     Spacer(modifier = modifier.height(8.dp))
 
-
                     Row(
                         modifier = modifier
                             .fillMaxWidth()
@@ -512,10 +438,7 @@ fun CreateOwnHabitScreen(modifier: Modifier = Modifier) {
                             onCheckedChange = { isChecked = !isChecked }
                         )
                     }
-
                 }
-
-
             }
 
 
@@ -532,8 +455,7 @@ fun CreateOwnHabitScreen(modifier: Modifier = Modifier) {
                     .align(Alignment.BottomCenter),
 
                 onClick = {
-                    /*TODO*/
-                    //navController.navigate(create_own_habit_navigation)
+                    navController.navigate("MainScreen")
                 },
 
                 colors = ButtonDefaults.buttonColors(
@@ -554,7 +476,6 @@ fun CreateOwnHabitScreen(modifier: Modifier = Modifier) {
         }
     }
 }
-
 
 @Composable
 private fun ExecutionTimeItem(
