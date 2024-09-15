@@ -20,6 +20,7 @@ android {
         }
     }
 
+    //Stage of app (alpha, beta, release...)
     buildTypes {
         release {
             isMinifyEnabled = false

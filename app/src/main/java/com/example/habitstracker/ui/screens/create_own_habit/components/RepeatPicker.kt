@@ -87,7 +87,7 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                 navigationIcon = {
 
                     IconButton(
-                        onClick = { navController.navigate(add_habit_screen_navigation) }
+                        onClick = { navController.navigateUp() }
                     ) {
                         Icon(
                             imageVector = Icons.Default.ArrowBack,
@@ -113,8 +113,7 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
 
             val firstOption = stringResource(R.string.firstOption_repeatPicer)
             val secondOption = stringResource(R.string.secondOption_repeatPicker)
-            /*var firstOptionSelected by remember { mutableStateOf(true) }
-            var secondOptionSelected by remember { mutableStateOf(true) }*/
+
 
             var currentOptionSelected by remember {
                 mutableStateOf(firstOption)

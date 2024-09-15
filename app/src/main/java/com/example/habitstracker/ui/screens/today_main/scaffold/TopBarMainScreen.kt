@@ -1,4 +1,4 @@
-package com.example.habitstracker.ui.screens.main.scaffold
+package com.example.habitstracker.ui.screens.today_main.scaffold
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -25,7 +25,9 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.habitstracker.R
 import com.example.habitstracker.navigation.RoutesMainScreen
+import com.example.habitstracker.ui.custom.MyText
 import com.example.habitstracker.ui.theme.AppTypography
+import com.example.habitstracker.ui.theme.PoppinsFontFamily
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
@@ -37,10 +39,9 @@ fun TopBarMainScreen(
     navController: NavController,
 ) {
     TopAppBar(
-        modifier = modifier.padding(vertical = 5.dp),
+        modifier = modifier.padding(vertical = 8.dp),
 
         title = {
-
             Box(
                 modifier = modifier.fillMaxWidth(),
                 contentAlignment = Alignment.CenterStart
@@ -53,10 +54,9 @@ fun TopBarMainScreen(
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    Text(
+                    MyText(
                         text = "Today",
-                        fontSize = AppTypography.headlineMedium.fontSize,
-                        style = MaterialTheme.typography.titleSmall
+                        textSize = 26.sp,
                     )
 
                     val today = LocalDate.now()
@@ -64,6 +64,8 @@ fun TopBarMainScreen(
                     val month = today.format(formatter)
                     Text(
                         text = "${today.dayOfMonth} $month",
+                        fontFamily = PoppinsFontFamily,
+                        color = Color.White.copy(0.7f),
                         fontSize = 12.sp,
                     )
                 }

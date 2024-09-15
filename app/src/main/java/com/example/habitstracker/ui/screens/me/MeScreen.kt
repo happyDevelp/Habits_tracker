@@ -17,6 +17,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.ui.screens.me.scaffold.TopBarMeScreen
 import com.example.habitstracker.ui.theme.AppTheme
+import com.example.habitstracker.ui.theme.screensBackgroundDark
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -37,9 +38,8 @@ fun MeScreen(modifier: Modifier = Modifier) {
     val navController = LocalNavController.current
 
     Scaffold(
-        topBar = {
-            TopBarMeScreen()
-        }
+        topBar = { TopBarMeScreen() },
+        containerColor = screensBackgroundDark
     ) { paddingValues ->
 
         Box(

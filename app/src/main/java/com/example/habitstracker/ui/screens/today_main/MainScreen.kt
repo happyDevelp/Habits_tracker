@@ -1,4 +1,4 @@
-package com.example.habitstracker.ui.screens.main
+package com.example.habitstracker.ui.screens.today_main
 
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -30,23 +30,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.navigation.RoutesMainScreen
-import com.example.habitstracker.ui.screens.add_habit.AddHabitScreen
 import com.example.habitstracker.ui.custom.CustomRippleTheme
-import com.example.habitstracker.ui.screens.main.components.Calendar.CalendarRowList
-import com.example.habitstracker.ui.screens.main.components.HabitItem
-import com.example.habitstracker.ui.screens.main.scaffold.TopBarMainScreen
+import com.example.habitstracker.ui.screens.today_main.components.Calendar.CalendarRowList
+import com.example.habitstracker.ui.screens.today_main.components.HabitItem
+import com.example.habitstracker.ui.screens.today_main.scaffold.TopBarMainScreen
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.PoppinsFontFamily
+import com.example.habitstracker.ui.theme.screensBackgroundDark
 import com.example.habitstracker.ui.theme.thirtyContainerDark
-import com.example.habitstracker.ui.screens.create_own_habit.CreateOwnHabitScreen
-import com.example.habitstracker.ui.screens.create_own_habit.components.RepeatPicker
 import com.example.habitstracker.utils.generateDateSequence
 import java.time.LocalDate
 
@@ -55,44 +50,21 @@ import java.time.LocalDate
 @Preview(showSystemUi = false)
 private fun Preview() {
     AppTheme(darkTheme = true) {
-        MainScreen()
-    }
-}
-
-@RequiresApi(Build.VERSION_CODES.O)
-@Composable
-fun MainScreen() {
-    val navController = rememberNavController()
-
-    CompositionLocalProvider(value = LocalNavController provides navController) {
-
-        NavHost(
-            navController = navController,
-            startDestination = RoutesMainScreen.Main.route,
-        ) {
-            composable(route = RoutesMainScreen.Main.route) {
-                MainContent(navController = navController)
-            }
-            composable(route = RoutesMainScreen.AddHabit.route) {
-                AddHabitScreen()
-            }
-            composable(route = RoutesMainScreen.CreateNewHabit.route) {
-                CreateOwnHabitScreen()
-            }
-            composable(route = RoutesMainScreen.RepeatPicker.route) {
-                RepeatPicker()
-            }
+        val mockNavController = rememberNavController()
+        CompositionLocalProvider(value = LocalNavController provides mockNavController) {
+            TodayScreen()
         }
     }
 }
 
-
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun MainContent(modifier: Modifier = Modifier, navController: NavController) {
+fun TodayScreen(modifier: Modifier = Modifier) {
+
+    val navController = LocalNavController.current
 
     Scaffold(
-        topBar = { TopBarMainScreen(modifier, navController) }
+        topBar = { TopBarMainScreen(modifier, navController) },
     ) { paddingValues ->
 
         Card(
@@ -101,7 +73,7 @@ fun MainContent(modifier: Modifier = Modifier, navController: NavController) {
                 .padding(paddingValues),
 
             colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                containerColor = screensBackgroundDark,
             ),
 
             shape = RoundedCornerShape(
@@ -171,7 +143,7 @@ fun MainContent(modifier: Modifier = Modifier, navController: NavController) {
                                     fontSize = 15.sp,
                                     fontWeight = FontWeight.Bold,
                                     fontFamily = PoppinsFontFamily,
-                                    color = Color.White.copy(alpha = 0.9f),
+                                    color = Color.White,
                                 )
                             }
                         }

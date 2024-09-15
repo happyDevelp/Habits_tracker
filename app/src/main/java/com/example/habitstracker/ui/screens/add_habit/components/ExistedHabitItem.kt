@@ -95,7 +95,7 @@ fun DefaultChooseHabitItem(
                             modifier = modifier.padding(bottom = 6.dp),
                             text = groupName,
                             fontSize = 22.sp,
-                            color = Color.White.copy(alpha = 0.75f),
+                            color = Color.White.copy(alpha = 0.95f),
                             fontWeight = FontWeight.Bold,
                             style = MaterialTheme.typography.titleSmall,
                         )

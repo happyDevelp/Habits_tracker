@@ -15,18 +15,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.habitstracker.R
+import com.example.habitstracker.app.LocalNavController
+import com.example.habitstracker.navigation.RoutesMainScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarCreateOwnHabitScreen(modifier: Modifier = Modifier) {
+
+    val navController = LocalNavController.current
     TopAppBar(
         title = { Text(text = "") },
 
         navigationIcon = {
-            val add_habit_screen_navigation =
-                stringResource(R.string.add_habit_screen_navigation)
+
             IconButton(
-                onClick = { /*navController.navigate(add_habit_screen_navigation)*/ }
+                onClick = { navController.navigateUp() }
             ) {
                 Icon(
                     imageVector = Icons.Default.Cancel,

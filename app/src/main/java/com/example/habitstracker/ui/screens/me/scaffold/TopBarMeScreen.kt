@@ -7,15 +7,18 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.sp
+import com.example.habitstracker.ui.custom.MyText
+import com.example.habitstracker.ui.theme.screensBackgroundDark
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TopBarMeScreen(modifier: Modifier = Modifier) {
     TopAppBar(
-        title = { Text(text = "MeScreen") },
+        title = { MyText(text = "MeScreen", textSize = 26.sp) },
 
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
+            containerColor = screensBackgroundDark
         )
     )
 }
