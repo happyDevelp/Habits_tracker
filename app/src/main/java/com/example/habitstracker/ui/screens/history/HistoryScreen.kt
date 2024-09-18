@@ -34,13 +34,10 @@ private fun HistoryScreenPreview() {
 @Composable
 fun HistoryScreen(modifier: Modifier = Modifier) {
 
-    val navController = LocalNavController.current
-
     Scaffold(
         topBar = { TopBarHistoryScreen() },
         containerColor = screensBackgroundDark
     ) { paddingValues ->
-
         Box(
             modifier = modifier
                 .padding(paddingValues)
@@ -50,7 +47,9 @@ fun HistoryScreen(modifier: Modifier = Modifier) {
 
             HistoryPager()
 
-
         }
     }
 }
+
+
+

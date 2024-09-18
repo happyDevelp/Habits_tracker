@@ -1,4 +1,5 @@
 package com.example.habitstracker.ui.theme
+import androidx.compose.material3.ColorScheme
 import androidx.compose.ui.graphics.Color
 
 val primaryLight = Color(0xFF226488)
@@ -217,9 +218,19 @@ val surfaceContainerDarkHighContrast = Color(0xFF1C2024)
 val surfaceContainerHighDarkHighContrast = Color(0xFF262A2E)
 val surfaceContainerHighestDarkHighContrast = Color(0xFF313539)
 
+
+/** Custom colors **/
 val buttonAddNewHabit = Color(0xDC303D4D)
-val thirtyContainerDark = Color(0xFF2A3B47) //background
-val screensBackgroundDark = Color(0xFF21242B)
+val thirtyContainerDark = Color(0xFF2A3B47)
+val screensBackgroundDark = Color(0xFF21242B) //background
+val screenContainerBackgroundDark = Color(0xFF313747) //background
+
+
+/** Colors for interface elements **/
+val blueColor = Color(0xFF3176ff)
+val redColor = Color(0xFFf56936)
+val yellowColor = Color(0xFFc43a3a)
+val greenColor = Color(0xFF3c843a)
 
 
 

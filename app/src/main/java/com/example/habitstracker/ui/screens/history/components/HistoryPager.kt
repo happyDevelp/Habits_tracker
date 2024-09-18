@@ -1,6 +1,8 @@
 package com.example.habitstracker.ui.screens.history.components
 
 import android.annotation.SuppressLint
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,6 +30,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
+import com.example.habitstracker.ui.screens.history.tab_screens.HistoryCalendarScreen
 import com.example.habitstracker.ui.theme.PoppinsFontFamily
 import com.example.habitstracker.ui.theme.screensBackgroundDark
 import kotlinx.coroutines.launch
@@ -36,6 +39,7 @@ import kotlinx.coroutines.launch
  * Here I use TabRow and Horizontal Pager
  * */
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HistoryPager(modifier: Modifier = Modifier) {
@@ -47,7 +51,7 @@ fun HistoryPager(modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top
     ) {
 
         val indicator = @Composable { tabPosition: List<TabPosition> ->
@@ -62,11 +66,11 @@ fun HistoryPager(modifier: Modifier = Modifier) {
             modifier = modifier,
             selectedTabIndex = pagerState.currentPage,
             indicator = indicator, // Need to fix lag with last rowIndex when sliding (or delete indicator)
-            containerColor = screensBackgroundDark
+            containerColor = screensBackgroundDark,
         ) {
             tabs.forEachIndexed { index, tab ->
                 Tab(
-                    text = { Text(text = tab, fontSize = 13.sp, fontFamily = PoppinsFontFamily) },
+                    text = { Text(text = tab, fontSize = 12.sp, fontFamily = PoppinsFontFamily) },
                     selectedContentColor = Color.White,
                     unselectedContentColor = Color.White.copy(alpha = 0.65f),
 
@@ -83,15 +87,12 @@ fun HistoryPager(modifier: Modifier = Modifier) {
 
         HorizontalPager(
             modifier = modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically,
+            verticalAlignment = Alignment.Top,
             state = pagerState
         ) { page ->
 
             when (page) {
-                0 -> Text(
-                    text = "Hello Calendar",
-                    modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center
-                )
+                0 -> HistoryCalendarScreen()
 
                 1 -> Text(
                     text = "Hello Habits",
@@ -105,8 +106,8 @@ fun HistoryPager(modifier: Modifier = Modifier) {
             }
         }
     }
-
 }
+
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -126,7 +127,7 @@ fun Modifier.tabIndicatorOffset(pagerState: PagerState, tabPositions: List<TabPo
                 .fillMaxWidth()
                 .wrapContentSize(Alignment.BottomStart)
                 .offset(x = currentTabPosition.left + fraction * (nextTabPosition.left - currentTabPosition.left))
-                .width(currentTabPosition.width + fraction * (nextTabPosition.width - currentTabPosition.width))
+                .width(currentTabPosition.width)
         } else {
             // For the last tab, keep the indicator at the last position
             Modifier

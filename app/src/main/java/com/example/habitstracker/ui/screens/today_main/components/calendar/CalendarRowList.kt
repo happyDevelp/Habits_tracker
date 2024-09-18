@@ -1,4 +1,4 @@
-package com.example.habitstracker.ui.screens.today_main.components.Calendar
+package com.example.habitstracker.ui.screens.today_main.components.calendar
 
 import android.os.Build
 import androidx.annotation.RequiresApi

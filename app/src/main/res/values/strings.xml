@@ -21,4 +21,14 @@
     <string name="how_often_per_week">How often per week</string>
     <string name="firstOption_repeatPicer">1</string>
     <string name="secondOption_repeatPicker">2</string>
+    <string name="previous_month">Previous month</string>
+    <string name="current_streak">Current \nstreak</string>
+    <string name="number_of_completed_habits">Number of completed habits</string>
+    <string name="percentage_of_completed_habits">Percentage of completed habits</string>
+    <string name="perfect_days">Perfect \ndays</string>
+
+    <!--LocalDate patterns-->
+    <string name="month_and_year_pattern">LLLL yyyy</string>
+    <string name="next_month">Next month</string>
+
 </resources>
