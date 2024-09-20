@@ -29,6 +29,11 @@ android {
                 "proguard-rules.pro"
             )
         }
+        create("profile") {
+            initWith(getByName("debug"))
+            isDebuggable = false
+            isProfileable = true
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -67,6 +72,7 @@ dependencies {
     implementation(libs.androidx.foundation)
 
 
+    implementation ("androidx.tracing:tracing:1.2.0") // або новіша версія
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -30,6 +30,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
+import com.example.habitstracker.ui.screens.history.tab_screens.AchievementsScreen
+import com.example.habitstracker.ui.screens.history.tab_screens.AllHabitScreen
 import com.example.habitstracker.ui.screens.history.tab_screens.HistoryCalendarScreen
 import com.example.habitstracker.ui.theme.PoppinsFontFamily
 import com.example.habitstracker.ui.theme.screensBackgroundDark
@@ -40,7 +42,6 @@ import kotlinx.coroutines.launch
  * */
 
 @RequiresApi(Build.VERSION_CODES.O)
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HistoryPager(modifier: Modifier = Modifier) {
 
@@ -94,15 +95,9 @@ fun HistoryPager(modifier: Modifier = Modifier) {
             when (page) {
                 0 -> HistoryCalendarScreen()
 
-                1 -> Text(
-                    text = "Hello Habits",
-                    modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center
-                )
+                1 -> AllHabitScreen()
 
-                2 -> Text(
-                    text = "Hello Achievements",
-                    modifier = Modifier.fillMaxSize(), textAlign = TextAlign.Center
-                )
+                2 -> AchievementsScreen()
             }
         }
     }
@@ -110,7 +105,6 @@ fun HistoryPager(modifier: Modifier = Modifier) {
 
 
 
-@OptIn(ExperimentalFoundationApi::class)
 @SuppressLint("ModifierFactoryUnreferencedReceiver")
 fun Modifier.tabIndicatorOffset(pagerState: PagerState, tabPositions: List<TabPosition>): Modifier {
     return if (pagerState.pageCount == 0) {

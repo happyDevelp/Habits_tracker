@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.ui.custom.CustomCheckbox
 import com.example.habitstracker.ui.theme.AppTheme
-import com.example.habitstracker.ui.theme.buttonAddNewHabit
 
 @Preview(showSystemUi = true)
 

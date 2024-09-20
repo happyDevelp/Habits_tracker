@@ -30,5 +30,6 @@
     <!--LocalDate patterns-->
     <string name="month_and_year_pattern">LLLL yyyy</string>
     <string name="next_month">Next month</string>
+    <string name="cancel">Cancel</string>
 
 </resources>

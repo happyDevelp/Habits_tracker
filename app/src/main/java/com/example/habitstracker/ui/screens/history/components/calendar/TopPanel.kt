@@ -31,11 +31,11 @@ fun TopPanel(
     plusMonth: () -> Unit,
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-
 
         val formatter = DateTimeFormatter.ofPattern(
             stringResource(id = R.string.month_and_year_pattern),
@@ -52,12 +52,11 @@ fun TopPanel(
             )
         }
 
-        MyText(modifier = modifier, text = formattedCurrentDate, textSize = 13.5.sp)
+        MyText(modifier = modifier, text = formattedCurrentDate, textSize = 15.sp)
 
         val now = LocalDate.now()
-        val isEnable = if (currentDate.year < now.year ||
+        val isEnable = currentDate.year < now.year ||
             currentDate.monthValue < now.monthValue
-        ) true else false
         IconButton(
             onClick = { plusMonth.invoke() },
             enabled = isEnable
