@@ -15,6 +15,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import java.time.LocalDate
 
+val APP_VERSION = "0.0.0 (alfa)"
 fun List<LocalDate>.chunked(size: Int): List<List<LocalDate>> {
     return this.withIndex().groupBy { it.index / size }.values.map { it.map { it.value } }
 }

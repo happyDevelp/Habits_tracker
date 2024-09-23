@@ -228,8 +228,8 @@ val screenContainerBackgroundDark = Color(0xFF313747) //background
 
 /** Colors for interface elements **/
 val blueColor = Color(0xFF3176ff)
-val redColor = Color(0xFFf56936)
-val yellowColor = Color(0xFFc43a3a)
+val orangeColor = Color(0xFFf56936)
+val redColor = Color(0xFFc43a3a)
 val greenColor = Color(0xFF3c843a)
 
 

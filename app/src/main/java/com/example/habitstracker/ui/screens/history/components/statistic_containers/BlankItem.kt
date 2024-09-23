@@ -7,8 +7,8 @@ import androidx.compose.ui.unit.dp
 import com.example.habitstracker.R
 import com.example.habitstracker.ui.theme.blueColor
 import com.example.habitstracker.ui.theme.greenColor
+import com.example.habitstracker.ui.theme.orangeColor
 import com.example.habitstracker.ui.theme.redColor
-import com.example.habitstracker.ui.theme.yellowColor
 
 
 data class BlankItem(
@@ -39,7 +39,7 @@ fun getFilledBlankList(context: Context): List<BlankItem> {
 
         BlankItem(
             width = 130.dp,
-            color = yellowColor,
+            color = orangeColor,
             topText = context.getString(R.string.percentage_of_completed_habits),
             middleText = "20",
             bottomText = "Habits: 48/242",
