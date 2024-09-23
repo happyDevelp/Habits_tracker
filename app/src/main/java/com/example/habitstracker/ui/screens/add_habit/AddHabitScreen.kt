@@ -34,15 +34,14 @@ import com.example.habitstracker.navigation.RoutesMainScreen
 import com.example.habitstracker.ui.screens.add_habit.components.DefaultChooseHabitItem
 import com.example.habitstracker.ui.screens.add_habit.scaffold.TopBarAddHabitScreen
 import com.example.habitstracker.ui.theme.AppTheme
+import com.example.habitstracker.ui.theme.blueColor
 
 @Composable
 @Preview(showSystemUi = false)
 private fun Preview() {
     val mockNavController = rememberNavController()
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
-        AppTheme(darkTheme = true) {
-            AddHabitScreen()
-        }
+        AppTheme(darkTheme = true) { AddHabitScreen() }
     }
 }
 
@@ -54,7 +53,6 @@ fun AddHabitScreen(modifier: Modifier = Modifier) {
         topBar = { TopBarAddHabitScreen() },
         containerColor = MaterialTheme.colorScheme.secondaryContainer,
         ) { paddingValues ->
-
         Box(
             modifier = modifier
                 .padding(paddingValues)
@@ -65,7 +63,6 @@ fun AddHabitScreen(modifier: Modifier = Modifier) {
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-
                 Text(
                     text = "Here you can create a new habit",
                     fontSize = 20.sp,
@@ -88,9 +85,8 @@ fun AddHabitScreen(modifier: Modifier = Modifier) {
                     },
 
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer
+                        containerColor = blueColor
                     ),
-
                     elevation = ButtonDefaults.buttonElevation(
                         defaultElevation = 6.dp,
                         pressedElevation = 16.dp

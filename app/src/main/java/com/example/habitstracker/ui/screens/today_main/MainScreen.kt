@@ -1,7 +1,5 @@
 package com.example.habitstracker.ui.screens.today_main
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -39,49 +37,41 @@ import com.example.habitstracker.ui.screens.today_main.components.HabitItem
 import com.example.habitstracker.ui.screens.today_main.scaffold.TopBarMainScreen
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.PoppinsFontFamily
+import com.example.habitstracker.ui.theme.blueColor
+import com.example.habitstracker.ui.theme.greenColor
+import com.example.habitstracker.ui.theme.orangeColor
+import com.example.habitstracker.ui.theme.redColor
+import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 import com.example.habitstracker.ui.theme.screensBackgroundDark
-import com.example.habitstracker.ui.theme.thirtyContainerDark
 import com.example.habitstracker.utils.generateDateSequence
 import java.time.LocalDate
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 @Preview(showSystemUi = false)
 private fun Preview() {
-    AppTheme(darkTheme = true) {
-        val mockNavController = rememberNavController()
-        CompositionLocalProvider(value = LocalNavController provides mockNavController) {
-            TodayScreen()
-        }
+    val mockNavController = rememberNavController()
+    CompositionLocalProvider(value = LocalNavController provides mockNavController) {
+        AppTheme(darkTheme = true) { TodayScreen() }
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TodayScreen(modifier: Modifier = Modifier) {
-
     val navController = LocalNavController.current
 
     Scaffold(
         topBar = { TopBarMainScreen(modifier, navController) },
     ) { paddingValues ->
-
         Card(
             modifier = modifier
                 .fillMaxSize()
                 .padding(paddingValues),
-
             colors = CardDefaults.cardColors(
                 containerColor = screensBackgroundDark,
             ),
-
-            shape = RoundedCornerShape(
-                topStart = 27.dp,
-                topEnd = 27.dp,
-            )
+            shape = RoundedCornerShape(topStart = 27.dp, topEnd = 27.dp)
         )
         {
-
             Box(
                 modifier = modifier
                     .padding(top = 20.dp)
@@ -89,7 +79,6 @@ fun TodayScreen(modifier: Modifier = Modifier) {
                 contentAlignment = Alignment.TopCenter
 
             ) {
-
                 Column {
                     val dateSet = generateDateSequence(LocalDate.now(), 500)
                     CalendarRowList(dateSet.toMutableList())
@@ -105,8 +94,14 @@ fun TodayScreen(modifier: Modifier = Modifier) {
                             .fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
+                        val colorList = listOf(
+                            blueColor,
+                            orangeColor,
+                            redColor,
+                            greenColor
+                        )
                         items(4) {
-                            HabitItem()
+                            HabitItem(pickedColor = colorList[it])
                             Spacer(modifier = modifier.height(20.dp))
                         }
 
@@ -124,7 +119,7 @@ fun TodayScreen(modifier: Modifier = Modifier) {
                                 },
 
                                 colors = ButtonDefaults.buttonColors(
-                                    containerColor = thirtyContainerDark,
+                                    containerColor = screenContainerBackgroundDark,
                                     contentColor = Color.White.copy(alpha = 0.75f)
                                 ),
 

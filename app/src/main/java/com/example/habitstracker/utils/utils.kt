@@ -1,7 +1,6 @@
 package com.example.habitstracker.utils
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material.ripple.rememberRipple
@@ -15,13 +14,13 @@ import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import java.time.LocalDate
 
-val APP_VERSION = "0.0.0 (alfa)"
+val APP_VERSION = "0.0.0 (alpha)"
 fun List<LocalDate>.chunked(size: Int): List<List<LocalDate>> {
     return this.withIndex().groupBy { it.index / size }.values.map { it.map { it.value } }
 }
 
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 fun generateDateSequence(startDate: LocalDate, daysCount: Int): List<LocalDate> {
     return List(daysCount) { startDate.plusDays(it.toLong()) }
 }

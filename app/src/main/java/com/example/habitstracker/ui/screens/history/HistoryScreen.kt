@@ -1,7 +1,6 @@
 package com.example.habitstracker.ui.screens.history
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -18,7 +17,7 @@ import com.example.habitstracker.ui.screens.history.scaffold.TopBarHistoryScreen
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.screensBackgroundDark
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 @Preview(showSystemUi = false)
 private fun HistoryScreenPreview() {
@@ -30,7 +29,7 @@ private fun HistoryScreenPreview() {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun HistoryScreen(modifier: Modifier = Modifier) {
 

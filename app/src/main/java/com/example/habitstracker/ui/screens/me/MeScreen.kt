@@ -1,7 +1,6 @@
 package com.example.habitstracker.ui.screens.me
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
@@ -35,14 +34,14 @@ import com.example.habitstracker.ui.theme.redColor
 import com.example.habitstracker.ui.theme.screensBackgroundDark
 import com.example.habitstracker.utils.APP_VERSION
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 @Preview(showSystemUi = false)
 private fun MeScreenPreview() {
     AppTheme(darkTheme = true) { MeScreen() }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun MeScreen(modifier: Modifier = Modifier) {
     Scaffold(

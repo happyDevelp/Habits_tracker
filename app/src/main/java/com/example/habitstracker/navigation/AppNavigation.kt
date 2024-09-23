@@ -1,7 +1,5 @@
 package com.example.habitstracker.navigation
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
@@ -25,16 +23,14 @@ import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.navigation.bottombar.BottomBarItems
 import com.example.habitstracker.navigation.bottombar.BottomBarScreens
 import com.example.habitstracker.navigation.bottombar.listOfNavItems
-import com.example.habitstracker.ui.custom.MyText
 import com.example.habitstracker.ui.screens.add_habit.AddHabitScreen
 import com.example.habitstracker.ui.screens.create_own_habit.CreateOwnHabitScreen
 import com.example.habitstracker.ui.screens.create_own_habit.components.RepeatPicker
 import com.example.habitstracker.ui.screens.history.HistoryScreen
-import com.example.habitstracker.ui.screens.today_main.TodayScreen
 import com.example.habitstracker.ui.screens.me.MeScreen
+import com.example.habitstracker.ui.screens.today_main.TodayScreen
 import com.example.habitstracker.ui.theme.PoppinsFontFamily
 
-@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AppNavigation() {
     val navController = LocalNavController.current

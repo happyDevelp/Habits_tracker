@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.ui.custom.MyText
 import com.example.habitstracker.ui.theme.screensBackgroundDark
-import com.example.habitstracker.ui.theme.thirtyContainerDark
+import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

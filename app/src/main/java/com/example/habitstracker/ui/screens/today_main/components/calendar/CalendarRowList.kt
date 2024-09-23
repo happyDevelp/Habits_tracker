@@ -1,7 +1,6 @@
 package com.example.habitstracker.ui.screens.today_main.components.calendar
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyRow
@@ -16,7 +15,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import java.time.LocalDate
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun CalendarRowList(dateSet: MutableList<LocalDate>) {
 

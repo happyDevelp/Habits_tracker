@@ -35,7 +35,7 @@ import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.ui.custom.MyButton
 import com.example.habitstracker.ui.theme.AppTheme
-import com.example.habitstracker.ui.theme.thirtyContainerDark
+import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 import kotlinx.coroutines.launch
 
 @Preview(showSystemUi = true)
@@ -85,7 +85,7 @@ fun ColorPicker(
                 closingSheet.invoke()
             },
             dragHandle = null,
-            containerColor = thirtyContainerDark
+            containerColor = screenContainerBackgroundDark
         ) {
 
             Box(
@@ -146,7 +146,7 @@ fun ColorPicker(
 
                     MyButton(
                         modifier = modifier.weight(1f),
-                        color = thirtyContainerDark,
+                        color = screenContainerBackgroundDark,
                         onClick = {
                             closingSheet.invoke()
                             scope.launch { sheetState.hide() }

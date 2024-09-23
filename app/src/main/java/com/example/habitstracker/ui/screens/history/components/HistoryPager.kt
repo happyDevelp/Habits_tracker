@@ -1,8 +1,7 @@
 package com.example.habitstracker.ui.screens.history.components
 
 import android.annotation.SuppressLint
-import android.os.Build
-import androidx.annotation.RequiresApi
+
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -41,7 +40,7 @@ import kotlinx.coroutines.launch
  * Here I use TabRow and Horizontal Pager
  * */
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun HistoryPager(modifier: Modifier = Modifier) {
 

@@ -31,7 +31,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun CustomCheckbox(
     modifier: Modifier = Modifier,
-    selectedBackgroundColor: Color = MaterialTheme.colorScheme.primaryContainer
+    selectedBackgroundColor: Color = MaterialTheme.colorScheme.primaryContainer,
+    onClick: () -> Unit = { },
 ) {
     var isChecked by remember { mutableStateOf(false) }
 
@@ -44,9 +45,11 @@ fun CustomCheckbox(
         modifier = modifier
             .size(21.dp)
             //.scale(checkboxIconSize)
-            .bounceClickable(onAnimationFinished = {
+            .bounceClickable(
+                onAnimationFinished = {
                     isChecked = !isChecked
-                }
+                    onClick.invoke()
+                },
             ),
 
 

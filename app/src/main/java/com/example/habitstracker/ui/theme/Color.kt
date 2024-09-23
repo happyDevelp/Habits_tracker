@@ -220,8 +220,6 @@ val surfaceContainerHighestDarkHighContrast = Color(0xFF313539)
 
 
 /** Custom colors **/
-val buttonAddNewHabit = Color(0xDC303D4D)
-val thirtyContainerDark = Color(0xFF2A3B47)
 val screensBackgroundDark = Color(0xFF21242B) //background
 val screenContainerBackgroundDark = Color(0xFF313747) //background
 

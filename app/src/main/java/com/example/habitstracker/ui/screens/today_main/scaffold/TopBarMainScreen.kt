@@ -1,7 +1,6 @@
 package com.example.habitstracker.ui.screens.today_main.scaffold
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,7 +30,7 @@ import com.example.habitstracker.ui.theme.PoppinsFontFamily
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
 fun TopBarMainScreen(

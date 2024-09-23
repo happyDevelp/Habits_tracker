@@ -1,8 +1,7 @@
 package com.example.habitstracker.ui.screens.history.tab_screens
 
 import android.content.Context
-import android.os.Build
-import androidx.annotation.RequiresApi
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -55,7 +54,7 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Preview(showSystemUi = true)
 @Composable
 fun HistoryCalendarScreenPreview(modifier: Modifier = Modifier) {
@@ -67,7 +66,7 @@ fun HistoryCalendarScreenPreview(modifier: Modifier = Modifier) {
     { HistoryCalendarScreen() }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 fun HistoryCalendarScreen(modifier: Modifier = Modifier) {
 
@@ -181,7 +180,7 @@ private fun DrawStatisticContainers(modifier: Modifier, context: Context) {
     }
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Composable
 private fun StatisticSection(modifier: Modifier = Modifier) {
     Spacer(modifier = modifier.height(24.dp))
@@ -238,7 +237,7 @@ private fun CalendarHorizontalPager(
 }
 
 /** Add days of month to [displayedCalendarList] **/
-@RequiresApi(Build.VERSION_CODES.O)
+
 fun addDaysOfMonth(
     lengthOfMonth: Int,
     displayedCalendarList: MutableList<Pair<String, String>>,

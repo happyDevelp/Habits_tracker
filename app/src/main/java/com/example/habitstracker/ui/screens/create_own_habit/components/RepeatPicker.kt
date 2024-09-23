@@ -52,7 +52,7 @@ import com.example.habitstracker.ui.custom.MyButton
 import com.example.habitstracker.ui.custom.MyText
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.ui.theme.AppTheme
-import com.example.habitstracker.ui.theme.thirtyContainerDark
+import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 import com.example.habitstracker.utils.clickWithRipple
 
 @Preview(showSystemUi = true)
@@ -136,7 +136,7 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                             RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)
                         else RoundedCornerShape(size = 8.dp)
                     )
-                    .background(thirtyContainerDark)
+                    .background(screenContainerBackgroundDark)
                     .clickWithRipple { currentOptionSelected = firstOption }
                     .constrainAs(certainWeekDaysShort) {
                         top.linkTo(parent.top)
@@ -193,7 +193,7 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                         .clip(RoundedCornerShape(bottomEnd = 8.dp, bottomStart = 8.dp))
-                        .background(thirtyContainerDark)
+                        .background(screenContainerBackgroundDark)
                         .constrainAs(certainWeekDaysFull) {
                             top.linkTo(certainWeekDaysShort.bottom)
                         },
@@ -255,7 +255,7 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                             RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)
                         else RoundedCornerShape(size = 8.dp)
                     )
-                    .background(thirtyContainerDark)
+                    .background(screenContainerBackgroundDark)
                     .clickWithRipple { currentOptionSelected = secondOption }
 
                     .constrainAs(dayCountsInAWeekShort) {
@@ -316,7 +316,7 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                         .clip(RoundedCornerShape(bottomEnd = 8.dp, bottomStart = 8.dp))
-                        .background(thirtyContainerDark)
+                        .background(screenContainerBackgroundDark)
                         .constrainAs(dayCountsInAWeekFull) {
                             top.linkTo(dayCountsInAWeekShort.bottom)
                         },

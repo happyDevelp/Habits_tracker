@@ -22,7 +22,7 @@ import androidx.compose.ui.unit.sp
 import com.example.habitstracker.ui.theme.PoppinsFontFamily
 
 @Composable
-fun HabitNameTextField(modifier: Modifier) {
+fun HabitNameTextField(modifier: Modifier = Modifier) {
     var currentText by remember {
         mutableStateOf("")
     }

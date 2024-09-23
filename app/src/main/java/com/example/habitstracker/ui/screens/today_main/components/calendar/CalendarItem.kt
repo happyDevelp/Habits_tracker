@@ -1,7 +1,6 @@
 package com.example.habitstracker.ui.screens.today_main.components.calendar
 
-import android.os.Build
-import androidx.annotation.RequiresApi
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,7 +23,7 @@ import com.example.habitstracker.ui.theme.QuickSandFontFamily
 import java.time.LocalDate
 
 
-@RequiresApi(Build.VERSION_CODES.O)
+
 @Preview(showBackground = true, backgroundColor = 0xFF242C33)
 @Composable
 fun CalendarItem(

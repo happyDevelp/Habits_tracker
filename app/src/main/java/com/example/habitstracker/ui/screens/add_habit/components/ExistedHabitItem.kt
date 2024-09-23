@@ -34,7 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.ui.theme.AppTheme
-import com.example.habitstracker.ui.theme.buttonAddNewHabit
+import com.example.habitstracker.ui.theme.blueColor
+import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 
 @Preview(showSystemUi = true)
 @Composable
@@ -55,20 +56,13 @@ fun DefaultChooseHabitItem(
                 .clickable {
                     /*TODO()*/
                 },
-
             elevation = CardDefaults.cardElevation(
                 defaultElevation = 60.dp,
                 pressedElevation = 26.dp
             ),
-
-            colors = CardDefaults.cardColors(
-                containerColor = buttonAddNewHabit,
-                )
+            colors = CardDefaults.cardColors(containerColor = screenContainerBackgroundDark)
         ) {
-            Box(
-                modifier = modifier.fillMaxSize()
-            ) {
-
+            Box(modifier = modifier.fillMaxSize()) {
                 Row(
                     modifier = modifier
                         .fillMaxSize()

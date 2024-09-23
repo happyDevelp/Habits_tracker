@@ -1,18 +1,23 @@
 package com.example.habitstracker.ui.screens.today_main.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -21,11 +26,16 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -34,26 +44,35 @@ import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.ui.custom.CustomCheckbox
 import com.example.habitstracker.ui.theme.AppTheme
+import com.example.habitstracker.ui.theme.blueColor
 
 @Preview(showSystemUi = true)
 
 @Composable
 fun HabitItemPreview() {
-    AppTheme(darkTheme = true) {
-        HabitItem()
-    }
+    AppTheme(darkTheme = true) { HabitItem(pickedColor = blueColor) }
 }
 
 @Composable
 fun HabitItem(
     modifier: Modifier = Modifier,
     habitName: String = "Health eating",
+    pickedColor: Color
 ) {
+    var isNotSelected by remember {
+        mutableStateOf(true)
+    }
+    val itemHeight: Dp = 90.dp
+    val selectedAlpha: Float = 0.75f
 
-    val itemHeight: Dp = 100.dp
+    val notSelectedColor = Color(0xFF313747)
+
+
+    val currentColor by animateColorAsState(
+        targetValue = if (!isNotSelected) notSelectedColor else pickedColor
+    )
 
     Box(modifier = modifier.fillMaxSize()) {
-
         Row(
             modifier = modifier.fillMaxWidth(0.95f),
             verticalAlignment = Alignment.CenterVertically,
@@ -67,7 +86,7 @@ fun HabitItem(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                CustomCheckbox()
+                CustomCheckbox(onClick = { isNotSelected = !isNotSelected })
             }
 
             Card(
@@ -82,23 +101,11 @@ fun HabitItem(
                     defaultElevation = 60.dp,
                     pressedElevation = 26.dp
                 ),
-
                 colors = CardDefaults.cardColors(
-                    /*
-                    * if done Color(0xFF313747)
-                    * else listOf() {
-                    * Color(0xFF3176ff),
-                    * Color(0xFFf56936),
-                    * Color(0xFFc43a3a)
-                    * }
-                    * */
-                    containerColor = Color(0xFF313747),
+                    containerColor = currentColor
                 )
             ) {
-                Box(
-                    modifier = modifier.fillMaxSize(),
-                ) {
-
+                Box(modifier = modifier.fillMaxSize()) {
                     Row(
                         modifier = modifier.fillMaxSize(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -115,27 +122,44 @@ fun HabitItem(
                         )
 
                         Column(
-                            modifier = modifier.padding(end = 30.dp)
+                            modifier = modifier.padding(end = 30.dp),
+                            verticalArrangement = if (isNotSelected) Arrangement.Center else Arrangement.Top, // Center text when selected
                         ) {
                             Text(
-                                modifier = modifier.padding(bottom = 10.dp),
+                                modifier = modifier.padding(bottom = if(isNotSelected) 0.dp else 10.dp),
                                 text = habitName,
                                 fontSize = 20.sp,
-                                color = Color.White,
+                                color = if (isNotSelected) Color.White else Color.White.copy(
+                                    selectedAlpha
+                                ),
                                 fontWeight = FontWeight.Bold,
                                 style = MaterialTheme.typography.titleSmall,
                             )
 
-                            Text(
-                                text = "execution status",
-                                fontSize = 14.sp //Failed, Completed
-                            )
+                            AnimatedVisibility(visible = !isNotSelected) { // Hide the second text when selected
+                                Row(
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        modifier = modifier.size(18.dp),
+                                        tint = Color.White.copy(selectedAlpha),
+                                        imageVector = Icons.Default.Done,
+                                        contentDescription = null
+                                    )
+                                    Spacer(modifier = modifier.width(4.dp))
+                                    Text(
+                                        text = stringResource(R.string.finished),
+                                        fontSize = 14.sp,
+                                        color = Color.White.copy(selectedAlpha)
+                                    )
+                                }
+                            }
                         }
 
                         IconButton(
                             onClick = { /*TODO*/ },
-                            Modifier
-                                .fillMaxHeight()
+                            Modifier.fillMaxHeight()
                         ) {
                             Icon(
                                 modifier = modifier.fillMaxHeight(),
