@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    id("kotlin-kapt")
 }
 
 android {
@@ -70,6 +71,8 @@ dependencies {
     implementation (libs.androidx.navigation.compose)
     implementation (libs.accompanist.systemuicontroller)
     implementation(libs.androidx.foundation)
+    implementation(libs.androidx.room.ktx)
+    kapt("androidx.room:room-compiler:2.6.1")
 
 
     implementation ("androidx.tracing:tracing:1.2.0") // або новіша версія
