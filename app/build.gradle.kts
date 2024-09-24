@@ -95,9 +95,6 @@ dependencies {
     kapt("androidx.room:room-compiler:2.6.1")
 
 
-
-    implementation("androidx.tracing:tracing:1.2.0") // або новіша версія
-
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

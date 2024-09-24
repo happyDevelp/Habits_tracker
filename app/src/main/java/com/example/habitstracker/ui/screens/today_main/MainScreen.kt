@@ -21,6 +21,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -76,6 +77,9 @@ fun TodayScreen(modifier: Modifier = Modifier) {
     val repository = RepositoryImpl(db.dao)
     val viewModel: HabitViewModel = viewModel(factory = HabitViewModelFactory(repository))
 
+    val list = listOf<HabitEntity>()
+
+
 
     Scaffold(
         topBar = { TopBarMainScreen(modifier, navController) },
@@ -105,6 +109,8 @@ fun TodayScreen(modifier: Modifier = Modifier) {
                 CompositionLocalProvider(
                     value = LocalRippleTheme provides CustomRippleTheme(color = Color.Black)
                 ) {
+
+                    val habits = viewModel.habitsList.collectAsState()
                     LazyColumn(
                         modifier = modifier
                             .padding(top = 95.dp)
@@ -118,8 +124,8 @@ fun TodayScreen(modifier: Modifier = Modifier) {
                             redColor,
                             greenColor
                         )
-                        items(4) {
-                            HabitItem(pickedColor = colorList[it])
+                        items(habits.value.size) { habit ->
+                            HabitItem(habit = habits.value[habit])
                             Spacer(modifier = modifier.height(20.dp))
                         }
 
@@ -161,6 +167,7 @@ fun TodayScreen(modifier: Modifier = Modifier) {
                             }
                         }
 
+                        // TEST BUTTOn
                         item {
                             Button(
                                 onClick = {
