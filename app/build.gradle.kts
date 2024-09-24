@@ -19,6 +19,26 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        //Kapt scehma directory path when created
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas")
+            }
+        }
+
+        // Ensure schema directory creation if doesn't exist
+        tasks.register("createSchemaDir") {
+            doLast {
+                val schemaDir = File("$projectDir/schemas")
+                if (!schemaDir.exists())
+                    schemaDir.mkdirs()
+            }
+        }
+
+        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+            dependsOn("createSchemaDir")
+        }
     }
 
     //Stage of app (alpha, beta, release...)
@@ -66,16 +86,17 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation (libs.androidx.constraintlayout.compose)
-    implementation (libs.androidx.material.icons.extended)
-    implementation (libs.androidx.navigation.compose)
-    implementation (libs.accompanist.systemuicontroller)
+    implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.androidx.material.icons.extended)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.room.ktx)
     kapt("androidx.room:room-compiler:2.6.1")
 
 
-    implementation ("androidx.tracing:tracing:1.2.0") // або новіша версія
+
+    implementation("androidx.tracing:tracing:1.2.0") // або новіша версія
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

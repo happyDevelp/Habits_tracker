@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -19,17 +21,25 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
+import com.example.habitstracker.data.db.HabitDatabase
+import com.example.habitstracker.data.db.HabitEntity
+import com.example.habitstracker.data.db.repository.RepositoryImpl
+import com.example.habitstracker.data.db.viewmodel.HabitViewModel
+import com.example.habitstracker.data.db.viewmodel.HabitViewModelFactory
 import com.example.habitstracker.navigation.RoutesMainScreen
 import com.example.habitstracker.ui.custom.CustomRippleTheme
 import com.example.habitstracker.ui.screens.today_main.components.calendar.CalendarRowList
@@ -44,6 +54,7 @@ import com.example.habitstracker.ui.theme.redColor
 import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 import com.example.habitstracker.ui.theme.screensBackgroundDark
 import com.example.habitstracker.utils.generateDateSequence
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable
@@ -58,6 +69,13 @@ private fun Preview() {
 @Composable
 fun TodayScreen(modifier: Modifier = Modifier) {
     val navController = LocalNavController.current
+    val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
+
+    val db = HabitDatabase.getDatabase(context)
+    val repository = RepositoryImpl(db.dao)
+    val viewModel: HabitViewModel = viewModel(factory = HabitViewModelFactory(repository))
+
 
     Scaffold(
         topBar = { TopBarMainScreen(modifier, navController) },
@@ -77,8 +95,8 @@ fun TodayScreen(modifier: Modifier = Modifier) {
                     .padding(top = 20.dp)
                     .fillMaxSize(),
                 contentAlignment = Alignment.TopCenter
-
             ) {
+
                 Column {
                     val dateSet = generateDateSequence(LocalDate.now(), 500)
                     CalendarRowList(dateSet.toMutableList())
@@ -139,6 +157,28 @@ fun TodayScreen(modifier: Modifier = Modifier) {
                                     fontFamily = PoppinsFontFamily,
                                     color = Color.White,
                                 )
+
+                            }
+                        }
+
+                        item {
+                            Button(
+                                onClick = {
+                                    coroutineScope.launch {
+                                        viewModel.addHabit(
+                                            HabitEntity(
+                                                name = "TRAva",
+                                                icon = (Icons.Default.Add).toString(),
+                                                color = blueColor.toString(),
+                                                days = "Fri",
+                                                executionTime = "No",
+                                                isDone = false,
+                                                reminder = false
+                                            )
+                                        )
+                                    }
+                                }) {
+                                Text(text = "Test button")
                             }
                         }
                     }
