@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [HabitEntity::class], exportSchema = true, version = 1)
+@Database(entities = [HabitEntity::class], exportSchema = true, version = 2)
 abstract class HabitDatabase: RoomDatabase() {
     abstract val dao: DAO
 
@@ -19,7 +19,9 @@ abstract class HabitDatabase: RoomDatabase() {
                     context.applicationContext,
                     HabitDatabase::class.java,
                     TABLE_NAME
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
                 instance
             }

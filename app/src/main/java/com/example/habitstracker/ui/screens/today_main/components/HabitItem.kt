@@ -41,15 +41,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.toColorInt
 import com.example.habitstracker.R
 import com.example.habitstracker.data.db.HabitEntity
 import com.example.habitstracker.ui.custom.CustomCheckbox
 import com.example.habitstracker.ui.theme.AppTheme
-import com.example.habitstracker.ui.theme.blueColor
+import com.example.habitstracker.ui.theme.notSelectedColor
 
 @Preview(showSystemUi = true)
-
 @Composable
 fun HabitItemPreview() {
     AppTheme(darkTheme = true) { HabitItem() }
@@ -59,17 +57,14 @@ fun HabitItemPreview() {
 fun HabitItem(
     modifier: Modifier = Modifier,
     habit: HabitEntity = HabitEntity(),
-    /*pickedColor: Color*/
 ) {
-    val color = blueColor
     var isNotSelected by remember {
         mutableStateOf(true)
     }
     val itemHeight: Dp = 90.dp
     val selectedAlpha: Float = 0.75f
 
-    val notSelectedColor = Color(0xFF313747)
-
+    val color = habit.colorHex.getColorFromHex()
 
     val currentColor by animateColorAsState(
         targetValue = if (!isNotSelected) notSelectedColor else color
@@ -129,7 +124,7 @@ fun HabitItem(
                             verticalArrangement = if (isNotSelected) Arrangement.Center else Arrangement.Top, // Center text when selected
                         ) {
                             Text(
-                                modifier = modifier.padding(bottom = if(isNotSelected) 0.dp else 10.dp),
+                                modifier = modifier.padding(bottom = if (isNotSelected) 0.dp else 10.dp),
                                 text = habit.name,
                                 fontSize = 20.sp,
                                 color = if (isNotSelected) Color.White else Color.White.copy(
@@ -177,3 +172,8 @@ fun HabitItem(
         }
     }
 }
+
+
+fun String.getColorFromHex(): Color =
+    Color(android.graphics.Color.parseColor(this))
+

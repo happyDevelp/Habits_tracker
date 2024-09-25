@@ -26,12 +26,14 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.graphics.toColorInt
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
@@ -79,6 +81,10 @@ fun TodayScreen(modifier: Modifier = Modifier) {
 
     val list = listOf<HabitEntity>()
 
+    // Get the ARGB integer
+    val argb = blueColor.toArgb() // This will return an ARGB integer
+
+    // Convert to hex string
 
 
     Scaffold(
@@ -118,12 +124,7 @@ fun TodayScreen(modifier: Modifier = Modifier) {
                             .fillMaxWidth(),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        val colorList = listOf(
-                            blueColor,
-                            orangeColor,
-                            redColor,
-                            greenColor
-                        )
+
                         items(habits.value.size) { habit ->
                             HabitItem(habit = habits.value[habit])
                             Spacer(modifier = modifier.height(20.dp))
@@ -163,20 +164,26 @@ fun TodayScreen(modifier: Modifier = Modifier) {
                                     fontFamily = PoppinsFontFamily,
                                     color = Color.White,
                                 )
-
                             }
                         }
 
                         // TEST BUTTOn
                         item {
+                            val colorList = listOf(
+                                blueColor,
+                                orangeColor,
+                                redColor,
+                                greenColor
+                            )
                             Button(
                                 onClick = {
                                     coroutineScope.launch {
+
                                         viewModel.addHabit(
                                             HabitEntity(
                                                 name = "TRAva",
                                                 icon = (Icons.Default.Add).toString(),
-                                                color = blueColor.toString(),
+                                                colorHex = colorList.random().toHex(),
                                                 days = "Fri",
                                                 executionTime = "No",
                                                 isDone = false,
@@ -193,4 +200,15 @@ fun TodayScreen(modifier: Modifier = Modifier) {
             }
         }
     }
+}
+
+object HexToJetpackColor {
+    fun getColor(colorString: String): Color {
+        return Color(android.graphics.Color.parseColor("#" + colorString))
+    }
+}
+
+fun Color.toHex(): String {
+    val argb = this.toArgb()
+    return String.format("#%08X", argb)
 }
