@@ -9,7 +9,6 @@
     <string name="create_own_habit_navigation">CreateOwnHabitScreen</string>
     <string name="add_habit_screen_navigation">AddHabitScreen</string>
     <string name="main_screen_navigation">MainScreen</string>
-    <string name="create_button">+ Create</string>
     <string name="a_reminder_for_this_habit">A reminder for this habit</string>
     <string name="doesnt_matter_create_habit">Doesn\'t matter</string>
     <string name="morning_create_habit">Morning</string>
@@ -29,6 +28,8 @@
 
     <!--LocalDate patterns-->
     <string name="month_and_year_pattern">LLLL yyyy</string>
+
+
     <string name="next_month">Next month</string>
     <string name="cancel">Cancel</string>
     <string name="notification">Notification</string>
@@ -38,5 +39,11 @@
     <string name="rate_us">Rate us</string>
     <string name="feedback">Feedback</string>
     <string name="finished">Finished</string>
+    <string name="create_name_of_habit">Name of habit</string>
+    <string name="icon_of_habit_description">Icon of habit</string>
+    <string name="select_icon_description">Select icon</string>
+    <string name="days_of_habits">Days of habits</string>
+    <string name="save">Save</string>
+    <string name="create_your_own">Create your own</string>
 
 </resources>

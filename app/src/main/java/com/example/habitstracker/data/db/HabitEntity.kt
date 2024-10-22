@@ -2,9 +2,8 @@ package com.example.habitstracker.data.db
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverter
-import com.example.habitstracker.ui.screens.today_main.toHex
 import com.example.habitstracker.ui.theme.blueColor
+import com.example.habitstracker.utils.toHex
 
 const val TABLE_NAME = "habit_table"
 
@@ -13,7 +12,7 @@ data class HabitEntity (
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val name: String = "",
-    val icon: String = "",
+    val iconName: String = "",
     val isDone: Boolean = false,
     val colorHex: String = blueColor.toHex(),
     val days: String = "", // Which days of the week to show a habit (for ex. Mon, wed, Fri,...)

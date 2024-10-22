@@ -26,14 +26,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.toArgb
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.graphics.toColorInt
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
@@ -57,6 +56,7 @@ import com.example.habitstracker.ui.theme.redColor
 import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 import com.example.habitstracker.ui.theme.screensBackgroundDark
 import com.example.habitstracker.utils.generateDateSequence
+import com.example.habitstracker.utils.toHex
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -79,12 +79,11 @@ fun TodayScreen(modifier: Modifier = Modifier) {
     val repository = RepositoryImpl(db.dao)
     val viewModel: HabitViewModel = viewModel(factory = HabitViewModelFactory(repository))
 
-    val list = listOf<HabitEntity>()
 
-    // Get the ARGB integer
-    val argb = blueColor.toArgb() // This will return an ARGB integer
 
-    // Convert to hex string
+    val iconName = getIconName(Icons.Default.Add)
+    println("AAAA iconName(String) = $iconName")
+    println("AAAA ${iconByName(iconName)}")
 
 
     Scaffold(
@@ -175,9 +174,11 @@ fun TodayScreen(modifier: Modifier = Modifier) {
                                 redColor,
                                 greenColor
                             )
-                            Button(
+/*                            Button(
                                 onClick = {
                                     coroutineScope.launch {
+
+                                        val myIcon =
 
                                         viewModel.addHabit(
                                             HabitEntity(
@@ -193,7 +194,7 @@ fun TodayScreen(modifier: Modifier = Modifier) {
                                     }
                                 }) {
                                 Text(text = "Test button")
-                            }
+                            }*/
                         }
                     }
                 }
@@ -202,13 +203,12 @@ fun TodayScreen(modifier: Modifier = Modifier) {
     }
 }
 
-object HexToJetpackColor {
-    fun getColor(colorString: String): Color {
-        return Color(android.graphics.Color.parseColor("#" + colorString))
-    }
+fun getIconName(icon: ImageVector): String {
+    return icon.name.split(".")[1]
 }
 
-fun Color.toHex(): String {
-    val argb = this.toArgb()
-    return String.format("#%08X", argb)
+fun iconByName(name: String): ImageVector {
+    val cl = Class.forName("androidx.compose.material.icons.filled.${name}Kt")
+    val method = cl.declaredMethods.first()
+    return method.invoke(null, Icons.Filled) as ImageVector
 }

@@ -13,12 +13,16 @@ activityCompose = "1.9.0"
 composeBom = "2024.04.01"
 materialIconsExtended = "1.6.8"
 materialIconsExtendedVersion = "1.6.3"
-navigationCompose = "2.7.7"
+navigationCompose = "2.8.1"
+ktxSerialization = "1.6.3"
 composeMaterial = "1.4.0"
 constraintlayoutComposeAndroid = "1.1.0-beta01"
 roomKtx = "2.6.1"
+kotlinKapt = "1.8.21"
 
 [libraries]
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomKtx" }
+kotlin-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "ktxSerialization" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutComposeVersion" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -44,5 +48,6 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-kapt = { id = "kotlin-kapt"}
+kotlin-kapt = { id = "kotlin-kapt", version.ref = "kotlinKapt"}
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 

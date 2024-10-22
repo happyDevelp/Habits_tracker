@@ -1,6 +1,8 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    //alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.kotlin.serialization)
     id("kotlin-kapt")
 }
 
@@ -92,8 +94,8 @@ dependencies {
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.room.ktx)
-    kapt("androidx.room:room-compiler:2.6.1")
-
+    kapt(libs.androidx.room.compiler)
+    implementation(libs.kotlin.serialization.core)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

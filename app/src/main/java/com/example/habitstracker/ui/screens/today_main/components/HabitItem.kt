@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCard
+import androidx.compose.material.icons.filled.Addchart
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
@@ -34,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -44,8 +47,10 @@ import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.data.db.HabitEntity
 import com.example.habitstracker.ui.custom.CustomCheckbox
+import com.example.habitstracker.ui.screens.today_main.iconByName
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.notSelectedColor
+import com.example.habitstracker.utils.getColorFromHex
 
 @Preview(showSystemUi = true)
 @Composable
@@ -109,14 +114,13 @@ fun HabitItem(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-
                         Icon(
                             modifier = modifier
                                 .padding(start = 20.dp)
                                 .size(32.dp),
                             tint = Color.White.copy(alpha = 0.90f),
-                            painter = painterResource(id = R.drawable.food),
-                            contentDescription = "Icon of habit",
+                            imageVector = iconByName(habit.iconName),
+                            contentDescription = stringResource(R.string.icon_of_habit_description),
                         )
 
                         Column(
@@ -172,8 +176,3 @@ fun HabitItem(
         }
     }
 }
-
-
-fun String.getColorFromHex(): Color =
-    Color(android.graphics.Color.parseColor(this))
-

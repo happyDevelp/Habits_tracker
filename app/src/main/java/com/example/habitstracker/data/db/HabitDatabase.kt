@@ -5,7 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [HabitEntity::class], exportSchema = true, version = 2)
+@Database(entities = [HabitEntity::class], exportSchema = true, version = 3)
 abstract class HabitDatabase: RoomDatabase() {
     abstract val dao: DAO
 

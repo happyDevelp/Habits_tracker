@@ -14,22 +14,28 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.navigation.bottombar.BottomBarItems
 import com.example.habitstracker.navigation.bottombar.BottomBarScreens
 import com.example.habitstracker.navigation.bottombar.listOfNavItems
 import com.example.habitstracker.ui.screens.add_habit.AddHabitScreen
 import com.example.habitstracker.ui.screens.create_own_habit.CreateOwnHabitScreen
+import com.example.habitstracker.ui.screens.create_own_habit.CreateOwnHabitViewModel
 import com.example.habitstracker.ui.screens.create_own_habit.components.RepeatPicker
 import com.example.habitstracker.ui.screens.history.HistoryScreen
 import com.example.habitstracker.ui.screens.me.MeScreen
 import com.example.habitstracker.ui.screens.today_main.TodayScreen
 import com.example.habitstracker.ui.theme.PoppinsFontFamily
+import kotlin.reflect.typeOf
 
 @Composable
 fun AppNavigation() {
@@ -106,12 +112,23 @@ fun AppNavigation() {
             composable(route = RoutesMainScreen.AddHabit.route) {
                 AddHabitScreen()
             }
-            composable(route = RoutesMainScreen.CreateNewHabit.route) {
-                CreateOwnHabitScreen()
+
+            composable(
+                route = "CreateOwnHabitScreen?param={param}",
+                arguments = listOf(
+                    navArgument("param") {
+                        type = NavType.StringType
+                        defaultValue = "ADMIN CHECK CHICKSS"
+                    })
+            ) {backStackEntry ->
+                val param = backStackEntry.arguments?.getString("param") ?: "Default param value"
+                CreateOwnHabitScreen(param = param)
             }
+
             composable(route = RoutesMainScreen.RepeatPicker.route) {
                 RepeatPicker()
             }
+
         }
     }
 }
