@@ -118,10 +118,11 @@ fun AppNavigation() {
                 arguments = listOf(
                     navArgument("param") {
                         type = NavType.StringType
-                        defaultValue = "ADMIN CHECK CHICKSS"
+                        defaultValue = "Everyday"
                     })
             ) {backStackEntry ->
-                val param = backStackEntry.arguments?.getString("param") ?: "Default param value"
+                val param = backStackEntry.savedStateHandle.get<String>("param") ?: "Everyday"
+                //val param = backStackEntry.arguments?.getString("param") ?: "Default param value"
                 CreateOwnHabitScreen(param = param)
             }
 

@@ -166,7 +166,8 @@ fun CreateOwnHabitScreen(param: String = "no value", modifier: Modifier = Modifi
             CreateButton(
                 modifier
                     .align(Alignment.BottomCenter)
-                    .padding(bottom = 24.dp), navController,
+                    .padding(bottom = 24.dp),
+                navController,
                 name = habitName,
                 iconName = habitIconName,
                 color = habitColor

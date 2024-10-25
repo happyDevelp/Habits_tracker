@@ -54,6 +54,7 @@ import com.example.habitstracker.ui.custom.MyButton
 import com.example.habitstracker.ui.custom.MyText
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.navigation.RoutesMainScreen
+import com.example.habitstracker.navigation.bottombar.BottomBarScreens
 import com.example.habitstracker.ui.screens.create_own_habit.CreateOwnHabitViewModel
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
@@ -83,9 +84,7 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
             )
         }
 
-        val selectedDayText by remember {
-            mutableStateOf(textState(dayStates))
-        }
+        val selectedDayText = textState(dayStates)
 
         ConstraintLayout(
             modifier = modifier
@@ -180,7 +179,6 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                             top.linkTo(certainWeekDaysShort.bottom)
                         },
                 ) {
-
                     MyText(
                         modifier = modifier.padding(top = 8.dp, start = 12.dp, bottom = 16.dp),
                         text = selectedDayText,
@@ -262,7 +260,6 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
 
                         shape = RoundedCornerShape(20.dp),
                     ) {
-
                         Icon(
                             modifier = modifier.padding(2.dp),
                             imageVector = Icons.Default.Check,
@@ -287,7 +284,6 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                         },
                 ) {
 
-
                     MyText(
                         modifier = modifier.padding(top = 8.dp, start = 12.dp, bottom = 16.dp),
                         text = stringResource(R.string.how_often_per_week),
@@ -301,12 +297,7 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                             .padding(horizontal = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-
-
-                        QuantityPerWeekItems()
-                    }
-
+                    ) { QuantityPerWeekItems() }
                 }
             }
 
@@ -367,7 +358,12 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
 
                 onClick = {
                     viewModel.updateSelectedDays(selectedDayText)
-                    navController.navigate("CreateOwnHabitScreen?param=$selectedDayText")
+                    // pass argument to previous screen using navigateUp(or popBackStack)
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("param", selectedDayText)
+
+                    navController.navigateUp()
                 }
             ) {
                 MyText(
@@ -375,8 +371,6 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                     textSize = 17.sp
                 )
             }
-
-
         }
     }
 }

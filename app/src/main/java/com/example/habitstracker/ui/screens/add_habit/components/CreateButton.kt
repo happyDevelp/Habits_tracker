@@ -71,7 +71,7 @@ fun CreateButton(
                         reminder = false
                     )
                 )
-                navController.navigate(BottomBarScreens.TodayScreen.name)
+                navController.popBackStack(BottomBarScreens.TodayScreen.name, false)
             }
         },
 
