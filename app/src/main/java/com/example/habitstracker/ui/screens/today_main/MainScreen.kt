@@ -38,14 +38,13 @@ import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.data.db.HabitDatabase
-import com.example.habitstracker.data.db.HabitEntity
 import com.example.habitstracker.data.db.repository.RepositoryImpl
 import com.example.habitstracker.data.db.viewmodel.HabitViewModel
 import com.example.habitstracker.data.db.viewmodel.HabitViewModelFactory
 import com.example.habitstracker.navigation.RoutesMainScreen
 import com.example.habitstracker.ui.custom.CustomRippleTheme
-import com.example.habitstracker.ui.screens.today_main.components.calendar.CalendarRowList
 import com.example.habitstracker.ui.screens.today_main.components.HabitItem
+import com.example.habitstracker.ui.screens.today_main.components.calendar.CalendarRowList
 import com.example.habitstracker.ui.screens.today_main.scaffold.TopBarMainScreen
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.PoppinsFontFamily
@@ -56,8 +55,6 @@ import com.example.habitstracker.ui.theme.redColor
 import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 import com.example.habitstracker.ui.theme.screensBackgroundDark
 import com.example.habitstracker.utils.generateDateSequence
-import com.example.habitstracker.utils.toHex
-import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable
@@ -125,7 +122,7 @@ fun TodayScreen(modifier: Modifier = Modifier) {
                     ) {
 
                         items(habits.value.size) { habit ->
-                            HabitItem(habit = habits.value[habit])
+                            HabitItem(habit = habits.value[habit], viewModel = viewModel)
                             Spacer(modifier = modifier.height(20.dp))
                         }
 
@@ -174,27 +171,6 @@ fun TodayScreen(modifier: Modifier = Modifier) {
                                 redColor,
                                 greenColor
                             )
-/*                            Button(
-                                onClick = {
-                                    coroutineScope.launch {
-
-                                        val myIcon =
-
-                                        viewModel.addHabit(
-                                            HabitEntity(
-                                                name = "TRAva",
-                                                icon = (Icons.Default.Add).toString(),
-                                                colorHex = colorList.random().toHex(),
-                                                days = "Fri",
-                                                executionTime = "No",
-                                                isDone = false,
-                                                reminder = false
-                                            )
-                                        )
-                                    }
-                                }) {
-                                Text(text = "Test button")
-                            }*/
                         }
                     }
                 }

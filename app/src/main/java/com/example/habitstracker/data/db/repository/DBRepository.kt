@@ -7,18 +7,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
-interface Repository {
+interface DBRepository {
 
     suspend fun addHabit(habit: HabitEntity)
 
     suspend fun deleteHabit(habit: HabitEntity)
 
     suspend fun getAllHabits(): Flow<List<HabitEntity>>
+
+    suspend fun updateSelectedState(id: Int, isDone: Boolean)
 }
 
 class RepositoryImpl(
     private val dao: DAO,
-) : Repository {
+) : DBRepository {
     override suspend fun addHabit(habit: HabitEntity) {
         withContext(Dispatchers.IO) {
             dao.addHabit(habit)
@@ -37,8 +39,13 @@ class RepositoryImpl(
         }
     }
 
+    override suspend fun updateSelectedState(id: Int, isDone: Boolean) {
+        return withContext(Dispatchers.IO) {
+            dao.updateSelectedState(id, isDone)
+        }
+    }
 }
 
-fun provideMyRepository(mydb:HabitDatabase) :Repository {
+fun provideMyRepository(mydb:HabitDatabase) :DBRepository {
     return RepositoryImpl(mydb.dao)
 }

@@ -19,5 +19,7 @@ interface DAO {
     @Query("select * from habit_table")
     fun getAllHabits(): Flow<List<HabitEntity>>
 
+    @Query("update habit_table set isDone=:isDone where id=:id")
+    fun updateSelectedState(id: Int, isDone: Boolean)
 
 }

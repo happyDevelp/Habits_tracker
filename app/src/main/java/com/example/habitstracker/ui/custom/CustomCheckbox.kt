@@ -33,13 +33,9 @@ fun CustomCheckbox(
     modifier: Modifier = Modifier,
     selectedBackgroundColor: Color = MaterialTheme.colorScheme.primaryContainer,
     onClick: () -> Unit = { },
+    _isChecked: Boolean = false
 ) {
-    var isChecked by remember { mutableStateOf(false) }
-
-    val interactionSource = remember { MutableInteractionSource() }
-    val isPressed by interactionSource.collectIsPressedAsState()
-
-    val isClicked by rememberUpdatedState(newValue = isChecked)
+    var isChecked by remember { mutableStateOf(_isChecked) }
 
     Card(
         modifier = modifier
