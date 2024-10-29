@@ -4,12 +4,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habitstracker.data.db.HabitEntity
 import com.example.habitstracker.data.db.repository.DBRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class HabitViewModel(private val DBRepository: DBRepository) : ViewModel() {
+@HiltViewModel
+class HabitViewModel @Inject constructor(val DBRepository: DBRepository) : ViewModel() {
 
     private val _habitsList = MutableStateFlow<List<HabitEntity>>(emptyList())
     val habitsList: StateFlow<List<HabitEntity>> = _habitsList

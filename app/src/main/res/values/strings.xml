@@ -10,7 +10,7 @@
     <string name="add_habit_screen_navigation">AddHabitScreen</string>
     <string name="main_screen_navigation">MainScreen</string>
     <string name="a_reminder_for_this_habit">A reminder for this habit</string>
-    <string name="doesnt_matter_create_habit">Doesn\'t matter</string>
+    <string name="anytime_create_habit">Anytime</string>
     <string name="morning_create_habit">Morning</string>
     <string name="day_create_habit">Day</string>
     <string name="evening_create_habit">Evening</string>

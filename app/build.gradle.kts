@@ -1,9 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
-    //alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.kotlin.serialization)
-    id("kotlin-kapt")
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.dagger.hilt.android)
+
 }
 
 android {
@@ -94,8 +95,16 @@ dependencies {
     implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.room.ktx)
-    kapt(libs.androidx.room.compiler)
     implementation(libs.kotlin.serialization.core)
+
+    //implementation("com.google.dagger:hilt-android:2.51.1")
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    kapt(libs.androidx.room.compiler)
+    kapt(libs.hilt.android.compiler)
+
+
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -104,4 +113,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }

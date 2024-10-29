@@ -14,20 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.habitstracker.R
-import com.example.habitstracker.data.db.HabitDatabase
-import com.example.habitstracker.data.db.HabitEntity
-import com.example.habitstracker.data.db.repository.RepositoryImpl
-import com.example.habitstracker.data.db.viewmodel.HabitViewModel
-import com.example.habitstracker.data.db.viewmodel.HabitViewModelFactory
 import com.example.habitstracker.navigation.bottombar.BottomBarScreens
-import com.example.habitstracker.utils.toHex
 import kotlinx.coroutines.launch
 
 @Composable
@@ -36,14 +28,15 @@ fun CreateButton(
     navController: NavHostController,
     name: String,
     iconName: String,
-    color: Color
+    color: Color,
+    selectedDays: String,
+    executionTime: String,
+    onAddHabit: (
+        name: String, iconName: String, isDone: Boolean, colorHex: Color,
+        days: String, executionTime: String, reminder: Boolean,
+    ) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val context = LocalContext.current
-
-    val db = HabitDatabase.getDatabase(context)
-    val repository = RepositoryImpl(db.dao)
-    val viewModel: HabitViewModel = viewModel(factory = HabitViewModelFactory(repository))
 
     Button(
         modifier = modifier
@@ -60,16 +53,14 @@ fun CreateButton(
 
         onClick = {
             coroutineScope.launch {
-                viewModel.addHabit(
-                    HabitEntity(
-                        name = name,
-                        iconName = iconName,
-                        isDone = false,
-                        colorHex = color.toHex(),
-                        days = "all",
-                        executionTime = "no",
-                        reminder = false
-                    )
+                onAddHabit(
+                    name,
+                    iconName,
+                    false,
+                    color,
+                    selectedDays,
+                    executionTime,
+                    false
                 )
                 navController.popBackStack(BottomBarScreens.TodayScreen.name, false)
             }

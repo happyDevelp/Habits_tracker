@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -46,26 +46,20 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
+import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.ui.custom.MyButton
 import com.example.habitstracker.ui.custom.MyText
-import com.example.habitstracker.app.LocalNavController
-import com.example.habitstracker.navigation.RoutesMainScreen
-import com.example.habitstracker.navigation.bottombar.BottomBarScreens
-import com.example.habitstracker.ui.screens.create_own_habit.CreateOwnHabitViewModel
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 import com.example.habitstracker.utils.clickWithRipple
 
 @Composable
 fun RepeatPicker(modifier: Modifier = Modifier) {
-
     val navController = LocalNavController.current
-    val viewModel = viewModel(modelClass = CreateOwnHabitViewModel::class)
-    
+
     Scaffold(
         topBar = { RepeatPickerTopBar(navController, modifier) },
         containerColor = MaterialTheme.colorScheme.secondaryContainer,
@@ -357,7 +351,6 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                     },
 
                 onClick = {
-                    viewModel.updateSelectedDays(selectedDayText)
                     // pass argument to previous screen using navigateUp(or popBackStack)
                     navController.previousBackStackEntry
                         ?.savedStateHandle
@@ -417,21 +410,21 @@ private fun textState(dayStates: SnapshotStateList<SelectedDay>): String {
             val oneSelectedDay = dayStates.first { dayItem ->
                 dayItem.isSelect == true
             }.day
-            "$oneSelectedDay"
+            oneSelectedDay
         }
 
         2 -> {
             val twoSelectedDays = dayStates.filter { dayItem ->
                 dayItem.isSelect
             }.joinToString(" and ") { it.day }
-            "$twoSelectedDays"
+            twoSelectedDays
         }
 
         3 -> {
             val threeSelectedDays = dayStates.filter { dayItem ->
                 dayItem.isSelect
             }.joinToString(", ") { it.day }
-            "$threeSelectedDays"
+            threeSelectedDays
         }
 
         4 -> {
@@ -440,7 +433,7 @@ private fun textState(dayStates: SnapshotStateList<SelectedDay>): String {
                 .take(3)
                 .joinToString { it.day } + "..."
 
-            "$fourSelectedDays"
+            fourSelectedDays
         }
 
         5 -> {
@@ -547,7 +540,7 @@ private fun RepeatPickerTopBar(
                 onClick = { navController.navigateUp() }
             ) {
                 Icon(
-                    imageVector = Icons.Default.ArrowBack,
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Cancel",
                     modifier = modifier.size(26.dp)
                 )
@@ -560,7 +553,8 @@ private fun RepeatPickerTopBar(
     )
 }
 
-@Composable @Preview(showSystemUi = true)
+@Composable
+@Preview(showSystemUi = true)
 private fun Preview() {
     val mockNavController = rememberNavController()
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {

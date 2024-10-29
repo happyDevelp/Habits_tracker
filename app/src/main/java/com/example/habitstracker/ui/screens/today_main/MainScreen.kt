@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -22,66 +21,43 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
-import com.example.habitstracker.data.db.HabitDatabase
-import com.example.habitstracker.data.db.repository.RepositoryImpl
+import com.example.habitstracker.data.db.HabitEntity
 import com.example.habitstracker.data.db.viewmodel.HabitViewModel
-import com.example.habitstracker.data.db.viewmodel.HabitViewModelFactory
 import com.example.habitstracker.navigation.RoutesMainScreen
 import com.example.habitstracker.ui.custom.CustomRippleTheme
-import com.example.habitstracker.ui.screens.today_main.components.HabitItem
+import com.example.habitstracker.ui.screens.today_main.components.HabitItemContent
 import com.example.habitstracker.ui.screens.today_main.components.calendar.CalendarRowList
 import com.example.habitstracker.ui.screens.today_main.scaffold.TopBarMainScreen
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.PoppinsFontFamily
 import com.example.habitstracker.ui.theme.blueColor
-import com.example.habitstracker.ui.theme.greenColor
-import com.example.habitstracker.ui.theme.orangeColor
-import com.example.habitstracker.ui.theme.redColor
 import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 import com.example.habitstracker.ui.theme.screensBackgroundDark
 import com.example.habitstracker.utils.generateDateSequence
+import com.example.habitstracker.utils.toHex
 import java.time.LocalDate
 
-@Composable
-@Preview(showSystemUi = false)
-private fun Preview() {
-    val mockNavController = rememberNavController()
-    CompositionLocalProvider(value = LocalNavController provides mockNavController) {
-        AppTheme(darkTheme = true) { TodayScreen() }
-    }
-}
 
 @Composable
-fun TodayScreen(modifier: Modifier = Modifier) {
+fun TodayScreenContent(
+    modifier: Modifier = Modifier,
+    habitLIstState: List<HabitEntity>,
+    onSelectedStateUpdate: (id: Int, isDone: Boolean) -> Unit,
+) {
     val navController = LocalNavController.current
-    val context = LocalContext.current
-    val coroutineScope = rememberCoroutineScope()
-
-    val db = HabitDatabase.getDatabase(context)
-    val repository = RepositoryImpl(db.dao)
-    val viewModel: HabitViewModel = viewModel(factory = HabitViewModelFactory(repository))
-
-
-
-    val iconName = getIconName(Icons.Default.Add)
-    println("AAAA iconName(String) = $iconName")
-    println("AAAA ${iconByName(iconName)}")
-
 
     Scaffold(
         topBar = { TopBarMainScreen(modifier, navController) },
@@ -112,7 +88,7 @@ fun TodayScreen(modifier: Modifier = Modifier) {
                     value = LocalRippleTheme provides CustomRippleTheme(color = Color.Black)
                 ) {
 
-                    val habits = viewModel.habitsList.collectAsState()
+                    val habits = habitLIstState
                     LazyColumn(
                         modifier = modifier
                             .padding(top = 95.dp)
@@ -121,8 +97,11 @@ fun TodayScreen(modifier: Modifier = Modifier) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        items(habits.value.size) { habit ->
-                            HabitItem(habit = habits.value[habit], viewModel = viewModel)
+                        items(habits.size) { habit ->
+                            HabitItemContent(
+                                habit = habits[habit],
+                                onUpdateSelectedState = onSelectedStateUpdate
+                            )
                             Spacer(modifier = modifier.height(20.dp))
                         }
 
@@ -162,16 +141,6 @@ fun TodayScreen(modifier: Modifier = Modifier) {
                                 )
                             }
                         }
-
-                        // TEST BUTTOn
-                        item {
-                            val colorList = listOf(
-                                blueColor,
-                                orangeColor,
-                                redColor,
-                                greenColor
-                            )
-                        }
                     }
                 }
             }
@@ -187,4 +156,40 @@ fun iconByName(name: String): ImageVector {
     val cl = Class.forName("androidx.compose.material.icons.filled.${name}Kt")
     val method = cl.declaredMethods.first()
     return method.invoke(null, Icons.Filled) as ImageVector
+}
+
+@Composable
+@Preview(showSystemUi = false)
+private fun Preview() {
+    val mockNavController = rememberNavController()
+    val mockList = listOf(
+        HabitEntity(
+            0, "habit example", "SentimentVerySatisfied", false,
+            blueColor.toHex(), "Everyday", "Anytime", false,
+        )
+    )
+
+    val mockSelectedStateEvent = { id: Int, isDone: Boolean -> }
+
+    CompositionLocalProvider(value = LocalNavController provides mockNavController) {
+        AppTheme(darkTheme = true) {
+            TodayScreenContent(
+                habitLIstState = mockList,
+                onSelectedStateUpdate = mockSelectedStateEvent
+            )
+        }
+    }
+}
+
+@Composable
+fun TodayScreen() {
+    val viewModel = hiltViewModel<HabitViewModel>()
+    val _stateList = viewModel.habitsList.collectAsState()
+    val _onSelectedStateUpdate = { id: Int, isDone: Boolean ->
+        viewModel.updateSelectedState(id, isDone)
+    }
+    TodayScreenContent(
+        habitLIstState = _stateList.value,
+        onSelectedStateUpdate = _onSelectedStateUpdate
+    )
 }

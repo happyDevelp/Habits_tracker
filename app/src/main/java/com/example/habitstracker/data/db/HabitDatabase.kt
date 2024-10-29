@@ -9,7 +9,8 @@ import androidx.room.RoomDatabase
 abstract class HabitDatabase: RoomDatabase() {
     abstract val dao: DAO
 
-    companion object {
+    // Moved to AppModule using DI
+   /* companion object {
         @Volatile
         private var INSTANCE: HabitDatabase? = null
 
@@ -26,5 +27,5 @@ abstract class HabitDatabase: RoomDatabase() {
                 instance
             }
         }
-    }
+    }*/
 }

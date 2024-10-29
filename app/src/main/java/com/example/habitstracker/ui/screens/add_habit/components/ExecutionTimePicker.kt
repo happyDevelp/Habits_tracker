@@ -35,7 +35,10 @@ import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 import com.example.habitstracker.utils.clickWithRipple
 
 @Composable
-fun ExecutionTimePicker(modifier: Modifier = Modifier) {
+fun ExecutionTimePicker(
+    modifier: Modifier = Modifier,
+    onButtonClicked: (text: String) -> Unit,
+) {
     Text(
         text = "Executing time",
         fontFamily = PoppinsFontFamily,
@@ -52,44 +55,56 @@ fun ExecutionTimePicker(modifier: Modifier = Modifier) {
             .clip(RoundedCornerShape(18.dp))
             .background(color = Color.Transparent),
     ) {
-        val doesntMatterText = stringResource(id = R.string.doesnt_matter_create_habit)
+        val anytimeText = stringResource(id = R.string.anytime_create_habit)
         val morningText = stringResource(id = R.string.morning_create_habit)
         val dayText = stringResource(id = R.string.day_create_habit)
         val eveningText = stringResource(id = R.string.evening_create_habit)
 
         var selectedOption by remember {
-            mutableStateOf(doesntMatterText)
+            mutableStateOf(anytimeText)
         }
 
         ExecutionTimeItem(
             modifier.align(Alignment.TopStart),
-            text = stringResource(R.string.doesnt_matter_create_habit),
-            isSelected = selectedOption == doesntMatterText,
-            onClick = { selectedOption = doesntMatterText }
+            text = anytimeText,
+            isSelected = selectedOption == anytimeText,
+            onClick = {
+                selectedOption = anytimeText
+                onButtonClicked(anytimeText)
+            }
         )
 
         ExecutionTimeItem(
             modifier = modifier.align(Alignment.TopEnd),
-            text = stringResource(R.string.morning_create_habit),
+            text = morningText,
             icon = Icons.Outlined.WbTwilight,
             isSelected = selectedOption == morningText,
-            onClick = { selectedOption = morningText }
+            onClick = {
+                selectedOption = morningText
+                onButtonClicked(morningText)
+            }
         )
 
         ExecutionTimeItem(
             modifier = modifier.align(Alignment.BottomStart),
-            text = stringResource(R.string.day_create_habit),
+            text = dayText,
             icon = Icons.Outlined.WbSunny,
             isSelected = selectedOption == dayText,
-            onClick = { selectedOption = dayText }
+            onClick = {
+                selectedOption = dayText
+                onButtonClicked(dayText)
+            }
         )
 
         ExecutionTimeItem(
             modifier = modifier.align(Alignment.BottomEnd),
-            text = stringResource(R.string.evening_create_habit),
+            text = eveningText,
             icon = Icons.Outlined.DarkMode,
             isSelected = selectedOption == eveningText,
-            onClick = { selectedOption = eveningText }
+            onClick = {
+                selectedOption = eveningText
+                onButtonClicked(eveningText)
+            }
         )
     }
 }

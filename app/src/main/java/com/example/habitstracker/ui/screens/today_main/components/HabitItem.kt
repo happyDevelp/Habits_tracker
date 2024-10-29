@@ -34,20 +34,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.habitstracker.R
-import com.example.habitstracker.data.db.HabitDatabase
 import com.example.habitstracker.data.db.HabitEntity
-import com.example.habitstracker.data.db.repository.RepositoryImpl
-import com.example.habitstracker.data.db.viewmodel.HabitViewModel
-import com.example.habitstracker.data.db.viewmodel.HabitViewModelFactory
 import com.example.habitstracker.ui.custom.CustomCheckbox
 import com.example.habitstracker.ui.screens.today_main.iconByName
 import com.example.habitstracker.ui.theme.AppTheme
@@ -55,11 +49,12 @@ import com.example.habitstracker.ui.theme.notSelectedColor
 import com.example.habitstracker.utils.getColorFromHex
 
 @Composable
-fun HabitItem(
+fun HabitItemContent(
     modifier: Modifier = Modifier,
     habit: HabitEntity = HabitEntity(),
-    viewModel: HabitViewModel,
+    onUpdateSelectedState: (id: Int, isDone: Boolean) -> Unit = { id, isDone -> }
 ) {
+
     var isDone by remember {
         mutableStateOf(habit.isDone)
     }
@@ -90,7 +85,7 @@ fun HabitItem(
                     _isChecked = isDone,
                     onClick = {
                     isDone = !isDone
-                    viewModel.updateSelectedState(habit.id, isDone)
+                    onUpdateSelectedState(habit.id, isDone)
                 })
             }
 
@@ -184,12 +179,7 @@ fun HabitItem(
     }
 }
 
-@Preview(showSystemUi = true)
-@Composable
+@Composable @Preview(showSystemUi = true)
 private fun Preview() {
-    val context = LocalContext.current
-    val db = HabitDatabase.getDatabase(context)
-    val repository = RepositoryImpl(db.dao)
-    val viewModel: HabitViewModel = viewModel(factory = HabitViewModelFactory(repository))
-    AppTheme(darkTheme = true) { HabitItem(viewModel = viewModel) }
+    AppTheme(darkTheme = true) { HabitItemContent() }
 }

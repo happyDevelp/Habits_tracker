@@ -18,7 +18,7 @@ interface DBRepository {
     suspend fun updateSelectedState(id: Int, isDone: Boolean)
 }
 
-class RepositoryImpl(
+class RepositoryImpl (
     private val dao: DAO,
 ) : DBRepository {
     override suspend fun addHabit(habit: HabitEntity) {
