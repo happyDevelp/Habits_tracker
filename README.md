@@ -62,7 +62,8 @@ The Habit Tracker app allows users to monitor their daily habits, set reminders,
 ## Technologies Used
 
 - Kotlin
-- Android Jetpack Components 
+- Android Jetpack Components
+- Dagger Hilt (Dependency Injection)
 - Android Navigation Components
 - Kotlin Coroutines
 - Room Database
