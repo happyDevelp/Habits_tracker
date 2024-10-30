@@ -93,7 +93,7 @@ fun AddHabitScreen(modifier: Modifier = Modifier) {
                     )
                 ) {
                     Text(
-                        text = stringResource(R.string.create_button),
+                        text = stringResource(R.string.create_your_own),
                         fontSize = 20.sp,
                         color = Color.White
                     )

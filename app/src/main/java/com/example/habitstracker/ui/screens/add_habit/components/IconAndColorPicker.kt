@@ -30,18 +30,25 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.example.habitstracker.R
 import com.example.habitstracker.ui.screens.create_own_habit.components.ColorPicker
 import com.example.habitstracker.ui.screens.create_own_habit.components.IconPicker
+import com.example.habitstracker.ui.screens.today_main.getIconName
 import com.example.habitstracker.ui.theme.PoppinsFontFamily
 import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 import com.example.habitstracker.utils.clickWithRipple
 
 @Composable
-fun IconAndColorPicker(modifier: Modifier = Modifier) {
-    var currentColor: Color by remember {
-        mutableStateOf(Color(0xFFE26A19))
-    }
+fun IconAndColorPicker(
+    modifier: Modifier = Modifier,
+    icon: ImageVector,
+    color: Color,
+    onIconPick: (icon: String) -> Unit,
+    onColorPick: (color: Color) -> Unit,
+) {
 
     Row(
         modifier = modifier
@@ -51,11 +58,6 @@ fun IconAndColorPicker(modifier: Modifier = Modifier) {
             .background(color = screenContainerBackgroundDark),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-
-        var currentIcon by remember {
-            mutableStateOf(Icons.Filled.SentimentVerySatisfied)
-        }
-
         IconButton(
             modifier = modifier
                 .fillMaxHeight()
@@ -64,9 +66,9 @@ fun IconAndColorPicker(modifier: Modifier = Modifier) {
         ) {
             Icon(
                 modifier = modifier.size(32.dp),
-                imageVector = currentIcon,
-                contentDescription = "Select icon",
-                tint = currentColor
+                imageVector = icon,
+                contentDescription = stringResource(R.string.select_icon_description),
+                tint = color
             )
         }
 
@@ -83,7 +85,7 @@ fun IconAndColorPicker(modifier: Modifier = Modifier) {
                 IconPicker(
                     closingSheet = { isIconSheetOpen = false },
                     clickAddIcon = { selectedIcon ->
-                        currentIcon = selectedIcon
+                        onIconPick(getIconName(selectedIcon))
                     }
                 )
             }
@@ -127,7 +129,7 @@ fun IconAndColorPicker(modifier: Modifier = Modifier) {
                 ColorPicker(
                     closingSheet = { isColorSheetOpen = false },
                     clickAddColor = { selectedColor ->
-                        currentColor = selectedColor
+                        onColorPick(selectedColor)
                     }
                 )
             }
@@ -161,7 +163,7 @@ fun IconAndColorPicker(modifier: Modifier = Modifier) {
                         modifier = modifier
                             .size(14.dp)
                             .clip(RoundedCornerShape(50.dp))
-                            .background(currentColor)
+                            .background(color)
                             .width(150.dp)
                     )
 

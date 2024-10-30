@@ -34,7 +34,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,34 +41,30 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
+import com.example.habitstracker.data.db.HabitEntity
 import com.example.habitstracker.ui.custom.CustomCheckbox
+import com.example.habitstracker.ui.screens.today_main.iconByName
 import com.example.habitstracker.ui.theme.AppTheme
-import com.example.habitstracker.ui.theme.blueColor
-
-@Preview(showSystemUi = true)
-
-@Composable
-fun HabitItemPreview() {
-    AppTheme(darkTheme = true) { HabitItem(pickedColor = blueColor) }
-}
+import com.example.habitstracker.ui.theme.notSelectedColor
+import com.example.habitstracker.utils.getColorFromHex
 
 @Composable
-fun HabitItem(
+fun HabitItemContent(
     modifier: Modifier = Modifier,
-    habitName: String = "Health eating",
-    pickedColor: Color
+    habit: HabitEntity = HabitEntity(),
+    onUpdateSelectedState: (id: Int, isDone: Boolean) -> Unit = { id, isDone -> }
 ) {
-    var isNotSelected by remember {
-        mutableStateOf(true)
+
+    var isDone by remember {
+        mutableStateOf(habit.isDone)
     }
     val itemHeight: Dp = 90.dp
     val selectedAlpha: Float = 0.75f
 
-    val notSelectedColor = Color(0xFF313747)
-
+    val color = habit.colorHex.getColorFromHex()
 
     val currentColor by animateColorAsState(
-        targetValue = if (!isNotSelected) notSelectedColor else pickedColor
+        targetValue = if (isDone) notSelectedColor else color
     )
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -86,7 +81,12 @@ fun HabitItem(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                CustomCheckbox(onClick = { isNotSelected = !isNotSelected })
+                CustomCheckbox(
+                    _isChecked = isDone,
+                    onClick = {
+                    isDone = !isDone
+                    onUpdateSelectedState(habit.id, isDone)
+                })
             }
 
             Card(
@@ -111,32 +111,36 @@ fun HabitItem(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-
                         Icon(
                             modifier = modifier
                                 .padding(start = 20.dp)
                                 .size(32.dp),
                             tint = Color.White.copy(alpha = 0.90f),
-                            painter = painterResource(id = R.drawable.food),
-                            contentDescription = "Icon of habit",
+                            imageVector = iconByName(habit.iconName),
+                            contentDescription = stringResource(R.string.icon_of_habit_description),
                         )
 
                         Column(
                             modifier = modifier.padding(end = 30.dp),
-                            verticalArrangement = if (isNotSelected) Arrangement.Center else Arrangement.Top, // Center text when selected
+                            verticalArrangement = if (!isDone) Arrangement.Center else Arrangement.Top, // Center text when selected
                         ) {
                             Text(
-                                modifier = modifier.padding(bottom = if(isNotSelected) 0.dp else 10.dp),
-                                text = habitName,
+                                modifier = modifier.padding(
+                                    // The values were selected manually because when isDone = false,
+                                    // the text jumps to another position after the animation ends.
+                                    bottom = if (!isDone) 0.dp else 10.dp,
+                                    end = if (!isDone) 27.dp else 0.dp
+                                    ),
+                                text = habit.name,
                                 fontSize = 20.sp,
-                                color = if (isNotSelected) Color.White else Color.White.copy(
+                                color = if (!isDone) Color.White else Color.White.copy(
                                     selectedAlpha
                                 ),
                                 fontWeight = FontWeight.Bold,
                                 style = MaterialTheme.typography.titleSmall,
                             )
 
-                            AnimatedVisibility(visible = !isNotSelected) { // Hide the second text when selected
+                            AnimatedVisibility(visible = isDone) { // Hide the second text when selected
                                 Row(
                                     horizontalArrangement = Arrangement.Center,
                                     verticalAlignment = Alignment.CenterVertically
@@ -163,7 +167,7 @@ fun HabitItem(
                         ) {
                             Icon(
                                 modifier = modifier.fillMaxHeight(),
-                                tint = Color.White.copy(alpha = 0.75f),
+                                tint = Color.White.copy(alpha = selectedAlpha),
                                 imageVector = Icons.Default.MoreVert,
                                 contentDescription = "More about habit"
                             )
@@ -173,4 +177,9 @@ fun HabitItem(
             }
         }
     }
+}
+
+@Composable @Preview(showSystemUi = true)
+private fun Preview() {
+    AppTheme(darkTheme = true) { HabitItemContent() }
 }

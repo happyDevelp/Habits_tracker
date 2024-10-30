@@ -1,6 +1,10 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.dagger.hilt.android)
+
 }
 
 android {
@@ -17,6 +21,26 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+
+        //Kapt scehma directory path when created
+        kapt {
+            arguments {
+                arg("room.schemaLocation", "$projectDir/schemas")
+            }
+        }
+
+        // Ensure schema directory creation if doesn't exist
+        tasks.register("createSchemaDir") {
+            doLast {
+                val schemaDir = File("$projectDir/schemas")
+                if (!schemaDir.exists())
+                    schemaDir.mkdirs()
+            }
+        }
+
+        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+            dependsOn("createSchemaDir")
         }
     }
 
@@ -65,14 +89,22 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    implementation (libs.androidx.constraintlayout.compose)
-    implementation (libs.androidx.material.icons.extended)
-    implementation (libs.androidx.navigation.compose)
-    implementation (libs.accompanist.systemuicontroller)
+    implementation(libs.androidx.constraintlayout.compose)
+    implementation(libs.androidx.material.icons.extended)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.accompanist.systemuicontroller)
     implementation(libs.androidx.foundation)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.kotlin.serialization.core)
+
+    //implementation("com.google.dagger:hilt-android:2.51.1")
+    implementation(libs.hilt.android)
+    implementation(libs.androidx.hilt.navigation.compose)
+
+    kapt(libs.androidx.room.compiler)
+    kapt(libs.hilt.android.compiler)
 
 
-    implementation ("androidx.tracing:tracing:1.2.0") // або новіша версія
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -81,4 +113,9 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+}
+
+// Allow references to generated code
+kapt {
+    correctErrorTypes = true
 }

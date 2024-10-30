@@ -22,21 +22,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.example.habitstracker.R
 import com.example.habitstracker.navigation.RoutesMainScreen
 import com.example.habitstracker.ui.theme.PoppinsFontFamily
 import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 import com.example.habitstracker.utils.clickWithRipple
 
 @Composable
-fun RepeatPicker(
+fun RepeatPickerContainer(
     modifier: Modifier = Modifier,
+    selectedDays: String,
     navController: NavHostController,
 ) {
     var selectedDaysText by remember {
-        mutableStateOf("Mon, Tue. Wed...")
+        mutableStateOf(selectedDays)
     }
 
     Text(
@@ -62,7 +65,7 @@ fun RepeatPicker(
     ) {
         Text(
             modifier = modifier.padding(start = 16.dp),
-            text = "Days of habits",
+            text = stringResource(R.string.days_of_habits),
             fontFamily = PoppinsFontFamily,
             fontSize = 14.sp,
             color = Color.White,

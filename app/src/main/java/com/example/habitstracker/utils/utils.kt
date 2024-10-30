@@ -9,6 +9,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
@@ -38,3 +39,11 @@ fun Modifier.clickWithRipple(
         )
     }
 }
+
+fun Color.toHex(): String {
+    val argb = this.toArgb()
+    return String.format("#%08X", argb)
+}
+
+fun String.getColorFromHex(): Color =
+    Color(android.graphics.Color.parseColor(this))

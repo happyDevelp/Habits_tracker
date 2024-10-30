@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -46,64 +46,39 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
+import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.ui.custom.MyButton
 import com.example.habitstracker.ui.custom.MyText
-import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 import com.example.habitstracker.utils.clickWithRipple
 
-@Preview(showSystemUi = true)
-@Composable
-fun RepeatPickerPreview() {
-    AppTheme(darkTheme = true) {
-        val mockNavController = rememberNavController()
-        CompositionLocalProvider(value = LocalNavController provides mockNavController) {
-            RepeatPicker()
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RepeatPicker(modifier: Modifier = Modifier) {
-
-    val add_habit_screen_navigation = stringResource(R.string.create_own_habit_navigation)
     val navController = LocalNavController.current
 
     Scaffold(
-        topBar = {
-            TopAppBar(
-
-                title = {
-                    MyText(
-                        text = "Days of Habits",
-                        color = Color.White.copy(alpha = 1f),
-                    )
-                },
-
-                navigationIcon = {
-
-                    IconButton(
-                        onClick = { navController.navigateUp() }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Cancel",
-                            modifier = modifier.size(26.dp)
-                        )
-                    }
-                },
-
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.secondaryContainer
-                ),
-            )
-        },
+        topBar = { RepeatPickerTopBar(navController, modifier) },
         containerColor = MaterialTheme.colorScheme.secondaryContainer,
     ) { paddingValues ->
+
+        // list to observing the states of each day choose
+        val dayStates = remember {
+            mutableStateListOf(
+                SelectedDay(true, "Mo"),
+                SelectedDay(true, "Tu"),
+                SelectedDay(true, "We"),
+                SelectedDay(true, "Th"),
+                SelectedDay(true, "Fr"),
+                SelectedDay(true, "Sa"),
+                SelectedDay(true, "Su"),
+            )
+        }
+
+        val selectedDayText = textState(dayStates)
 
         ConstraintLayout(
             modifier = modifier
@@ -198,23 +173,6 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                             top.linkTo(certainWeekDaysShort.bottom)
                         },
                 ) {
-
-
-                    // Список для відстеження стану вибору для кожного дня
-                    val dayStates = remember {
-                        mutableStateListOf(
-                            SelectedDay(true, "Mo"),
-                            SelectedDay(true, "Tu"),
-                            SelectedDay(true, "We"),
-                            SelectedDay(true, "Th"),
-                            SelectedDay(true, "Fr"),
-                            SelectedDay(true, "Sa"),
-                            SelectedDay(true, "Su"),
-                        )
-                    }
-
-                    val selectedDayText = textState(dayStates)
-
                     MyText(
                         modifier = modifier.padding(top = 8.dp, start = 12.dp, bottom = 16.dp),
                         text = selectedDayText,
@@ -234,7 +192,6 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                     }
                 }
             }
-
 
 
 
@@ -297,7 +254,6 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
 
                         shape = RoundedCornerShape(20.dp),
                     ) {
-
                         Icon(
                             modifier = modifier.padding(2.dp),
                             imageVector = Icons.Default.Check,
@@ -322,7 +278,6 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                         },
                 ) {
 
-
                     MyText(
                         modifier = modifier.padding(top = 8.dp, start = 12.dp, bottom = 16.dp),
                         text = stringResource(R.string.how_often_per_week),
@@ -336,12 +291,7 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                             .padding(horizontal = 8.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-
-
-                        QuantityPerWeekItems()
-                    }
-
+                    ) { QuantityPerWeekItems() }
                 }
             }
 
@@ -377,7 +327,6 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                     textSize = 14.sp
                 )
 
-
                 Text(
                     modifier = modifier.padding(end = 18.dp),
                     text = buildAnnotatedString {
@@ -401,15 +350,20 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                         end.linkTo(parent.end)
                     },
 
-                onClick = { navController.navigate(add_habit_screen_navigation) }
+                onClick = {
+                    // pass argument to previous screen using navigateUp(or popBackStack)
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set("param", selectedDayText)
+
+                    navController.navigateUp()
+                }
             ) {
                 MyText(
-                    text = "Save",
+                    text = stringResource(R.string.save),
                     textSize = 17.sp
                 )
             }
-
-
         }
     }
 }
@@ -456,21 +410,21 @@ private fun textState(dayStates: SnapshotStateList<SelectedDay>): String {
             val oneSelectedDay = dayStates.first { dayItem ->
                 dayItem.isSelect == true
             }.day
-            "Selected $oneSelectedDay"
+            oneSelectedDay
         }
 
         2 -> {
             val twoSelectedDays = dayStates.filter { dayItem ->
                 dayItem.isSelect
             }.joinToString(" and ") { it.day }
-            "Selected $twoSelectedDays"
+            twoSelectedDays
         }
 
         3 -> {
             val threeSelectedDays = dayStates.filter { dayItem ->
                 dayItem.isSelect
             }.joinToString(", ") { it.day }
-            "Selected $threeSelectedDays"
+            threeSelectedDays
         }
 
         4 -> {
@@ -479,24 +433,24 @@ private fun textState(dayStates: SnapshotStateList<SelectedDay>): String {
                 .take(3)
                 .joinToString { it.day } + "..."
 
-            "Selected $fourSelectedDays"
+            fourSelectedDays
         }
 
         5 -> {
             val twoUnselectedDays = dayStates.filter { dayItem ->
                 dayItem.isSelect == false
             }.joinToString(" and ") { it.day }
-            "All selected except $twoUnselectedDays"
+            "Everyday except $twoUnselectedDays"
         }
 
         6 -> {
             val oneUnselectedDay = dayStates.filter { dayItem ->
                 !dayItem.isSelect
             }.joinToString { it.day }
-            "All selected except ${oneUnselectedDay}"
+            "Everyday exept ${oneUnselectedDay}"
         }
 
-        7 -> "All days selected"
+        7 -> "Everyday"
         else -> "Error data"
     }
 }
@@ -566,3 +520,44 @@ private data class SelectedDay(
     var isSelect: Boolean,
     val day: String,
 )
+
+@Composable
+@OptIn(ExperimentalMaterial3Api::class)
+private fun RepeatPickerTopBar(
+    navController: NavHostController,
+    modifier: Modifier,
+) {
+    TopAppBar(
+        title = {
+            MyText(
+                text = "Days of Habits",
+                color = Color.White.copy(alpha = 1f),
+            )
+        },
+
+        navigationIcon = {
+            IconButton(
+                onClick = { navController.navigateUp() }
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Cancel",
+                    modifier = modifier.size(26.dp)
+                )
+            }
+        },
+
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.secondaryContainer
+        ),
+    )
+}
+
+@Composable
+@Preview(showSystemUi = true)
+private fun Preview() {
+    val mockNavController = rememberNavController()
+    CompositionLocalProvider(value = LocalNavController provides mockNavController) {
+        AppTheme(darkTheme = true) { RepeatPicker() }
+    }
+}

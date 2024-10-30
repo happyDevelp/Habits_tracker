@@ -16,23 +16,25 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.habitstracker.R
 import com.example.habitstracker.ui.theme.PoppinsFontFamily
 
 @Composable
-fun HabitNameTextField(modifier: Modifier = Modifier) {
-    var currentText by remember {
-        mutableStateOf("")
-    }
-
+fun HabitNameTextField(
+    modifier: Modifier = Modifier,
+    name: String,
+    onTextChange: (text: String) -> Unit = {  },
+) {
     TextField(
         modifier = modifier.fillMaxWidth(),
-        value = currentText,
+        value = name,
         onValueChange = { newText ->
             if (newText.length < 30)
-                currentText = newText
+                onTextChange(newText)
         },
 
         textStyle = TextStyle(
@@ -43,7 +45,7 @@ fun HabitNameTextField(modifier: Modifier = Modifier) {
 
         placeholder = {
             Text(
-                text = "Name of habit",
+                text = stringResource(R.string.create_name_of_habit),
                 color = Color.White.copy(alpha = 0.85f),
                 fontFamily = PoppinsFontFamily,
                 fontSize = 22.sp,

@@ -7,7 +7,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.performClick
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.app.LocalNavController
-import com.example.habitstracker.ui.screens.create_own_habit.CreateOwnHabitScreen
+import com.example.habitstracker.ui.screens.create_own_habit.CreateOwnHabitContent
 import org.junit.Rule
 import org.junit.Test
 
@@ -26,7 +26,7 @@ class TodayScreenTest {
         rule.setContent {
             val mockNavController = rememberNavController()
             CompositionLocalProvider(value = LocalNavController provides mockNavController) {
-                CreateOwnHabitScreen()
+                CreateOwnHabitContent()
             }
         }
 
