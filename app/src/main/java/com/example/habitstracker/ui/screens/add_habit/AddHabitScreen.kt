@@ -22,6 +22,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,6 +36,7 @@ import com.example.habitstracker.ui.screens.add_habit.components.DefaultChooseHa
 import com.example.habitstracker.ui.screens.add_habit.scaffold.TopBarAddHabitScreen
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.blueColor
+import com.example.habitstracker.utils.CREATE_OWN_HABIT_BUTTON
 
 @Composable
 @Preview(showSystemUi = false)
@@ -78,7 +80,8 @@ fun AddHabitScreen(modifier: Modifier = Modifier) {
                             1.dp,
                             color = Color.Black,
                             shape = RoundedCornerShape(corner = CornerSize(50.dp))
-                        ),
+                        )
+                        .testTag(CREATE_OWN_HABIT_BUTTON),
 
                     onClick = {
                         navController.navigate(RoutesMainScreen.CreateNewHabit.route)

@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.dagger.hilt.android)
+    id ("dagger.hilt.android.plugin")
 
 }
 
@@ -18,7 +19,7 @@ android {
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "com.example.habitstracker.CustomTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -77,6 +78,11 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+
+/*    testOptions {
+        unitTests.isIncludeAndroidResources = true
+        execution "ANDROIDX_TEST_ORCHESTRATOR"
+    }*/
 }
 
 dependencies {
@@ -100,19 +106,22 @@ dependencies {
     //implementation("com.google.dagger:hilt-android:2.51.1")
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
+    testImplementation(libs.junit.junit)
 
     kapt(libs.androidx.room.compiler)
     kapt(libs.hilt.android.compiler)
+    kaptAndroidTest ("com.google.dagger:hilt-compiler:2.51.1")
 
 
-
-    testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    testImplementation(libs.junit)
+    androidTestImplementation ("com.google.dagger:hilt-android-testing:2.51.1")
+
 }
 
 // Allow references to generated code

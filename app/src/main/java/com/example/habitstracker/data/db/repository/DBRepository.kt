@@ -1,7 +1,6 @@
 package com.example.habitstracker.data.db.repository
 
 import com.example.habitstracker.data.db.DAO
-import com.example.habitstracker.data.db.HabitDatabase
 import com.example.habitstracker.data.db.HabitEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -16,9 +15,11 @@ interface DBRepository {
     suspend fun getAllHabits(): Flow<List<HabitEntity>>
 
     suspend fun updateSelectedState(id: Int, isDone: Boolean)
+
+    suspend fun getHabitById(name: String): HabitEntity?
 }
 
-class RepositoryImpl (
+class RepositoryImpl(
     private val dao: DAO,
 ) : DBRepository {
     override suspend fun addHabit(habit: HabitEntity) {
@@ -44,8 +45,11 @@ class RepositoryImpl (
             dao.updateSelectedState(id, isDone)
         }
     }
+
+    override suspend fun getHabitById(name: String): HabitEntity? {
+        return withContext(Dispatchers.IO) {
+            dao.getHabitByName(name)
+        }
+    }
 }
 
-fun provideMyRepository(mydb:HabitDatabase) :DBRepository {
-    return RepositoryImpl(mydb.dao)
-}

@@ -46,4 +46,8 @@ class HabitViewModel @Inject constructor(val DBRepository: DBRepository) : ViewM
         }
     }
 
+    suspend fun getHabitById(name: String): HabitEntity? {
+        return DBRepository.getHabitById(name)
+    }
+
 }

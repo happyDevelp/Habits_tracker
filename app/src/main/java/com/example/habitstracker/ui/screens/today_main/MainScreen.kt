@@ -25,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,7 +39,7 @@ import com.example.habitstracker.data.db.HabitEntity
 import com.example.habitstracker.data.db.viewmodel.HabitViewModel
 import com.example.habitstracker.navigation.RoutesMainScreen
 import com.example.habitstracker.ui.custom.CustomRippleTheme
-import com.example.habitstracker.ui.screens.today_main.components.HabitItemContent
+import com.example.habitstracker.ui.screens.today_main.components.HabitItem
 import com.example.habitstracker.ui.screens.today_main.components.calendar.CalendarRowList
 import com.example.habitstracker.ui.screens.today_main.scaffold.TopBarMainScreen
 import com.example.habitstracker.ui.theme.AppTheme
@@ -46,6 +47,7 @@ import com.example.habitstracker.ui.theme.PoppinsFontFamily
 import com.example.habitstracker.ui.theme.blueColor
 import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 import com.example.habitstracker.ui.theme.screensBackgroundDark
+import com.example.habitstracker.utils.CREATE_NEW_HABIT_BUTTON
 import com.example.habitstracker.utils.generateDateSequence
 import com.example.habitstracker.utils.toHex
 import java.time.LocalDate
@@ -88,7 +90,7 @@ fun TodayScreenContent(
                     value = LocalRippleTheme provides CustomRippleTheme(color = Color.Black)
                 ) {
 
-                    val habits = habitLIstState
+
                     LazyColumn(
                         modifier = modifier
                             .padding(top = 95.dp)
@@ -97,9 +99,9 @@ fun TodayScreenContent(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        items(habits.size) { habit ->
-                            HabitItemContent(
-                                habit = habits[habit],
+                        items(habitLIstState.size) { habit ->
+                            HabitItem(
+                                habit = habitLIstState[habit],
                                 onUpdateSelectedState = onSelectedStateUpdate
                             )
                             Spacer(modifier = modifier.height(20.dp))
@@ -112,7 +114,8 @@ fun TodayScreenContent(
                                 modifier = modifier
                                     .padding(bottom = 20.dp)
                                     .fillMaxWidth(0.7f)
-                                    .height(50.dp),
+                                    .height(50.dp)
+                                    .testTag(CREATE_NEW_HABIT_BUTTON),
 
                                 onClick = {
                                     navController.navigate(RoutesMainScreen.AddHabit.route)
@@ -182,8 +185,10 @@ private fun Preview() {
 }
 
 @Composable
-fun TodayScreen() {
-    val viewModel = hiltViewModel<HabitViewModel>()
+fun TodayScreen(_viewModel: HabitViewModel? = null) {
+    val viewModel = if(_viewModel != null) _viewModel
+    else hiltViewModel<HabitViewModel>()
+
     val _stateList = viewModel.habitsList.collectAsState()
     val _onSelectedStateUpdate = { id: Int, isDone: Boolean ->
         viewModel.updateSelectedState(id, isDone)

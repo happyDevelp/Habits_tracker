@@ -14,12 +14,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.habitstracker.R
 import com.example.habitstracker.navigation.bottombar.BottomBarScreens
+import com.example.habitstracker.utils.BUTTON_CREATE_OWN_HABIT_SCREEN
 import kotlinx.coroutines.launch
 
 @Composable
@@ -47,7 +49,8 @@ fun CreateButton(
                 1.dp,
                 color = Color.Black,
                 shape = RoundedCornerShape(corner = CornerSize(50.dp))
-            ),
+            )
+            .testTag(BUTTON_CREATE_OWN_HABIT_SCREEN),
 
         enabled = name.length >= 4,
 

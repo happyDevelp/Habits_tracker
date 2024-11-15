@@ -34,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -46,25 +47,24 @@ import com.example.habitstracker.ui.custom.CustomCheckbox
 import com.example.habitstracker.ui.screens.today_main.iconByName
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.notSelectedColor
+import com.example.habitstracker.utils.HABIT_ITEM
 import com.example.habitstracker.utils.getColorFromHex
 
 @Composable
-fun HabitItemContent(
+fun HabitItem(
     modifier: Modifier = Modifier,
     habit: HabitEntity = HabitEntity(),
     onUpdateSelectedState: (id: Int, isDone: Boolean) -> Unit = { id, isDone -> }
 ) {
 
-    var isDone by remember {
-        mutableStateOf(habit.isDone)
-    }
+    var isDone by remember { mutableStateOf(habit.isDone) }
     val itemHeight: Dp = 90.dp
     val selectedAlpha: Float = 0.75f
 
     val color = habit.colorHex.getColorFromHex()
 
     val currentColor by animateColorAsState(
-        targetValue = if (isDone) notSelectedColor else color
+        targetValue = if (isDone) notSelectedColor else color, label = "habit selected state"
     )
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -77,12 +77,14 @@ fun HabitItemContent(
             Row(
                 modifier = modifier
                     .height(itemHeight)
-                    .weight(1f),
+                    .weight(1f)
+                    .testTag(HABIT_ITEM),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
                 CustomCheckbox(
                     _isChecked = isDone,
+                    habit = habit,
                     onClick = {
                     isDone = !isDone
                     onUpdateSelectedState(habit.id, isDone)
@@ -122,15 +124,11 @@ fun HabitItemContent(
 
                         Column(
                             modifier = modifier.padding(end = 30.dp),
-                            verticalArrangement = if (!isDone) Arrangement.Center else Arrangement.Top, // Center text when selected
+                            verticalArrangement =  Arrangement.Center,
+                            horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                modifier = modifier.padding(
-                                    // The values were selected manually because when isDone = false,
-                                    // the text jumps to another position after the animation ends.
-                                    bottom = if (!isDone) 0.dp else 10.dp,
-                                    end = if (!isDone) 27.dp else 0.dp
-                                    ),
+                                modifier = modifier.padding(bottom = if (!isDone) 0.dp else 10.dp),
                                 text = habit.name,
                                 fontSize = 20.sp,
                                 color = if (!isDone) Color.White else Color.White.copy(
@@ -181,5 +179,5 @@ fun HabitItemContent(
 
 @Composable @Preview(showSystemUi = true)
 private fun Preview() {
-    AppTheme(darkTheme = true) { HabitItemContent() }
+    AppTheme(darkTheme = true) { HabitItem() }
 }

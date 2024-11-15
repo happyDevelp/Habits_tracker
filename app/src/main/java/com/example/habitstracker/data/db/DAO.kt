@@ -5,7 +5,6 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
-import javax.inject.Inject
 
 // Data Access Object
 @Dao
@@ -23,4 +22,6 @@ interface DAO {
     @Query("update habit_table set isDone=:isDone where id=:id")
     fun updateSelectedState(id: Int, isDone: Boolean)
 
+    @Query("select * from habit_table where name=:name")
+    fun getHabitByName(name: String): HabitEntity?
 }

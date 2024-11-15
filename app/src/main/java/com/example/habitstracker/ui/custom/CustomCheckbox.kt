@@ -24,14 +24,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.habitstracker.data.db.HabitEntity
+import com.example.habitstracker.utils.CUSTOM_CHECK_BOX
 
 @Preview()
 @Composable
 fun CustomCheckbox(
     modifier: Modifier = Modifier,
     selectedBackgroundColor: Color = MaterialTheme.colorScheme.primaryContainer,
+    habit: HabitEntity = HabitEntity(),
     onClick: () -> Unit = { },
     _isChecked: Boolean = false
 ) {
@@ -46,7 +50,8 @@ fun CustomCheckbox(
                     isChecked = !isChecked
                     onClick.invoke()
                 },
-            ),
+            )
+            .testTag(CUSTOM_CHECK_BOX + "_" + habit.name),
 
 
         colors = CardDefaults.cardColors(
