@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.habitstracker.R
 import com.example.habitstracker.navigation.bottombar.BottomBarScreens
-import com.example.habitstracker.utils.BUTTON_CREATE_OWN_HABIT_SCREEN
+import com.example.habitstracker.utils.TestTags
 import kotlinx.coroutines.launch
 
 @Composable
@@ -50,7 +50,7 @@ fun CreateButton(
                 color = Color.Black,
                 shape = RoundedCornerShape(corner = CornerSize(50.dp))
             )
-            .testTag(BUTTON_CREATE_OWN_HABIT_SCREEN),
+            .testTag(TestTags.BUTTON_CREATE_OWN_HABIT_SCREEN),
 
         enabled = name.length >= 4,
 

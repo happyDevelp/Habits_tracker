@@ -47,7 +47,7 @@ import com.example.habitstracker.ui.custom.CustomCheckbox
 import com.example.habitstracker.ui.screens.today_main.iconByName
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.notSelectedColor
-import com.example.habitstracker.utils.HABIT_ITEM
+import com.example.habitstracker.utils.TestTags
 import com.example.habitstracker.utils.getColorFromHex
 
 @Composable
@@ -78,7 +78,7 @@ fun HabitItem(
                 modifier = modifier
                     .height(itemHeight)
                     .weight(1f)
-                    .testTag(HABIT_ITEM),
+                    .testTag(TestTags.HABIT_ITEM),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {

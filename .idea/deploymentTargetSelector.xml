@@ -13,12 +13,12 @@
         </DropdownSelection>
         <DialogSelection />
       </SelectionState>
-      <SelectionState runConfigName="MainScreenTest">
+      <SelectionState runConfigName="DatabaseTest">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-11-14T12:01:31.052833500Z">
+        <DropdownSelection timestamp="2024-11-15T14:18:00.914984Z">
           <Target type="DEFAULT_BOOT">
             <handle>
-              <DeviceId pluginId="LocalEmulator" identifier="path=C:\Users\Oles\.android\avd\Pixel_8_Pro_API_34_.avd" />
+              <DeviceId pluginId="PhysicalDevice" identifier="serial=507ca930" />
             </handle>
           </Target>
         </DropdownSelection>

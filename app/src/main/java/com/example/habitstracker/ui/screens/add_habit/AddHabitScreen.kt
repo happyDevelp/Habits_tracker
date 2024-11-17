@@ -36,7 +36,7 @@ import com.example.habitstracker.ui.screens.add_habit.components.DefaultChooseHa
 import com.example.habitstracker.ui.screens.add_habit.scaffold.TopBarAddHabitScreen
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.blueColor
-import com.example.habitstracker.utils.CREATE_OWN_HABIT_BUTTON
+import com.example.habitstracker.utils.TestTags
 
 @Composable
 @Preview(showSystemUi = false)
@@ -81,7 +81,7 @@ fun AddHabitScreen(modifier: Modifier = Modifier) {
                             color = Color.Black,
                             shape = RoundedCornerShape(corner = CornerSize(50.dp))
                         )
-                        .testTag(CREATE_OWN_HABIT_BUTTON),
+                        .testTag(TestTags.CREATE_OWN_HABIT_BUTTON),
 
                     onClick = {
                         navController.navigate(RoutesMainScreen.CreateNewHabit.route)

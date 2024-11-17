@@ -50,4 +50,8 @@ class HabitViewModel @Inject constructor(val DBRepository: DBRepository) : ViewM
         return DBRepository.getHabitById(name)
     }
 
+    suspend fun updateHabit(habit: HabitEntity) {
+        return DBRepository.updateHabit(habit)
+    }
+
 }

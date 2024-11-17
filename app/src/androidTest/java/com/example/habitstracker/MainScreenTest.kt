@@ -1,5 +1,6 @@
 package com.example.habitstracker
 
+import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
@@ -10,16 +11,11 @@ import com.example.habitstracker.data.db.DAO
 import com.example.habitstracker.data.db.HabitEntity
 import com.example.habitstracker.data.di.AppModule
 import com.example.habitstracker.ui.theme.blueColor
-import com.example.habitstracker.utils.BUTTON_CREATE_OWN_HABIT_SCREEN
-import com.example.habitstracker.utils.CREATEHABIT_TEXT_FIELD
-import com.example.habitstracker.utils.CREATE_NEW_HABIT_BUTTON
-import com.example.habitstracker.utils.CREATE_OWN_HABIT_BUTTON
-import com.example.habitstracker.utils.CUSTOM_CHECK_BOX
+import com.example.habitstracker.utils.TestTags
 import com.example.habitstracker.utils.toHex
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules
-import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -29,7 +25,7 @@ import javax.inject.Inject
 
 @HiltAndroidTest
 @UninstallModules(AppModule::class)
-class MainScreenTest {
+class DatabaseTest {
 
     @get:Rule(order = 0)
     val hiltRule = HiltAndroidRule(this)
@@ -56,7 +52,7 @@ class MainScreenTest {
 
     @Test
     fun clickCustomCheckBox_isSelected() = runTest {
-        composeRule.onNodeWithTag(CUSTOM_CHECK_BOX + "_DefaultHabit").performClick()
+        composeRule.onNodeWithTag(TestTags.CUSTOM_CHECK_BOX + "_DefaultHabit").performClick()
 
         // Wait until all background tasks (animations, work with the database...) are completed
         composeRule.awaitIdle()
@@ -68,11 +64,52 @@ class MainScreenTest {
     @Test
     fun createNewHabit_isExist() {
         val habitName = "Test1"
-        composeRule.onNodeWithTag(CREATE_NEW_HABIT_BUTTON).performClick()
-        composeRule.onNodeWithTag(CREATE_OWN_HABIT_BUTTON).performClick()
-        composeRule.onNodeWithTag(CREATEHABIT_TEXT_FIELD).performTextInput(habitName)
-        composeRule.onNodeWithTag(BUTTON_CREATE_OWN_HABIT_SCREEN).performClick()
+        composeRule.onNodeWithTag(TestTags.CREATE_NEW_HABIT_BUTTON).performClick()
+        composeRule.onNodeWithTag(TestTags.CREATE_OWN_HABIT_BUTTON).performClick()
+        composeRule.onNodeWithTag(TestTags.CREATEHABIT_TEXT_FIELD).performTextInput(habitName)
+        composeRule.onNodeWithTag(TestTags.BUTTON_CREATE_OWN_HABIT_SCREEN).performClick()
 
         composeRule.onNodeWithText(habitName).assertExists()
     }
+
+    @Test
+    fun deleteHabit_isNotExist() = runTest {
+        val habitName = "DefaultHabit"
+        val habit: HabitEntity? = dao.getHabitByName(habitName)
+
+        composeRule.onNodeWithText(habitName).assertIsDisplayed()
+        if (habit != null)
+            dao.deleteHabit(entity = habit)
+        else throw IllegalStateException("Habit with name $habitName does not exist")
+
+        composeRule.awaitIdle()
+        composeRule.onNodeWithTag(habitName).assertDoesNotExist()
+    }
+
+    /*@Test
+    fun createNewHabitAndUpdateAfterwards_isUpdated() = runTest {
+        val habitName = "test_habit"
+        composeRule.onNodeWithTag(TestTags.CREATE_NEW_HABIT_BUTTON).performClick()
+        composeRule.onNodeWithTag(TestTags.CREATE_OWN_HABIT_BUTTON).performClick()
+        composeRule.onNodeWithTag(TestTags.CREATEHABIT_TEXT_FIELD).performTextInput(habitName)
+        composeRule.onNodeWithTag(TestTags.BUTTON_CREATE_OWN_HABIT_SCREEN).performClick()
+
+        composeRule.onNodeWithText(habitName).assertExists()
+        val habit = dao.getHabitByName(habitName)
+
+        val newHabitName = "updated_habit"
+        val newHabit = HabitEntity(
+            0, newHabitName, "SentimentVerySatisfied", false,
+            blueColor.toHex(), "Everyday", "Anytime", false,
+        )
+
+        if (habit != null)
+            dao.updateHabit(newHabit)
+        else throw IllegalStateException("Habit with name $newHabitName does not exist and can`t be updated")
+
+        composeRule.awaitIdle()
+
+       // composeRule.onNodeWithText(habitName).assertDoesNotExist()
+        composeRule.onNodeWithText(newHabitName).assertIsDisplayed()
+    }*/
 }

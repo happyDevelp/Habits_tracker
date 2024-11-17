@@ -10,10 +10,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
@@ -23,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.ui.theme.PoppinsFontFamily
-import com.example.habitstracker.utils.CREATEHABIT_TEXT_FIELD
+import com.example.habitstracker.utils.TestTags
 
 @Composable
 fun HabitNameTextField(
@@ -32,7 +28,7 @@ fun HabitNameTextField(
     onTextChange: (text: String) -> Unit = {  },
 ) {
     TextField(
-        modifier = modifier.fillMaxWidth().testTag(CREATEHABIT_TEXT_FIELD),
+        modifier = modifier.fillMaxWidth().testTag(TestTags.CREATEHABIT_TEXT_FIELD),
         value = name,
         onValueChange = { newText ->
             if (newText.length < 30)

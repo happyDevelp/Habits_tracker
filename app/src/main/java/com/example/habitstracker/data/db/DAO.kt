@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 // Data Access Object
@@ -24,4 +25,7 @@ interface DAO {
 
     @Query("select * from habit_table where name=:name")
     fun getHabitByName(name: String): HabitEntity?
+
+    @Update
+    fun updateHabit(habit: HabitEntity)
 }

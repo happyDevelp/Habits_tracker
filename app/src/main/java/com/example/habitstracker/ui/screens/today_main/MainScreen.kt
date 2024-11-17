@@ -47,7 +47,7 @@ import com.example.habitstracker.ui.theme.PoppinsFontFamily
 import com.example.habitstracker.ui.theme.blueColor
 import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 import com.example.habitstracker.ui.theme.screensBackgroundDark
-import com.example.habitstracker.utils.CREATE_NEW_HABIT_BUTTON
+import com.example.habitstracker.utils.TestTags
 import com.example.habitstracker.utils.generateDateSequence
 import com.example.habitstracker.utils.toHex
 import java.time.LocalDate
@@ -115,7 +115,7 @@ fun TodayScreenContent(
                                     .padding(bottom = 20.dp)
                                     .fillMaxWidth(0.7f)
                                     .height(50.dp)
-                                    .testTag(CREATE_NEW_HABIT_BUTTON),
+                                    .testTag(TestTags.CREATE_NEW_HABIT_BUTTON),
 
                                 onClick = {
                                     navController.navigate(RoutesMainScreen.AddHabit.route)

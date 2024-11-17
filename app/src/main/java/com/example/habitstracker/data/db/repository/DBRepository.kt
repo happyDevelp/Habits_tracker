@@ -17,11 +17,11 @@ interface DBRepository {
     suspend fun updateSelectedState(id: Int, isDone: Boolean)
 
     suspend fun getHabitById(name: String): HabitEntity?
+
+    suspend fun updateHabit(habit: HabitEntity)
 }
 
-class RepositoryImpl(
-    private val dao: DAO,
-) : DBRepository {
+class RepositoryImpl(private val dao: DAO) : DBRepository {
     override suspend fun addHabit(habit: HabitEntity) {
         withContext(Dispatchers.IO) {
             dao.addHabit(habit)
@@ -49,6 +49,12 @@ class RepositoryImpl(
     override suspend fun getHabitById(name: String): HabitEntity? {
         return withContext(Dispatchers.IO) {
             dao.getHabitByName(name)
+        }
+    }
+
+    override suspend fun updateHabit(habit: HabitEntity) {
+        return withContext(Dispatchers.IO) {
+            dao.updateHabit(habit)
         }
     }
 }
