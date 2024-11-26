@@ -25,6 +25,7 @@
     <string name="number_of_completed_habits">Number of completed habits</string>
     <string name="percentage_of_completed_habits">Percentage of completed habits</string>
     <string name="perfect_days">Perfect \ndays</string>
+    <string name="param_selected_days">paramSelectedDays</string>
 
     <!--LocalDate patterns-->
     <string name="month_and_year_pattern">LLLL yyyy</string>
@@ -46,5 +47,8 @@
     <string name="save">Save</string>
     <string name="create_your_own">Create your own</string>
     <string name="update_habit">Update habit</string>
+    <string name="executing_time">Executing time</string>
+    <string name="everyday">Everyday</string>
+    <string name="create_own_habit">Create own habit</string>
 
 </resources>

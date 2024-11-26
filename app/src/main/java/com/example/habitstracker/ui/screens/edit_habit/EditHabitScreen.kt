@@ -44,8 +44,8 @@ import com.example.habitstracker.data.db.HabitEntity
 import com.example.habitstracker.data.db.viewmodel.HabitViewModel
 import com.example.habitstracker.navigation.RoutesMainScreen
 import com.example.habitstracker.ui.screens.add_habit.components.AdvancedSettings
-import com.example.habitstracker.ui.screens.add_habit.components.ExecutionTimePicker
 import com.example.habitstracker.ui.screens.edit_habit.components.EditCreateButton
+import com.example.habitstracker.ui.screens.edit_habit.components.EditExecutionTimePicker
 import com.example.habitstracker.ui.screens.edit_habit.components.EditHabitNameTextField
 import com.example.habitstracker.ui.screens.edit_habit.components.EditIconAndColorPicker
 import com.example.habitstracker.ui.screens.edit_habit.scaffold.TopBarEditHabitScreen
@@ -64,6 +64,7 @@ fun EditHabitContent(
     modifier: Modifier = Modifier,
     habit: HabitEntity,
     icon: ImageVector,
+    selectedDaysParam: String?,
     onUpdateHabit: (habit: HabitEntity) -> Unit,
 ) {
     val navController = LocalNavController.current
@@ -90,14 +91,16 @@ fun EditHabitContent(
             }
 
             val selectedDays by remember {
-                mutableStateOf(habit.days)
+                mutableStateOf(
+                    if (selectedDaysParam == null) habit.days
+                    else selectedDaysParam
+                )
             }
 
             var executionTime by remember { mutableStateOf(habit.executionTime) }
 
 
-            val onExecutionTimeButtonClickListener:
-                        (executionTimeText: String) -> Unit = { text ->
+            val onExecutionTimeButtonClick: (executionTimeText: String) -> Unit = { text ->
                 executionTime = text
             }
 
@@ -146,7 +149,9 @@ fun EditHabitContent(
                         .background(color = screenContainerBackgroundDark)
                         .clickWithRipple(
                             color = Color.White
-                        ) { navController.navigate(RoutesMainScreen.RepeatPicker.route) },
+                        ) {
+                            navController.navigate(RoutesMainScreen.EditRepeatPicker.route)
+                        },
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -180,7 +185,10 @@ fun EditHabitContent(
 
                 Spacer(modifier = modifier.height(12.dp))
 
-                ExecutionTimePicker(onButtonClicked = onExecutionTimeButtonClickListener)
+                EditExecutionTimePicker(
+                    currentPickedButton = executionTime,
+                    onButtonClicked = onExecutionTimeButtonClick
+                )
                 Spacer(modifier = modifier.height(16.dp))
 
                 AdvancedSettings()
@@ -210,20 +218,23 @@ fun EditHabitContent(
 }
 
 @Composable
-fun EditHabitScreen(paramId: Int, viewModel: HabitViewModel) {
+fun EditHabitScreen(paramId: Int, selectedDaysParam: String?, viewModel: HabitViewModel) {
     val coroutineScope = rememberCoroutineScope()
     val allHabits = viewModel.habitsList.collectAsState()
     val currentHabit = allHabits.value.find { it.id == paramId }
 
+    val _onUpdateHabit: (newHabit: HabitEntity) -> Unit = { newHabit ->
+        coroutineScope.launch {
+            viewModel.updateHabit(newHabit)
+        }
+    }
+
     if (currentHabit != null) {
         EditHabitContent(
             habit = currentHabit,
+            selectedDaysParam = selectedDaysParam, // string value from a bundle
             icon = iconByName(currentHabit.iconName), // pass the icon separately, otherwise compose will be not rendering
-            onUpdateHabit = { newHabit ->
-                coroutineScope.launch {
-                    viewModel.updateHabit(newHabit)
-                }
-            }
+            onUpdateHabit = _onUpdateHabit
         )
     } else throw IllegalStateException("Habit was not found (EditHabitScreen)")
 
@@ -239,6 +250,7 @@ private fun Preview() {
             EditHabitContent(
                 habit = HabitEntity(),
                 icon = Icons.Default.SentimentSatisfied,
+                selectedDaysParam = "Everyday",
                 onUpdateHabit = { _ -> },
             )
         }

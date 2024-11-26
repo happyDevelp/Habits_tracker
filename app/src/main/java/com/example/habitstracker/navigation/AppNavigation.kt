@@ -5,6 +5,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
@@ -12,6 +13,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
+import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.data.db.viewmodel.HabitViewModel
 import com.example.habitstracker.navigation.bottombar.BottomBarScreens
@@ -20,6 +22,7 @@ import com.example.habitstracker.ui.screens.add_habit.AddHabitScreen
 import com.example.habitstracker.ui.screens.create_own_habit.CreateOwnHabitScreen
 import com.example.habitstracker.ui.screens.create_own_habit.components.RepeatPicker
 import com.example.habitstracker.ui.screens.edit_habit.EditHabitScreen
+import com.example.habitstracker.ui.screens.edit_habit.components.EditRepeatPicker
 import com.example.habitstracker.ui.screens.history.HistoryScreen
 import com.example.habitstracker.ui.screens.me.MeScreen
 import com.example.habitstracker.ui.screens.today_main.TodayScreen
@@ -41,6 +44,9 @@ fun AppNavigation() {
             }
         }
     ) { paddingValues ->
+        val selectedDaysParam = stringResource(id = R.string.param_selected_days)
+        val everydayString = stringResource(id = R.string.everyday)
+
 
         NavHost(
             navController = navController,
@@ -79,17 +85,28 @@ fun AppNavigation() {
             }
 
             composable(
-                route = "EditHabitScreen/{paramId}",
+                route = "EditHabitScreen/{paramId}?$selectedDaysParam={$selectedDaysParam}",
                 arguments = listOf(
-                    navArgument("paramId") {
-                        type = NavType.IntType
+                    navArgument("paramId") { type = NavType.IntType },
+
+                    navArgument(selectedDaysParam) {
+                        type = NavType.StringType
+                        defaultValue = everydayString
                     }
                 )
-            ) {
-                val param = it.arguments?.getInt("paramId") ?: -1
-                EditHabitScreen(paramId = param, viewModel = viewModel)
+            ) { backStackEntry ->
+                val paramId = backStackEntry.arguments?.getInt("paramId") ?: -1
+                val paramSelectedDays = backStackEntry.savedStateHandle.get<String>(selectedDaysParam)
+                EditHabitScreen(
+                    paramId = paramId,
+                    selectedDaysParam = paramSelectedDays,
+                    viewModel = viewModel
+                )
             }
 
+            composable(route = "EditRepeatPickerScreen") {
+                EditRepeatPicker()
+            }
         }
     }
 }
