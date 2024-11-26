@@ -45,5 +45,6 @@
     <string name="days_of_habits">Days of habits</string>
     <string name="save">Save</string>
     <string name="create_your_own">Create your own</string>
+    <string name="update_habit">Update habit</string>
 
 </resources>

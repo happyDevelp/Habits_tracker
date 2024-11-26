@@ -1,5 +1,7 @@
 package com.example.habitstracker.data.db.viewmodel
 
+import android.util.Log
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habitstracker.data.db.HabitEntity
@@ -16,6 +18,16 @@ class HabitViewModel @Inject constructor(val DBRepository: DBRepository) : ViewM
 
     private val _habitsList = MutableStateFlow<List<HabitEntity>>(emptyList())
     val habitsList: StateFlow<List<HabitEntity>> = _habitsList
+
+/*    private val _currentHabit = mutableStateOf<HabitEntity?>(null)
+    val currentHabit: HabitEntity?
+        get() = _currentHabit.value
+
+    fun setCurrentHabit(habit: HabitEntity) {
+        Log.d("HabitViewModel", "Setting current habit: $habit")
+        _currentHabit.value = habit
+    }*/
+
 
     fun addHabit(habit: HabitEntity) {
         viewModelScope.launch {
@@ -46,8 +58,12 @@ class HabitViewModel @Inject constructor(val DBRepository: DBRepository) : ViewM
         }
     }
 
-    suspend fun getHabitById(name: String): HabitEntity? {
-        return DBRepository.getHabitById(name)
+    suspend fun getHabitByName(name: String): HabitEntity? {
+        return DBRepository.getHabitByName(name)
+    }
+
+    suspend fun getHabitById(id: Int): HabitEntity? {
+        return DBRepository.getHabitById(id)
     }
 
     suspend fun updateHabit(habit: HabitEntity) {

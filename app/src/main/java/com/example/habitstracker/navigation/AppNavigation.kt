@@ -5,6 +5,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -12,11 +13,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import com.example.habitstracker.app.LocalNavController
+import com.example.habitstracker.data.db.viewmodel.HabitViewModel
 import com.example.habitstracker.navigation.bottombar.BottomBarScreens
 import com.example.habitstracker.navigation.bottombar.NavigationBottomBar
 import com.example.habitstracker.ui.screens.add_habit.AddHabitScreen
 import com.example.habitstracker.ui.screens.create_own_habit.CreateOwnHabitScreen
 import com.example.habitstracker.ui.screens.create_own_habit.components.RepeatPicker
+import com.example.habitstracker.ui.screens.edit_habit.EditHabitScreen
 import com.example.habitstracker.ui.screens.history.HistoryScreen
 import com.example.habitstracker.ui.screens.me.MeScreen
 import com.example.habitstracker.ui.screens.today_main.TodayScreen
@@ -24,6 +27,7 @@ import com.example.habitstracker.ui.screens.today_main.TodayScreen
 @Composable
 fun AppNavigation() {
     val navController = LocalNavController.current
+    val viewModel = hiltViewModel<HabitViewModel>()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -45,7 +49,7 @@ fun AppNavigation() {
         ) {
 
             composable(route = BottomBarScreens.TodayScreen.name) {
-                TodayScreen()
+                TodayScreen(viewModel = viewModel)
             }
             composable(route = BottomBarScreens.HistoryScreen.name) {
                 HistoryScreen()
@@ -72,6 +76,18 @@ fun AppNavigation() {
 
             composable(route = RoutesMainScreen.RepeatPicker.route) {
                 RepeatPicker()
+            }
+
+            composable(
+                route = "EditHabitScreen/{paramId}",
+                arguments = listOf(
+                    navArgument("paramId") {
+                        type = NavType.IntType
+                    }
+                )
+            ) {
+                val param = it.arguments?.getInt("paramId") ?: -1
+                EditHabitScreen(paramId = param, viewModel = viewModel)
             }
 
         }

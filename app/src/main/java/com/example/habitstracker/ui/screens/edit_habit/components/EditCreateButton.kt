@@ -1,4 +1,4 @@
-package com.example.habitstracker.ui.screens.add_habit.components
+package com.example.habitstracker.ui.screens.edit_habit.components
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,31 +14,23 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavHostController
 import com.example.habitstracker.R
+import com.example.habitstracker.app.LocalNavController
+import com.example.habitstracker.data.db.HabitEntity
 import com.example.habitstracker.navigation.bottombar.BottomBarScreens
-import com.example.habitstracker.utils.TestTags
 import kotlinx.coroutines.launch
 
 @Composable
-fun CreateButton(
+fun EditCreateButton(
     modifier: Modifier = Modifier,
-    navController: NavHostController,
-    name: String,
-    iconName: String,
-    color: Color,
-    selectedDays: String,
-    executionTime: String,
-    onAddHabit: (
-        name: String, iconName: String, isDone: Boolean, colorHex: Color,
-        days: String, executionTime: String, reminder: Boolean,
-    ) -> Unit,
+    onUpdateHabit: (habit: HabitEntity) -> Unit,
+    habit: HabitEntity,
 ) {
     val coroutineScope = rememberCoroutineScope()
+    val navController = LocalNavController.current
 
     Button(
         modifier = modifier
@@ -51,19 +43,11 @@ fun CreateButton(
                 shape = RoundedCornerShape(corner = CornerSize(50.dp))
             ),
 
-        enabled = name.length >= 4,
+        enabled = habit.name.length >= 4,
 
         onClick = {
             coroutineScope.launch {
-                onAddHabit(
-                    name,
-                    iconName,
-                    false,
-                    color,
-                    selectedDays,
-                    executionTime,
-                    false
-                )
+                onUpdateHabit(habit)
                 navController.popBackStack(BottomBarScreens.TodayScreen.name, false)
             }
         },
@@ -81,7 +65,7 @@ fun CreateButton(
         )
     ) {
         Text(
-            text = stringResource(R.string.add_habit),
+            text = stringResource(R.string.update_habit),
             fontSize = 20.sp,
         )
     }

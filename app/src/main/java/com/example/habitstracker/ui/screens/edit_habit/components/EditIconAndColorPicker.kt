@@ -1,4 +1,4 @@
-package com.example.habitstracker.ui.screens.add_habit.components
+package com.example.habitstracker.ui.screens.edit_habit.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -41,7 +41,7 @@ import com.example.habitstracker.utils.clickWithRipple
 import com.example.habitstracker.utils.getIconName
 
 @Composable
-fun IconAndColorPicker(
+fun EditIconAndColorPicker(
     modifier: Modifier = Modifier,
     icon: ImageVector,
     color: Color,

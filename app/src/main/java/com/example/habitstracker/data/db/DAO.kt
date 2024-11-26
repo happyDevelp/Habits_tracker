@@ -26,6 +26,9 @@ interface DAO {
     @Query("select * from habit_table where name=:name")
     fun getHabitByName(name: String): HabitEntity?
 
+    @Query("select * from habit_table where name=:id")
+    fun getHabitById(id: Int): HabitEntity?
+
     @Update
     fun updateHabit(habit: HabitEntity)
 }

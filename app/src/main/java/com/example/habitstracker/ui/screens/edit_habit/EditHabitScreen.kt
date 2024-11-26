@@ -1,4 +1,4 @@
-package com.example.habitstracker.ui.screens.create_own_habit
+package com.example.habitstracker.ui.screens.edit_habit
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,26 +15,28 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
-import androidx.compose.material.icons.filled.SentimentVerySatisfied
+import androidx.compose.material.icons.filled.SentimentSatisfied
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
@@ -42,33 +44,32 @@ import com.example.habitstracker.data.db.HabitEntity
 import com.example.habitstracker.data.db.viewmodel.HabitViewModel
 import com.example.habitstracker.navigation.RoutesMainScreen
 import com.example.habitstracker.ui.screens.add_habit.components.AdvancedSettings
-import com.example.habitstracker.ui.screens.add_habit.components.CreateButton
 import com.example.habitstracker.ui.screens.add_habit.components.ExecutionTimePicker
-import com.example.habitstracker.ui.screens.add_habit.components.IconAndColorPicker
-import com.example.habitstracker.ui.screens.create_own_habit.components.HabitNameTextField
-import com.example.habitstracker.ui.screens.create_own_habit.scaffold.TopBarCreateOwnHabitScreen
+import com.example.habitstracker.ui.screens.edit_habit.components.EditCreateButton
+import com.example.habitstracker.ui.screens.edit_habit.components.EditHabitNameTextField
+import com.example.habitstracker.ui.screens.edit_habit.components.EditIconAndColorPicker
+import com.example.habitstracker.ui.screens.edit_habit.scaffold.TopBarEditHabitScreen
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.PoppinsFontFamily
-import com.example.habitstracker.ui.theme.orangeColor
 import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 import com.example.habitstracker.utils.clickWithRipple
+import com.example.habitstracker.utils.getColorFromHex
 import com.example.habitstracker.utils.getIconName
 import com.example.habitstracker.utils.iconByName
 import com.example.habitstracker.utils.toHex
+import kotlinx.coroutines.launch
 
 @Composable
-fun CreateOwnHabitContent(
-    param: String,
+fun EditHabitContent(
     modifier: Modifier = Modifier,
-    onAddHabit: (
-        name: String, iconName: String, isDone: Boolean, colorHex: Color,
-        days: String, executionTime: String, reminder: Boolean,
-    ) -> Unit,
+    habit: HabitEntity,
+    icon: ImageVector,
+    onUpdateHabit: (habit: HabitEntity) -> Unit,
 ) {
     val navController = LocalNavController.current
 
     Scaffold(
-        topBar = { TopBarCreateOwnHabitScreen() },
+        topBar = { TopBarEditHabitScreen() },
         containerColor = MaterialTheme.colorScheme.secondaryContainer
     ) { paddingValues ->
         Box(
@@ -76,18 +77,27 @@ fun CreateOwnHabitContent(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            var habitName by remember { mutableStateOf("") }
-
-            var habitIconName by remember {
-                mutableStateOf(getIconName(Icons.Filled.SentimentVerySatisfied))
+            var habitName by remember {
+                mutableStateOf(habit.name)
             }
 
-            var habitColor by remember { mutableStateOf(orangeColor) }
-            val selectedDays by remember { mutableStateOf(param) }
-            var executionTime by remember { mutableStateOf("Anytime") }
+            var habitIcon by remember {
+                mutableStateOf(icon)
+            }
+
+            var habitColor by remember {
+                mutableStateOf(habit.colorHex.getColorFromHex())
+            }
+
+            val selectedDays by remember {
+                mutableStateOf(habit.days)
+            }
+
+            var executionTime by remember { mutableStateOf(habit.executionTime) }
 
 
-            val onExecutionTimeButtonClickListener: (executionTimeText: String) -> Unit = { text ->
+            val onExecutionTimeButtonClickListener:
+                        (executionTimeText: String) -> Unit = { text ->
                 executionTime = text
             }
 
@@ -99,17 +109,18 @@ fun CreateOwnHabitContent(
                 horizontalAlignment = Alignment.Start,
                 verticalArrangement = Arrangement.Top
             ) {
-                HabitNameTextField(name = habitName) { text ->
+                EditHabitNameTextField(name = habitName) { text ->
                     habitName = text
                 }
+
                 Spacer(modifier = modifier.height(16.dp))
 
-                IconAndColorPicker(
-                    icon = iconByName(habitIconName),
+                EditIconAndColorPicker(
+                    icon = habitIcon,
                     color = habitColor,
 
                     onIconPick = { icon ->
-                        habitIconName = icon
+                        habitIcon = iconByName(icon)
                     },
                     onColorPick = { color ->
                         habitColor = color
@@ -152,7 +163,7 @@ fun CreateOwnHabitContent(
                         horizontalArrangement = Arrangement.End
                     ) {
                         Text(
-                            text = param,
+                            text = selectedDays,
                             fontFamily = PoppinsFontFamily,
                             fontSize = 12.sp,
                             color = Color.White.copy(alpha = 0.5f),
@@ -175,54 +186,63 @@ fun CreateOwnHabitContent(
                 AdvancedSettings()
             }
 
-            CreateButton(
-                modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 16.dp),
-                navController,
+
+            // Create habit with new param and update
+            val newHabit = HabitEntity(
+                id = habit.id,
                 name = habitName,
-                iconName = habitIconName,
-                color = habitColor,
+                colorHex = habitColor.toHex(),
+                iconName = getIconName(habitIcon),
+                isDone = habit.isDone,
                 executionTime = executionTime,
-                selectedDays = selectedDays,
-                onAddHabit = onAddHabit
+                reminder = habit.reminder,
+                days = selectedDays
             )
+
+            EditCreateButton(
+                modifier = modifier.align(Alignment.BottomCenter),
+                habit = newHabit,
+                onUpdateHabit = onUpdateHabit
+            )
+
         }
     }
 }
 
 @Composable
-fun CreateOwnHabitScreen(param: String = "no value") {
-    val viewModel = hiltViewModel<HabitViewModel>()
-    val _onAddHabit = {
-            name: String, iconName: String, isDone: Boolean, colorHex: Color,
-            days: String, executionTime: String, reminder: Boolean,
-        ->
-        viewModel.addHabit(
-            HabitEntity(
-                name = name,
-                iconName = iconName,
-                isDone = false,
-                colorHex = colorHex.toHex(),
-                days = days,
-                executionTime = executionTime,
-                reminder = false
-            )
-        )
-    }
+fun EditHabitScreen(paramId: Int, viewModel: HabitViewModel) {
+    val coroutineScope = rememberCoroutineScope()
+    val allHabits = viewModel.habitsList.collectAsState()
+    val currentHabit = allHabits.value.find { it.id == paramId }
 
-    CreateOwnHabitContent(param = param, onAddHabit = _onAddHabit)
+    if (currentHabit != null) {
+        EditHabitContent(
+            habit = currentHabit,
+            icon = iconByName(currentHabit.iconName), // pass the icon separately, otherwise compose will be not rendering
+            onUpdateHabit = { newHabit ->
+                coroutineScope.launch {
+                    viewModel.updateHabit(newHabit)
+                }
+            }
+        )
+    } else throw IllegalStateException("Habit was not found (EditHabitScreen)")
+
 }
 
 @Composable
 @Preview(showSystemUi = true)
 private fun Preview() {
     val mockNavController = rememberNavController()
+
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
         AppTheme(darkTheme = true) {
-            CreateOwnHabitContent(param = "Fake param",
-                onAddHabit = { _, _, _, _, _, _, _ -> }
+            EditHabitContent(
+                habit = HabitEntity(),
+                icon = Icons.Default.SentimentSatisfied,
+                onUpdateHabit = { _ -> },
             )
         }
     }
 }
+
+

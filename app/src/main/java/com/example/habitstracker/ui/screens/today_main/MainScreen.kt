@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -21,17 +20,16 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
@@ -44,12 +42,11 @@ import com.example.habitstracker.ui.screens.today_main.components.calendar.Calen
 import com.example.habitstracker.ui.screens.today_main.scaffold.TopBarMainScreen
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.PoppinsFontFamily
-import com.example.habitstracker.ui.theme.blueColor
 import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 import com.example.habitstracker.ui.theme.screensBackgroundDark
 import com.example.habitstracker.utils.TestTags
 import com.example.habitstracker.utils.generateDateSequence
-import com.example.habitstracker.utils.toHex
+import com.example.habitstracker.utils.habitEntityExample
 import java.time.LocalDate
 
 
@@ -90,7 +87,6 @@ fun TodayScreenContent(
                     value = LocalRippleTheme provides CustomRippleTheme(color = Color.Black)
                 ) {
 
-
                     LazyColumn(
                         modifier = modifier
                             .padding(top = 95.dp)
@@ -99,10 +95,10 @@ fun TodayScreenContent(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        items(habitLIstState.size) { habit ->
+                        items(habitLIstState.size) { habitId ->
                             HabitItem(
-                                habit = habitLIstState[habit],
-                                onUpdateSelectedState = onSelectedStateUpdate
+                                habit = habitLIstState[habitId],
+                                onUpdateSelectedState = onSelectedStateUpdate,
                             )
                             Spacer(modifier = modifier.height(20.dp))
                         }
@@ -151,25 +147,12 @@ fun TodayScreenContent(
     }
 }
 
-fun getIconName(icon: ImageVector): String {
-    return icon.name.split(".")[1]
-}
-
-fun iconByName(name: String): ImageVector {
-    val cl = Class.forName("androidx.compose.material.icons.filled.${name}Kt")
-    val method = cl.declaredMethods.first()
-    return method.invoke(null, Icons.Filled) as ImageVector
-}
-
 @Composable
 @Preview(showSystemUi = false)
 private fun Preview() {
     val mockNavController = rememberNavController()
     val mockList = listOf(
-        HabitEntity(
-            0, "habit example", "SentimentVerySatisfied", false,
-            blueColor.toHex(), "Everyday", "Anytime", false,
-        )
+        habitEntityExample
     )
 
     val mockSelectedStateEvent = { id: Int, isDone: Boolean -> }
@@ -185,16 +168,16 @@ private fun Preview() {
 }
 
 @Composable
-fun TodayScreen(_viewModel: HabitViewModel? = null) {
-    val viewModel = if(_viewModel != null) _viewModel
-    else hiltViewModel<HabitViewModel>()
+fun TodayScreen(viewModel: HabitViewModel) {
+    val coroutineScope = rememberCoroutineScope()
 
     val _stateList = viewModel.habitsList.collectAsState()
     val _onSelectedStateUpdate = { id: Int, isDone: Boolean ->
         viewModel.updateSelectedState(id, isDone)
     }
-    TodayScreenContent(
+
+        TodayScreenContent(
         habitLIstState = _stateList.value,
-        onSelectedStateUpdate = _onSelectedStateUpdate
+        onSelectedStateUpdate = _onSelectedStateUpdate,
     )
 }

@@ -17,10 +17,14 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -42,26 +46,30 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
+import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.data.db.HabitEntity
 import com.example.habitstracker.ui.custom.CustomCheckbox
-import com.example.habitstracker.ui.screens.today_main.iconByName
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.notSelectedColor
 import com.example.habitstracker.utils.TestTags
 import com.example.habitstracker.utils.getColorFromHex
+import com.example.habitstracker.utils.iconByName
 
 @Composable
 fun HabitItem(
     modifier: Modifier = Modifier,
     habit: HabitEntity = HabitEntity(),
-    onUpdateSelectedState: (id: Int, isDone: Boolean) -> Unit = { id, isDone -> }
+    onUpdateSelectedState: (id: Int, isDone: Boolean) -> Unit = { id, isDone -> },
 ) {
+    val navController = LocalNavController.current
 
     var isDone by remember { mutableStateOf(habit.isDone) }
     val itemHeight: Dp = 90.dp
     val selectedAlpha: Float = 0.75f
 
     val color = habit.colorHex.getColorFromHex()
+
+    var isMenuExpanded by remember { mutableStateOf(false) }
 
     val currentColor by animateColorAsState(
         targetValue = if (isDone) notSelectedColor else color, label = "habit selected state"
@@ -86,9 +94,9 @@ fun HabitItem(
                     _isChecked = isDone,
                     habit = habit,
                     onClick = {
-                    isDone = !isDone
-                    onUpdateSelectedState(habit.id, isDone)
-                })
+                        isDone = !isDone
+                        onUpdateSelectedState(habit.id, isDone)
+                    })
             }
 
             Card(
@@ -124,7 +132,7 @@ fun HabitItem(
 
                         Column(
                             modifier = modifier.padding(end = 30.dp),
-                            verticalArrangement =  Arrangement.Center,
+                            verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
@@ -160,7 +168,7 @@ fun HabitItem(
                         }
 
                         IconButton(
-                            onClick = { /*TODO*/ },
+                            onClick = { isMenuExpanded = !isMenuExpanded },
                             Modifier.fillMaxHeight()
                         ) {
                             Icon(
@@ -169,6 +177,31 @@ fun HabitItem(
                                 imageVector = Icons.Default.MoreVert,
                                 contentDescription = "More about habit"
                             )
+
+                            DropdownMenu(
+                                expanded = isMenuExpanded,
+                                onDismissRequest = { isMenuExpanded = false },
+                                //modifier = Modifier.background(Color.Red)
+                            ) {
+
+                                //val currentHabit = onEditNavigation(habit.id)
+                                DropdownMenuItem(
+                                    text = { Text(text = "Edit") },
+                                    trailingIcon = { Icons.Default.Edit },
+                                    onClick = {
+                                        isMenuExpanded = false
+                                        navController.navigate("EditHabitScreen/${habit.id}")
+                                    }
+                                )
+
+                                DropdownMenuItem(
+                                    text = { Text(text = "Delete") },
+                                    trailingIcon = { Icons.Default.Delete },
+                                    onClick = {
+                                        isMenuExpanded = false
+                                    }
+                                )
+                            }
                         }
                     }
                 }
@@ -177,7 +210,8 @@ fun HabitItem(
     }
 }
 
-@Composable @Preview(showSystemUi = true)
+@Composable
+@Preview(showSystemUi = true)
 private fun Preview() {
     AppTheme(darkTheme = true) { HabitItem() }
 }
