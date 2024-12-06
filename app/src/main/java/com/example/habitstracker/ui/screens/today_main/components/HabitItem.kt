@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.data.db.HabitEntity
+import com.example.habitstracker.navigation.RoutesMainScreen
 import com.example.habitstracker.ui.custom.CustomCheckbox
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.notSelectedColor
@@ -184,13 +185,12 @@ fun HabitItem(
                                 //modifier = Modifier.background(Color.Red)
                             ) {
 
-                                //val currentHabit = onEditNavigation(habit.id)
                                 DropdownMenuItem(
                                     text = { Text(text = "Edit") },
                                     trailingIcon = { Icons.Default.Edit },
                                     onClick = {
                                         isMenuExpanded = false
-                                        navController.navigate("EditHabitScreen/${habit.id}")
+                                        navController.navigate("${RoutesMainScreen.EditHabit.route}?paramId=${habit.id}")
                                     }
                                 )
 

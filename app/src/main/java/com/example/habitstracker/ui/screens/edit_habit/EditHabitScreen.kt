@@ -48,12 +48,14 @@ import com.example.habitstracker.ui.screens.edit_habit.components.EditCreateButt
 import com.example.habitstracker.ui.screens.edit_habit.components.EditExecutionTimePicker
 import com.example.habitstracker.ui.screens.edit_habit.components.EditHabitNameTextField
 import com.example.habitstracker.ui.screens.edit_habit.components.EditIconAndColorPicker
+import com.example.habitstracker.ui.screens.edit_habit.components.SelectedDay
 import com.example.habitstracker.ui.screens.edit_habit.scaffold.TopBarEditHabitScreen
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.PoppinsFontFamily
 import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 import com.example.habitstracker.utils.clickWithRipple
 import com.example.habitstracker.utils.getColorFromHex
+import com.example.habitstracker.utils.getCorrectSelectedDaysList
 import com.example.habitstracker.utils.getIconName
 import com.example.habitstracker.utils.iconByName
 import com.example.habitstracker.utils.toHex
@@ -64,10 +66,12 @@ fun EditHabitContent(
     modifier: Modifier = Modifier,
     habit: HabitEntity,
     icon: ImageVector,
-    selectedDaysParam: String?,
-    onUpdateHabit: (habit: HabitEntity) -> Unit,
+    //previewList: List<SelectedDay>? = emptyList(),
+    onUpdateHabit: (habit: HabitEntity) -> Unit
 ) {
     val navController = LocalNavController.current
+
+    val dayStatesList = getCorrectSelectedDaysList(habit.days)
 
     Scaffold(
         topBar = { TopBarEditHabitScreen() },
@@ -90,12 +94,26 @@ fun EditHabitContent(
                 mutableStateOf(habit.colorHex.getColorFromHex())
             }
 
-            val selectedDays by remember {
+
+            var selectedDays by remember {
                 mutableStateOf(
-                    if (selectedDaysParam == null) habit.days
-                    else selectedDaysParam
+                    dayStatesList.let {
+                        val includeDaysList = it.filter { it.isSelect == true }.map { it.day }
+                        val excludeDaysList = it.filter { it.isSelect == false }.map { it.day }
+
+                        when {
+                            includeDaysList.size == 7 -> "Everyday"
+                            excludeDaysList.size == 1 -> "Everyday except ${excludeDaysList[0]}"
+                            excludeDaysList.size == 2 -> "Everyday except ${excludeDaysList[0]} " + "and ${excludeDaysList[1]}"
+                            includeDaysList.isNotEmpty() -> includeDaysList.joinToString(", ")
+
+                            else -> "Error data (EditHabitScreen 'when' expression)"
+
+                        }
+                    }
                 )
             }
+
 
             var executionTime by remember { mutableStateOf(habit.executionTime) }
 
@@ -141,6 +159,7 @@ fun EditHabitContent(
 
                 Spacer(modifier = modifier.height(12.dp))
 
+
                 Row(
                     modifier = modifier
                         .fillMaxWidth()
@@ -150,8 +169,17 @@ fun EditHabitContent(
                         .clickWithRipple(
                             color = Color.White
                         ) {
-                            navController.navigate(RoutesMainScreen.EditRepeatPicker.route)
+
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                key = "param_selectedDays",
+                                value = dayStatesList
+                            )
+                            navController.navigate(
+                                RoutesMainScreen.EditRepeatPicker.route
+                                        + "/${habit.id}"
+                            )
                         },
+
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -199,12 +227,12 @@ fun EditHabitContent(
             val newHabit = HabitEntity(
                 id = habit.id,
                 name = habitName,
-                colorHex = habitColor.toHex(),
                 iconName = getIconName(habitIcon),
                 isDone = habit.isDone,
-                executionTime = executionTime,
-                reminder = habit.reminder,
-                days = selectedDays
+                colorHex = habitColor.toHex(),
+                days = selectedDays,
+                executionTime = "No",
+                reminder = false
             )
 
             EditCreateButton(
@@ -217,8 +245,14 @@ fun EditHabitContent(
     }
 }
 
+
+
 @Composable
-fun EditHabitScreen(paramId: Int, selectedDaysParam: String?, viewModel: HabitViewModel) {
+fun EditHabitScreen(
+    paramId: Int,
+    selectedDaysParam: String,
+    viewModel: HabitViewModel,
+) {
     val coroutineScope = rememberCoroutineScope()
     val allHabits = viewModel.habitsList.collectAsState()
     val currentHabit = allHabits.value.find { it.id == paramId }
@@ -231,10 +265,9 @@ fun EditHabitScreen(paramId: Int, selectedDaysParam: String?, viewModel: HabitVi
 
     if (currentHabit != null) {
         EditHabitContent(
+            onUpdateHabit = _onUpdateHabit,
             habit = currentHabit,
-            selectedDaysParam = selectedDaysParam, // string value from a bundle
             icon = iconByName(currentHabit.iconName), // pass the icon separately, otherwise compose will be not rendering
-            onUpdateHabit = _onUpdateHabit
         )
     } else throw IllegalStateException("Habit was not found (EditHabitScreen)")
 
@@ -250,8 +283,16 @@ private fun Preview() {
             EditHabitContent(
                 habit = HabitEntity(),
                 icon = Icons.Default.SentimentSatisfied,
-                selectedDaysParam = "Everyday",
-                onUpdateHabit = { _ -> },
+                onUpdateHabit = {},
+                /*previewList = listOf(
+                    SelectedDay(true, "Mon"),
+                    SelectedDay(true, "Tue"),
+                    SelectedDay(true, "Wed"),
+                    SelectedDay(false, "Thu"),
+                    SelectedDay(false, "Fri"),
+                    SelectedDay(false, "San"),
+                    SelectedDay(false, "Sut")
+                )*/
             )
         }
     }

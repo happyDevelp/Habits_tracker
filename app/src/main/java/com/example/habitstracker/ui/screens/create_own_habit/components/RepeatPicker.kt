@@ -52,9 +52,11 @@ import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.ui.custom.MyButton
 import com.example.habitstracker.ui.custom.MyText
+import com.example.habitstracker.ui.screens.edit_habit.components.SelectedDay
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 import com.example.habitstracker.utils.clickWithRipple
+import com.example.habitstracker.utils.textState
 
 @Composable
 fun RepeatPicker(modifier: Modifier = Modifier) {
@@ -68,13 +70,13 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
         // list to observing the states of each day choose
         val dayStates = remember {
             mutableStateListOf(
-                SelectedDay(true, "Mo"),
-                SelectedDay(true, "Tu"),
-                SelectedDay(true, "We"),
-                SelectedDay(true, "Th"),
-                SelectedDay(true, "Fr"),
-                SelectedDay(true, "Sa"),
-                SelectedDay(true, "Su"),
+                SelectedDay(true, "Mon"),
+                SelectedDay(true, "Tue"),
+                SelectedDay(true, "Wed"),
+                SelectedDay(true, "Thu"),
+                SelectedDay(true, "Fri"),
+                SelectedDay(true, "San"),
+                SelectedDay(true, "Sut"),
             )
         }
 
@@ -175,7 +177,7 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                 ) {
                     MyText(
                         modifier = modifier.padding(top = 8.dp, start = 12.dp, bottom = 16.dp),
-                        text = selectedDayText,
+                        text = selectedDayText.first,
                         textSize = 13.sp,
                         color = Color.White.copy(0.7f)
                     )
@@ -354,7 +356,7 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                     // pass argument to previous screen using navigateUp(or popBackStack)
                     navController.previousBackStackEntry
                         ?.savedStateHandle
-                        ?.set("param", selectedDayText)
+                        ?.set("param", selectedDayText.second)
 
                     navController.navigateUp()
                 }
@@ -403,57 +405,6 @@ private fun DayOfWeekItems(dayStates: SnapshotStateList<SelectedDay>) {
         }
 }
 
-private fun textState(dayStates: SnapshotStateList<SelectedDay>): String {
-    return when (dayStates.count { it.isSelect == true }) {
-
-        1 -> {
-            val oneSelectedDay = dayStates.first { dayItem ->
-                dayItem.isSelect == true
-            }.day
-            oneSelectedDay
-        }
-
-        2 -> {
-            val twoSelectedDays = dayStates.filter { dayItem ->
-                dayItem.isSelect
-            }.joinToString(" and ") { it.day }
-            twoSelectedDays
-        }
-
-        3 -> {
-            val threeSelectedDays = dayStates.filter { dayItem ->
-                dayItem.isSelect
-            }.joinToString(", ") { it.day }
-            threeSelectedDays
-        }
-
-        4 -> {
-            val fourSelectedDays = dayStates
-                .filter { dayItem -> dayItem.isSelect }
-                .take(3)
-                .joinToString { it.day } + "..."
-
-            fourSelectedDays
-        }
-
-        5 -> {
-            val twoUnselectedDays = dayStates.filter { dayItem ->
-                dayItem.isSelect == false
-            }.joinToString(" and ") { it.day }
-            "Everyday except $twoUnselectedDays"
-        }
-
-        6 -> {
-            val oneUnselectedDay = dayStates.filter { dayItem ->
-                !dayItem.isSelect
-            }.joinToString { it.day }
-            "Everyday exept ${oneUnselectedDay}"
-        }
-
-        7 -> "Everyday"
-        else -> "Error data"
-    }
-}
 
 
 @Composable
@@ -515,11 +466,6 @@ private fun QuantityDaysItem(
         )
     }
 }
-
-private data class SelectedDay(
-    var isSelect: Boolean,
-    val day: String,
-)
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)

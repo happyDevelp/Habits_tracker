@@ -1,5 +1,6 @@
 package com.example.habitstracker.ui.screens.edit_habit.components
 
+import android.os.Parcelable
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -28,12 +29,14 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,14 +53,25 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
+import com.example.habitstracker.data.db.HabitEntity
+import com.example.habitstracker.data.db.viewmodel.HabitViewModel
 import com.example.habitstracker.ui.custom.MyButton
 import com.example.habitstracker.ui.custom.MyText
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 import com.example.habitstracker.utils.clickWithRipple
+import com.example.habitstracker.utils.getCorrectSelectedDaysList
+import com.example.habitstracker.utils.textState
+import kotlinx.coroutines.launch
+import kotlinx.parcelize.Parcelize
 
 @Composable
-fun EditRepeatPicker(modifier: Modifier = Modifier) {
+fun EditRepeatPicker(
+    habit: HabitEntity,
+    modifier: Modifier = Modifier,
+    onSaveClickListener: (days: String) -> Unit,
+    _selectedDaysParam: List<SelectedDay>,
+) {
     val navController = LocalNavController.current
 
     Scaffold(
@@ -65,18 +79,13 @@ fun EditRepeatPicker(modifier: Modifier = Modifier) {
         containerColor = MaterialTheme.colorScheme.secondaryContainer,
     ) { paddingValues ->
 
+
+        val dayStatesList = getCorrectSelectedDaysList(habit.days)
         // list to observing the states of each day choose
         val dayStates = remember {
-            mutableStateListOf(
-                SelectedDay(true, "Mo"),
-                SelectedDay(true, "Tu"),
-                SelectedDay(true, "We"),
-                SelectedDay(true, "Th"),
-                SelectedDay(true, "Fr"),
-                SelectedDay(true, "Sa"),
-                SelectedDay(true, "Su"),
-            )
+            dayStatesList.toMutableStateList()
         }
+
 
         val selectedDayText = textState(dayStates)
 
@@ -175,7 +184,7 @@ fun EditRepeatPicker(modifier: Modifier = Modifier) {
                 ) {
                     MyText(
                         modifier = modifier.padding(top = 8.dp, start = 12.dp, bottom = 16.dp),
-                        text = selectedDayText,
+                        text = selectedDayText.first,
                         textSize = 13.sp,
                         color = Color.White.copy(0.7f)
                     )
@@ -341,7 +350,6 @@ fun EditRepeatPicker(modifier: Modifier = Modifier) {
                 )
             }
 
-            val selectedDaysParam = stringResource(id = R.string.param_selected_days)
 
             MyButton(
                 modifier = modifier
@@ -353,11 +361,7 @@ fun EditRepeatPicker(modifier: Modifier = Modifier) {
                     },
 
                 onClick = {
-                    // pass argument to previous screen using navigateUp(or popBackStack)
-                    navController.previousBackStackEntry
-                        ?.savedStateHandle
-                        ?.set(selectedDaysParam, selectedDayText)
-
+                    onSaveClickListener(selectedDayText.second)
                     navController.navigateUp()
                 }
             ) {
@@ -405,61 +409,8 @@ private fun DayOfWeekItems(dayStates: SnapshotStateList<SelectedDay>) {
         }
 }
 
-private fun textState(dayStates: SnapshotStateList<SelectedDay>): String {
-    return when (dayStates.count { it.isSelect == true }) {
-
-        1 -> {
-            val oneSelectedDay = dayStates.first { dayItem ->
-                dayItem.isSelect == true
-            }.day
-            oneSelectedDay
-        }
-
-        2 -> {
-            val twoSelectedDays = dayStates.filter { dayItem ->
-                dayItem.isSelect
-            }.joinToString(" and ") { it.day }
-            twoSelectedDays
-        }
-
-        3 -> {
-            val threeSelectedDays = dayStates.filter { dayItem ->
-                dayItem.isSelect
-            }.joinToString(", ") { it.day }
-            threeSelectedDays
-        }
-
-        4 -> {
-            val fourSelectedDays = dayStates
-                .filter { dayItem -> dayItem.isSelect }
-                .take(3)
-                .joinToString { it.day } + "..."
-
-            fourSelectedDays
-        }
-
-        5 -> {
-            val twoUnselectedDays = dayStates.filter { dayItem ->
-                dayItem.isSelect == false
-            }.joinToString(" and ") { it.day }
-            "Everyday except $twoUnselectedDays"
-        }
-
-        6 -> {
-            val oneUnselectedDay = dayStates.filter { dayItem ->
-                !dayItem.isSelect
-            }.joinToString { it.day }
-            "Everyday exept ${oneUnselectedDay}"
-        }
-
-        7 -> "Everyday"
-        else -> "Error data"
-    }
-}
-
-
 @Composable
-private fun DaysItem(
+fun DaysItem(
     modifier: Modifier = Modifier,
     text: String,
     isSelected: Boolean,
@@ -518,10 +469,11 @@ private fun QuantityDaysItem(
     }
 }
 
-private data class SelectedDay(
+@Parcelize
+data class SelectedDay(
     var isSelect: Boolean,
     val day: String,
-)
+) : Parcelable
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
@@ -555,11 +507,52 @@ private fun RepeatPickerTopBar(
     )
 }
 
+
+@Composable
+fun EditRepeatPickerScreen(
+    paramId: Int,
+    viewModel: HabitViewModel,
+    _selectedDaysParam: List<SelectedDay>,
+) {
+    val coroutineScope = rememberCoroutineScope()
+    val allHabits = viewModel.habitsList.collectAsState()
+    val currentHabit = allHabits.value.find { it.id == paramId }
+        ?: throw Exception("Current habit is null. (EditRepeatPickerScreen)")
+
+    val _onSaveClickListener: (days: String) -> Unit = { days ->
+        coroutineScope.launch {
+            viewModel.updateHabit(
+                currentHabit.copy(days = days)
+            )
+        }
+    }
+
+    EditRepeatPicker(
+        habit = currentHabit,
+        onSaveClickListener = _onSaveClickListener,
+        _selectedDaysParam = _selectedDaysParam
+    )
+}
+
 @Composable
 @Preview(showSystemUi = true)
 private fun Preview() {
     val mockNavController = rememberNavController()
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
-        AppTheme(darkTheme = true) { EditRepeatPicker() }
+        AppTheme(darkTheme = true) {
+            EditRepeatPicker(
+                onSaveClickListener = {},
+                _selectedDaysParam = listOf(
+                    SelectedDay(false, "Mon"),
+                    SelectedDay(true, "Tue"),
+                    SelectedDay(true, "Wed"),
+                    SelectedDay(true, "Thu"),
+                    SelectedDay(true, "Fri"),
+                    SelectedDay(true, "San"),
+                    SelectedDay(true, "Sut"),
+                ),
+                habit = HabitEntity()
+            )
+        }
     }
 }

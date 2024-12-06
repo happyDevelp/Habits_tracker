@@ -3,9 +3,9 @@ package com.example.habitstracker.navigation
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavType
@@ -13,7 +13,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
-import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.data.db.viewmodel.HabitViewModel
 import com.example.habitstracker.navigation.bottombar.BottomBarScreens
@@ -23,6 +22,9 @@ import com.example.habitstracker.ui.screens.create_own_habit.CreateOwnHabitScree
 import com.example.habitstracker.ui.screens.create_own_habit.components.RepeatPicker
 import com.example.habitstracker.ui.screens.edit_habit.EditHabitScreen
 import com.example.habitstracker.ui.screens.edit_habit.components.EditRepeatPicker
+import com.example.habitstracker.ui.screens.edit_habit.components.EditRepeatPickerScreen
+import com.example.habitstracker.ui.screens.edit_habit.components.SelectedDay
+import com.example.habitstracker.ui.screens.edit_habit.editViewModel.EditViewModel
 import com.example.habitstracker.ui.screens.history.HistoryScreen
 import com.example.habitstracker.ui.screens.me.MeScreen
 import com.example.habitstracker.ui.screens.today_main.TodayScreen
@@ -30,7 +32,7 @@ import com.example.habitstracker.ui.screens.today_main.TodayScreen
 @Composable
 fun AppNavigation() {
     val navController = LocalNavController.current
-    val viewModel = hiltViewModel<HabitViewModel>()
+    val dbViewModel = hiltViewModel<HabitViewModel>()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
@@ -44,8 +46,6 @@ fun AppNavigation() {
             }
         }
     ) { paddingValues ->
-        val selectedDaysParam = stringResource(id = R.string.param_selected_days)
-        val everydayString = stringResource(id = R.string.everyday)
 
 
         NavHost(
@@ -55,7 +55,7 @@ fun AppNavigation() {
         ) {
 
             composable(route = BottomBarScreens.TodayScreen.name) {
-                TodayScreen(viewModel = viewModel)
+                TodayScreen(viewModel = dbViewModel)
             }
             composable(route = BottomBarScreens.HistoryScreen.name) {
                 HistoryScreen()
@@ -69,7 +69,7 @@ fun AppNavigation() {
             }
 
             composable(
-                route = "CreateOwnHabitScreen?param={param}",
+                route = "${RoutesMainScreen.CreateNewHabit.route}?param={param}",
                 arguments = listOf(
                     navArgument("param") {
                         type = NavType.StringType
@@ -84,28 +84,53 @@ fun AppNavigation() {
                 RepeatPicker()
             }
 
-            composable(
-                route = "EditHabitScreen/{paramId}?$selectedDaysParam={$selectedDaysParam}",
+            composable(                                                       /*&paramSelectedDays={paramSelectedDays}*/
+                route = "${RoutesMainScreen.EditHabit.route}?paramId={paramId}",
                 arguments = listOf(
-                    navArgument("paramId") { type = NavType.IntType },
+                    navArgument("paramId") {
+                        type = NavType.IntType
+                        defaultValue = 0
+                    },
 
-                    navArgument(selectedDaysParam) {
-                        type = NavType.StringType
-                        defaultValue = everydayString
-                    }
-                )
+                    )
             ) { backStackEntry ->
-                val paramId = backStackEntry.arguments?.getInt("paramId") ?: -1
-                val paramSelectedDays = backStackEntry.savedStateHandle.get<String>(selectedDaysParam)
+                val paramId = backStackEntry.arguments?.getInt("paramId") ?: 0
+                val paramSelectedDays =
+                    dbViewModel.habitsList.collectAsState().value.find { it.id == paramId }?.days
+                        ?: "ERROR incorrect param (AppNavigation)"
                 EditHabitScreen(
                     paramId = paramId,
                     selectedDaysParam = paramSelectedDays,
-                    viewModel = viewModel
+                    viewModel = dbViewModel
                 )
             }
 
-            composable(route = "EditRepeatPickerScreen") {
-                EditRepeatPicker()
+            composable(route = "${RoutesMainScreen.EditRepeatPicker.route}/{paramId}",
+                arguments = listOf(
+                    navArgument("paramId") {
+                        type = NavType.IntType // Тип аргументу (Int, String, etc.)
+                    }
+                )
+            ) { backStackEntry ->
+                val paramId = backStackEntry.arguments?.getInt("paramId") ?: throw IllegalArgumentException("paramId is required")
+                val result =
+                    navController.previousBackStackEntry?.savedStateHandle?.get<MutableList<SelectedDay>>(
+                        "param_selectedDays"
+                    )
+                EditRepeatPickerScreen(
+                    paramId = paramId,
+                    viewModel = dbViewModel,
+                    _selectedDaysParam = result ?: listOf<SelectedDay>(
+                        SelectedDay(true, "Mon"),
+                        SelectedDay(true, "Tue"),
+                        SelectedDay(true, "Wed"),
+                        SelectedDay(true, "Thu"),
+                        SelectedDay(true, "Fri"),
+                        SelectedDay(true, "San"),
+                        SelectedDay(true, "Sut"),
+                    )
+                )
+
             }
         }
     }

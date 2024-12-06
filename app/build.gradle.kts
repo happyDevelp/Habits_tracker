@@ -5,6 +5,8 @@ plugins {
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.dagger.hilt.android)
     id ("dagger.hilt.android.plugin")
+    id("kotlin-parcelize")
+
 
 }
 
@@ -102,6 +104,8 @@ dependencies {
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.room.ktx)
     implementation(libs.kotlin.serialization.core)
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0") // Актуальна версія
+
 
     //implementation("com.google.dagger:hilt-android:2.51.1")
     implementation(libs.hilt.android)
