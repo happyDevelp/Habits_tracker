@@ -61,6 +61,7 @@ import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 import com.example.habitstracker.utils.clickWithRipple
 import com.example.habitstracker.utils.getCorrectSelectedDaysList
+import com.example.habitstracker.utils.habitEntityExample
 import com.example.habitstracker.utils.textState
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
@@ -70,7 +71,6 @@ fun EditRepeatPicker(
     habit: HabitEntity,
     modifier: Modifier = Modifier,
     onSaveClickListener: (days: String) -> Unit,
-    _selectedDaysParam: List<SelectedDay>,
 ) {
     val navController = LocalNavController.current
 
@@ -509,11 +509,7 @@ private fun RepeatPickerTopBar(
 
 
 @Composable
-fun EditRepeatPickerScreen(
-    paramId: Int,
-    viewModel: HabitViewModel,
-    _selectedDaysParam: List<SelectedDay>,
-) {
+fun EditRepeatPickerScreen(paramId: Int, viewModel: HabitViewModel) {
     val coroutineScope = rememberCoroutineScope()
     val allHabits = viewModel.habitsList.collectAsState()
     val currentHabit = allHabits.value.find { it.id == paramId }
@@ -530,7 +526,6 @@ fun EditRepeatPickerScreen(
     EditRepeatPicker(
         habit = currentHabit,
         onSaveClickListener = _onSaveClickListener,
-        _selectedDaysParam = _selectedDaysParam
     )
 }
 
@@ -542,16 +537,7 @@ private fun Preview() {
         AppTheme(darkTheme = true) {
             EditRepeatPicker(
                 onSaveClickListener = {},
-                _selectedDaysParam = listOf(
-                    SelectedDay(false, "Mon"),
-                    SelectedDay(true, "Tue"),
-                    SelectedDay(true, "Wed"),
-                    SelectedDay(true, "Thu"),
-                    SelectedDay(true, "Fri"),
-                    SelectedDay(true, "San"),
-                    SelectedDay(true, "Sut"),
-                ),
-                habit = HabitEntity()
+                habit = habitEntityExample
             )
         }
     }

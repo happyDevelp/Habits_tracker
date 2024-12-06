@@ -21,10 +21,8 @@ import com.example.habitstracker.ui.screens.add_habit.AddHabitScreen
 import com.example.habitstracker.ui.screens.create_own_habit.CreateOwnHabitScreen
 import com.example.habitstracker.ui.screens.create_own_habit.components.RepeatPicker
 import com.example.habitstracker.ui.screens.edit_habit.EditHabitScreen
-import com.example.habitstracker.ui.screens.edit_habit.components.EditRepeatPicker
 import com.example.habitstracker.ui.screens.edit_habit.components.EditRepeatPickerScreen
 import com.example.habitstracker.ui.screens.edit_habit.components.SelectedDay
-import com.example.habitstracker.ui.screens.edit_habit.editViewModel.EditViewModel
 import com.example.habitstracker.ui.screens.history.HistoryScreen
 import com.example.habitstracker.ui.screens.me.MeScreen
 import com.example.habitstracker.ui.screens.today_main.TodayScreen
@@ -95,12 +93,8 @@ fun AppNavigation() {
                     )
             ) { backStackEntry ->
                 val paramId = backStackEntry.arguments?.getInt("paramId") ?: 0
-                val paramSelectedDays =
-                    dbViewModel.habitsList.collectAsState().value.find { it.id == paramId }?.days
-                        ?: "ERROR incorrect param (AppNavigation)"
                 EditHabitScreen(
                     paramId = paramId,
-                    selectedDaysParam = paramSelectedDays,
                     viewModel = dbViewModel
                 )
             }
@@ -117,19 +111,7 @@ fun AppNavigation() {
                     navController.previousBackStackEntry?.savedStateHandle?.get<MutableList<SelectedDay>>(
                         "param_selectedDays"
                     )
-                EditRepeatPickerScreen(
-                    paramId = paramId,
-                    viewModel = dbViewModel,
-                    _selectedDaysParam = result ?: listOf<SelectedDay>(
-                        SelectedDay(true, "Mon"),
-                        SelectedDay(true, "Tue"),
-                        SelectedDay(true, "Wed"),
-                        SelectedDay(true, "Thu"),
-                        SelectedDay(true, "Fri"),
-                        SelectedDay(true, "San"),
-                        SelectedDay(true, "Sut"),
-                    )
-                )
+                EditRepeatPickerScreen(paramId = paramId, viewModel = dbViewModel)
 
             }
         }

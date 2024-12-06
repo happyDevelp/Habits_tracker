@@ -230,7 +230,7 @@ fun EditHabitContent(
                 iconName = getIconName(habitIcon),
                 isDone = habit.isDone,
                 colorHex = habitColor.toHex(),
-                days = selectedDays,
+                days = habit.days,
                 executionTime = "No",
                 reminder = false
             )
@@ -248,11 +248,7 @@ fun EditHabitContent(
 
 
 @Composable
-fun EditHabitScreen(
-    paramId: Int,
-    selectedDaysParam: String,
-    viewModel: HabitViewModel,
-) {
+fun EditHabitScreen(paramId: Int, viewModel: HabitViewModel) {
     val coroutineScope = rememberCoroutineScope()
     val allHabits = viewModel.habitsList.collectAsState()
     val currentHabit = allHabits.value.find { it.id == paramId }
