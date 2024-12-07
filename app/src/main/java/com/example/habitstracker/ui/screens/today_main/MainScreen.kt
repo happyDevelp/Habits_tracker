@@ -47,6 +47,7 @@ import com.example.habitstracker.ui.theme.screensBackgroundDark
 import com.example.habitstracker.utils.TestTags
 import com.example.habitstracker.utils.generateDateSequence
 import com.example.habitstracker.utils.habitEntityExample
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 
@@ -55,6 +56,7 @@ fun TodayScreenContent(
     modifier: Modifier = Modifier,
     habitLIstState: List<HabitEntity>,
     onSelectedStateUpdate: (id: Int, isDone: Boolean) -> Unit,
+    _onDeleteClick: (habit: HabitEntity) -> Unit,
 ) {
     val navController = LocalNavController.current
 
@@ -99,6 +101,7 @@ fun TodayScreenContent(
                             HabitItem(
                                 habit = habitLIstState[habitId],
                                 onUpdateSelectedState = onSelectedStateUpdate,
+                                onDeleteClick = _onDeleteClick
                             )
                             Spacer(modifier = modifier.height(20.dp))
                         }
@@ -161,7 +164,8 @@ private fun Preview() {
         AppTheme(darkTheme = true) {
             TodayScreenContent(
                 habitLIstState = mockList,
-                onSelectedStateUpdate = mockSelectedStateEvent
+                onSelectedStateUpdate = mockSelectedStateEvent,
+                _onDeleteClick = {}
             )
         }
     }
@@ -176,8 +180,16 @@ fun TodayScreen(viewModel: HabitViewModel) {
         viewModel.updateSelectedState(id, isDone)
     }
 
-        TodayScreenContent(
+    val _onDeleteClick: (habit: HabitEntity) -> Unit = { habit ->
+        coroutineScope.launch {
+            viewModel.deleteHabit(habit)
+        }
+
+    }
+
+    TodayScreenContent(
         habitLIstState = _stateList.value,
         onSelectedStateUpdate = _onSelectedStateUpdate,
+        _onDeleteClick = _onDeleteClick
     )
 }

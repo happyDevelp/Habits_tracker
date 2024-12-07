@@ -61,6 +61,7 @@ fun HabitItem(
     modifier: Modifier = Modifier,
     habit: HabitEntity = HabitEntity(),
     onUpdateSelectedState: (id: Int, isDone: Boolean) -> Unit = { id, isDone -> },
+    onDeleteClick: (habit: HabitEntity) -> Unit
 ) {
     val navController = LocalNavController.current
 
@@ -199,6 +200,7 @@ fun HabitItem(
                                     trailingIcon = { Icons.Default.Delete },
                                     onClick = {
                                         isMenuExpanded = false
+                                        onDeleteClick.invoke(habit)
                                     }
                                 )
                             }
@@ -213,5 +215,5 @@ fun HabitItem(
 @Composable
 @Preview(showSystemUi = true)
 private fun Preview() {
-    AppTheme(darkTheme = true) { HabitItem() }
+    AppTheme(darkTheme = true) { HabitItem(onDeleteClick = {}) }
 }

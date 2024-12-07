@@ -227,7 +227,7 @@ fun EditHabitContent(
             isDone = habit.isDone,
             colorHex = habitColor.toHex(),
             days = habit.days,
-            executionTime = "No",
+            executionTime = executionTime,
             reminder = false
         )
 
