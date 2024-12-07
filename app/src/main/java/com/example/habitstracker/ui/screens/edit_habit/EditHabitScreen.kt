@@ -66,8 +66,7 @@ fun EditHabitContent(
     modifier: Modifier = Modifier,
     habit: HabitEntity,
     icon: ImageVector,
-    //previewList: List<SelectedDay>? = emptyList(),
-    onUpdateHabit: (habit: HabitEntity) -> Unit
+    onUpdateHabit: (habit: HabitEntity) -> Unit,
 ) {
     val navController = LocalNavController.current
 
@@ -94,155 +93,152 @@ fun EditHabitContent(
                 mutableStateOf(habit.colorHex.getColorFromHex())
             }
 
+            var selectedDays = dayStatesList.let {
+                    val includeDaysList = it.filter { it.isSelect == true }.map { it.day }
+                    val excludeDaysList = it.filter { it.isSelect == false }.map { it.day }
 
-            var selectedDays by remember {
-                mutableStateOf(
-                    dayStatesList.let {
-                        val includeDaysList = it.filter { it.isSelect == true }.map { it.day }
-                        val excludeDaysList = it.filter { it.isSelect == false }.map { it.day }
+                    when {
+                        includeDaysList.size == 7 -> "Everyday"
+                        excludeDaysList.size == 1 -> "Everyday except ${excludeDaysList[0]}"
+                        excludeDaysList.size == 2 -> "Everyday except ${excludeDaysList[0]} " + "and ${excludeDaysList[1]}"
+                        includeDaysList.isNotEmpty() -> includeDaysList.joinToString(", ")
 
-                        when {
-                            includeDaysList.size == 7 -> "Everyday"
-                            excludeDaysList.size == 1 -> "Everyday except ${excludeDaysList[0]}"
-                            excludeDaysList.size == 2 -> "Everyday except ${excludeDaysList[0]} " + "and ${excludeDaysList[1]}"
-                            includeDaysList.isNotEmpty() -> includeDaysList.joinToString(", ")
+                        else -> "Error data (EditHabitScreen 'when' expression)"
 
-                            else -> "Error data (EditHabitScreen 'when' expression)"
-
-                        }
                     }
-                )
+                }
+
+
+
+
+        var executionTime by remember { mutableStateOf(habit.executionTime) }
+
+
+        val onExecutionTimeButtonClick: (executionTimeText: String) -> Unit = { text ->
+            executionTime = text
+        }
+
+        Column(
+            modifier = modifier
+                .fillMaxWidth()
+                .fillMaxHeight(0.9f)
+                .padding(horizontal = 16.dp),
+            horizontalAlignment = Alignment.Start,
+            verticalArrangement = Arrangement.Top
+        ) {
+            EditHabitNameTextField(name = habitName) { text ->
+                habitName = text
             }
 
+            Spacer(modifier = modifier.height(16.dp))
 
-            var executionTime by remember { mutableStateOf(habit.executionTime) }
+            EditIconAndColorPicker(
+                icon = habitIcon,
+                color = habitColor,
+
+                onIconPick = { icon ->
+                    habitIcon = iconByName(icon)
+                },
+                onColorPick = { color ->
+                    habitColor = color
+                }
+            )
+            Spacer(modifier = modifier.height(12.dp))
 
 
-            val onExecutionTimeButtonClick: (executionTimeText: String) -> Unit = { text ->
-                executionTime = text
-            }
+            Text(
+                text = "REPEAT (Long-term habits)",
+                fontFamily = PoppinsFontFamily,
+                fontSize = 13.sp,
+                color = Color.White.copy(alpha = 0.50f),
+            )
 
-            Column(
+            Spacer(modifier = modifier.height(12.dp))
+
+
+            Row(
                 modifier = modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.9f)
-                    .padding(horizontal = 16.dp),
-                horizontalAlignment = Alignment.Start,
-                verticalArrangement = Arrangement.Top
-            ) {
-                EditHabitNameTextField(name = habitName) { text ->
-                    habitName = text
-                }
+                    .height(55.dp)
+                    .clip(RoundedCornerShape(18.dp))
+                    .background(color = screenContainerBackgroundDark)
+                    .clickWithRipple(
+                        color = Color.White
+                    ) {
 
-                Spacer(modifier = modifier.height(16.dp))
-
-                EditIconAndColorPicker(
-                    icon = habitIcon,
-                    color = habitColor,
-
-                    onIconPick = { icon ->
-                        habitIcon = iconByName(icon)
+                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                            key = "param_selectedDays",
+                            value = dayStatesList
+                        )
+                        navController.navigate(
+                            RoutesMainScreen.EditRepeatPicker.route
+                                    + "/${habit.id}"
+                        )
                     },
-                    onColorPick = { color ->
-                        habitColor = color
-                    }
-                )
-                Spacer(modifier = modifier.height(12.dp))
 
-
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Text(
-                    text = "REPEAT (Long-term habits)",
+                    modifier = modifier.padding(start = 16.dp),
+                    text = stringResource(R.string.days_of_habits),
                     fontFamily = PoppinsFontFamily,
-                    fontSize = 13.sp,
-                    color = Color.White.copy(alpha = 0.50f),
+                    fontSize = 14.sp,
+                    color = Color.White,
                 )
-
-                Spacer(modifier = modifier.height(12.dp))
-
 
                 Row(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .height(55.dp)
-                        .clip(RoundedCornerShape(18.dp))
-                        .background(color = screenContainerBackgroundDark)
-                        .clickWithRipple(
-                            color = Color.White
-                        ) {
-
-                            navController.currentBackStackEntry?.savedStateHandle?.set(
-                                key = "param_selectedDays",
-                                value = dayStatesList
-                            )
-                            navController.navigate(
-                                RoutesMainScreen.EditRepeatPicker.route
-                                        + "/${habit.id}"
-                            )
-                        },
-
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = modifier.padding(end = 12.dp),
+                    horizontalArrangement = Arrangement.End
                 ) {
                     Text(
-                        modifier = modifier.padding(start = 16.dp),
-                        text = stringResource(R.string.days_of_habits),
+                        text = selectedDays,
                         fontFamily = PoppinsFontFamily,
-                        fontSize = 14.sp,
-                        color = Color.White,
+                        fontSize = 12.sp,
+                        color = Color.White.copy(alpha = 0.5f),
                     )
 
-                    Row(
-                        modifier = modifier.padding(end = 12.dp),
-                        horizontalArrangement = Arrangement.End
-                    ) {
-                        Text(
-                            text = selectedDays,
-                            fontFamily = PoppinsFontFamily,
-                            fontSize = 12.sp,
-                            color = Color.White.copy(alpha = 0.5f),
-                        )
-
-                        Spacer(modifier = modifier.width(12.dp))
-                        Icon(
-                            imageVector = Icons.Default.ChevronRight,
-                            contentDescription = null,
-                            tint = Color.White.copy(0.7f)
-                        )
-                    }
+                    Spacer(modifier = modifier.width(12.dp))
+                    Icon(
+                        imageVector = Icons.Default.ChevronRight,
+                        contentDescription = null,
+                        tint = Color.White.copy(0.7f)
+                    )
                 }
-
-                Spacer(modifier = modifier.height(12.dp))
-
-                EditExecutionTimePicker(
-                    currentPickedButton = executionTime,
-                    onButtonClicked = onExecutionTimeButtonClick
-                )
-                Spacer(modifier = modifier.height(16.dp))
-
-                AdvancedSettings()
             }
 
+            Spacer(modifier = modifier.height(12.dp))
 
-            // Create habit with new param and update
-            val newHabit = HabitEntity(
-                id = habit.id,
-                name = habitName,
-                iconName = getIconName(habitIcon),
-                isDone = habit.isDone,
-                colorHex = habitColor.toHex(),
-                days = habit.days,
-                executionTime = "No",
-                reminder = false
+            EditExecutionTimePicker(
+                currentPickedButton = executionTime,
+                onButtonClicked = onExecutionTimeButtonClick
             )
+            Spacer(modifier = modifier.height(16.dp))
 
-            EditCreateButton(
-                modifier = modifier.align(Alignment.BottomCenter),
-                habit = newHabit,
-                onUpdateHabit = onUpdateHabit
-            )
-
+            AdvancedSettings()
         }
+
+
+        // Create habit with new param and update
+        val newHabit = HabitEntity(
+            id = habit.id,
+            name = habitName,
+            iconName = getIconName(habitIcon),
+            isDone = habit.isDone,
+            colorHex = habitColor.toHex(),
+            days = habit.days,
+            executionTime = "No",
+            reminder = false
+        )
+
+        EditCreateButton(
+            modifier = modifier.align(Alignment.BottomCenter),
+            habit = newHabit,
+            onUpdateHabit = onUpdateHabit
+        )
+
     }
+}
 }
 
 
