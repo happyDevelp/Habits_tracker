@@ -18,6 +18,8 @@ ktxSerialization = "1.6.3"
 roomKtx = "2.6.1"
 daggerHilt = "2.51.1"
 junitJunit = "4.12"
+ksp = "2.0.20-1.0.24"
+
 
 [libraries]
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomKtx" }
@@ -53,6 +55,7 @@ junit-junit = { group = "junit", name = "junit", version.ref = "junitJunit" }
 
 
 [plugins]
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin"}

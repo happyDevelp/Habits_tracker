@@ -112,10 +112,11 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     testImplementation(libs.junit.junit)
 
-    kapt(libs.androidx.room.compiler)
-    kapt(libs.hilt.android.compiler)
+   /* kapt(libs.androidx.room.compiler)
+    kapt(libs.hilt.android.compiler)*/
     kaptAndroidTest ("com.google.dagger:hilt-compiler:2.51.1")
-
+    //ksp(libs.androidx.room.compiler)
+    //alias(libs.plugins.ksp)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
