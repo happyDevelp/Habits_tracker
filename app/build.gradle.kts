@@ -2,12 +2,9 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.kotlin.serialization)
-    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.dagger.hilt.android)
-    id ("dagger.hilt.android.plugin")
-    id("kotlin-parcelize")
-
-
+    alias(libs.plugins.kotlin.parcelize)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -26,11 +23,9 @@ android {
             useSupportLibrary = true
         }
 
-        //Kapt scehma directory path when created
-        kapt {
-            arguments {
-                arg("room.schemaLocation", "$projectDir/schemas")
-            }
+        //Room schema directory path
+        ksp {
+            arg("room.schemaLocation", "$projectDir/schemas")
         }
 
         // Ensure schema directory creation if doesn't exist
@@ -63,28 +58,23 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = "1.8"
+        jvmTarget = "17"
     }
     buildFeatures {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
+        kotlinCompilerExtensionVersion = "1.5.7"
     }
     packaging {
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
-
-/*    testOptions {
-        unitTests.isIncludeAndroidResources = true
-        execution "ANDROIDX_TEST_ORCHESTRATOR"
-    }*/
 }
 
 dependencies {
@@ -104,19 +94,15 @@ dependencies {
     implementation(libs.androidx.foundation)
     implementation(libs.androidx.room.ktx)
     implementation(libs.kotlin.serialization.core)
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0") // Актуальна версія
+    implementation(libs.kotlinx.serialization.json)
 
-
-    //implementation("com.google.dagger:hilt-android:2.51.1")
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     testImplementation(libs.junit.junit)
 
-   /* kapt(libs.androidx.room.compiler)
-    kapt(libs.hilt.android.compiler)*/
-    kaptAndroidTest ("com.google.dagger:hilt-compiler:2.51.1")
-    //ksp(libs.androidx.room.compiler)
-    //alias(libs.plugins.ksp)
+    ksp(libs.androidx.room.compiler)
+    ksp(libs.hilt.android.compiler)
+    kspAndroidTest(libs.hilt.compiler)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -125,11 +111,5 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
     testImplementation(libs.junit)
-    androidTestImplementation ("com.google.dagger:hilt-android-testing:2.51.1")
-
-}
-
-// Allow references to generated code
-kapt {
-    correctErrorTypes = true
+    androidTestImplementation(libs.hilt.android.testing)
 }
