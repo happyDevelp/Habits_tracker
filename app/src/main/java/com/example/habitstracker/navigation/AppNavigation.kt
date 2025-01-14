@@ -12,6 +12,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
+import androidx.navigation.toRoute
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.data.db.viewmodel.HabitViewModel
 import com.example.habitstracker.navigation.bottombar.BottomBarScreens
@@ -47,71 +48,45 @@ fun AppNavigation() {
 
         NavHost(
             navController = navController,
-            startDestination = BottomBarScreens.TodayScreen.name,
+            startDestination = Route.Today,
             modifier = Modifier.padding(paddingValues)
         ) {
-
-            composable(route = BottomBarScreens.TodayScreen.name) {
+            composable<Route.Today> {
                 TodayScreen(viewModel = dbViewModel)
             }
-            composable(route = BottomBarScreens.HistoryScreen.name) {
+
+            composable<Route.History> {
                 HistoryScreen()
             }
-            composable(route = BottomBarScreens.MeScreen.name) {
+            composable<Route.History> {
                 MeScreen()
             }
 
-            composable(route = RoutesMainScreen.AddHabit.route) {
+            composable<Route.AddHabit> {
                 AddHabitScreen()
             }
 
-            composable(
-                route = "${RoutesMainScreen.CreateNewHabit.route}?param={param}",
-                arguments = listOf(
-                    navArgument("param") {
-                        type = NavType.StringType
-                        defaultValue = "Everyday"
-                    })
-            ) { backStackEntry ->
-                val param = backStackEntry.savedStateHandle.get<String>("param") ?: "Everyday"
-                CreateOwnHabitScreen(param = param)
+            composable<Route.CreateHabit>
+             { backStackEntry ->
+                val args = backStackEntry.toRoute<Route.CreateHabit>()
+                CreateOwnHabitScreen(param = args.param ?: "Everyday teststststs")
             }
 
-            composable(route = RoutesMainScreen.RepeatPicker.route) {
+            composable<Route.RepeatPicker> {
                 RepeatPicker()
             }
 
-            composable(                                                       /*&paramSelectedDays={paramSelectedDays}*/
-                route = "${RoutesMainScreen.EditHabit.route}?paramId={paramId}",
-                arguments = listOf(
-                    navArgument("paramId") {
-                        type = NavType.IntType
-                        defaultValue = 0
-                    },
-
-                    )
-            ) { backStackEntry ->
-                val paramId = backStackEntry.arguments?.getInt("paramId") ?: 0
+            composable<Route.EditHabit> { backStackEntry ->
+                val args = backStackEntry.toRoute<Route.EditHabit>()
                 EditHabitScreen(
-                    paramId = paramId,
+                    paramId = args.id,
                     viewModel = dbViewModel
                 )
             }
 
-            composable(route = "${RoutesMainScreen.EditRepeatPicker.route}/{paramId}",
-                arguments = listOf(
-                    navArgument("paramId") {
-                        type = NavType.IntType // Тип аргументу (Int, String, etc.)
-                    }
-                )
-            ) { backStackEntry ->
-                val paramId = backStackEntry.arguments?.getInt("paramId") ?: throw IllegalArgumentException("paramId is required")
-                val result =
-                    navController.previousBackStackEntry?.savedStateHandle?.get<MutableList<SelectedDay>>(
-                        "param_selectedDays"
-                    )
-                EditRepeatPickerScreen(paramId = paramId, viewModel = dbViewModel)
-
+            composable<Route.EditRepeatPicker> { backStackEntry ->
+                val args = backStackEntry.toRoute<Route.EditRepeatPicker>()
+                EditRepeatPickerScreen(paramId = args.id, viewModel = dbViewModel)
             }
         }
     }

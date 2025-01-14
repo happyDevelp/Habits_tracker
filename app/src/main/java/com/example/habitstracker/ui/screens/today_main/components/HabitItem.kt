@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.data.db.HabitEntity
+import com.example.habitstracker.navigation.Route
 import com.example.habitstracker.navigation.RoutesMainScreen
 import com.example.habitstracker.ui.custom.CustomCheckbox
 import com.example.habitstracker.ui.theme.AppTheme
@@ -183,7 +184,6 @@ fun HabitItem(
                             DropdownMenu(
                                 expanded = isMenuExpanded,
                                 onDismissRequest = { isMenuExpanded = false },
-                                //modifier = Modifier.background(Color.Red)
                             ) {
 
                                 DropdownMenuItem(
@@ -191,7 +191,7 @@ fun HabitItem(
                                     trailingIcon = { Icons.Default.Edit },
                                     onClick = {
                                         isMenuExpanded = false
-                                        navController.navigate("${RoutesMainScreen.EditHabit.route}?paramId=${habit.id}")
+                                        navController.navigate(Route.EditHabit(id = habit.id))
                                     }
                                 )
 

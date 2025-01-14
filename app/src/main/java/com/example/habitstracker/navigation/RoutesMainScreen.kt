@@ -31,7 +31,7 @@ sealed interface Route {
     data object AddHabit: Route
 
     @Serializable
-    data class CreateHabit(val param: String): Route
+    data class CreateHabit(val param: String?): Route
 
     @Serializable
     data object RepeatPicker: Route

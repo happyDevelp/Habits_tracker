@@ -42,6 +42,7 @@ import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.data.db.HabitEntity
 import com.example.habitstracker.data.db.viewmodel.HabitViewModel
+import com.example.habitstracker.navigation.Route
 import com.example.habitstracker.navigation.RoutesMainScreen
 import com.example.habitstracker.ui.screens.add_habit.components.AdvancedSettings
 import com.example.habitstracker.ui.screens.edit_habit.components.EditCreateButton
@@ -170,10 +171,7 @@ fun EditHabitContent(
                             key = "param_selectedDays",
                             value = dayStatesList
                         )
-                        navController.navigate(
-                            RoutesMainScreen.EditRepeatPicker.route
-                                    + "/${habit.id}"
-                        )
+                        navController.navigate(Route.EditRepeatPicker(id = habit.id))
                     },
 
                 horizontalArrangement = Arrangement.SpaceBetween,

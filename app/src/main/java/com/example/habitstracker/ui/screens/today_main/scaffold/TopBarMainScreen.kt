@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.habitstracker.R
+import com.example.habitstracker.navigation.Route
 import com.example.habitstracker.navigation.RoutesMainScreen
 import com.example.habitstracker.ui.custom.MyText
 import com.example.habitstracker.ui.theme.AppTypography
@@ -75,7 +76,7 @@ fun TopBarMainScreen(
         actions = {
             IconButton(
                 onClick = {
-                    navController.navigate(RoutesMainScreen.AddHabit.route)
+                    navController.navigate(Route.AddHabit)
                 },
 
                 colors = IconButtonDefaults.iconButtonColors(

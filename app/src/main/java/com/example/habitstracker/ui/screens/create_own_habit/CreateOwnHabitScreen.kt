@@ -40,6 +40,7 @@ import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.data.db.HabitEntity
 import com.example.habitstracker.data.db.viewmodel.HabitViewModel
+import com.example.habitstracker.navigation.Route
 import com.example.habitstracker.navigation.RoutesMainScreen
 import com.example.habitstracker.ui.screens.add_habit.components.AdvancedSettings
 import com.example.habitstracker.ui.screens.add_habit.components.CreateButton
@@ -135,7 +136,7 @@ fun CreateOwnHabitContent(
                         .background(color = screenContainerBackgroundDark)
                         .clickWithRipple(
                             color = Color.White
-                        ) { navController.navigate(RoutesMainScreen.RepeatPicker.route) },
+                        ) { navController.navigate(Route.RepeatPicker) },
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {

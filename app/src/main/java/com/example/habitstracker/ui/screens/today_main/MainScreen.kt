@@ -35,6 +35,7 @@ import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.data.db.HabitEntity
 import com.example.habitstracker.data.db.viewmodel.HabitViewModel
+import com.example.habitstracker.navigation.Route
 import com.example.habitstracker.navigation.RoutesMainScreen
 import com.example.habitstracker.ui.custom.CustomRippleTheme
 import com.example.habitstracker.ui.screens.today_main.components.HabitItem
@@ -117,7 +118,7 @@ fun TodayScreenContent(
                                     .testTag(TestTags.CREATE_NEW_HABIT_BUTTON),
 
                                 onClick = {
-                                    navController.navigate(RoutesMainScreen.AddHabit.route)
+                                    navController.navigate(Route.AddHabit)
                                 },
 
                                 colors = ButtonDefaults.buttonColors(

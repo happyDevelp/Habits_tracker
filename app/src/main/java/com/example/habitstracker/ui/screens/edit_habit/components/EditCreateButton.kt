@@ -48,7 +48,7 @@ fun EditCreateButton(
         onClick = {
             coroutineScope.launch {
                 onUpdateHabit(habit)
-                navController.popBackStack(BottomBarScreens.TodayScreen.name, false)
+                navController.navigateUp()
             }
         },
 

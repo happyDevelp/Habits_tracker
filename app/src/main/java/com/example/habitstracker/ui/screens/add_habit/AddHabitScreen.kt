@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
+import com.example.habitstracker.navigation.Route
 import com.example.habitstracker.navigation.RoutesMainScreen
 import com.example.habitstracker.ui.screens.add_habit.components.DefaultChooseHabitItem
 import com.example.habitstracker.ui.screens.add_habit.scaffold.TopBarAddHabitScreen
@@ -84,7 +85,7 @@ fun AddHabitScreen(modifier: Modifier = Modifier) {
                         .testTag(TestTags.CREATE_OWN_HABIT_BUTTON),
 
                     onClick = {
-                        navController.navigate(RoutesMainScreen.CreateNewHabit.route)
+                        navController.navigate(Route.CreateHabit(param = null))
                     },
 
                     colors = ButtonDefaults.buttonColors(
