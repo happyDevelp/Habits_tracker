@@ -12,6 +12,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
 import androidx.navigation.toRoute
 import com.example.habitstracker.app.LocalNavController
@@ -49,19 +50,23 @@ fun AppNavigation() {
 
         NavHost(
             navController = navController,
-            startDestination = Route.Today,
+            startDestination = Route.BottomBarGraph,
             modifier = Modifier.padding(paddingValues)
         ) {
-            composable<Route.Today> {
-                TodayScreen(viewModel = dbViewModel)
-            }
+            navigation<Route.BottomBarGraph>(
+                startDestination = Route.Today
+            ) {
+                composable<Route.Today> {
+                    TodayScreen(viewModel = dbViewModel)
+                }
 
-            composable<Route.History> {
-                HistoryScreen()
-            }
+                composable<Route.History> {
+                    HistoryScreen()
+                }
 
-            composable<Route.Me> {
-                MeScreen()
+                composable<Route.Me> {
+                    MeScreen()
+                }
             }
 
             composable<Route.AddHabit> {

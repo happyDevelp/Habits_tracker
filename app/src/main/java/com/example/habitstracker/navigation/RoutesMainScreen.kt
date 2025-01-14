@@ -5,6 +5,12 @@ import kotlinx.serialization.Serializable
 sealed interface Route {
 
     @Serializable
+    data object BottomBarGraph: Route
+
+    /*@Serializable
+    data object HabitGraph: Route*/
+
+    @Serializable
     data object Today: Route
 
     @Serializable
