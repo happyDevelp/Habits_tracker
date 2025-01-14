@@ -7,6 +7,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavDestination
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -58,7 +59,8 @@ fun AppNavigation() {
             composable<Route.History> {
                 HistoryScreen()
             }
-            composable<Route.History> {
+
+            composable<Route.Me> {
                 MeScreen()
             }
 
@@ -93,11 +95,17 @@ fun AppNavigation() {
 }
 
 fun getBottomBarState(navBackStackEntry: NavBackStackEntry?): Boolean {
-    return when (navBackStackEntry?.destination?.route) {
-        RoutesMainScreen.RepeatPicker.route -> false
-        RoutesMainScreen.AddHabit.route -> false
-        RoutesMainScreen.CreateNewHabit.route -> false
+    val currentRoute = navBackStackEntry?.destination?.route as? Route
+
+    return when (currentRoute) {
+        is Route.RepeatPicker -> false
+        is Route.AddHabit -> false
+        is Route.CreateHabit -> false
 
         else -> true
     }
+}
+
+fun NavDestination.matchRoute(route: Route): Boolean {
+    return this.route == route.toString()
 }

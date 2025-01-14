@@ -11,6 +11,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
+import com.example.habitstracker.navigation.matchRoute
 import com.example.habitstracker.ui.theme.PoppinsFontFamily
 
 @Composable
@@ -21,9 +22,7 @@ fun NavigationBottomBar(
     BottomAppBar {
         listOfNavItems.forEach { bottomBarItem: BottomBarItems ->
             NavigationBarItem(
-                selected = currentDestination?.hierarchy?.any {
-                    it.route == bottomBarItem.route
-                } == true,
+                selected = currentDestination?.matchRoute(bottomBarItem.route) == true,
 
                 onClick = {
                     navController.navigate(bottomBarItem.route) {

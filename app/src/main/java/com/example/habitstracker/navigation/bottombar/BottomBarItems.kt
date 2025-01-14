@@ -5,27 +5,28 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.habitstracker.navigation.Route
 
 data class BottomBarItems (
     val label: String,
     val icon: ImageVector,
-    val route: String
+    val route: Route
 )
 
 val listOfNavItems = listOf(
     BottomBarItems(
         label = "Today",
         icon = Icons.Default.DateRange,
-        route = BottomBarScreens.TodayScreen.name
+        route = Route.Today
     ),
     BottomBarItems(
         label = "History",
         icon = Icons.Default.Home,
-        route = BottomBarScreens.HistoryScreen.name
+        route = Route.History
     ),
     BottomBarItems(
         label = "Me",
         icon = Icons.Default.AccountCircle,
-        route = BottomBarScreens.MeScreen.name
+        route = Route.Me
     )
 )
