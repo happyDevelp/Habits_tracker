@@ -43,13 +43,11 @@ import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.data.db.HabitEntity
 import com.example.habitstracker.data.db.viewmodel.HabitViewModel
 import com.example.habitstracker.navigation.Route
-import com.example.habitstracker.navigation.RoutesMainScreen
 import com.example.habitstracker.ui.screens.add_habit.components.AdvancedSettings
 import com.example.habitstracker.ui.screens.edit_habit.components.EditCreateButton
 import com.example.habitstracker.ui.screens.edit_habit.components.EditExecutionTimePicker
 import com.example.habitstracker.ui.screens.edit_habit.components.EditHabitNameTextField
 import com.example.habitstracker.ui.screens.edit_habit.components.EditIconAndColorPicker
-import com.example.habitstracker.ui.screens.edit_habit.components.SelectedDay
 import com.example.habitstracker.ui.screens.edit_habit.scaffold.TopBarEditHabitScreen
 import com.example.habitstracker.ui.theme.AppTheme
 import com.example.habitstracker.ui.theme.PoppinsFontFamily

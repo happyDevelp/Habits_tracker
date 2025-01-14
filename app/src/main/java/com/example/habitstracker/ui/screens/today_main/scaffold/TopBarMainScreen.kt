@@ -1,6 +1,5 @@
 package com.example.habitstracker.ui.screens.today_main.scaffold
 
-
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,13 +23,10 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.habitstracker.R
 import com.example.habitstracker.navigation.Route
-import com.example.habitstracker.navigation.RoutesMainScreen
 import com.example.habitstracker.ui.custom.MyText
-import com.example.habitstracker.ui.theme.AppTypography
 import com.example.habitstracker.ui.theme.PoppinsFontFamily
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)

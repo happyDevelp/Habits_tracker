@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.habitstracker.R
-import com.example.habitstracker.navigation.RoutesMainScreen
+import com.example.habitstracker.navigation.Route
 import com.example.habitstracker.ui.theme.PoppinsFontFamily
 import com.example.habitstracker.ui.theme.screenContainerBackgroundDark
 import com.example.habitstracker.utils.clickWithRipple
@@ -59,7 +59,7 @@ fun RepeatPickerContainer(
             .background(color = screenContainerBackgroundDark)
             .clickWithRipple(
                 color = Color.White
-            ) { navController.navigate(RoutesMainScreen.RepeatPicker.route) },
+            ) { navController.navigate(Route.EditRepeatPicker) },
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {

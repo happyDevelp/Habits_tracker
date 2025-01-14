@@ -32,7 +32,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.navigation.Route
-import com.example.habitstracker.navigation.RoutesMainScreen
 import com.example.habitstracker.ui.screens.add_habit.components.DefaultChooseHabitItem
 import com.example.habitstracker.ui.screens.add_habit.scaffold.TopBarAddHabitScreen
 import com.example.habitstracker.ui.theme.AppTheme
