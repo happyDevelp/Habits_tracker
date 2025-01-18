@@ -21,7 +21,6 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.habitstracker.R
 import com.example.habitstracker.navigation.Route
-import com.example.habitstracker.navigation.bottombar.BottomBarScreens
 import com.example.habitstracker.utils.TestTags
 import kotlinx.coroutines.launch
 

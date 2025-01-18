@@ -20,7 +20,6 @@ import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.data.db.HabitEntity
-import com.example.habitstracker.navigation.bottombar.BottomBarScreens
 import kotlinx.coroutines.launch
 
 @Composable
