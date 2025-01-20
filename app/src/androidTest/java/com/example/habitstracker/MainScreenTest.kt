@@ -7,10 +7,10 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.compose.ui.test.performTextInput
 import com.example.habitstracker.app.MainActivity
-import com.example.habitstracker.data.db.DAO
-import com.example.habitstracker.data.db.HabitEntity
-import com.example.habitstracker.data.di.AppModule
-import com.example.habitstracker.ui.theme.blueColor
+import com.example.habitstracker.habit.data.db.DAO
+import com.example.habitstracker.habit.data.db.HabitEntity
+import com.example.habitstracker.di.AppModule
+import com.example.habitstracker.core.presentation.theme.blueColor
 import com.example.habitstracker.utils.TestTags
 import com.example.habitstracker.utils.toHex
 import dagger.hilt.android.testing.HiltAndroidRule

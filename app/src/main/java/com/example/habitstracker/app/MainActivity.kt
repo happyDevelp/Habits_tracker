@@ -6,8 +6,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.navigation.compose.rememberNavController
-import com.example.habitstracker.navigation.AppNavigation
-import com.example.habitstracker.ui.theme.AppTheme
+import com.example.habitstracker.app.navigation.AppNavigation
+import com.example.habitstracker.core.presentation.theme.AppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

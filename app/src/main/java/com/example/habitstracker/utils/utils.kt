@@ -12,9 +12,9 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.example.habitstracker.data.db.HabitEntity
-import com.example.habitstracker.ui.screens.edit_habit.components.SelectedDay
-import com.example.habitstracker.ui.theme.blueColor
+import com.example.habitstracker.habit.data.db.HabitEntity
+import com.example.habitstracker.habit.presentation.edit_habit.components.SelectedDay
+import com.example.habitstracker.core.presentation.theme.blueColor
 import java.time.LocalDate
 
 val APP_VERSION = "0.0.0 (alpha)"
