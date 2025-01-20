@@ -1,4 +1,4 @@
-package com.example.habitstracker.habit.presentation.today_main.scaffold
+package com.example.habitstracker.habit.presentation.today_main.components
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column

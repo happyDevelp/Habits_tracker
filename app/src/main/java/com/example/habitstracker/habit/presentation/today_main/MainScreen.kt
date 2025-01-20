@@ -19,7 +19,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,16 +30,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.habit.domain.HabitEntity
-import com.example.habitstracker.habit.data.db.viewmodel.HabitViewModel
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.CustomRippleTheme
 import com.example.habitstracker.habit.presentation.today_main.components.HabitItem
 import com.example.habitstracker.habit.presentation.today_main.components.calendar.CalendarRowList
-import com.example.habitstracker.habit.presentation.today_main.scaffold.TopBarMainScreen
+import com.example.habitstracker.habit.presentation.today_main.components.TopBarMainScreen
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
@@ -50,11 +51,34 @@ import com.example.habitstracker.utils.habitEntityExample
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
+@Composable
+fun TodayScreenRoot() {
+    val viewModel = hiltViewModel<MainScreenViewModel>()
+    val coroutineScope = rememberCoroutineScope()
+
+    val habitListState by viewModel.habitsList.collectAsStateWithLifecycle()
+    val onSelectClick = { id: Int, isDone: Boolean ->
+        viewModel.updateSelectedState(id, isDone)
+    }
+
+    val onDeleteClick: (habit: HabitEntity) -> Unit = { habit ->
+        coroutineScope.launch {
+            viewModel.deleteHabit(habit)
+        }
+
+    }
+
+    TodayScreen(
+        habitListState = habitListState,
+        onSelectedStateUpdate = onSelectClick,
+        _onDeleteClick = onDeleteClick
+    )
+}
 
 @Composable
-fun TodayScreenContent(
+fun TodayScreen(
     modifier: Modifier = Modifier,
-    habitLIstState: List<HabitEntity>,
+    habitListState: List<HabitEntity>,
     onSelectedStateUpdate: (id: Int, isDone: Boolean) -> Unit,
     _onDeleteClick: (habit: HabitEntity) -> Unit,
 ) {
@@ -97,9 +121,9 @@ fun TodayScreenContent(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        items(habitLIstState.size) { habitId ->
+                        items(habitListState.size) { habitId ->
                             HabitItem(
-                                habit = habitLIstState[habitId],
+                                habit = habitListState[habitId],
                                 onUpdateSelectedState = onSelectedStateUpdate,
                                 onDeleteClick = _onDeleteClick
                             )
@@ -162,34 +186,11 @@ private fun Preview() {
 
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
         AppTheme(darkTheme = true) {
-            TodayScreenContent(
-                habitLIstState = mockList,
+            TodayScreen(
+                habitListState = mockList,
                 onSelectedStateUpdate = mockSelectedStateEvent,
                 _onDeleteClick = {}
             )
         }
     }
-}
-
-@Composable
-fun TodayScreen(viewModel: HabitViewModel) {
-    val coroutineScope = rememberCoroutineScope()
-
-    val _stateList = viewModel.habitsList.collectAsState()
-    val _onSelectedStateUpdate = { id: Int, isDone: Boolean ->
-        viewModel.updateSelectedState(id, isDone)
-    }
-
-    val _onDeleteClick: (habit: HabitEntity) -> Unit = { habit ->
-        coroutineScope.launch {
-            viewModel.deleteHabit(habit)
-        }
-
-    }
-
-    TodayScreenContent(
-        habitLIstState = _stateList.value,
-        onSelectedStateUpdate = _onSelectedStateUpdate,
-        _onDeleteClick = _onDeleteClick
-    )
 }

@@ -29,7 +29,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,16 +48,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
-import com.example.habitstracker.habit.domain.HabitEntity
-import com.example.habitstracker.habit.data.db.viewmodel.HabitViewModel
 import com.example.habitstracker.core.presentation.MyButton
 import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
+import com.example.habitstracker.habit.domain.HabitEntity
+import com.example.habitstracker.habit.presentation.today_main.MainScreenViewModel
 import com.example.habitstracker.utils.clickWithRipple
 import com.example.habitstracker.utils.getCorrectSelectedDaysList
 import com.example.habitstracker.utils.habitEntityExample
@@ -67,10 +68,32 @@ import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
 @Composable
-fun EditRepeatPicker(
+fun EditRepeatPickerRoot(paramId: Int) {
+    val viewModel = hiltViewModel<MainScreenViewModel>()
+    val coroutineScope = rememberCoroutineScope()
+    val allHabits = viewModel.habitsList.collectAsStateWithLifecycle()
+    val currentHabit = allHabits.value.find { it.id == paramId }
+        ?: throw Exception("Current habit is null. (EditRepeatPickerScreen)")
+
+    val onSaveClick: (days: String) -> Unit = { days ->
+        coroutineScope.launch {
+            viewModel.updateHabit(
+                currentHabit.copy(days = days)
+            )
+        }
+    }
+
+    EditRepeatPickerScreen(
+        habit = currentHabit,
+        onSaveClick = onSaveClick,
+    )
+}
+
+@Composable
+fun EditRepeatPickerScreen(
     habit: HabitEntity,
     modifier: Modifier = Modifier,
-    onSaveClickListener: (days: String) -> Unit,
+    onSaveClick: (days: String) -> Unit,
 ) {
     val navController = LocalNavController.current
 
@@ -361,7 +384,7 @@ fun EditRepeatPicker(
                     },
 
                 onClick = {
-                    onSaveClickListener(selectedDayText.second)
+                    onSaveClick(selectedDayText.second)
                     navController.navigateUp()
                 }
             ) {
@@ -507,36 +530,14 @@ private fun RepeatPickerTopBar(
     )
 }
 
-
-@Composable
-fun EditRepeatPickerScreen(paramId: Int, viewModel: HabitViewModel) {
-    val coroutineScope = rememberCoroutineScope()
-    val allHabits = viewModel.habitsList.collectAsState()
-    val currentHabit = allHabits.value.find { it.id == paramId }
-        ?: throw Exception("Current habit is null. (EditRepeatPickerScreen)")
-
-    val _onSaveClickListener: (days: String) -> Unit = { days ->
-        coroutineScope.launch {
-            viewModel.updateHabit(
-                currentHabit.copy(days = days)
-            )
-        }
-    }
-
-    EditRepeatPicker(
-        habit = currentHabit,
-        onSaveClickListener = _onSaveClickListener,
-    )
-}
-
 @Composable
 @Preview(showSystemUi = true)
 private fun Preview() {
     val mockNavController = rememberNavController()
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
         AppTheme(darkTheme = true) {
-            EditRepeatPicker(
-                onSaveClickListener = {},
+            EditRepeatPickerScreen(
+                onSaveClick = {},
                 habit = habitEntityExample
             )
         }

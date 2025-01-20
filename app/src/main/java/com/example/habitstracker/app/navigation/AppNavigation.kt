@@ -23,21 +23,20 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import com.example.habitstracker.app.LocalNavController
-import com.example.habitstracker.habit.data.db.viewmodel.HabitViewModel
 import com.example.habitstracker.app.navigation.bottombar.NavigationBottomBar
 import com.example.habitstracker.habit.presentation.add_habit.AddHabitScreen
-import com.example.habitstracker.habit.presentation.create_own_habit.CreateOwnHabitScreen
+import com.example.habitstracker.habit.presentation.create_own_habit.CreateOwnHabitRoot
 import com.example.habitstracker.habit.presentation.create_own_habit.components.RepeatPicker
-import com.example.habitstracker.habit.presentation.edit_habit.EditHabitScreen
-import com.example.habitstracker.habit.presentation.edit_habit.components.EditRepeatPickerScreen
+import com.example.habitstracker.habit.presentation.edit_habit.EditHabitRoot
+import com.example.habitstracker.habit.presentation.edit_habit.components.EditRepeatPickerRoot
 import com.example.habitstracker.habit.presentation.history.HistoryScreen
 import com.example.habitstracker.habit.presentation.me.MeScreen
-import com.example.habitstracker.habit.presentation.today_main.TodayScreen
+import com.example.habitstracker.habit.presentation.today_main.MainScreenViewModel
+import com.example.habitstracker.habit.presentation.today_main.TodayScreenRoot
 
 @Composable
 fun AppNavigation() {
     val navController = LocalNavController.current
-    val dbViewModel = hiltViewModel<HabitViewModel>()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val showBottomBar = getBottomBarState(navBackStackEntry)
@@ -64,8 +63,6 @@ fun AppNavigation() {
             }
         }
     ) { paddingValues ->
-
-
         NavHost(
             navController = navController,
             startDestination = Route.BottomBarGraph,
@@ -75,7 +72,7 @@ fun AppNavigation() {
                 startDestination = Route.Today
             ) {
                 composable<Route.Today> {
-                    TodayScreen(viewModel = dbViewModel)
+                    TodayScreenRoot()
                 }
 
                 composable<Route.History> {
@@ -94,7 +91,7 @@ fun AppNavigation() {
             composable<Route.CreateHabit>
             { backStackEntry ->
                 val args = backStackEntry.toRoute<Route.CreateHabit>()
-                CreateOwnHabitScreen(param = args.param ?: "Everyday teststststs")
+                CreateOwnHabitRoot(param = args.param ?: "Everyday teststststs")
             }
 
             composable<Route.RepeatPicker> {
@@ -103,15 +100,14 @@ fun AppNavigation() {
 
             composable<Route.EditHabit> { backStackEntry ->
                 val args = backStackEntry.toRoute<Route.EditHabit>()
-                EditHabitScreen(
-                    paramId = args.id,
-                    viewModel = dbViewModel
+                EditHabitRoot(
+                    paramId = args.id
                 )
             }
 
             composable<Route.EditRepeatPicker> { backStackEntry ->
                 val args = backStackEntry.toRoute<Route.EditRepeatPicker>()
-                EditRepeatPickerScreen(paramId = args.id, viewModel = dbViewModel)
+                EditRepeatPickerRoot(paramId = args.id)
             }
         }
     }

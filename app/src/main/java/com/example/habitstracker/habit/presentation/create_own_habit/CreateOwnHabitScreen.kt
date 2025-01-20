@@ -39,7 +39,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.habit.domain.HabitEntity
-import com.example.habitstracker.habit.data.db.viewmodel.HabitViewModel
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.habit.presentation.add_habit.components.AdvancedSettings
 import com.example.habitstracker.habit.presentation.add_habit.components.CreateButton
@@ -51,13 +50,36 @@ import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.orangeColor
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
+import com.example.habitstracker.habit.presentation.today_main.MainScreenViewModel
 import com.example.habitstracker.utils.clickWithRipple
 import com.example.habitstracker.utils.getIconName
 import com.example.habitstracker.utils.iconByName
 import com.example.habitstracker.utils.toHex
 
 @Composable
-fun CreateOwnHabitContent(
+fun CreateOwnHabitRoot(param: String = "no value") {
+    val viewModel = hiltViewModel<MainScreenViewModel>()
+    val onAddHabitClick = {
+            name: String, iconName: String, isDone: Boolean, colorHex: Color,
+            days: String, executionTime: String, reminder: Boolean,
+        ->
+        viewModel.addHabit(
+            HabitEntity(
+                name = name,
+                iconName = iconName,
+                isDone = false,
+                colorHex = colorHex.toHex(),
+                days = days,
+                executionTime = executionTime,
+                reminder = false
+            )
+        )
+    }
+    CreateOwnHabitScreen(param = param, onAddHabit = onAddHabitClick)
+}
+
+@Composable
+fun CreateOwnHabitScreen(
     param: String,
     modifier: Modifier = Modifier,
     onAddHabit: (
@@ -192,35 +214,12 @@ fun CreateOwnHabitContent(
 }
 
 @Composable
-fun CreateOwnHabitScreen(param: String = "no value") {
-    val viewModel = hiltViewModel<HabitViewModel>()
-    val _onAddHabit = {
-            name: String, iconName: String, isDone: Boolean, colorHex: Color,
-            days: String, executionTime: String, reminder: Boolean,
-        ->
-        viewModel.addHabit(
-            HabitEntity(
-                name = name,
-                iconName = iconName,
-                isDone = false,
-                colorHex = colorHex.toHex(),
-                days = days,
-                executionTime = executionTime,
-                reminder = false
-            )
-        )
-    }
-
-    CreateOwnHabitContent(param = param, onAddHabit = _onAddHabit)
-}
-
-@Composable
 @Preview(showSystemUi = true)
 private fun Preview() {
     val mockNavController = rememberNavController()
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
         AppTheme(darkTheme = true) {
-            CreateOwnHabitContent(param = "Fake param",
+            CreateOwnHabitScreen(param = "Fake param",
                 onAddHabit = { _, _, _, _, _, _, _ -> }
             )
         }
