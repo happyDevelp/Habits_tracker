@@ -1,6 +1,5 @@
 package com.example.habitstracker.habit.presentation.me
 
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
@@ -26,7 +25,7 @@ import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.habit.presentation.me.component.ButtonItem
 import com.example.habitstracker.habit.presentation.me.component.CustomContainer
 import com.example.habitstracker.habit.presentation.me.component.SettingsButtonItem
-import com.example.habitstracker.habit.presentation.me.scaffold.TopBarMeScreen
+import com.example.habitstracker.habit.presentation.me.component.scaffold.TopBarMeScreen
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.blueColor
 import com.example.habitstracker.core.presentation.theme.orangeColor
@@ -34,13 +33,11 @@ import com.example.habitstracker.core.presentation.theme.redColor
 import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
 import com.example.habitstracker.utils.APP_VERSION
 
-
 @Composable
 @Preview(showSystemUi = false)
 private fun MeScreenPreview() {
     AppTheme(darkTheme = true) { MeScreen() }
 }
-
 
 @Composable
 fun MeScreen(modifier: Modifier = Modifier) {
@@ -94,7 +91,6 @@ private fun DrawTopButtons(buttonList: List<ButtonItem>) {
         )
     }
 }
-
 
 @Composable
 fun getTopButtonsList() =

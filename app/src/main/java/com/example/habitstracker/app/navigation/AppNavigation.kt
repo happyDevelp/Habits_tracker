@@ -38,6 +38,7 @@ import com.example.habitstracker.habit.presentation.today_main.TodayScreenRoot
 fun AppNavigation() {
     val navController = LocalNavController.current
 
+    val mainScreenViewModel = hiltViewModel<MainScreenViewModel>()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val showBottomBar = getBottomBarState(navBackStackEntry)
 
@@ -72,7 +73,7 @@ fun AppNavigation() {
                 startDestination = Route.Today
             ) {
                 composable<Route.Today> {
-                    TodayScreenRoot()
+                    TodayScreenRoot(viewModel = mainScreenViewModel)
                 }
 
                 composable<Route.History> {
@@ -101,13 +102,17 @@ fun AppNavigation() {
             composable<Route.EditHabit> { backStackEntry ->
                 val args = backStackEntry.toRoute<Route.EditHabit>()
                 EditHabitRoot(
-                    paramId = args.id
+                    paramId = args.id,
+                    viewModel = mainScreenViewModel
                 )
             }
 
             composable<Route.EditRepeatPicker> { backStackEntry ->
                 val args = backStackEntry.toRoute<Route.EditRepeatPicker>()
-                EditRepeatPickerRoot(paramId = args.id)
+                EditRepeatPickerRoot(
+                    paramId = args.id,
+                    viewModel = mainScreenViewModel
+                )
             }
         }
     }

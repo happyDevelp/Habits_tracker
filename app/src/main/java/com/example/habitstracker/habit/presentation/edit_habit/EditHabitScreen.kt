@@ -37,7 +37,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
@@ -48,7 +47,7 @@ import com.example.habitstracker.habit.presentation.edit_habit.components.EditCr
 import com.example.habitstracker.habit.presentation.edit_habit.components.EditExecutionTimePicker
 import com.example.habitstracker.habit.presentation.edit_habit.components.EditHabitNameTextField
 import com.example.habitstracker.habit.presentation.edit_habit.components.EditIconAndColorPicker
-import com.example.habitstracker.habit.presentation.edit_habit.scaffold.TopBarEditHabitScreen
+import com.example.habitstracker.habit.presentation.edit_habit.components.scaffold.TopBarEditHabitScreen
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
@@ -62,10 +61,12 @@ import com.example.habitstracker.utils.toHex
 import kotlinx.coroutines.launch
 
 @Composable
-fun EditHabitRoot(paramId: Int) {
-    val viewModel = hiltViewModel<MainScreenViewModel>()
+fun EditHabitRoot(
+    paramId: Int,
+    viewModel: MainScreenViewModel
+) {
     val coroutineScope = rememberCoroutineScope()
-    val allHabits = viewModel.habitsList.collectAsState()
+    val allHabits = viewModel.habitsListState.collectAsState()
     val currentHabit = allHabits.value.find { it.id == paramId }
 
     val onUpdateHabitClick: (newHabit: HabitEntity) -> Unit = { newHabit ->

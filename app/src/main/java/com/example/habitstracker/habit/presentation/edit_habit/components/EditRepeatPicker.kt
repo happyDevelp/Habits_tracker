@@ -48,7 +48,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.constraintlayout.compose.ConstraintLayout
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -68,10 +67,12 @@ import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
 @Composable
-fun EditRepeatPickerRoot(paramId: Int) {
-    val viewModel = hiltViewModel<MainScreenViewModel>()
+fun EditRepeatPickerRoot(
+    paramId: Int,
+    viewModel: MainScreenViewModel
+) {
     val coroutineScope = rememberCoroutineScope()
-    val allHabits = viewModel.habitsList.collectAsStateWithLifecycle()
+    val allHabits = viewModel.habitsListState.collectAsStateWithLifecycle()
     val currentHabit = allHabits.value.find { it.id == paramId }
         ?: throw Exception("Current habit is null. (EditRepeatPickerScreen)")
 

@@ -45,7 +45,7 @@ import com.example.habitstracker.habit.presentation.add_habit.components.CreateB
 import com.example.habitstracker.habit.presentation.add_habit.components.ExecutionTimePicker
 import com.example.habitstracker.habit.presentation.add_habit.components.IconAndColorPicker
 import com.example.habitstracker.habit.presentation.create_own_habit.components.HabitNameTextField
-import com.example.habitstracker.habit.presentation.create_own_habit.scaffold.TopBarCreateOwnHabitScreen
+import com.example.habitstracker.habit.presentation.create_own_habit.components.scaffold.TopBarCreateOwnHabitScreen
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.orangeColor

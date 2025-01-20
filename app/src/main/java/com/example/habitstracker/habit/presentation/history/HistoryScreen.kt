@@ -1,6 +1,5 @@
 package com.example.habitstracker.habit.presentation.history
 
-
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -13,10 +12,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.habit.presentation.history.components.HistoryPager
-import com.example.habitstracker.habit.presentation.history.scaffold.TopBarHistoryScreen
+import com.example.habitstracker.habit.presentation.history.components.scaffold.TopBarHistoryScreen
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
-
 
 @Composable
 @Preview(showSystemUi = false)
@@ -32,7 +30,6 @@ private fun HistoryScreenPreview() {
 
 @Composable
 fun HistoryScreen(modifier: Modifier = Modifier) {
-
     Scaffold(
         topBar = { TopBarHistoryScreen() },
         containerColor = screensBackgroundDark
@@ -43,9 +40,7 @@ fun HistoryScreen(modifier: Modifier = Modifier) {
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-
             HistoryPager()
-
         }
     }
 }

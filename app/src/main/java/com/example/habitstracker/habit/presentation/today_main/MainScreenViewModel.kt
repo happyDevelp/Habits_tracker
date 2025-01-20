@@ -15,14 +15,14 @@ import javax.inject.Inject
 class MainScreenViewModel @Inject constructor(
     private val habitRepository: HabitRepository
 ) : ViewModel() {
-    private val _habitsList = MutableStateFlow<List<HabitEntity>>(emptyList())
-    val habitsList: StateFlow<List<HabitEntity>> = _habitsList
+    private val _habitsListState = MutableStateFlow<List<HabitEntity>>(emptyList())
+    val habitsListState: StateFlow<List<HabitEntity>> = _habitsListState
 
     init {
         // subscribe on data from database
         viewModelScope.launch {
             getAllHabits().collect { habits ->
-                _habitsList.value = habits
+                _habitsListState.value = habits
             }
         }
     }
@@ -32,7 +32,7 @@ class MainScreenViewModel @Inject constructor(
             habitRepository.addHabit(habit)
         }
     }
-    
+
     fun deleteHabit(habit: HabitEntity) {
         viewModelScope.launch {
             habitRepository.deleteHabit(habit)

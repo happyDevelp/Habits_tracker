@@ -1,4 +1,4 @@
-package com.example.habitstracker.habit.presentation.add_habit.scaffold
+package com.example.habitstracker.habit.presentation.add_habit.components.scaffold
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme

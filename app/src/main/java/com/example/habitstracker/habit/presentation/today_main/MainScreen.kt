@@ -30,7 +30,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
@@ -52,11 +51,10 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable
-fun TodayScreenRoot() {
-    val viewModel = hiltViewModel<MainScreenViewModel>()
+fun TodayScreenRoot(viewModel: MainScreenViewModel) {
     val coroutineScope = rememberCoroutineScope()
 
-    val habitListState by viewModel.habitsList.collectAsStateWithLifecycle()
+    val habitListState by viewModel.habitsListState.collectAsStateWithLifecycle()
     val onSelectClick = { id: Int, isDone: Boolean ->
         viewModel.updateSelectedState(id, isDone)
     }
@@ -65,13 +63,12 @@ fun TodayScreenRoot() {
         coroutineScope.launch {
             viewModel.deleteHabit(habit)
         }
-
     }
 
     TodayScreen(
         habitListState = habitListState,
         onSelectedStateUpdate = onSelectClick,
-        _onDeleteClick = onDeleteClick
+        onDeleteClick = onDeleteClick
     )
 }
 
@@ -80,7 +77,7 @@ fun TodayScreen(
     modifier: Modifier = Modifier,
     habitListState: List<HabitEntity>,
     onSelectedStateUpdate: (id: Int, isDone: Boolean) -> Unit,
-    _onDeleteClick: (habit: HabitEntity) -> Unit,
+    onDeleteClick: (habit: HabitEntity) -> Unit,
 ) {
     val navController = LocalNavController.current
 
@@ -125,7 +122,7 @@ fun TodayScreen(
                             HabitItem(
                                 habit = habitListState[habitId],
                                 onUpdateSelectedState = onSelectedStateUpdate,
-                                onDeleteClick = _onDeleteClick
+                                onDeleteClick = onDeleteClick
                             )
                             Spacer(modifier = modifier.height(20.dp))
                         }
@@ -189,7 +186,7 @@ private fun Preview() {
             TodayScreen(
                 habitListState = mockList,
                 onSelectedStateUpdate = mockSelectedStateEvent,
-                _onDeleteClick = {}
+                onDeleteClick = {}
             )
         }
     }

@@ -33,7 +33,7 @@ import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.habit.presentation.add_habit.components.DefaultChooseHabitItem
-import com.example.habitstracker.habit.presentation.add_habit.scaffold.TopBarAddHabitScreen
+import com.example.habitstracker.habit.presentation.add_habit.components.scaffold.TopBarAddHabitScreen
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.blueColor
 import com.example.habitstracker.utils.TestTags

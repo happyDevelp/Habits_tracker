@@ -1,4 +1,4 @@
-package com.example.habitstracker.habit.presentation.edit_habit.scaffold
+package com.example.habitstracker.habit.presentation.edit_habit.components.scaffold
 
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
