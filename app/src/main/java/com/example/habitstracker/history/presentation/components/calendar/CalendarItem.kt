@@ -1,4 +1,4 @@
-package com.example.habitstracker.habit.presentation.history.components.calendar
+package com.example.habitstracker.history.presentation.components.calendar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

@@ -44,9 +44,9 @@ import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
-import com.example.habitstracker.utils.TestTags
-import com.example.habitstracker.utils.generateDateSequence
-import com.example.habitstracker.utils.habitEntityExample
+import com.example.habitstracker.core.presentation.utils.TestTags
+import com.example.habitstracker.core.presentation.utils.generateDateSequence
+import com.example.habitstracker.core.presentation.utils.habitEntityExample
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 

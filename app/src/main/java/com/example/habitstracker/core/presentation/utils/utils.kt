@@ -1,4 +1,4 @@
-package com.example.habitstracker.utils
+package com.example.habitstracker.core.presentation.utils
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource

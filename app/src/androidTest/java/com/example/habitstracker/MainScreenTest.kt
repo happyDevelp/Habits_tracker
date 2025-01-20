@@ -11,8 +11,8 @@ import com.example.habitstracker.habit.data.db.DAO
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.di.AppModule
 import com.example.habitstracker.core.presentation.theme.blueColor
-import com.example.habitstracker.utils.TestTags
-import com.example.habitstracker.utils.toHex
+import com.example.habitstracker.core.presentation.utils.TestTags
+import com.example.habitstracker.core.presentation.utils.toHex
 import dagger.hilt.android.testing.HiltAndroidRule
 import dagger.hilt.android.testing.HiltAndroidTest
 import dagger.hilt.android.testing.UninstallModules

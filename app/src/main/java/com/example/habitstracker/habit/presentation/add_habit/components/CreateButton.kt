@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.navigation.Route
-import com.example.habitstracker.utils.TestTags
+import com.example.habitstracker.core.presentation.utils.TestTags
 import kotlinx.coroutines.launch
 
 @Composable

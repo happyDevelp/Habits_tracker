@@ -3,7 +3,7 @@ package com.example.habitstracker.habit.domain
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.habitstracker.core.presentation.theme.blueColor
-import com.example.habitstracker.utils.toHex
+import com.example.habitstracker.core.presentation.utils.toHex
 
 // The Domain layer is independent of data sources.
 

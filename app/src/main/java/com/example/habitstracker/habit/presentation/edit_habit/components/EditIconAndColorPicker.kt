@@ -37,8 +37,8 @@ import com.example.habitstracker.habit.presentation.create_own_habit.components.
 import com.example.habitstracker.habit.presentation.create_own_habit.components.IconPicker
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
-import com.example.habitstracker.utils.clickWithRipple
-import com.example.habitstracker.utils.getIconName
+import com.example.habitstracker.core.presentation.utils.clickWithRipple
+import com.example.habitstracker.core.presentation.utils.getIconName
 
 @Composable
 fun EditIconAndColorPicker(

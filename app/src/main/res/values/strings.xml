@@ -3,7 +3,7 @@
     <string name="add_habit">Add Habit</string>
     <string name="today">Today</string>
     <string name="history">History</string>
-    <string name="me">Me</string>
+    <string name="profile">Profile</string>
     <string name="create_a_new_habit">CREATE A NEW HABIT</string>
     <string name="healthy_eating">Healthy eating</string>
     <string name="create_own_habit_navigation">CreateOwnHabitScreen</string>

@@ -51,10 +51,10 @@ import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.orangeColor
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.habit.presentation.today_main.MainScreenViewModel
-import com.example.habitstracker.utils.clickWithRipple
-import com.example.habitstracker.utils.getIconName
-import com.example.habitstracker.utils.iconByName
-import com.example.habitstracker.utils.toHex
+import com.example.habitstracker.core.presentation.utils.clickWithRipple
+import com.example.habitstracker.core.presentation.utils.getIconName
+import com.example.habitstracker.core.presentation.utils.iconByName
+import com.example.habitstracker.core.presentation.utils.toHex
 
 @Composable
 fun CreateOwnHabitRoot(param: String = "no value") {

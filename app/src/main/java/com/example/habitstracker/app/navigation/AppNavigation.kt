@@ -29,8 +29,8 @@ import com.example.habitstracker.habit.presentation.create_own_habit.CreateOwnHa
 import com.example.habitstracker.habit.presentation.create_own_habit.components.RepeatPicker
 import com.example.habitstracker.habit.presentation.edit_habit.EditHabitRoot
 import com.example.habitstracker.habit.presentation.edit_habit.components.EditRepeatPickerRoot
-import com.example.habitstracker.habit.presentation.history.HistoryScreen
-import com.example.habitstracker.habit.presentation.me.MeScreen
+import com.example.habitstracker.history.presentation.HistoryScreen
+import com.example.habitstracker.profile.presentation.profile.ProfileScreen
 import com.example.habitstracker.habit.presentation.today_main.MainScreenViewModel
 import com.example.habitstracker.habit.presentation.today_main.TodayScreenRoot
 
@@ -80,8 +80,8 @@ fun AppNavigation() {
                     HistoryScreen()
                 }
 
-                composable<Route.Me> {
-                    MeScreen()
+                composable<Route.Profile> {
+                    ProfileScreen()
                 }
             }
 
@@ -119,13 +119,13 @@ fun AppNavigation() {
 }
 
 fun getBottomBarState(navBackStackEntry: NavBackStackEntry?): Boolean {
-    val baseRouteName = "com.example.habitstracker.navigation.Route."
+    val baseRouteName = "com.example.habitstracker.app.navigation.Route."
     val currentRoute = navBackStackEntry?.destination?.route
 
     return when (currentRoute) {
         baseRouteName + Route.Today -> true
         baseRouteName + Route.History -> true
-        baseRouteName + Route.Me -> true
+        baseRouteName + Route.Profile -> true
 
         else -> false
     }

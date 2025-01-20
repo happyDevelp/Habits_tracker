@@ -55,8 +55,8 @@ import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.habit.presentation.edit_habit.components.SelectedDay
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
-import com.example.habitstracker.utils.clickWithRipple
-import com.example.habitstracker.utils.textState
+import com.example.habitstracker.core.presentation.utils.clickWithRipple
+import com.example.habitstracker.core.presentation.utils.textState
 
 @Composable
 fun RepeatPicker(modifier: Modifier = Modifier) {

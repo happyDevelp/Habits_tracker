@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
-import com.example.habitstracker.utils.clickWithRipple
+import com.example.habitstracker.core.presentation.utils.clickWithRipple
 
 @Composable
 fun EditExecutionTimePicker(

@@ -26,7 +26,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.habitstracker.habit.domain.HabitEntity
-import com.example.habitstracker.utils.TestTags
+import com.example.habitstracker.core.presentation.utils.TestTags
 
 @Preview()
 @Composable

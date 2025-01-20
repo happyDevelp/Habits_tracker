@@ -52,9 +52,9 @@ import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.CustomCheckbox
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.notSelectedColor
-import com.example.habitstracker.utils.TestTags
-import com.example.habitstracker.utils.getColorFromHex
-import com.example.habitstracker.utils.iconByName
+import com.example.habitstracker.core.presentation.utils.TestTags
+import com.example.habitstracker.core.presentation.utils.getColorFromHex
+import com.example.habitstracker.core.presentation.utils.iconByName
 
 @Composable
 fun HabitItem(

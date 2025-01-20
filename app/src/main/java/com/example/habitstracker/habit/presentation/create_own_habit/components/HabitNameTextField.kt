@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
-import com.example.habitstracker.utils.TestTags
+import com.example.habitstracker.core.presentation.utils.TestTags
 
 @Composable
 fun HabitNameTextField(

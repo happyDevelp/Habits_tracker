@@ -1,4 +1,4 @@
-package com.example.habitstracker.habit.presentation.history.components.statistic_containers
+package com.example.habitstracker.history.presentation.components.statistic_containers
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

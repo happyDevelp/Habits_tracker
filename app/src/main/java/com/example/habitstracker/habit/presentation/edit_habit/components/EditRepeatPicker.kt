@@ -59,10 +59,10 @@ import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.presentation.today_main.MainScreenViewModel
-import com.example.habitstracker.utils.clickWithRipple
-import com.example.habitstracker.utils.getCorrectSelectedDaysList
-import com.example.habitstracker.utils.habitEntityExample
-import com.example.habitstracker.utils.textState
+import com.example.habitstracker.core.presentation.utils.clickWithRipple
+import com.example.habitstracker.core.presentation.utils.getCorrectSelectedDaysList
+import com.example.habitstracker.core.presentation.utils.habitEntityExample
+import com.example.habitstracker.core.presentation.utils.textState
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 

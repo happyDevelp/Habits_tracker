@@ -1,4 +1,4 @@
-package com.example.habitstracker.habit.presentation.history.tab_screens
+package com.example.habitstracker.history.presentation.tab_screens
 
 import android.content.Context
 
@@ -42,11 +42,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.MyText
-import com.example.habitstracker.habit.presentation.history.components.calendar.CalendarItem
-import com.example.habitstracker.habit.presentation.history.components.calendar.SpacerItem
-import com.example.habitstracker.habit.presentation.history.components.calendar.TopPanel
-import com.example.habitstracker.habit.presentation.history.components.statistic_containers.CustomBlank
-import com.example.habitstracker.habit.presentation.history.components.statistic_containers.getFilledBlankList
+import com.example.habitstracker.history.presentation.components.calendar.CalendarItem
+import com.example.habitstracker.history.presentation.components.calendar.SpacerItem
+import com.example.habitstracker.history.presentation.components.calendar.TopPanel
+import com.example.habitstracker.history.presentation.components.statistic_containers.CustomBlank
+import com.example.habitstracker.history.presentation.components.statistic_containers.getFilledBlankList
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
 import kotlinx.coroutines.launch
@@ -86,9 +86,12 @@ fun HistoryCalendarScreen(modifier: Modifier = Modifier) {
     LazyColumnContainer {
 
         /** Statistic containers **/
+        /** Statistic containers **/
         DrawStatisticContainers(modifier, context)
 
         Spacer(modifier = modifier.height(12.dp))
+
+        /** Calendar **/
 
         /** Calendar **/
         Card(

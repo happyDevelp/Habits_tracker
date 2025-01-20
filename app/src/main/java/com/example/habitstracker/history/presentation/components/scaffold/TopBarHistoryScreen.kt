@@ -1,4 +1,4 @@
-package com.example.habitstracker.habit.presentation.history.components.scaffold
+package com.example.habitstracker.history.presentation.components.scaffold
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Share

@@ -1,4 +1,4 @@
-package com.example.habitstracker.habit.presentation.history.tab_screens
+package com.example.habitstracker.history.presentation.tab_screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,15 +16,15 @@ import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
 
 @Preview(showSystemUi = true)
 @Composable
-fun AllHabitsScreenPreview(modifier: Modifier = Modifier) {
+fun AchievementsScreenPreview(modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxSize().background(screensBackgroundDark))
-    { AllHabitScreen() }
+    { AchievementsScreen() }
 }
 
 @Composable
-fun AllHabitScreen(modifier: Modifier = Modifier) {
+fun AchievementsScreen(modifier: Modifier = Modifier) {
     Text(
-        text = "Screen All habits",
+        text = "Screen Achievements",
         color = Color.White,
         fontSize = 30.sp,
         modifier = Modifier

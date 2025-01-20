@@ -17,7 +17,7 @@ sealed interface Route {
     data object History: Route
 
     @Serializable
-    data object Me: Route
+    data object Profile: Route
 
     @Serializable
     data object AddHabit: Route

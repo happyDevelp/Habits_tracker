@@ -1,4 +1,4 @@
-package com.example.habitstracker.utils
+package com.example.habitstracker.core.presentation.utils
 
 object TestTags {
     const val CREATE_NEW_HABIT_BUTTON = "CREATE_NEW_HABIT_BUTTON"

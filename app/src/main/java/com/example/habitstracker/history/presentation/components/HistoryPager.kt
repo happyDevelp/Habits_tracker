@@ -1,4 +1,4 @@
-package com.example.habitstracker.habit.presentation.history.components
+package com.example.habitstracker.history.presentation.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Arrangement
@@ -26,9 +26,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
-import com.example.habitstracker.habit.presentation.history.tab_screens.AchievementsScreen
-import com.example.habitstracker.habit.presentation.history.tab_screens.AllHabitScreen
-import com.example.habitstracker.habit.presentation.history.tab_screens.HistoryCalendarScreen
+import com.example.habitstracker.history.presentation.tab_screens.AchievementsScreen
+import com.example.habitstracker.history.presentation.tab_screens.AllHabitScreen
+import com.example.habitstracker.history.presentation.tab_screens.HistoryCalendarScreen
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
 import kotlinx.coroutines.launch

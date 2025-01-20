@@ -1,4 +1,4 @@
-package com.example.habitstracker.habit.presentation.me.component
+package com.example.habitstracker.profile.presentation.profile.component
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement

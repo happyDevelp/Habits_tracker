@@ -1,4 +1,4 @@
-package com.example.habitstracker.habit.presentation.history
+package com.example.habitstracker.history.presentation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,8 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.app.LocalNavController
-import com.example.habitstracker.habit.presentation.history.components.HistoryPager
-import com.example.habitstracker.habit.presentation.history.components.scaffold.TopBarHistoryScreen
+import com.example.habitstracker.history.presentation.components.HistoryPager
+import com.example.habitstracker.history.presentation.components.scaffold.TopBarHistoryScreen
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
 

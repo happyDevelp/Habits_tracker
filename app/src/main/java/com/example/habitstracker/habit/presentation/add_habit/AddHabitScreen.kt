@@ -36,7 +36,7 @@ import com.example.habitstracker.habit.presentation.add_habit.components.Default
 import com.example.habitstracker.habit.presentation.add_habit.components.scaffold.TopBarAddHabitScreen
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.blueColor
-import com.example.habitstracker.utils.TestTags
+import com.example.habitstracker.core.presentation.utils.TestTags
 
 @Composable
 @Preview(showSystemUi = false)
