@@ -1,29 +1,15 @@
-package com.example.habitstracker.habit.data.db.repository
+package com.example.habitstracker.habit.data.repository
 
 import com.example.habitstracker.habit.data.db.DAO
-import com.example.habitstracker.habit.data.db.HabitEntity
+import com.example.habitstracker.habit.domain.HabitEntity
+import com.example.habitstracker.habit.domain.HabitRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 
-interface DBRepository {
+// The Domain layer is independent of data sources.
 
-    suspend fun addHabit(habit: HabitEntity)
-
-    suspend fun deleteHabit(habit: HabitEntity)
-
-    suspend fun getAllHabits(): Flow<List<HabitEntity>>
-
-    suspend fun updateSelectedState(id: Int, isDone: Boolean)
-
-    suspend fun getHabitByName(name: String): HabitEntity?
-
-    suspend fun getHabitById(id: Int): HabitEntity?
-
-    suspend fun updateHabit(habit: HabitEntity)
-}
-
-class RepositoryImpl(private val dao: DAO) : DBRepository {
+class DefaultHabitRepository(private val dao: DAO) : HabitRepository {
     override suspend fun addHabit(habit: HabitEntity) {
         withContext(Dispatchers.IO) {
             dao.addHabit(habit)
@@ -66,4 +52,3 @@ class RepositoryImpl(private val dao: DAO) : DBRepository {
         }
     }
 }
-

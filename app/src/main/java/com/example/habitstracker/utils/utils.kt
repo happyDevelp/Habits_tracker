@@ -12,7 +12,7 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.example.habitstracker.habit.data.db.HabitEntity
+import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.presentation.edit_habit.components.SelectedDay
 import com.example.habitstracker.core.presentation.theme.blueColor
 import java.time.LocalDate

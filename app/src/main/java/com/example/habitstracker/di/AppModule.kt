@@ -4,9 +4,9 @@ import android.content.Context
 import androidx.room.Room
 import com.example.habitstracker.habit.data.db.DAO
 import com.example.habitstracker.habit.data.db.HabitDatabase
-import com.example.habitstracker.habit.data.db.TABLE_NAME
-import com.example.habitstracker.habit.data.db.repository.DBRepository
-import com.example.habitstracker.habit.data.db.repository.RepositoryImpl
+import com.example.habitstracker.habit.domain.TABLE_NAME
+import com.example.habitstracker.habit.data.repository.DefaultHabitRepository
+import com.example.habitstracker.habit.domain.HabitRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -20,8 +20,8 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideRepository(dao: DAO): DBRepository {
-        return RepositoryImpl(dao)
+    fun provideRepository(dao: DAO): HabitRepository {
+        return DefaultHabitRepository(dao)
     }
 
     @Singleton

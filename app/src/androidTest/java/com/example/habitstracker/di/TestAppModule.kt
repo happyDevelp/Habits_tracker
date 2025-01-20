@@ -4,15 +4,13 @@ import android.content.Context
 import androidx.room.Room
 import com.example.habitstracker.habit.data.db.DAO
 import com.example.habitstracker.habit.data.db.HabitDatabase
-import com.example.habitstracker.habit.data.db.repository.DBRepository
-import com.example.habitstracker.habit.data.db.repository.RepositoryImpl
-import com.example.habitstracker.di.AppModule
+import com.example.habitstracker.habit.domain.HabitRepository
+import com.example.habitstracker.habit.domain.DefaultHabitRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import dagger.hilt.testing.TestInstallIn
 import javax.inject.Singleton
 
 @Module
@@ -36,7 +34,7 @@ object TestAppModule {
 
     @Singleton
     @Provides
-    fun provideRepository(dao: DAO): DBRepository {
+    fun provideRepository(dao: DAO): HabitRepository {
         return RepositoryImpl(dao)
     }
 }

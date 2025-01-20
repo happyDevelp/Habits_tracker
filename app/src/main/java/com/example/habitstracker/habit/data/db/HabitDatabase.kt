@@ -1,9 +1,8 @@
 package com.example.habitstracker.habit.data.db
 
-import android.content.Context
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
+import com.example.habitstracker.habit.domain.HabitEntity
 
 @Database(entities = [HabitEntity::class], exportSchema = true, version = 3)
 abstract class HabitDatabase: RoomDatabase() {

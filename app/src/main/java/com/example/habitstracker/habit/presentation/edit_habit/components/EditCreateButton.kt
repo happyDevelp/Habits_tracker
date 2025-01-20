@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
-import com.example.habitstracker.habit.data.db.HabitEntity
+import com.example.habitstracker.habit.domain.HabitEntity
 import kotlinx.coroutines.launch
 
 @Composable

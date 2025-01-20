@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
-import com.example.habitstracker.habit.data.db.HabitEntity
+import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.data.db.viewmodel.HabitViewModel
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.habit.presentation.add_habit.components.AdvancedSettings
