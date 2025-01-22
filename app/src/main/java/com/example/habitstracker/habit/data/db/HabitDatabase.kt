@@ -3,8 +3,9 @@ package com.example.habitstracker.habit.data.db
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.habitstracker.habit.domain.HabitEntity
+import com.example.habitstracker.habit.domain.HabitStatusEntity
 
-@Database(entities = [HabitEntity::class], exportSchema = true, version = 3)
+@Database(entities = [HabitEntity::class, HabitStatusEntity::class], exportSchema = true, version = 4)
 abstract class HabitDatabase: RoomDatabase() {
     abstract val dao: DAO
 

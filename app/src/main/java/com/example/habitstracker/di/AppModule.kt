@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.habitstracker.habit.data.db.DAO
 import com.example.habitstracker.habit.data.db.HabitDatabase
-import com.example.habitstracker.habit.domain.TABLE_NAME
+import com.example.habitstracker.habit.domain.HABIT_TABLE_NAME
 import com.example.habitstracker.habit.data.repository.DefaultHabitRepository
 import com.example.habitstracker.habit.domain.HabitRepository
 import dagger.Module
@@ -36,7 +36,9 @@ object AppModule {
         return Room.databaseBuilder(
             context,
             HabitDatabase::class.java,
-            TABLE_NAME
-        ).build()
+            name = HABIT_TABLE_NAME
+        )
+            .fallbackToDestructiveMigration()
+            .build()
     }
 }

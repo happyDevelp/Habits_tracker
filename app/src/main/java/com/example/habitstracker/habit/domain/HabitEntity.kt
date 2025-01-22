@@ -7,9 +7,9 @@ import com.example.habitstracker.core.presentation.utils.toHex
 
 // The Domain layer is independent of data sources.
 
-const val TABLE_NAME = "habit_table"
+const val HABIT_TABLE_NAME = "habit_table"
 
-@Entity(tableName = TABLE_NAME)
+@Entity(tableName = HABIT_TABLE_NAME)
 data class HabitEntity (
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
