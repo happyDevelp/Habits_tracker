@@ -22,21 +22,15 @@ import androidx.navigation.NavHostController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.utils.TestTags
+import com.example.habitstracker.habit.domain.HabitEntity
 import kotlinx.coroutines.launch
 
 @Composable
 fun CreateButton(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    name: String,
-    iconName: String,
-    color: Color,
-    selectedDays: String,
-    executionTime: String,
-    onAddHabit: (
-        name: String, iconName: String, isDone: Boolean, colorHex: Color,
-        days: String, executionTime: String, reminder: Boolean,
-    ) -> Unit,
+    habit: HabitEntity,
+    onAddHabitClick: (habit: HabitEntity) -> Unit,
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -51,19 +45,11 @@ fun CreateButton(
                 shape = RoundedCornerShape(corner = CornerSize(50.dp))
             ),
 
-        enabled = name.length >= 4,
+        enabled = habit.name.length >= 4,
 
         onClick = {
             coroutineScope.launch {
-                onAddHabit(
-                    name,
-                    iconName,
-                    false,
-                    color,
-                    selectedDays,
-                    executionTime,
-                    false
-                )
+                onAddHabitClick(habit)
                 navController.popBackStack(Route.Today, false)
             }
         },

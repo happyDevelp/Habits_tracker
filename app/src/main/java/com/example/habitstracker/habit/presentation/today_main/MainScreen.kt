@@ -20,7 +20,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -47,6 +50,7 @@ import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
 import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.core.presentation.utils.generateDateSequence
 import com.example.habitstracker.core.presentation.utils.habitEntityExample
+import com.example.habitstracker.habit.domain.HabitStatusEntity
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -55,8 +59,9 @@ fun TodayScreenRoot(viewModel: MainScreenViewModel) {
     val coroutineScope = rememberCoroutineScope()
 
     val habitListState by viewModel.habitsListState.collectAsStateWithLifecycle()
-    val onSelectClick = { id: Int, isDone: Boolean ->
+    val onSelectClick: (id:Int, isDone: Boolean) -> Unit = { id, isDone ->
         viewModel.updateSelectedState(id, isDone)
+        /*viewModel.*/
     }
 
     val onDeleteClick: (habit: HabitEntity) -> Unit = { habit ->
@@ -65,10 +70,24 @@ fun TodayScreenRoot(viewModel: MainScreenViewModel) {
         }
     }
 
+    val onSelectedStatusClick: (status: HabitStatusEntity) -> Unit = { habitStatus ->
+        coroutineScope.launch {
+            viewModel.insertHabitStatus(status = habitStatus)
+        }
+    }
+
+    val onDateClick: (date: String) -> Unit = { date ->
+        coroutineScope.launch {
+            viewModel.updateHabitsForDate(date)
+        }
+    }
+
     TodayScreen(
         habitListState = habitListState,
-        onSelectedStateUpdate = onSelectClick,
-        onDeleteClick = onDeleteClick
+        onSelectClick = onSelectClick,
+        onDeleteClick = onDeleteClick,
+        onSelectedStatusClick = onSelectedStatusClick,
+        onDateClick = onDateClick
     )
 }
 
@@ -76,14 +95,20 @@ fun TodayScreenRoot(viewModel: MainScreenViewModel) {
 fun TodayScreen(
     modifier: Modifier = Modifier,
     habitListState: List<HabitEntity>,
-    onSelectedStateUpdate: (id: Int, isDone: Boolean) -> Unit,
+    onSelectClick: (id: Int, isDone: Boolean) -> Unit,
     onDeleteClick: (habit: HabitEntity) -> Unit,
+    onSelectedStatusClick: (status: HabitStatusEntity) -> Unit,
+    onDateClick: (date: String) -> Unit
 ) {
     val navController = LocalNavController.current
+    var currentDate by remember {
+        mutableStateOf(LocalDate.now().minusDays(5))
+    }
+    val onCurrentDayChange: (newDate: LocalDate) -> Unit = { newDate ->
+        currentDate = newDate
+    }
 
-    Scaffold(
-        topBar = { TopBarMainScreen(modifier, navController) },
-    ) { paddingValues ->
+    Scaffold(topBar = { TopBarMainScreen(modifier, navController) }) { paddingValues ->
         Card(
             modifier = modifier
                 .fillMaxSize()
@@ -102,8 +127,14 @@ fun TodayScreen(
             ) {
 
                 Column {
-                    val dateSet = generateDateSequence(LocalDate.now(), 500)
-                    CalendarRowList(dateSet.toMutableList())
+                    val dateSet = generateDateSequence(
+                        currentDate, 500
+                    )
+                    CalendarRowList(
+                        dateSet.toMutableList(),
+                        onCurrentDayChange = onCurrentDayChange,
+                        onDateClick = onDateClick
+                    )
                 }
 
                 CompositionLocalProvider(
@@ -121,8 +152,9 @@ fun TodayScreen(
                         items(habitListState.size) { habitId ->
                             HabitItem(
                                 habit = habitListState[habitId],
-                                onUpdateSelectedState = onSelectedStateUpdate,
-                                onDeleteClick = onDeleteClick
+                                onUpdateSelectedState = onSelectClick,
+                                onDeleteClick = onDeleteClick,
+                                onSelectedStatusClick = onSelectedStatusClick
                             )
                             Spacer(modifier = modifier.height(20.dp))
                         }
@@ -185,8 +217,10 @@ private fun Preview() {
         AppTheme(darkTheme = true) {
             TodayScreen(
                 habitListState = mockList,
-                onSelectedStateUpdate = mockSelectedStateEvent,
-                onDeleteClick = {}
+                onSelectClick = mockSelectedStateEvent,
+                onDeleteClick = {},
+                onSelectedStatusClick = {},
+                onDateClick = {}
             )
         }
     }

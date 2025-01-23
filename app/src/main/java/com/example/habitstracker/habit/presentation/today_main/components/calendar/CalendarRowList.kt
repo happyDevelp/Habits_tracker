@@ -1,6 +1,5 @@
 package com.example.habitstracker.habit.presentation.today_main.components.calendar
 
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyRow
@@ -15,11 +14,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import java.time.LocalDate
 
-
 @Composable
-fun CalendarRowList(dateSet: MutableList<LocalDate>) {
-
-    var selectedDate by remember { mutableStateOf(dateSet.first()) }
+fun CalendarRowList(
+    dateSet: MutableList<LocalDate>,
+    onCurrentDayChange: (newDate: LocalDate) -> Unit,
+    onDateClick: (date: String) -> Unit
+) {
+    var selectedDate by remember { mutableStateOf(dateSet[5]) }
 
     val pagerState = rememberPagerState(
         pageCount = { dateSet.size / 7 }
@@ -29,9 +30,7 @@ fun CalendarRowList(dateSet: MutableList<LocalDate>) {
         state = pagerState,
         modifier = Modifier.fillMaxWidth()
     ) { page ->
-
         val showingDate = dateSet.chunked(7)
-
         val chunk = showingDate.get(page)
 
         LazyRow(
@@ -39,17 +38,18 @@ fun CalendarRowList(dateSet: MutableList<LocalDate>) {
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
-
             itemsIndexed(chunk) { _, date ->
                 CalendarItem(
                     date = date,
                     isSelected = date == selectedDate,
 
-                    onItemClicked = { selectedDate = date }
+                    onItemClicked = {
+                        selectedDate = date
+                        // onCurrentDayChange(selectedDate)
+                        onDateClick(selectedDate.toString())
+                    }
                 )
-
             }
         }
     }
-
 }

@@ -92,7 +92,10 @@ fun AppNavigation() {
             composable<Route.CreateHabit>
             { backStackEntry ->
                 val args = backStackEntry.toRoute<Route.CreateHabit>()
-                CreateOwnHabitRoot(param = args.param ?: "Everyday teststststs")
+                CreateOwnHabitRoot(
+                    param = args.param ?: "Everyday teststststs",
+                    viewModel = mainScreenViewModel
+                )
             }
 
             composable<Route.RepeatPicker> {

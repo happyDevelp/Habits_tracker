@@ -55,13 +55,16 @@ import com.example.habitstracker.core.presentation.theme.notSelectedColor
 import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.core.presentation.utils.getColorFromHex
 import com.example.habitstracker.core.presentation.utils.iconByName
+import com.example.habitstracker.habit.domain.HabitStatusEntity
+import java.time.LocalDate
 
 @Composable
 fun HabitItem(
     modifier: Modifier = Modifier,
     habit: HabitEntity = HabitEntity(),
     onUpdateSelectedState: (id: Int, isDone: Boolean) -> Unit = { id, isDone -> },
-    onDeleteClick: (habit: HabitEntity) -> Unit
+    onDeleteClick: (habit: HabitEntity) -> Unit,
+    onSelectedStatusClick: (status: HabitStatusEntity) -> Unit,
 ) {
     val navController = LocalNavController.current
 
@@ -98,6 +101,15 @@ fun HabitItem(
                     onClick = {
                         isDone = !isDone
                         onUpdateSelectedState(habit.id, isDone)
+                        val dateString = LocalDate.now().toString()
+                        if (isDone == true) {
+                            val status = HabitStatusEntity(
+                                habitId = habit.id,
+                                date = dateString,
+                                isCompleted = true
+                            )
+                            onSelectedStatusClick(status)
+                        }
                     })
             }
 
@@ -209,10 +221,4 @@ fun HabitItem(
             }
         }
     }
-}
-
-@Composable
-@Preview(showSystemUi = true)
-private fun Preview() {
-    AppTheme(darkTheme = true) { HabitItem(onDeleteClick = {}) }
 }

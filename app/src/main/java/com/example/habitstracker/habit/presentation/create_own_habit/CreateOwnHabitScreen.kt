@@ -34,7 +34,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
@@ -55,37 +54,33 @@ import com.example.habitstracker.core.presentation.utils.clickWithRipple
 import com.example.habitstracker.core.presentation.utils.getIconName
 import com.example.habitstracker.core.presentation.utils.iconByName
 import com.example.habitstracker.core.presentation.utils.toHex
+import com.example.habitstracker.habit.domain.HabitStatusEntity
+import java.time.LocalDate
 
 @Composable
-fun CreateOwnHabitRoot(param: String = "no value") {
-    val viewModel = hiltViewModel<MainScreenViewModel>()
-    val onAddHabitClick = {
-            name: String, iconName: String, isDone: Boolean, colorHex: Color,
-            days: String, executionTime: String, reminder: Boolean,
-        ->
-        viewModel.addHabit(
-            HabitEntity(
-                name = name,
-                iconName = iconName,
-                isDone = false,
-                colorHex = colorHex.toHex(),
-                days = days,
-                executionTime = executionTime,
-                reminder = false
+fun CreateOwnHabitRoot(param: String = "no value", viewModel: MainScreenViewModel) {
+    val onAddHabitClick: (habit: HabitEntity) -> Unit = { habit ->
+        viewModel.addHabit(habit)
+
+        viewModel.insertHabitStatus(
+            HabitStatusEntity(
+                habitId = habit.id,
+                date = LocalDate.now().toString(),
+                isCompleted = habit.isDone
             )
         )
     }
-    CreateOwnHabitScreen(param = param, onAddHabit = onAddHabitClick)
+    CreateOwnHabitScreen(
+        param = param,
+        onAddHabitClick = onAddHabitClick
+    )
 }
 
 @Composable
 fun CreateOwnHabitScreen(
     param: String,
     modifier: Modifier = Modifier,
-    onAddHabit: (
-        name: String, iconName: String, isDone: Boolean, colorHex: Color,
-        days: String, executionTime: String, reminder: Boolean,
-    ) -> Unit,
+    onAddHabitClick: (habit: HabitEntity) -> Unit,
 ) {
     val navController = LocalNavController.current
 
@@ -197,17 +192,20 @@ fun CreateOwnHabitScreen(
                 AdvancedSettings()
             }
 
+            val habit = HabitEntity(
+                name = habitName,
+                iconName = habitIconName,
+                colorHex = habitColor.toHex(),
+                days = selectedDays,
+                executionTime = executionTime,
+            )
             CreateButton(
                 modifier
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 16.dp),
                 navController,
-                name = habitName,
-                iconName = habitIconName,
-                color = habitColor,
-                executionTime = executionTime,
-                selectedDays = selectedDays,
-                onAddHabit = onAddHabit
+                habit = habit,
+                onAddHabitClick = onAddHabitClick
             )
         }
     }
@@ -220,7 +218,7 @@ private fun Preview() {
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
         AppTheme(darkTheme = true) {
             CreateOwnHabitScreen(param = "Fake param",
-                onAddHabit = { _, _, _, _, _, _, _ -> }
+                onAddHabitClick = {  }
             )
         }
     }

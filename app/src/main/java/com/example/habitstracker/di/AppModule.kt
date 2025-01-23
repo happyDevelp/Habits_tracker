@@ -38,7 +38,7 @@ object AppModule {
             HabitDatabase::class.java,
             name = HABIT_TABLE_NAME
         )
-            .fallbackToDestructiveMigration()
+            //.fallbackToDestructiveMigration()
             .build()
     }
 }

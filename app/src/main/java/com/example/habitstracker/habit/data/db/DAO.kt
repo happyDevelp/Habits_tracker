@@ -38,11 +38,16 @@ sealed interface DAO {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHabitStatus(status: HabitStatusEntity)
 
-    @Query("SELECT * FROM habit_status_table WHERE date = :date")
-    fun getHabitStatusesByDate(date: String): Flow<List<HabitStatusEntity>>
+    @Query("""
+    SELECT habit_table.* FROM habit_table
+    INNER JOIN habit_status_table
+    ON habit_table.id = habit_status_table.habitId
+    WHERE habit_status_table.date = :date
+""") // YYYY-MM-DD
+    fun getHabitsByDate(date: String): Flow<List<HabitEntity>>
 
-    @Query("SELECT * FROM habit_status_table WHERE habitId = :habitId AND date = :date")
-    fun getHabitStatusForDay(habitId: Int, date: String): HabitStatusEntity?
+   /* @Query("SELECT * FROM habit_status_table WHERE habitId = :habitId AND date = :date")
+    fun getHabitStatusForDay(habitId: Int, date: String): HabitStatusEntity?*/
 
     @Update
     suspend fun updateHabitStatus(status: HabitStatusEntity)

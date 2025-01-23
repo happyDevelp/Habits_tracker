@@ -3,7 +3,6 @@ package com.example.habitstracker.habit.domain
 import kotlinx.coroutines.flow.Flow
 
 interface HabitRepository {
-
     suspend fun addHabit(habit: HabitEntity)
 
     suspend fun deleteHabit(habit: HabitEntity)
@@ -17,4 +16,8 @@ interface HabitRepository {
     suspend fun getHabitById(id: Int): HabitEntity?
 
     suspend fun updateHabit(habit: HabitEntity)
+
+    suspend fun insertHabitStatus(status: HabitStatusEntity)
+
+    suspend fun getHabitsByDate(date: String): Flow<List<HabitEntity>> // YYYY-MM-DD
 }

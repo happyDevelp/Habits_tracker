@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.domain.HabitRepository
+import com.example.habitstracker.habit.domain.HabitStatusEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -48,7 +49,25 @@ class MainScreenViewModel @Inject constructor(
             habitRepository.updateSelectedState(id, isDone)
         }
     }
+
     suspend fun getAllHabits(): Flow<List<HabitEntity>> {
         return habitRepository.getAllHabits()
+    }
+
+    fun insertHabitStatus(status: HabitStatusEntity) {
+        viewModelScope.launch {
+            habitRepository.insertHabitStatus(status)
+        }
+    }
+
+    /*fun updateHabitStatus*/
+
+    fun updateHabitsForDate(date: String /*YYYY-MM-DD*/)/*: Flow<List<HabitEntity>>*/ {
+        viewModelScope.launch {
+            habitRepository.getHabitsByDate(date).collect {habits ->
+                _habitsListState.value = habits
+
+            }
+        }
     }
 }
