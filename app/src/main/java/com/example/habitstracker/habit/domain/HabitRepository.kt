@@ -17,7 +17,11 @@ interface HabitRepository {
 
     suspend fun updateHabit(habit: HabitEntity)
 
-    suspend fun insertHabitStatus(status: HabitStatusEntity)
+
+    // date_table
+    suspend fun insertHabitDate(habitDate: HabitStatusEntity)
 
     suspend fun getHabitsByDate(date: String): Flow<List<HabitEntity>> // YYYY-MM-DD
+
+
 }

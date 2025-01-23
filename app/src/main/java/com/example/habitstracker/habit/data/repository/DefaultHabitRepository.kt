@@ -53,9 +53,9 @@ class DefaultHabitRepository(private val dao: DAO) : HabitRepository {
         }
     }
 
-    override suspend fun insertHabitStatus(status: HabitStatusEntity) {
+    override suspend fun insertHabitDate(habitDate: HabitStatusEntity) {
         return withContext(Dispatchers.IO) {
-            dao.insertHabitStatus(status)
+            dao.insertHabitDate(habitDate)
         }
     }
 

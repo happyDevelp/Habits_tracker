@@ -56,7 +56,7 @@ class MainScreenViewModel @Inject constructor(
 
     fun insertHabitStatus(status: HabitStatusEntity) {
         viewModelScope.launch {
-            habitRepository.insertHabitStatus(status)
+            habitRepository.insertHabitDate(status)
         }
     }
 
