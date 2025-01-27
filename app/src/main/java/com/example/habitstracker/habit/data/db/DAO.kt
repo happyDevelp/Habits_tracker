@@ -19,19 +19,7 @@ sealed interface DAO {
     @Query("delete from habit_table where id=:id")
     fun deleteHabit(id: Int)
 
-    /*@Query("delete from date_table where id=:id")
-    fun deleteDate(id: Int)
-
-    @Transaction
-    fun deleteHabitAndDate(id: Int) {
-        deleteHabit(id)
-        deleteDate(id)
-    }*/
-
-    @Query("select * from habit_table")
-    fun getAllHabits(): Flow<List<HabitEntity>>
-
-    @Query("update habit_table set isDone=:isDone where id=:id")
+    @Query("update habit_table set isCompleted=:isDone where id=:id")
     fun updateHabitSelectState(id: Int, isDone: Boolean)
 
     @Query("update date_table set isCompleted=:isDone where habitId=:id")
@@ -43,8 +31,8 @@ sealed interface DAO {
         updateDateSelectState(id, isDone)
     }
 
-    @Query("select * from habit_table where name=:name")
-    fun getHabitByName(name: String): HabitEntity?
+    @Query("select * from habit_table")
+    fun getAllHabits(): Flow<List<HabitEntity>>
 
     @Query("select * from habit_table where name=:id")
     fun getHabitById(id: Int): HabitEntity?

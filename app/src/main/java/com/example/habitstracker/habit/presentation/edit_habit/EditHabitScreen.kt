@@ -243,7 +243,7 @@ fun EditHabitScreen(
                 id = habit.id,
                 name = habitName,
                 iconName = getIconName(habitIcon),
-                isDone = habit.isDone,
+                isCompleted = habit.isCompleted,
                 colorHex = habitColor.toHex(),
                 days = habit.days,
                 executionTime = executionTime,

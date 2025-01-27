@@ -5,15 +5,11 @@ import kotlinx.coroutines.flow.Flow
 interface HabitRepository {
     suspend fun addHabit(habit: HabitEntity): Long
 
+    suspend fun updateHabitAndDateSelectState(id: Int, isDone: Boolean)
+
     suspend fun deleteHabit(id: Int)
 
-    //suspend fun deleteHabitAndDate(id: Int)
-
     suspend fun getAllHabits(): Flow<List<HabitEntity>>
-
-    suspend fun updateSelectedState(id: Int, isDone: Boolean)
-
-    suspend fun getHabitByName(name: String): HabitEntity?
 
     suspend fun getHabitById(id: Int): HabitEntity?
 
@@ -24,6 +20,4 @@ interface HabitRepository {
     suspend fun insertHabitDate(habitDate: DateHabitEntity)
 
     suspend fun getHabitsByDate(date: String): Flow<List<HabitEntity>> // YYYY-MM-DD
-
-    suspend fun updateHabitAndDateSelectState(id: Int, isDone: Boolean)
 }

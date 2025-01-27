@@ -15,7 +15,7 @@ data class HabitEntity (
     val id: Int = 0,
     val name: String = "",
     val iconName: String = "",
-    val isDone: Boolean = false,
+    val isCompleted: Boolean = false,
     val colorHex: String = blueColor.toHex(),
     val days: String = "", // Which days of the week to show a habit (for ex. Mon, wed, Fri,...)
     val executionTime: String = "", // There are 4 variants: Doesn`t matter, Morning, Day, Evening

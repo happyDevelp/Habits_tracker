@@ -53,7 +53,6 @@ import com.example.habitstracker.core.presentation.theme.notSelectedColor
 import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.core.presentation.utils.getColorFromHex
 import com.example.habitstracker.core.presentation.utils.iconByName
-import com.example.habitstracker.habit.domain.DateHabitEntity
 
 @Composable
 fun HabitItem(
@@ -64,7 +63,7 @@ fun HabitItem(
 ) {
     val navController = LocalNavController.current
 
-    var isDone by remember { mutableStateOf(habit.isDone) }
+    var isDone by remember { mutableStateOf(habit.isCompleted) }
     val itemHeight: Dp = 90.dp
     val selectedAlpha: Float = 0.75f
 

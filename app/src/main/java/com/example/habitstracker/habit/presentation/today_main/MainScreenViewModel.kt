@@ -41,21 +41,10 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
-    /*fun deleteHabitAndDate(id: Int) {
-        viewModelScope.launch {
-            habitRepository.deleteHabitAndDate(id)
-        }
-    }*/
-
     suspend fun updateHabit(habit: HabitEntity) {
         return habitRepository.updateHabit(habit)
     }
 
-    fun updateSelectedState(id: Int, isDone: Boolean) {
-        viewModelScope.launch {
-            habitRepository.updateSelectedState(id, isDone)
-        }
-    }
 
     suspend fun getAllHabits(): Flow<List<HabitEntity>> {
         return habitRepository.getAllHabits()
