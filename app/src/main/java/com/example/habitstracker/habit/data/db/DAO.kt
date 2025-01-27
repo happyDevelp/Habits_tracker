@@ -5,16 +5,17 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.example.habitstracker.habit.domain.HabitEntity
-import com.example.habitstracker.habit.domain.HabitStatusEntity
+import com.example.habitstracker.habit.domain.HabitDateEntity
 import kotlinx.coroutines.flow.Flow
 
 // Data Access Object
 @Dao
 sealed interface DAO {
     @Insert
-    suspend fun addHabit(entity: HabitEntity)
+    suspend fun addHabit(entity: HabitEntity): Long
 
     @Delete
     fun deleteHabit(entity: HabitEntity)
@@ -23,7 +24,16 @@ sealed interface DAO {
     fun getAllHabits(): Flow<List<HabitEntity>>
 
     @Query("update habit_table set isDone=:isDone where id=:id")
-    fun updateSelectedState(id: Int, isDone: Boolean)
+    fun updateHabitSelectState(id: Int, isDone: Boolean)
+
+    @Query("update date_table set isCompleted=:isDone where habitId=:id")
+    fun updateDateSelectState(id: Int, isDone: Boolean)
+
+    @Transaction
+    fun updateHabitAndDateSelectState(id: Int, isDone: Boolean) {
+        updateHabitSelectState(id, isDone)
+        updateDateSelectState(id, isDone)
+    }
 
     @Query("select * from habit_table where name=:name")
     fun getHabitByName(name: String): HabitEntity?
@@ -35,19 +45,20 @@ sealed interface DAO {
     fun updateHabit(habit: HabitEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertHabitDate(habitDate: HabitStatusEntity)
+    suspend fun insertHabitDate(habitDate: HabitDateEntity)
 
-    @Query("""
+    @Query(
+        """
     SELECT habit_table.* FROM habit_table
-    INNER JOIN date_table
+    JOIN date_table
     ON habit_table.id = date_table.habitId
     WHERE date_table.date = :date
-""") // YYYY-MM-DD
+"""
+    ) // YYYY-MM-DD
     fun getHabitsByDate(date: String): Flow<List<HabitEntity>>
 
-   /* @Query("SELECT * FROM habit_status_table WHERE habitId = :habitId AND date = :date")
-    fun getHabitStatusForDay(habitId: Int, date: String): HabitStatusEntity?*/
+    /* @Query("SELECT * FROM habit_status_table WHERE habitId = :habitId AND date = :date")
+     fun getHabitStatusForDay(habitId: Int, date: String): HabitStatusEntity?*/
 
-    @Update
-    suspend fun updateHabitDate(habitDate: HabitStatusEntity)
+
 }

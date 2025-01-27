@@ -54,21 +54,24 @@ import com.example.habitstracker.core.presentation.utils.clickWithRipple
 import com.example.habitstracker.core.presentation.utils.getIconName
 import com.example.habitstracker.core.presentation.utils.iconByName
 import com.example.habitstracker.core.presentation.utils.toHex
-import com.example.habitstracker.habit.domain.HabitStatusEntity
+import com.example.habitstracker.habit.domain.HabitDateEntity
 import java.time.LocalDate
 
 @Composable
 fun CreateOwnHabitRoot(param: String = "no value", viewModel: MainScreenViewModel) {
-    val onAddHabitClick: (habit: HabitEntity) -> Unit = { habit ->
-        viewModel.addHabit(habit)
 
-        viewModel.insertHabitStatus(
-            HabitStatusEntity(
-                habitId = habit.id,
-                date = LocalDate.now().toString(),
-                isCompleted = habit.isDone
+    val onAddHabitClick: (habit: HabitEntity) -> Unit = { habit ->
+        viewModel.addHabit(habit) { habitId ->
+            viewModel.insertHabitDate(
+                HabitDateEntity(
+                    habitId = habitId.toInt(),
+                    date = LocalDate.now().toString(),
+                    isCompleted = habit.isDone
+                )
             )
-        )
+
+        }
+
     }
     CreateOwnHabitScreen(
         param = param,

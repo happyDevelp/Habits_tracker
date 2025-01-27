@@ -41,7 +41,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -50,21 +49,19 @@ import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.CustomCheckbox
-import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.notSelectedColor
 import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.core.presentation.utils.getColorFromHex
 import com.example.habitstracker.core.presentation.utils.iconByName
-import com.example.habitstracker.habit.domain.HabitStatusEntity
+import com.example.habitstracker.habit.domain.HabitDateEntity
 import java.time.LocalDate
 
 @Composable
 fun HabitItem(
     modifier: Modifier = Modifier,
     habit: HabitEntity = HabitEntity(),
-    onUpdateSelectedState: (id: Int, isDone: Boolean) -> Unit = { id, isDone -> },
+    onSelectClick: (id: Int, isDone: Boolean) -> Unit,
     onDeleteClick: (habit: HabitEntity) -> Unit,
-    onSelectedStatusClick: (status: HabitStatusEntity) -> Unit,
 ) {
     val navController = LocalNavController.current
 
@@ -100,16 +97,7 @@ fun HabitItem(
                     habit = habit,
                     onClick = {
                         isDone = !isDone
-                        onUpdateSelectedState(habit.id, isDone)
-                        val dateString = LocalDate.now().toString()
-                        if (isDone == true) {
-                            val status = HabitStatusEntity(
-                                habitId = habit.id,
-                                date = dateString,
-                                isCompleted = true
-                            )
-                            onSelectedStatusClick(status)
-                        }
+                        onSelectClick(habit.id, isDone)
                     })
             }
 

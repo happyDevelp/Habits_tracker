@@ -8,7 +8,7 @@ import androidx.room.PrimaryKey
 const val DATE_TABLE_NAME = "date_table"
 
 @Entity(tableName = DATE_TABLE_NAME)
-data class HabitStatusEntity (
+data class HabitDateEntity (
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val habitId: Int,
     val date: String, // YYYY-MM-DD

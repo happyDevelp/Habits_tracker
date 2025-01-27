@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.domain.HabitRepository
-import com.example.habitstracker.habit.domain.HabitStatusEntity
+import com.example.habitstracker.habit.domain.HabitDateEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,9 +28,10 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
-    fun addHabit(habit: HabitEntity) {
+    fun addHabit(habit: HabitEntity, onHabitAdded: (habitId: Long) -> Unit) {
         viewModelScope.launch {
-            habitRepository.addHabit(habit)
+            val id = habitRepository.addHabit(habit)
+            onHabitAdded(id)
         }
     }
 
@@ -54,19 +55,22 @@ class MainScreenViewModel @Inject constructor(
         return habitRepository.getAllHabits()
     }
 
-    fun insertHabitStatus(status: HabitStatusEntity) {
+    fun insertHabitDate(status: HabitDateEntity) {
         viewModelScope.launch {
             habitRepository.insertHabitDate(status)
         }
     }
 
-    /*fun updateHabitStatus*/
+    fun updateHabitAndDateSelectState(id: Int, isDone: Boolean) {
+        viewModelScope.launch {
+            habitRepository.updateHabitAndDateSelectState(id, isDone)
+        }
+    }
 
-    fun updateHabitsForDate(date: String /*YYYY-MM-DD*/)/*: Flow<List<HabitEntity>>*/ {
+    fun setHabitsForDate(date: String /*YYYY-MM-DD*/) {
         viewModelScope.launch {
             habitRepository.getHabitsByDate(date).collect {habits ->
                 _habitsListState.value = habits
-
             }
         }
     }
