@@ -53,15 +53,14 @@ import com.example.habitstracker.core.presentation.theme.notSelectedColor
 import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.core.presentation.utils.getColorFromHex
 import com.example.habitstracker.core.presentation.utils.iconByName
-import com.example.habitstracker.habit.domain.HabitDateEntity
-import java.time.LocalDate
+import com.example.habitstracker.habit.domain.DateHabitEntity
 
 @Composable
 fun HabitItem(
     modifier: Modifier = Modifier,
     habit: HabitEntity = HabitEntity(),
     onSelectClick: (id: Int, isDone: Boolean) -> Unit,
-    onDeleteClick: (habit: HabitEntity) -> Unit,
+    onDeleteClick: (id: Int) -> Unit,
 ) {
     val navController = LocalNavController.current
 
@@ -199,7 +198,7 @@ fun HabitItem(
                                     trailingIcon = { Icons.Default.Delete },
                                     onClick = {
                                         isMenuExpanded = false
-                                        onDeleteClick.invoke(habit)
+                                        onDeleteClick.invoke(habit.id)
                                     }
                                 )
                             }

@@ -54,7 +54,7 @@ import com.example.habitstracker.core.presentation.utils.clickWithRipple
 import com.example.habitstracker.core.presentation.utils.getIconName
 import com.example.habitstracker.core.presentation.utils.iconByName
 import com.example.habitstracker.core.presentation.utils.toHex
-import com.example.habitstracker.habit.domain.HabitDateEntity
+import com.example.habitstracker.habit.domain.DateHabitEntity
 import java.time.LocalDate
 
 @Composable
@@ -63,7 +63,7 @@ fun CreateOwnHabitRoot(param: String = "no value", viewModel: MainScreenViewMode
     val onAddHabitClick: (habit: HabitEntity) -> Unit = { habit ->
         viewModel.addHabit(habit) { habitId ->
             viewModel.insertHabitDate(
-                HabitDateEntity(
+                DateHabitEntity(
                     habitId = habitId.toInt(),
                     date = LocalDate.now().toString(),
                     isCompleted = habit.isDone

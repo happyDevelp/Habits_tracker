@@ -50,7 +50,7 @@ import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
 import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.core.presentation.utils.generateDateSequence
 import com.example.habitstracker.core.presentation.utils.habitEntityExample
-import com.example.habitstracker.habit.domain.HabitDateEntity
+import com.example.habitstracker.habit.domain.DateHabitEntity
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -63,9 +63,9 @@ fun TodayScreenRoot(viewModel: MainScreenViewModel) {
         viewModel.updateHabitAndDateSelectState(id, isDone)
     }
 
-    val onDeleteClick: (habit: HabitEntity) -> Unit = { habit ->
+    val onDeleteClick: (id: Int) -> Unit = { habitId ->
         coroutineScope.launch {
-            viewModel.deleteHabit(habit)
+            viewModel.deleteHabit(habitId)
         }
     }
 
@@ -88,7 +88,7 @@ fun TodayScreen(
     modifier: Modifier = Modifier,
     habitListState: List<HabitEntity>,
     onSelectClick: (id: Int, isDone: Boolean) -> Unit,
-    onDeleteClick: (habit: HabitEntity) -> Unit,
+    onDeleteClick: (id: Int) -> Unit,
     onDateClick: (date: String) -> Unit
 ) {
     val navController = LocalNavController.current
@@ -206,7 +206,7 @@ private fun Preview() {
             TodayScreen(
                 habitListState = mockList,
                 onSelectClick = {_,_-> },
-                onDeleteClick = {},
+                onDeleteClick = {_-> },
                 onDateClick = {}
             )
         }

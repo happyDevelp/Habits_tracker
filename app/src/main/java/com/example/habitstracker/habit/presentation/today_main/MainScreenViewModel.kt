@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.domain.HabitRepository
-import com.example.habitstracker.habit.domain.HabitDateEntity
+import com.example.habitstracker.habit.domain.DateHabitEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,11 +35,17 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
-    fun deleteHabit(habit: HabitEntity) {
+    fun deleteHabit(id: Int) {
         viewModelScope.launch {
-            habitRepository.deleteHabit(habit)
+            habitRepository.deleteHabit(id)
         }
     }
+
+    /*fun deleteHabitAndDate(id: Int) {
+        viewModelScope.launch {
+            habitRepository.deleteHabitAndDate(id)
+        }
+    }*/
 
     suspend fun updateHabit(habit: HabitEntity) {
         return habitRepository.updateHabit(habit)
@@ -55,7 +61,7 @@ class MainScreenViewModel @Inject constructor(
         return habitRepository.getAllHabits()
     }
 
-    fun insertHabitDate(status: HabitDateEntity) {
+    fun insertHabitDate(status: DateHabitEntity) {
         viewModelScope.launch {
             habitRepository.insertHabitDate(status)
         }

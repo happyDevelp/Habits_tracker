@@ -3,7 +3,7 @@ package com.example.habitstracker.habit.data.repository
 import com.example.habitstracker.habit.data.db.DAO
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.domain.HabitRepository
-import com.example.habitstracker.habit.domain.HabitDateEntity
+import com.example.habitstracker.habit.domain.DateHabitEntity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -17,11 +17,17 @@ class DefaultHabitRepository(private val dao: DAO) : HabitRepository {
         }
     }
 
-    override suspend fun deleteHabit(habit: HabitEntity) {
-        withContext(Dispatchers.IO) {
-            dao.deleteHabit(habit)
+    override suspend fun deleteHabit(id: Int) {
+        return withContext(Dispatchers.IO) {
+            dao.deleteHabit(id)
         }
     }
+
+    /*override suspend fun deleteHabitAndDate(id: Int) {
+        return withContext(Dispatchers.IO) {
+            dao.deleteHabitAndDate(id)
+        }
+    }*/
 
     override suspend fun getAllHabits(): Flow<List<HabitEntity>> {
         return withContext(Dispatchers.IO) {
@@ -53,7 +59,7 @@ class DefaultHabitRepository(private val dao: DAO) : HabitRepository {
         }
     }
 
-    override suspend fun insertHabitDate(habitDate: HabitDateEntity) {
+    override suspend fun insertHabitDate(habitDate: DateHabitEntity) {
         return withContext(Dispatchers.IO) {
             dao.insertHabitDate(habitDate)
         }
