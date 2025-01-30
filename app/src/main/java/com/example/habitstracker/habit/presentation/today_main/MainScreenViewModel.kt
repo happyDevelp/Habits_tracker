@@ -9,8 +9,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -23,35 +21,37 @@ class MainScreenViewModel @Inject constructor(
     val habitsListState: StateFlow<List<HabitEntity>> = _habitsListState
 
     init {
-        // subscribe on data from database
         viewModelScope.launch {
+            // subscribe on data from database
             getAllHabits().collect { habits ->
                 _habitsListState.value = habits
-                fillMissingDates()
             }
+            fillMissingDates()
         }
     }
 
     private suspend fun fillMissingDates() {
         habitsListState.value.forEach { habit ->
+            val allDatesById = habitRepository.getAllDatesByHabitId(habit.id)
 
-            if (!isTodayDatePushed(habit.id)) {
-                val allDatesById = habitRepository.getAllDatesByHabitId(habit.id)
-                insertHabitDate(
-                    DateHabitEntity(
-                        habitId = habit.id,
-                        startDate = allDatesById.get(0).startDate,
-                        currentDate = LocalDate.now().toString(),
-                        isCompleted = false
+            if (allDatesById.isNotEmpty()) {
+                val lastDate = LocalDate.parse(allDatesById.last().currentDate)
+                val today = LocalDate.now()
+
+                var currentDate = lastDate.plusDays(1) // Починаємо з наступного дня після останнього записаного
+
+                while (currentDate.isBefore(today) || currentDate.isEqual(today)) {
+                    insertHabitDate(
+                        DateHabitEntity(
+                            habitId = habit.id,
+                            currentDate = currentDate.toString(),
+                            isCompleted = false
+                        )
                     )
-                )
+                    currentDate = currentDate.plusDays(1)
+                }
             }
         }
-    }
-
-    private suspend fun isTodayDatePushed(habitId: Int): Boolean {
-        val allDates = habitRepository.getAllDatesByHabitId(habitId)
-        return allDates.isNotEmpty() && allDates.last().currentDate == LocalDate.now().toString()
     }
 
     fun insertHabit(habit: HabitEntity, onHabitAdded: (habitId: Long) -> Unit) {

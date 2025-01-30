@@ -19,8 +19,6 @@ interface HabitRepository {
 
     suspend fun getAllDatesByHabitId(id: Int): List<DateHabitEntity>
 
-    suspend fun updateHabitDatesForToday(habitId: Int, today: String)
-
     // date_table
     suspend fun insertHabitDate(habitDate: DateHabitEntity)
 

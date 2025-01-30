@@ -35,10 +35,6 @@ class DefaultHabitRepository(private val dao: DAO) : HabitRepository {
         }
     }
 
-    override suspend fun updateHabitDatesForToday(habitId: Int, today: String) {
-        dao.updateHabitDatesForToday(habitId, today)
-    }
-
     override suspend fun updateHabitAndDateSelectState(id: Int, isDone: Boolean) {
         return withContext(Dispatchers.IO) {
             dao.updateHabitAndDateSelectState(id, isDone)

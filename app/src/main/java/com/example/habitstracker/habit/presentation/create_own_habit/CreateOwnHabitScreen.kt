@@ -66,7 +66,6 @@ fun CreateOwnHabitRoot(param: String = "no value", viewModel: MainScreenViewMode
             viewModel.insertHabitDate(
                 DateHabitEntity(
                     habitId = habitId.toInt(),
-                    startDate = currentDate,
                     currentDate = currentDate,
                     isCompleted = habit.isCompleted,
                 )
