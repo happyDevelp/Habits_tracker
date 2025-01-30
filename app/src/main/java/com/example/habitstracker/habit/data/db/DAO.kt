@@ -14,10 +14,48 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 sealed interface DAO {
     @Insert
-    suspend fun addHabit(entity: HabitEntity): Long
+    suspend fun insertHabit(entity: HabitEntity): Long
 
     @Query("delete from habit_table where id=:id")
     fun deleteHabit(id: Int)
+
+    @Query("SELECT * FROM date_table WHERE currentDate = :date")
+    suspend fun getHabitDateByDate(date: String): List<DateHabitEntity>?
+
+    @Transaction
+    suspend fun addHabitWithDates(habit: HabitEntity, startDate: String) {
+        val habitId = insertHabit(habit)
+        insertHabitDate(
+            DateHabitEntity(
+                habitId = habitId.toInt(),
+                startDate = startDate,
+                currentDate = startDate, // Початкова дата
+                isCompleted = false
+            )
+        )
+    }
+
+    @Transaction
+    suspend fun updateHabitDatesForToday(habitId: Int, today: String) {
+        val existingEntry = getHabitDateByDate(today)
+        if (existingEntry == null) {
+            // Отримуємо startDate з існуючого запису
+            val startDate = getStartDateForHabit(habitId)
+            insertHabitDate(
+                DateHabitEntity(
+                    habitId = habitId,
+                    startDate = startDate,
+                    currentDate = today,
+                    isCompleted = false
+                )
+            )
+        }
+    }
+
+    @Query("SELECT startDate FROM date_table WHERE habitId = :habitId LIMIT 1")
+    suspend fun getStartDateForHabit(habitId: Int): String
+
+
 
     @Query("update habit_table set isCompleted=:isDone where id=:id")
     fun updateHabitSelectState(id: Int, isDone: Boolean)
@@ -48,14 +86,14 @@ sealed interface DAO {
     SELECT habit_table.* FROM habit_table
     JOIN date_table
     ON habit_table.id = date_table.habitId
-    WHERE date_table.date = :date
+    WHERE date_table.currentDate = :date
 """
     ) // YYYY-MM-DD
     fun getHabitsByDate(date: String): Flow<List<HabitEntity>>
 
+    @Query("SELECT * FROM date_table WHERE habitId=:id")
+    suspend fun getAllDatesByHabitId(id: Int): List<DateHabitEntity>
 
-    /* @Query("SELECT * FROM habit_status_table WHERE habitId = :habitId AND date = :date")
-     fun getHabitStatusForDay(habitId: Int, date: String): HabitStatusEntity?*/
-
-
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertAll(dates: List<DateHabitEntity>)
 }

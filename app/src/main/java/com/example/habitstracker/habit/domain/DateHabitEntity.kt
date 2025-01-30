@@ -17,6 +17,7 @@ const val DATE_TABLE_NAME = "date_table"
 data class DateHabitEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val habitId: Int,
-    val date: String, // YYYY-MM-DD
+    val startDate: String, // YYYY-MM-DD
+    val currentDate: String, // YYYY-MM-DD
     val isCompleted: Boolean
 )

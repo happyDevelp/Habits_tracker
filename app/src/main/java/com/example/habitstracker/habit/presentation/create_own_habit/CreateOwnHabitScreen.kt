@@ -61,12 +61,14 @@ import java.time.LocalDate
 fun CreateOwnHabitRoot(param: String = "no value", viewModel: MainScreenViewModel) {
 
     val onAddHabitClick: (habit: HabitEntity) -> Unit = { habit ->
-        viewModel.addHabit(habit) { habitId ->
+        viewModel.insertHabit(habit) { habitId ->
+            val currentDate = LocalDate.now().toString()
             viewModel.insertHabitDate(
                 DateHabitEntity(
                     habitId = habitId.toInt(),
-                    date = LocalDate.now().toString(),
-                    isCompleted = habit.isCompleted
+                    startDate = currentDate,
+                    currentDate = currentDate,
+                    isCompleted = habit.isCompleted,
                 )
             )
 

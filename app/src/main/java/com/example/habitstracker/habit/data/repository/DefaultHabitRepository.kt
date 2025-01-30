@@ -13,8 +13,30 @@ import kotlinx.coroutines.withContext
 class DefaultHabitRepository(private val dao: DAO) : HabitRepository {
     override suspend fun addHabit(habit: HabitEntity): Long {
         return withContext(Dispatchers.IO) {
-            dao.addHabit(habit)
+            dao.insertHabit(habit)
         }
+    }
+
+    override suspend fun getAllDatesByHabitId(id: Int): List<DateHabitEntity> {
+        return withContext(Dispatchers.IO) {
+            dao.getAllDatesByHabitId(id)
+        }
+    }
+
+    override suspend fun insertAll(dates: List<DateHabitEntity>) {
+        return withContext(Dispatchers.IO) {
+            dao.insertAll(dates)
+        }
+    }
+
+    override suspend fun getHabitDateByDate(date: String): List<DateHabitEntity>? {
+        return withContext(Dispatchers.IO) {
+            dao.getHabitDateByDate(date)
+        }
+    }
+
+    override suspend fun updateHabitDatesForToday(habitId: Int, today: String) {
+        dao.updateHabitDatesForToday(habitId, today)
     }
 
     override suspend fun updateHabitAndDateSelectState(id: Int, isDone: Boolean) {

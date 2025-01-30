@@ -42,7 +42,7 @@ class DatabaseTest {
     fun setUp() = runTest {
         hiltRule.inject()
 
-        dao.addHabit(
+        dao.insertHabit(
             HabitEntity(
                 5, "DefaultHabit", "SentimentVerySatisfied", false,
                 blueColor.toHex(), "Everyday", "Anytime", false
