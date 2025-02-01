@@ -39,6 +39,7 @@ import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.app.navigation.Route
+import com.example.habitstracker.core.domain.DataError
 import com.example.habitstracker.core.presentation.CustomRippleTheme
 import com.example.habitstracker.habit.presentation.today_main.components.HabitItem
 import com.example.habitstracker.habit.presentation.today_main.components.calendar.CalendarRowList
@@ -50,23 +51,35 @@ import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
 import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.core.presentation.utils.generateDateSequence
 import com.example.habitstracker.core.presentation.utils.habitEntityExample
-import com.example.habitstracker.habit.domain.DateHabitEntity
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
 import java.time.LocalDate
+import java.time.temporal.TemporalAdjusters
 
 @Composable
 fun TodayScreenRoot(viewModel: MainScreenViewModel) {
     val coroutineScope = rememberCoroutineScope()
 
     val habitListState by viewModel.habitsListState.collectAsStateWithLifecycle()
-    val onSelectClick: (id: Int, isDone: Boolean) -> Unit = { id, isDone ->
-        viewModel.updateHabitAndDateSelectState(id, isDone)
+    val dateState by viewModel.selectedDate.collectAsStateWithLifecycle()
+    val onSelectClick: (
+        id: Int,
+        isDone: Boolean,
+        selectDate: String
+    ) -> Unit = { id, isDone, selectDate ->
+        viewModel.updateHabitAndDateSelectState(id, isDone, selectDate)
     }
 
     val onDeleteClick: (id: Int) -> Unit = { habitId ->
         coroutineScope.launch {
             viewModel.deleteHabit(habitId)
         }
+    }
+
+    val onDateChangeClick: (newDate: LocalDate) -> Unit = { newDate ->
+        viewModel.updateSelectedDate(newDate)
+        viewModel.setHabitsForDate(newDate.toString())
+
     }
 
     val onDateClick: (date: String) -> Unit = { date ->
@@ -77,9 +90,10 @@ fun TodayScreenRoot(viewModel: MainScreenViewModel) {
 
     TodayScreen(
         habitListState = habitListState,
+        dateState = dateState,
         onSelectClick = onSelectClick,
         onDeleteClick = onDeleteClick,
-        onDateClick = onDateClick
+        onDateClick = onDateChangeClick
     )
 }
 
@@ -87,15 +101,15 @@ fun TodayScreenRoot(viewModel: MainScreenViewModel) {
 fun TodayScreen(
     modifier: Modifier = Modifier,
     habitListState: List<HabitEntity>,
-    onSelectClick: (id: Int, isDone: Boolean) -> Unit,
+    dateState: LocalDate,
+    onSelectClick: (id: Int, isDone: Boolean, selectDate: String) -> Unit,
     onDeleteClick: (id: Int) -> Unit,
-    onDateClick: (date: String) -> Unit
+    onDateClick: (newDate: LocalDate) -> Unit
 ) {
     val navController = LocalNavController.current
-    var currentDate by remember {
-        mutableStateOf(LocalDate.now().minusDays(5))
-    }
-    val onCurrentDayChange: (newDate: LocalDate) -> Unit = { newDate ->
+    var currentDate by remember { mutableStateOf(dateState) }
+
+    val onCurrentDateChange: (newDate: LocalDate) -> Unit = { newDate ->
         currentDate = newDate
     }
 
@@ -118,20 +132,17 @@ fun TodayScreen(
             ) {
 
                 Column {
-                    val dateSet = generateDateSequence(
-                        currentDate, 500
-                    )
                     CalendarRowList(
-                        dateSet.toMutableList(),
-                        onCurrentDayChange = onCurrentDayChange,
-                        onDateClick = onDateClick
-                    )
+                        onCurrentDateChange = { newDate ->
+                            onDateClick(newDate)
+                            onCurrentDateChange(newDate)
+
+                        })
                 }
 
                 CompositionLocalProvider(
                     value = LocalRippleTheme provides CustomRippleTheme(color = Color.Black)
                 ) {
-
                     LazyColumn(
                         modifier = modifier
                             .padding(top = 95.dp)
@@ -143,6 +154,7 @@ fun TodayScreen(
                         items(habitListState.size) { habitId ->
                             HabitItem(
                                 habit = habitListState[habitId],
+                                habitDate = currentDate,
                                 onSelectClick = onSelectClick,
                                 onDeleteClick = onDeleteClick,
                             )
@@ -205,9 +217,10 @@ private fun Preview() {
         AppTheme(darkTheme = true) {
             TodayScreen(
                 habitListState = mockList,
-                onSelectClick = {_,_-> },
-                onDeleteClick = {_-> },
-                onDateClick = {}
+                onSelectClick = { _, _, _ -> },
+                onDeleteClick = { _ -> },
+                onDateClick = {},
+                dateState = LocalDate.now()
             )
         }
     }

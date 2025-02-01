@@ -19,24 +19,20 @@ sealed interface DAO {
     @Query("delete from habit_table where id=:id")
     fun deleteHabit(id: Int)
 
-    @Query("SELECT * FROM date_table WHERE currentDate = :date")
-    suspend fun getHabitDateByDate(date: String): List<DateHabitEntity>?
-
-
     @Query("update habit_table set isCompleted=:isDone where id=:id")
     fun updateHabitSelectState(id: Int, isDone: Boolean)
 
-    @Query("update date_table set isCompleted=:isDone where habitId=:id")
-    fun updateDateSelectState(id: Int, isDone: Boolean)
+    @Query("update date_table set isCompleted=:isDone where habitId=:id AND currentDate=:selectDate")
+    fun updateDateSelectState(id: Int, isDone: Boolean, selectDate: String)
 
     @Transaction
-    fun updateHabitAndDateSelectState(id: Int, isDone: Boolean) {
+    fun updateHabitAndDateSelectState(id: Int, isDone: Boolean, selectDate: String) {
         updateHabitSelectState(id, isDone)
-        updateDateSelectState(id, isDone)
+        updateDateSelectState(id, isDone, selectDate)
     }
 
-    @Query("select * from habit_table")
-    fun getAllHabits(): Flow<List<HabitEntity>>
+    @Query("SELECT * from habit_table join date_table ON habit_table.id = date_table.habitId AND date_table.currentDate = :date")
+    fun getAllHabits(date: String): Flow<List<HabitEntity>>
 
     @Query("select * from habit_table where name=:id")
     fun getHabitById(id: Int): HabitEntity?
@@ -59,6 +55,12 @@ sealed interface DAO {
 
     @Query("SELECT * FROM date_table WHERE habitId=:id")
     suspend fun getAllDatesByHabitId(id: Int): List<DateHabitEntity>
+
+    @Query("SELECT * FROM date_table WHERE currentDate = :date")
+    suspend fun getHabitDateByDate(date: String): List<DateHabitEntity>?
+
+    @Query("SELECT * FROM date_table WHERE habitId=:id AND currentDate=:date")
+    suspend fun getDateByHabitIdAndDate(id: Int, date: String): DateHabitEntity
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(dates: List<DateHabitEntity>)

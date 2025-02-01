@@ -35,9 +35,15 @@ class DefaultHabitRepository(private val dao: DAO) : HabitRepository {
         }
     }
 
-    override suspend fun updateHabitAndDateSelectState(id: Int, isDone: Boolean) {
+    override suspend fun updateHabitAndDateSelectState(id: Int, isDone: Boolean, selectDate: String) {
         return withContext(Dispatchers.IO) {
-            dao.updateHabitAndDateSelectState(id, isDone)
+            dao.updateHabitAndDateSelectState(id, isDone, selectDate)
+        }
+    }
+
+    override suspend fun getDateByHabitIdAndDate(id: Int, date: String): DateHabitEntity {
+        return withContext(Dispatchers.IO) {
+            dao.getDateByHabitIdAndDate(id, date)
         }
     }
 
@@ -47,9 +53,9 @@ class DefaultHabitRepository(private val dao: DAO) : HabitRepository {
         }
     }
 
-    override suspend fun getAllHabits(): Flow<List<HabitEntity>> {
+    override suspend fun getAllHabits(date: String): Flow<List<HabitEntity>> {
         return withContext(Dispatchers.IO) {
-            dao.getAllHabits()
+            dao.getAllHabits(date)
         }
     }
 
