@@ -30,12 +30,8 @@ sealed interface DAO {
         updateHabitSelectState(id, isDone)
         updateDateSelectState(id, isDone, selectDate)
     }
-
-    @Query("SELECT * from habit_table join date_table ON habit_table.id = date_table.habitId AND date_table.currentDate = :date")
-    fun getAllHabits(date: String): Flow<List<HabitEntity>>
-
-    @Query("select * from habit_table where name=:id")
-    fun getHabitById(id: Int): HabitEntity?
+    @Query("SELECT * from habit_table")
+    fun getAllHabits(): Flow<List<HabitEntity>>
 
     @Update
     fun updateHabit(habit: HabitEntity)
@@ -55,13 +51,4 @@ sealed interface DAO {
 
     @Query("SELECT * FROM date_table WHERE habitId=:id")
     suspend fun getAllDatesByHabitId(id: Int): List<DateHabitEntity>
-
-    @Query("SELECT * FROM date_table WHERE currentDate = :date")
-    suspend fun getHabitDateByDate(date: String): List<DateHabitEntity>?
-
-    @Query("SELECT * FROM date_table WHERE habitId=:id AND currentDate=:date")
-    suspend fun getDateByHabitIdAndDate(id: Int, date: String): DateHabitEntity
-
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertAll(dates: List<DateHabitEntity>)
 }

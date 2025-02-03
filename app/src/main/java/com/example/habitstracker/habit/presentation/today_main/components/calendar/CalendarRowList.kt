@@ -19,22 +19,30 @@ import java.time.temporal.TemporalAdjusters
 
 @Composable
 fun CalendarRowList(
-    onCurrentDateChange: (newDate: LocalDate) -> Unit
+    onDateChangeClick: (newDate: LocalDate) -> Unit
 ) {
-    val displayedData by remember {
-        mutableStateOf(LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY)))
-    }
+    val firstMonday = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
 
-    val dateSet = generateDateSequence(displayedData, 500)
+    val totalDays = 700
+
+    //val dateSet = generateDateSequence(displayedData, 500)
+
+    // Отримуємо список дат, де сьогодні знаходиться посередині
+    val dateSet =
+        List(2 * totalDays) { num ->
+            firstMonday.minusDays(totalDays.toLong()).plusDays(num.toLong())
+        }
+
+    val weeks = dateSet.chunked(7)
 
     // Find the index of the week in which `selectedDate` is now located
-    val initialPageIndex = dateSet.chunked(7).indexOfFirst { week ->
+    val initialPageIndex = weeks.indexOfFirst { week ->
         selectedDate in week
     }.coerceAtLeast(0) // coerceAtLeast(0) ensures that the value is not less than 0
 
     val pagerState = rememberPagerState(
-        pageCount = { dateSet.size / 7 },
+        pageCount = { weeks.size },
         initialPage = initialPageIndex
     )
 
@@ -42,7 +50,7 @@ fun CalendarRowList(
         state = pagerState,
         modifier = Modifier.fillMaxWidth()
     ) { page ->
-        val weekDates = dateSet.chunked(7).get(page)
+        val weekDates = weeks.get(page)
 
         LazyRow(
             modifier = Modifier
@@ -55,7 +63,7 @@ fun CalendarRowList(
                     isSelected = date == selectedDate,
                     onItemClicked = {
                         selectedDate = date
-                        onCurrentDateChange(selectedDate)
+                        onDateChangeClick(selectedDate)
                     }
                 )
             }

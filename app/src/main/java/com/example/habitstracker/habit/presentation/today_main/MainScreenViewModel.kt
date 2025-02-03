@@ -6,20 +6,13 @@ import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.domain.HabitRepository
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flatMapConcat
-import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.LocalDate
 import javax.inject.Inject
 
-@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
     private val habitRepository: HabitRepository
@@ -33,9 +26,11 @@ class MainScreenViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             // subscribe on data from database
-            setHabitsForDate(LocalDate.now().toString())
-            fillMissingDates()
-
+            habitRepository.getAllHabits().collect { habitsList ->
+                _habitsListState.value = habitsList
+                fillMissingDates()
+            }
+            getHabitsByDate(LocalDate.now().toString())
         }
     }
 
@@ -101,15 +96,11 @@ class MainScreenViewModel @Inject constructor(
         return habitRepository.getAllDatesByHabitId(id)
     }
 
-    fun setHabitsForDate(date: String /*YYYY-MM-DD*/) {
+    fun getHabitsByDate(date: String /*YYYY-MM-DD*/) {
         viewModelScope.launch {
             habitRepository.getHabitsByDate(date).collect { habits ->
                 _habitsListState.value = habits
             }
         }
-    }
-
-    suspend fun getDateByHabitIdAndDate(id: Int, date: String): DateHabitEntity {
-        return habitRepository.getDateByHabitIdAndDate(id, date)
     }
 }

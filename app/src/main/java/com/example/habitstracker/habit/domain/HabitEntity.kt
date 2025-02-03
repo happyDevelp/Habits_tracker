@@ -10,7 +10,7 @@ import com.example.habitstracker.core.presentation.utils.toHex
 const val HABIT_TABLE_NAME = "habit_table"
 
 @Entity(tableName = HABIT_TABLE_NAME)
-data class HabitEntity (
+data class  HabitEntity (
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val name: String = "",

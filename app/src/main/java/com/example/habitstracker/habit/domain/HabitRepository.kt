@@ -9,15 +9,9 @@ interface HabitRepository {
 
     suspend fun deleteHabit(id: Int)
 
-    suspend fun getAllHabits(date: String): Flow<List<HabitEntity>>
-
-    suspend fun getDateByHabitIdAndDate(id: Int, date: String): DateHabitEntity
-
-    suspend fun getHabitById(id: Int): HabitEntity?
+    suspend fun getAllHabits(): Flow<List<HabitEntity>>
 
     suspend fun updateHabit(habit: HabitEntity)
-
-    suspend fun getHabitDateByDate(date: String): List<DateHabitEntity>?
 
     suspend fun getAllDatesByHabitId(id: Int): List<DateHabitEntity>
 
@@ -25,7 +19,4 @@ interface HabitRepository {
     suspend fun insertHabitDate(habitDate: DateHabitEntity)
 
     suspend fun getHabitsByDate(date: String): Flow<List<HabitEntity>> // YYYY-MM-DD
-
-    suspend fun insertAll(dates: List<DateHabitEntity>)
-
 }
