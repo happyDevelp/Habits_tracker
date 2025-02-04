@@ -58,6 +58,7 @@ import com.example.habitstracker.core.presentation.utils.getCorrectSelectedDaysL
 import com.example.habitstracker.core.presentation.utils.getIconName
 import com.example.habitstracker.core.presentation.utils.iconByName
 import com.example.habitstracker.core.presentation.utils.toHex
+import com.example.habitstracker.habit.domain.ShownHabit
 import kotlinx.coroutines.launch
 
 @Composable
@@ -88,7 +89,7 @@ fun EditHabitRoot(
 @Composable
 fun EditHabitScreen(
     modifier: Modifier = Modifier,
-    habit: HabitEntity,
+    habit: ShownHabit,
     icon: ImageVector,
     onUpdateHabitClick: (habit: HabitEntity) -> Unit,
 ) {
@@ -243,7 +244,6 @@ fun EditHabitScreen(
                 id = habit.id,
                 name = habitName,
                 iconName = getIconName(habitIcon),
-                isCompleted = habit.isCompleted,
                 colorHex = habitColor.toHex(),
                 days = habit.days,
                 executionTime = executionTime,
@@ -268,7 +268,7 @@ private fun Preview() {
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
         AppTheme(darkTheme = true) {
             EditHabitScreen(
-                habit = HabitEntity(),
+                habit = ShownHabit(),
                 icon = Icons.Default.SentimentSatisfied,
                 onUpdateHabitClick = {},
                 /*previewList = listOf(

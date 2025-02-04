@@ -8,26 +8,27 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.domain.DateHabitEntity
+import com.example.habitstracker.habit.domain.ShownHabit
 import kotlinx.coroutines.flow.Flow
 
 // Data Access Object
 @Dao
 sealed interface DAO {
     @Insert
-    suspend fun insertHabit(entity: HabitEntity): Long
+    fun insertHabit(entity: HabitEntity): Long
 
     @Query("delete from habit_table where id=:id")
     fun deleteHabit(id: Int)
 
-    @Query("update habit_table set isCompleted=:isDone where id=:id")
-    fun updateHabitSelectState(id: Int, isDone: Boolean)
+    /*@Query("update habit_table set isCompleted=:isDone where id=:id")
+    fun updateHabitSelectState(id: Int, isDone: Boolean)*/
 
     @Query("update date_table set isCompleted=:isDone where habitId=:id AND currentDate=:selectDate")
     fun updateDateSelectState(id: Int, isDone: Boolean, selectDate: String)
 
     @Transaction
     fun updateHabitAndDateSelectState(id: Int, isDone: Boolean, selectDate: String) {
-        updateHabitSelectState(id, isDone)
+        //updateHabitSelectState(id, isDone)
         updateDateSelectState(id, isDone, selectDate)
     }
     @Query("SELECT * from habit_table")
@@ -37,18 +38,18 @@ sealed interface DAO {
     fun updateHabit(habit: HabitEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertHabitDate(habitDate: DateHabitEntity)
+    fun insertHabitDate(habitDate: DateHabitEntity)
 
     @Query(
         """
-    SELECT habit_table.* FROM habit_table
+    SELECT habit_table.*, date_table.isCompleted as isSelected FROM habit_table
     JOIN date_table
     ON habit_table.id = date_table.habitId
     WHERE date_table.currentDate = :date
 """
     ) // YYYY-MM-DD
-    fun getHabitsByDate(date: String): Flow<List<HabitEntity>>
+    fun getHabitsByDate(date: String): Flow<List<ShownHabit>>
 
     @Query("SELECT * FROM date_table WHERE habitId=:id")
-    suspend fun getAllDatesByHabitId(id: Int): List<DateHabitEntity>
+    fun getAllDatesByHabitId(id: Int): List<DateHabitEntity>
 }

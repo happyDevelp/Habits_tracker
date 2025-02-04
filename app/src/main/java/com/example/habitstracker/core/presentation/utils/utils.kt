@@ -15,6 +15,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.presentation.edit_habit.components.SelectedDay
 import com.example.habitstracker.core.presentation.theme.blueColor
+import com.example.habitstracker.habit.domain.ShownHabit
 import java.time.LocalDate
 
 val APP_VERSION = "0.0.0 (alpha)"
@@ -59,9 +60,12 @@ fun iconByName(name: String): ImageVector {
 }
 
 val habitEntityExample = HabitEntity(
-0, "habit example", "SentimentVerySatisfied", false,
+0, "habit example", "SentimentVerySatisfied",
 blueColor.toHex(), "Everyday", "Anytime", false,
 )
+
+val shownHabitExample = ShownHabit(0, "habit example", "SentimentVerySatisfied",
+    blueColor.toHex(), "Everyday", "Anytime", false, false)
 
 
 // Using in Edit/RepeatPicker

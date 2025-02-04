@@ -4,6 +4,7 @@ import com.example.habitstracker.habit.data.db.DAO
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.domain.HabitRepository
 import com.example.habitstracker.habit.domain.DateHabitEntity
+import com.example.habitstracker.habit.domain.ShownHabit
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
@@ -53,7 +54,7 @@ class DefaultHabitRepository(private val dao: DAO) : HabitRepository {
         }
     }
 
-    override suspend fun getHabitsByDate(date: String): Flow<List<HabitEntity>> {
+    override suspend fun getHabitsByDate(date: String): Flow<List<ShownHabit>> {
         return withContext(Dispatchers.IO) {
             dao.getHabitsByDate(date) // YYYY-MM-DD
         }

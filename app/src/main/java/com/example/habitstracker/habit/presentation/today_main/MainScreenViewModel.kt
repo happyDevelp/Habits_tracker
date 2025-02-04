@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.domain.HabitRepository
 import com.example.habitstracker.habit.domain.DateHabitEntity
+import com.example.habitstracker.habit.domain.ShownHabit
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -17,7 +18,7 @@ import javax.inject.Inject
 class MainScreenViewModel @Inject constructor(
     private val habitRepository: HabitRepository
 ) : ViewModel() {
-    private val _habitsListState = MutableStateFlow<List<HabitEntity>>(emptyList())
+    private val _habitsListState = MutableStateFlow<List<ShownHabit>>(emptyList())
     val habitsListState = _habitsListState.asStateFlow()
 
     private val _selectedDate = MutableStateFlow(LocalDate.now())
@@ -26,7 +27,7 @@ class MainScreenViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             // subscribe on data from database
-            habitRepository.getAllHabits().collect { habitsList ->
+            habitRepository.getHabitsByDate(_selectedDate.value.toString()).collect { habitsList ->
                 _habitsListState.value = habitsList
                 fillMissingDates()
             }
@@ -39,8 +40,8 @@ class MainScreenViewModel @Inject constructor(
     }
 
     private suspend fun fillMissingDates() {
-        habitsListState.value.forEach { habit ->
-            val allDatesById = habitRepository.getAllDatesByHabitId(habit.id)
+        habitsListState.value.forEach { shownHabit ->
+            val allDatesById = habitRepository.getAllDatesByHabitId(shownHabit.id)
 
             if (allDatesById.isNotEmpty()) {
                 val lastDate = LocalDate.parse(allDatesById.last().currentDate)
@@ -52,7 +53,7 @@ class MainScreenViewModel @Inject constructor(
                 while (currentDate.isBefore(today) || currentDate.isEqual(today)) {
                     insertHabitDate(
                         DateHabitEntity(
-                            habitId = habit.id,
+                            habitId = shownHabit.id,
                             currentDate = currentDate.toString(),
                             isCompleted = false
                         )
@@ -92,14 +93,10 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
-    suspend fun getAllDatesByHabitId(id: Int): List<DateHabitEntity> {
-        return habitRepository.getAllDatesByHabitId(id)
-    }
-
     fun getHabitsByDate(date: String /*YYYY-MM-DD*/) {
         viewModelScope.launch {
-            habitRepository.getHabitsByDate(date).collect { habits ->
-                _habitsListState.value = habits
+            habitRepository.getHabitsByDate(date).collect { shownHabits ->
+                _habitsListState.value = shownHabits
             }
         }
     }

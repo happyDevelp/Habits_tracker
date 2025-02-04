@@ -37,7 +37,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
-import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.CustomRippleTheme
 import com.example.habitstracker.habit.presentation.today_main.components.HabitItem
@@ -48,7 +47,8 @@ import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
 import com.example.habitstracker.core.presentation.utils.TestTags
-import com.example.habitstracker.core.presentation.utils.habitEntityExample
+import com.example.habitstracker.core.presentation.utils.shownHabitExample
+import com.example.habitstracker.habit.domain.ShownHabit
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -75,7 +75,6 @@ fun TodayScreenRoot(viewModel: MainScreenViewModel) {
     val onDateChangeClick: (newDate: LocalDate) -> Unit = { newDate ->
         viewModel.updateSelectedDate(newDate)
         viewModel.getHabitsByDate(newDate.toString())
-
     }
 
     TodayScreen(
@@ -90,7 +89,7 @@ fun TodayScreenRoot(viewModel: MainScreenViewModel) {
 @Composable
 fun TodayScreen(
     modifier: Modifier = Modifier,
-    habitListState: List<HabitEntity>,
+    habitListState: List<ShownHabit>,
     dateState: LocalDate,
     onSelectClick: (id: Int, isDone: Boolean, selectDate: String) -> Unit,
     onDeleteClick: (id: Int) -> Unit,
@@ -142,8 +141,8 @@ fun TodayScreen(
 
                         items(habitListState.size) { habitId ->
                             HabitItem(
-                                habit = habitListState[habitId],
-                                habitDate = currentDate,
+                                shownHabit = habitListState[habitId],
+                                currentDate = currentDate,
                                 onSelectClick = onSelectClick,
                                 onDeleteClick = onDeleteClick,
                             )
@@ -199,7 +198,7 @@ fun TodayScreen(
 private fun Preview() {
     val mockNavController = rememberNavController()
     val mockList = listOf(
-        habitEntityExample
+        shownHabitExample
     )
 
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {

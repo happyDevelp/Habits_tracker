@@ -62,7 +62,9 @@ import com.example.habitstracker.habit.presentation.today_main.MainScreenViewMod
 import com.example.habitstracker.core.presentation.utils.clickWithRipple
 import com.example.habitstracker.core.presentation.utils.getCorrectSelectedDaysList
 import com.example.habitstracker.core.presentation.utils.habitEntityExample
+import com.example.habitstracker.core.presentation.utils.shownHabitExample
 import com.example.habitstracker.core.presentation.utils.textState
+import com.example.habitstracker.habit.domain.ShownHabit
 import kotlinx.coroutines.launch
 import kotlinx.parcelize.Parcelize
 
@@ -79,7 +81,14 @@ fun EditRepeatPickerRoot(
     val onSaveClick: (days: String) -> Unit = { days ->
         coroutineScope.launch {
             viewModel.updateHabit(
-                currentHabit.copy(days = days)
+                HabitEntity(
+                    name = currentHabit.name,
+                    iconName = currentHabit.iconName,
+                    colorHex = currentHabit.colorHex,
+                    days = days,
+                    executionTime = currentHabit.executionTime,
+                    reminder = currentHabit.reminder
+                )
             )
         }
     }
@@ -92,7 +101,7 @@ fun EditRepeatPickerRoot(
 
 @Composable
 fun EditRepeatPickerScreen(
-    habit: HabitEntity,
+    habit: ShownHabit,
     modifier: Modifier = Modifier,
     onSaveClick: (days: String) -> Unit,
 ) {
@@ -539,7 +548,7 @@ private fun Preview() {
         AppTheme(darkTheme = true) {
             EditRepeatPickerScreen(
                 onSaveClick = {},
-                habit = habitEntityExample
+                habit = shownHabitExample
             )
         }
     }

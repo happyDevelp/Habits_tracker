@@ -46,31 +46,29 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
-import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.CustomCheckbox
 import com.example.habitstracker.core.presentation.theme.notSelectedColor
 import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.core.presentation.utils.getColorFromHex
 import com.example.habitstracker.core.presentation.utils.iconByName
-import com.example.habitstracker.habit.domain.DateHabitEntity
+import com.example.habitstracker.habit.domain.ShownHabit
 import java.time.LocalDate
 
 @Composable
 fun HabitItem(
     modifier: Modifier = Modifier,
-    habit: HabitEntity,
-    habitDate: LocalDate,
+    shownHabit: ShownHabit,
+    currentDate: LocalDate,
     onSelectClick: (id: Int, isDone: Boolean, selectDate: String) -> Unit,
     onDeleteClick: (id: Int) -> Unit,
 ) {
     val navController = LocalNavController.current
-
-    var isDone by remember { mutableStateOf(habit.isCompleted) }
+    var isDone by remember { mutableStateOf(shownHabit.isSelected) }
     val itemHeight: Dp = 90.dp
     val selectedAlpha: Float = 0.75f
 
-    val color = habit.colorHex.getColorFromHex()
+    val color = shownHabit.colorHex.getColorFromHex()
 
     var isMenuExpanded by remember { mutableStateOf(false) }
 
@@ -94,10 +92,10 @@ fun HabitItem(
             ) {
                 CustomCheckbox(
                     _isChecked = isDone,
-                    habit = habit,
+                    shownHabit = shownHabit,
                     onClick = {
                         isDone = !isDone
-                        onSelectClick(habit.id, isDone, habitDate.toString())
+                        onSelectClick(shownHabit.id, isDone, currentDate.toString())
                     })
             }
 
@@ -128,7 +126,7 @@ fun HabitItem(
                                 .padding(start = 20.dp)
                                 .size(32.dp),
                             tint = Color.White.copy(alpha = 0.90f),
-                            imageVector = iconByName(habit.iconName),
+                            imageVector = iconByName(shownHabit.iconName),
                             contentDescription = stringResource(R.string.icon_of_habit_description),
                         )
 
@@ -139,7 +137,7 @@ fun HabitItem(
                         ) {
                             Text(
                                 modifier = modifier.padding(bottom = if (!isDone) 0.dp else 10.dp),
-                                text = habit.name,
+                                text = shownHabit.name,
                                 fontSize = 20.sp,
                                 color = if (!isDone) Color.White else Color.White.copy(
                                     selectedAlpha
@@ -190,7 +188,7 @@ fun HabitItem(
                                     trailingIcon = { Icons.Default.Edit },
                                     onClick = {
                                         isMenuExpanded = false
-                                        navController.navigate(Route.EditHabit(id = habit.id))
+                                        navController.navigate(Route.EditHabit(id = shownHabit.id))
                                     }
                                 )
 
@@ -199,7 +197,7 @@ fun HabitItem(
                                     trailingIcon = { Icons.Default.Delete },
                                     onClick = {
                                         isMenuExpanded = false
-                                        onDeleteClick.invoke(habit.id)
+                                        onDeleteClick.invoke(shownHabit.id)
                                     }
                                 )
                             }

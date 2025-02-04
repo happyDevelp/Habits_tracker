@@ -18,5 +18,5 @@ interface HabitRepository {
     // date_table
     suspend fun insertHabitDate(habitDate: DateHabitEntity)
 
-    suspend fun getHabitsByDate(date: String): Flow<List<HabitEntity>> // YYYY-MM-DD
+    suspend fun getHabitsByDate(date: String): Flow<List<ShownHabit>> // YYYY-MM-DD
 }

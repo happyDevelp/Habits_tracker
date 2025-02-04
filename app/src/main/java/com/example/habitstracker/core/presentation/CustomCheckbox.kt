@@ -27,13 +27,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.core.presentation.utils.TestTags
+import com.example.habitstracker.habit.domain.ShownHabit
 
 @Preview()
 @Composable
 fun CustomCheckbox(
     modifier: Modifier = Modifier,
     selectedBackgroundColor: Color = MaterialTheme.colorScheme.primaryContainer,
-    habit: HabitEntity = HabitEntity(),
+    shownHabit: ShownHabit = ShownHabit(),
     onClick: () -> Unit = { },
     _isChecked: Boolean = false
 ) {
@@ -49,7 +50,7 @@ fun CustomCheckbox(
                     onClick.invoke()
                 },
             )
-            .testTag(TestTags.CUSTOM_CHECK_BOX + "_" + habit.name),
+            .testTag(TestTags.CUSTOM_CHECK_BOX + "_" + shownHabit.name),
 
 
         colors = CardDefaults.cardColors(
