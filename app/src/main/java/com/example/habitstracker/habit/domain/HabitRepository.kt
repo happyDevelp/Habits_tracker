@@ -11,13 +11,10 @@ interface HabitRepository {
 
     suspend fun getLastAvailableDate(): DateHabitEntity?
 
-    //suspend fun getAllHabits(): Flow<List<HabitEntity>>
-
     suspend fun updateHabit(habit: HabitEntity)
 
     suspend fun getAllDatesByHabitId(id: Int): List<DateHabitEntity>
 
-    // date_table
     suspend fun insertHabitDate(habitDate: DateHabitEntity)
 
     suspend fun getHabitsByDate(date: String): Flow<List<ShownHabit>> // YYYY-MM-DD

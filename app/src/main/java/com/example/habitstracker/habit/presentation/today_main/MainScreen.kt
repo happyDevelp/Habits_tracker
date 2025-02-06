@@ -20,12 +20,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -41,9 +37,6 @@ import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.CustomRippleTheme
-import com.example.habitstracker.habit.presentation.today_main.components.HabitItem
-import com.example.habitstracker.habit.presentation.today_main.components.calendar.CalendarRowList
-import com.example.habitstracker.habit.presentation.today_main.components.TopBarMainScreen
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
@@ -51,6 +44,9 @@ import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
 import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.core.presentation.utils.shownHabitExample
 import com.example.habitstracker.habit.domain.ShownHabit
+import com.example.habitstracker.habit.presentation.today_main.components.HabitItem
+import com.example.habitstracker.habit.presentation.today_main.components.TopBarMainScreen
+import com.example.habitstracker.habit.presentation.today_main.components.calendar.CalendarRowList
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -149,38 +145,40 @@ fun TodayScreen(
                         item {
                             Spacer(modifier = modifier.height(6.dp))
 
-                            Button(
-                                modifier = modifier
-                                    .padding(bottom = 20.dp)
-                                    .fillMaxWidth(0.7f)
-                                    .height(50.dp)
-                                    .testTag(TestTags.CREATE_NEW_HABIT_BUTTON),
+                            if(dateState == LocalDate.now()) {
+                                Button(
+                                    modifier = modifier
+                                        .padding(bottom = 20.dp)
+                                        .fillMaxWidth(0.7f)
+                                        .height(50.dp)
+                                        .testTag(TestTags.CREATE_NEW_HABIT_BUTTON),
 
-                                onClick = {
-                                    navController.navigate(Route.AddHabit)
-                                },
+                                    onClick = {
+                                        navController.navigate(Route.AddHabit)
+                                    },
 
-                                colors = ButtonDefaults.buttonColors(
-                                    containerColor = screenContainerBackgroundDark,
-                                    contentColor = Color.White.copy(alpha = 0.75f)
-                                ),
+                                    colors = ButtonDefaults.buttonColors(
+                                        containerColor = screenContainerBackgroundDark,
+                                        contentColor = Color.White.copy(alpha = 0.75f)
+                                    ),
 
-                                shape = RoundedCornerShape(10.dp),
+                                    shape = RoundedCornerShape(10.dp),
 
-                                elevation = ButtonDefaults.buttonElevation(
-                                    defaultElevation = 6.dp,
-                                    pressedElevation = 16.dp
-                                ),
+                                    elevation = ButtonDefaults.buttonElevation(
+                                        defaultElevation = 6.dp,
+                                        pressedElevation = 16.dp
+                                    ),
 
-                                ) {
-                                Text(
-                                    text = stringResource(R.string.create_a_new_habit),
-                                    modifier = modifier.padding(horizontal = 8.dp),
-                                    fontSize = 15.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    fontFamily = PoppinsFontFamily,
-                                    color = Color.White,
-                                )
+                                    ) {
+                                    Text(
+                                        text = stringResource(R.string.create_a_new_habit),
+                                        modifier = modifier.padding(horizontal = 8.dp),
+                                        fontSize = 15.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        fontFamily = PoppinsFontFamily,
+                                        color = Color.White,
+                                    )
+                                }
                             }
                         }
                     }

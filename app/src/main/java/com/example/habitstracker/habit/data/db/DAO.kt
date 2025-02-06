@@ -23,9 +23,6 @@ sealed interface DAO {
     @Query("update date_table set isCompleted=:isDone where habitId=:id AND currentDate=:selectDate")
     fun updateDateSelectState(id: Int, isDone: Boolean, selectDate: String)
 
-    /*@Query("SELECT * from habit_table")
-    fun getAllHabits(): Flow<List<HabitEntity>>*/
-
     @Query("SELECT * FROM date_table ORDER BY currentDate DESC LIMIT 1")
     fun getLastAvailableDate(): DateHabitEntity?
 

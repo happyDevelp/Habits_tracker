@@ -96,14 +96,4 @@ class MainScreenViewModel @Inject constructor(
             habitRepository.updateDateSelectState(id, isDone, selectDate)
         }
     }
-
-    fun getHabitsByDate(date: String /*YYYY-MM-DD*/) {
-        viewModelScope.launch {
-            habitRepository.getHabitsByDate(date).collect { shownHabits ->
-                if (_habitsListState.value != shownHabits) {
-                    _habitsListState.value = shownHabits
-                }
-            }
-        }
-    }
 }

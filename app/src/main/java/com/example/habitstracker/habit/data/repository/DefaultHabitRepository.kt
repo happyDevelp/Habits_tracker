@@ -1,6 +1,5 @@
 package com.example.habitstracker.habit.data.repository
 
-import androidx.compose.ui.graphics.DoneSegment
 import com.example.habitstracker.habit.data.db.DAO
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.domain.HabitRepository
@@ -42,12 +41,6 @@ class DefaultHabitRepository(private val dao: DAO) : HabitRepository {
             dao.deleteHabit(id)
         }
     }
-
-    /*override suspend fun getAllHabits(): Flow<List<HabitEntity>> {
-        return withContext(Dispatchers.IO) {
-            dao.getAllHabits()
-        }
-    }*/
 
     override suspend fun updateHabit(habit: HabitEntity) {
         return withContext(Dispatchers.IO) {
