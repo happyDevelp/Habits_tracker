@@ -25,7 +25,6 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.habit.domain.ShownHabit
 
@@ -36,44 +35,37 @@ fun CustomCheckbox(
     selectedBackgroundColor: Color = MaterialTheme.colorScheme.primaryContainer,
     shownHabit: ShownHabit = ShownHabit(),
     onClick: () -> Unit = { },
-    _isChecked: Boolean = false
 ) {
-    var isChecked by remember { mutableStateOf(_isChecked) }
-
     Card(
         modifier = modifier
             .size(21.dp)
             //.scale(checkboxIconSize)
             .bounceClickable(
                 onAnimationFinished = {
-                    isChecked = !isChecked
                     onClick.invoke()
                 },
             )
             .testTag(TestTags.CUSTOM_CHECK_BOX + "_" + shownHabit.name),
 
-
         colors = CardDefaults.cardColors(
-            containerColor = if (!isChecked) Color.Transparent
+            containerColor = if (!shownHabit.isSelected) Color.Transparent
             else selectedBackgroundColor
         ),
 
-        border = if (!isChecked)
+        border = if (!shownHabit.isSelected)
             BorderStroke(2.dp, Color.LightGray.copy(alpha = 0.70f))
         else
             BorderStroke(0.dp, Color.Transparent),
 
         shape = RoundedCornerShape(20.dp),
     ) {
-
         Icon(
             modifier = modifier.padding(2.dp),
             imageVector = Icons.Default.Check,
             contentDescription = "Task is done button",
-            tint = if (isChecked) Color.White
+            tint = if (shownHabit.isSelected) Color.White
             else Color.Transparent
         )
-
     }
 }
 

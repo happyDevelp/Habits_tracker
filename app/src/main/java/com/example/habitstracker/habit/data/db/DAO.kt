@@ -47,14 +47,4 @@ sealed interface DAO {
 
     @Query("SELECT * FROM date_table WHERE habitId=:id")
     fun getAllDatesByHabitId(id: Int): List<DateHabitEntity>
-
-    @Query(
-        """
-    SELECT habit_table.*, date_table.isCompleted as isSelected FROM habit_table
-    JOIN date_table
-    ON habit_table.id = date_table.habitId
-    WHERE date_table.currentDate = :date AND habitId = :habitId
-"""
-    ) // YYYY-MM-DD
-    fun getHabitsByDateAndHabitId(date: String, habitId: Int): Flow<List<ShownHabit>>
 }

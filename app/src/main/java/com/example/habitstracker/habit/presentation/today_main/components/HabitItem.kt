@@ -64,7 +64,6 @@ fun HabitItem(
     onDeleteClick: (id: Int) -> Unit,
 ) {
     val navController = LocalNavController.current
-    var isDone by remember { mutableStateOf(shownHabit.isSelected) }
     val itemHeight: Dp = 90.dp
     val selectedAlpha: Float = 0.75f
 
@@ -73,7 +72,7 @@ fun HabitItem(
     var isMenuExpanded by remember { mutableStateOf(false) }
 
     val currentColor by animateColorAsState(
-        targetValue = if (isDone) notSelectedColor else color, label = "habit selected state"
+        targetValue = if (shownHabit.isSelected) notSelectedColor else color, label = "habit selected state"
     )
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -91,12 +90,11 @@ fun HabitItem(
                 horizontalArrangement = Arrangement.Center
             ) {
                 CustomCheckbox(
-                    _isChecked = isDone,
                     shownHabit = shownHabit,
                     onClick = {
-                        isDone = !isDone
-                        onSelectClick(shownHabit.id, isDone, currentDate.toString())
-                    })
+                        onSelectClick(shownHabit.id, !shownHabit.isSelected, currentDate.toString())
+                    }
+                )
             }
 
             Card(
@@ -136,17 +134,17 @@ fun HabitItem(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                modifier = modifier.padding(bottom = if (!isDone) 0.dp else 10.dp),
+                                modifier = modifier.padding(bottom = if (!shownHabit.isSelected) 0.dp else 10.dp),
                                 text = shownHabit.name,
                                 fontSize = 20.sp,
-                                color = if (!isDone) Color.White else Color.White.copy(
+                                color = if (!shownHabit.isSelected) Color.White else Color.White.copy(
                                     selectedAlpha
                                 ),
                                 fontWeight = FontWeight.Bold,
                                 style = MaterialTheme.typography.titleSmall,
                             )
 
-                            AnimatedVisibility(visible = isDone) { // Hide the second text when selected
+                            AnimatedVisibility(visible = shownHabit.isSelected) { // Hide the second text when selected
                                 Row(
                                     horizontalArrangement = Arrangement.Center,
                                     verticalAlignment = Alignment.CenterVertically

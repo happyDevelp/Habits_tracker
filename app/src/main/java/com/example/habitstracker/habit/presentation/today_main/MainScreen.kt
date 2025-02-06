@@ -136,7 +136,7 @@ fun TodayScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        items(habitListState, key = { it.id }) { habit ->
+                        items(habitListState) { habit ->
                             HabitItem(
                                 shownHabit = habit,
                                 currentDate = dateState,

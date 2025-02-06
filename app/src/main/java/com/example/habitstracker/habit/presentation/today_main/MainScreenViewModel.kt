@@ -106,12 +106,4 @@ class MainScreenViewModel @Inject constructor(
             }
         }
     }
-
-    fun getHabitsByDateAndHabitId(date: String, habitId: Int) {
-        viewModelScope.launch {
-            habitRepository.getHabitsByDateAndHabitId(date, habitId).collect { shownHabits ->
-                _habitsListState.value = shownHabits
-            }
-        }
-    }
 }

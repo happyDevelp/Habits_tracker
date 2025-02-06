@@ -60,9 +60,7 @@ fun CalendarRowList(
                 CalendarItem(
                     date = date,
                     isSelected = date == selectedDate,
-                    onItemClicked = {
-                        onDateChangeClick(date)
-                    }
+                    onItemClicked = { onDateChangeClick(date) }
                 )
             }
         }

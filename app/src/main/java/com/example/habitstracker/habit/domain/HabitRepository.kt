@@ -13,8 +13,6 @@ interface HabitRepository {
 
     //suspend fun getAllHabits(): Flow<List<HabitEntity>>
 
-    suspend fun getHabitsByDateAndHabitId(date: String, habitId: Int): Flow<List<ShownHabit>>
-
     suspend fun updateHabit(habit: HabitEntity)
 
     suspend fun getAllDatesByHabitId(id: Int): List<DateHabitEntity>
