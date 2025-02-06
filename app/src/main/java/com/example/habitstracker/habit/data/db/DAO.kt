@@ -20,19 +20,14 @@ sealed interface DAO {
     @Query("delete from habit_table where id=:id")
     fun deleteHabit(id: Int)
 
-    /*@Query("update habit_table set isCompleted=:isDone where id=:id")
-    fun updateHabitSelectState(id: Int, isDone: Boolean)*/
-
     @Query("update date_table set isCompleted=:isDone where habitId=:id AND currentDate=:selectDate")
     fun updateDateSelectState(id: Int, isDone: Boolean, selectDate: String)
 
-    @Transaction
-    fun updateHabitAndDateSelectState(id: Int, isDone: Boolean, selectDate: String) {
-        //updateHabitSelectState(id, isDone)
-        updateDateSelectState(id, isDone, selectDate)
-    }
-    @Query("SELECT * from habit_table")
-    fun getAllHabits(): Flow<List<HabitEntity>>
+    /*@Query("SELECT * from habit_table")
+    fun getAllHabits(): Flow<List<HabitEntity>>*/
+
+    @Query("SELECT * FROM date_table ORDER BY currentDate DESC LIMIT 1")
+    fun getLastAvailableDate(): DateHabitEntity?
 
     @Update
     fun updateHabit(habit: HabitEntity)
@@ -52,4 +47,14 @@ sealed interface DAO {
 
     @Query("SELECT * FROM date_table WHERE habitId=:id")
     fun getAllDatesByHabitId(id: Int): List<DateHabitEntity>
+
+    @Query(
+        """
+    SELECT habit_table.*, date_table.isCompleted as isSelected FROM habit_table
+    JOIN date_table
+    ON habit_table.id = date_table.habitId
+    WHERE date_table.currentDate = :date AND habitId = :habitId
+"""
+    ) // YYYY-MM-DD
+    fun getHabitsByDateAndHabitId(date: String, habitId: Int): Flow<List<ShownHabit>>
 }

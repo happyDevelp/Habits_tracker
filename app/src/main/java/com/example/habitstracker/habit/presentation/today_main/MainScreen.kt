@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material3.Button
@@ -19,6 +20,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -63,7 +65,7 @@ fun TodayScreenRoot(viewModel: MainScreenViewModel) {
         isDone: Boolean,
         selectDate: String
     ) -> Unit = { id, isDone, selectDate ->
-        viewModel.updateHabitAndDateSelectState(id, isDone, selectDate)
+        viewModel.updateDateSelectState(id, isDone, selectDate)
     }
 
     val onDeleteClick: (id: Int) -> Unit = { habitId ->
@@ -74,7 +76,6 @@ fun TodayScreenRoot(viewModel: MainScreenViewModel) {
 
     val onDateChangeClick: (newDate: LocalDate) -> Unit = { newDate ->
         viewModel.updateSelectedDate(newDate)
-        viewModel.getHabitsByDate(newDate.toString())
     }
 
     TodayScreen(
@@ -96,11 +97,6 @@ fun TodayScreen(
     onDateChangeClick   : (newDate: LocalDate) -> Unit
 ) {
     val navController = LocalNavController.current
-    var currentDate by remember { mutableStateOf(dateState) }
-
-    val onCurrentDateChange: (newDate: LocalDate) -> Unit = { newDate ->
-        currentDate = newDate
-    }
 
     Scaffold(topBar = { TopBarMainScreen(modifier, navController) }) { paddingValues ->
         Card(
@@ -124,8 +120,9 @@ fun TodayScreen(
                     CalendarRowList(
                         onDateChangeClick = { newDate ->
                             onDateChangeClick(newDate)
-                            onCurrentDateChange(newDate)
-                        })
+                        },
+                        selectedDate = dateState
+                    )
                 }
 
                 CompositionLocalProvider(
@@ -139,10 +136,10 @@ fun TodayScreen(
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
 
-                        items(habitListState.size) { habitId ->
+                        items(habitListState, key = { it.id }) { habit ->
                             HabitItem(
-                                shownHabit = habitListState[habitId],
-                                currentDate = currentDate,
+                                shownHabit = habit,
+                                currentDate = dateState,
                                 onSelectClick = onSelectClick,
                                 onDeleteClick = onDeleteClick,
                             )

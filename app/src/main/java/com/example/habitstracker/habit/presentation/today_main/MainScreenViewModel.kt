@@ -7,9 +7,9 @@ import com.example.habitstracker.habit.domain.HabitRepository
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.ShownHabit
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -27,16 +27,16 @@ class MainScreenViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             // subscribe on data from database
-            habitRepository.getHabitsByDate(_selectedDate.value.toString()).collect { habitsList ->
-                _habitsListState.value = habitsList
-                fillMissingDates()
-            }
-            getHabitsByDate(LocalDate.now().toString())
+            val lastDateInDb = habitRepository.getLastAvailableDate()?.currentDate
+            if (lastDateInDb != null) {
+                _selectedDate.collectLatest { date ->
+                    habitRepository.getHabitsByDate(date.toString()).collect { habitsList ->
+                        _habitsListState.value = habitsList
+                        fillMissingDates()
+                    }
+                }
+            } else throw NullPointerException("MainScreenViewModel init block has null value")
         }
-    }
-
-    fun updateSelectedDate(newDate: LocalDate) {
-        _selectedDate.value = newDate
     }
 
     private suspend fun fillMissingDates() {
@@ -64,6 +64,10 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
+    fun updateSelectedDate(newDate: LocalDate) {
+        _selectedDate.value = newDate
+    }
+
     fun insertHabit(habit: HabitEntity, onHabitAdded: (habitId: Long) -> Unit) {
         viewModelScope.launch {
             val id = habitRepository.addHabit(habit)
@@ -87,15 +91,25 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
-    fun updateHabitAndDateSelectState(id: Int, isDone: Boolean, selectDate: String) {
+    fun updateDateSelectState(id: Int, isDone: Boolean, selectDate: String) {
         viewModelScope.launch {
-            habitRepository.updateHabitAndDateSelectState(id, isDone, selectDate)
+            habitRepository.updateDateSelectState(id, isDone, selectDate)
         }
     }
 
     fun getHabitsByDate(date: String /*YYYY-MM-DD*/) {
         viewModelScope.launch {
             habitRepository.getHabitsByDate(date).collect { shownHabits ->
+                if (_habitsListState.value != shownHabits) {
+                    _habitsListState.value = shownHabits
+                }
+            }
+        }
+    }
+
+    fun getHabitsByDateAndHabitId(date: String, habitId: Int) {
+        viewModelScope.launch {
+            habitRepository.getHabitsByDateAndHabitId(date, habitId).collect { shownHabits ->
                 _habitsListState.value = shownHabits
             }
         }

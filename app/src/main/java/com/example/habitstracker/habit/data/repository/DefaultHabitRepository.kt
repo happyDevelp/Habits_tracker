@@ -1,5 +1,6 @@
 package com.example.habitstracker.habit.data.repository
 
+import androidx.compose.ui.graphics.DoneSegment
 import com.example.habitstracker.habit.data.db.DAO
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.domain.HabitRepository
@@ -24,9 +25,21 @@ class DefaultHabitRepository(private val dao: DAO) : HabitRepository {
         }
     }
 
-    override suspend fun updateHabitAndDateSelectState(id: Int, isDone: Boolean, selectDate: String) {
+    override suspend fun getLastAvailableDate(): DateHabitEntity? {
         return withContext(Dispatchers.IO) {
-            dao.updateHabitAndDateSelectState(id, isDone, selectDate)
+            dao.getLastAvailableDate()
+        }
+    }
+
+    override suspend fun getHabitsByDateAndHabitId(date: String, habitId: Int): Flow<List<ShownHabit>> {
+        return withContext(Dispatchers.IO) {
+            dao.getHabitsByDateAndHabitId(date, habitId)
+        }
+    }
+
+    override suspend fun updateDateSelectState(id: Int, isDone: Boolean, selectDate: String) {
+        return withContext(Dispatchers.IO) {
+            dao.updateDateSelectState(id, isDone, selectDate)
         }
     }
 
@@ -36,11 +49,11 @@ class DefaultHabitRepository(private val dao: DAO) : HabitRepository {
         }
     }
 
-    override suspend fun getAllHabits(): Flow<List<HabitEntity>> {
+    /*override suspend fun getAllHabits(): Flow<List<HabitEntity>> {
         return withContext(Dispatchers.IO) {
             dao.getAllHabits()
         }
-    }
+    }*/
 
     override suspend fun updateHabit(habit: HabitEntity) {
         return withContext(Dispatchers.IO) {

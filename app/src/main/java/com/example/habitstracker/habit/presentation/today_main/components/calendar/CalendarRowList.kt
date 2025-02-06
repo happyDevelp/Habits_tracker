@@ -18,10 +18,10 @@ import java.time.temporal.TemporalAdjusters
 
 @Composable
 fun CalendarRowList(
-    onDateChangeClick: (newDate: LocalDate) -> Unit
+    onDateChangeClick: (newDate: LocalDate) -> Unit,
+    selectedDate: LocalDate
 ) {
     val firstMonday = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-    var selectedDate by remember { mutableStateOf(LocalDate.now()) }
 
     val totalDays = 700
 
@@ -61,8 +61,7 @@ fun CalendarRowList(
                     date = date,
                     isSelected = date == selectedDate,
                     onItemClicked = {
-                        selectedDate = date
-                        onDateChangeClick(selectedDate)
+                        onDateChangeClick(date)
                     }
                 )
             }
