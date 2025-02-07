@@ -27,17 +27,18 @@ class MainScreenViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             // subscribe on data from database
-            val lastDateInDb = habitRepository.getLastAvailableDate()?.currentDate
-            if (lastDateInDb != null) {
-                _selectedDate.collectLatest { date ->
-                    habitRepository.getHabitsByDate(date.toString()).collect { habitsList ->
-                        _habitsListState.value = habitsList
-                        fillMissingDates()
-                    }
+            val lastDateInDb =
+                habitRepository.getLastAvailableDate()?.currentDate ?: LocalDate.now().toString()
+
+            _selectedDate.collectLatest { date ->
+                habitRepository.getHabitsByDate(date.toString()).collect { habitsList ->
+                    _habitsListState.value = habitsList
+                    fillMissingDates()
                 }
-            } else throw NullPointerException("MainScreenViewModel init block has null value")
+            }
         }
     }
+
 
     private suspend fun fillMissingDates() {
         habitsListState.value.forEach { shownHabit ->

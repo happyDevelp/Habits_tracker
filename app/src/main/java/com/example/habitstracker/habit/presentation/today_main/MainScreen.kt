@@ -1,5 +1,6 @@
 package com.example.habitstracker.habit.presentation.today_main
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -124,60 +125,62 @@ fun TodayScreen(
                 CompositionLocalProvider(
                     value = LocalRippleTheme provides CustomRippleTheme(color = Color.Black)
                 ) {
-                    LazyColumn(
-                        modifier = modifier
-                            .padding(top = 95.dp)
-                            .fillMaxHeight(1f)
-                            .fillMaxWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
+                    Crossfade(targetState = habitListState) { habits ->
+                        LazyColumn(
+                            modifier = modifier
+                                .padding(top = 95.dp)
+                                .fillMaxHeight(1f)
+                                .fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
 
-                        items(habitListState) { habit ->
-                            HabitItem(
-                                shownHabit = habit,
-                                currentDate = dateState,
-                                onSelectClick = onSelectClick,
-                                onDeleteClick = onDeleteClick,
-                            )
-                            Spacer(modifier = modifier.height(20.dp))
-                        }
+                            items(habits) { habit ->
+                                HabitItem(
+                                    shownHabit = habit,
+                                    currentDate = dateState,
+                                    onSelectClick = onSelectClick,
+                                    onDeleteClick = onDeleteClick,
+                                )
+                                Spacer(modifier = modifier.height(20.dp))
+                            }
 
-                        item {
-                            Spacer(modifier = modifier.height(6.dp))
+                            item {
+                                Spacer(modifier = modifier.height(6.dp))
 
-                            if(dateState == LocalDate.now()) {
-                                Button(
-                                    modifier = modifier
-                                        .padding(bottom = 20.dp)
-                                        .fillMaxWidth(0.7f)
-                                        .height(50.dp)
-                                        .testTag(TestTags.CREATE_NEW_HABIT_BUTTON),
+                                if(dateState == LocalDate.now()) {
+                                    Button(
+                                        modifier = modifier
+                                            .padding(bottom = 20.dp)
+                                            .fillMaxWidth(0.7f)
+                                            .height(50.dp)
+                                            .testTag(TestTags.CREATE_NEW_HABIT_BUTTON),
 
-                                    onClick = {
-                                        navController.navigate(Route.AddHabit)
-                                    },
+                                        onClick = {
+                                            navController.navigate(Route.AddHabit)
+                                        },
 
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = screenContainerBackgroundDark,
-                                        contentColor = Color.White.copy(alpha = 0.75f)
-                                    ),
+                                        colors = ButtonDefaults.buttonColors(
+                                            containerColor = screenContainerBackgroundDark,
+                                            contentColor = Color.White.copy(alpha = 0.75f)
+                                        ),
 
-                                    shape = RoundedCornerShape(10.dp),
+                                        shape = RoundedCornerShape(10.dp),
 
-                                    elevation = ButtonDefaults.buttonElevation(
-                                        defaultElevation = 6.dp,
-                                        pressedElevation = 16.dp
-                                    ),
+                                        elevation = ButtonDefaults.buttonElevation(
+                                            defaultElevation = 6.dp,
+                                            pressedElevation = 16.dp
+                                        ),
 
-                                    ) {
-                                    Text(
-                                        text = stringResource(R.string.create_a_new_habit),
-                                        modifier = modifier.padding(horizontal = 8.dp),
-                                        fontSize = 15.sp,
-                                        fontWeight = FontWeight.Bold,
-                                        fontFamily = PoppinsFontFamily,
-                                        color = Color.White,
-                                    )
+                                        ) {
+                                        Text(
+                                            text = stringResource(R.string.create_a_new_habit),
+                                            modifier = modifier.padding(horizontal = 8.dp),
+                                            fontSize = 15.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            fontFamily = PoppinsFontFamily,
+                                            color = Color.White,
+                                        )
+                                    }
                                 }
                             }
                         }
