@@ -37,25 +37,25 @@ The Habit Tracker app allows users to monitor their daily habits, set reminders,
 
 *Today screen*
 
-<img src="https://github.com/happyDevelp/Habits_tracker/blob/feature/add-database/image/main_screen.jpg" width="250" height="550">
+<img src="https://github.com/happyDevelp/Habits_tracker/blob/master/image/main_screen.jpg" width="250" height="550">
 
 
 
 *History screen*
 
-<img src="https://github.com/happyDevelp/Habits_tracker/blob/feature/add-database/image/history_screen.jpg" width="250" height="550">
+<img src="https://github.com/happyDevelp/Habits_tracker/blob/master/image/history_screen.jpg" width="250" height="550">
 
 
 
-*Me screen*
+*Profile screen*
 
-<img src="https://github.com/happyDevelp/Habits_tracker/blob/feature/add-database/image/me_screen.jpg" width="250" height="550">
+<img src="https://github.com/happyDevelp/Habits_tracker/blob/master/image/me_screen.jpg" width="250" height="550">
 
 
 
 *Add new habit*
 
-<img src="https://github.com/happyDevelp/Habits_tracker/blob/feature/add-database/image/add_new_habit.jpg" width="250" height="550">
+<img src="https://github.com/happyDevelp/Habits_tracker/blob/master/image/add_new_habit.jpg" width="250" height="550">
 
 
 
