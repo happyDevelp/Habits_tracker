@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -21,20 +22,21 @@ class MainScreenViewModel @Inject constructor(
     private val _habitsListState = MutableStateFlow<List<ShownHabit>>(emptyList())
     val habitsListState = _habitsListState.asStateFlow()
 
-    private val _selectedDate = MutableStateFlow(LocalDate.now())
+    private val lastDateInDb = runBlocking {
+        LocalDate.parse(habitRepository.getLastAvailableDate()?.currentDate) ?: LocalDate.now()
+    }
+    private val _selectedDate = MutableStateFlow(lastDateInDb)
     val selectedDate = _selectedDate.asStateFlow()
 
     init {
         viewModelScope.launch {
             // subscribe on data from database
-            val lastDateInDb =
-                habitRepository.getLastAvailableDate()?.currentDate ?: LocalDate.now().toString()
-
             _selectedDate.collectLatest { date ->
                 habitRepository.getHabitsByDate(date.toString()).collect { habitsList ->
                     _habitsListState.value = habitsList
                     fillMissingDates()
                 }
+                _selectedDate.value = LocalDate.now()
             }
         }
     }

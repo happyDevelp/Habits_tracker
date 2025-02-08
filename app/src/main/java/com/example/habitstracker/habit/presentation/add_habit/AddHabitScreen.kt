@@ -23,7 +23,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -32,11 +31,12 @@ import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
-import com.example.habitstracker.habit.presentation.add_habit.components.DefaultChooseHabitItem
-import com.example.habitstracker.habit.presentation.add_habit.components.scaffold.TopBarAddHabitScreen
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.blueColor
 import com.example.habitstracker.core.presentation.utils.TestTags
+import com.example.habitstracker.habit.presentation.add_habit.components.DefaultHabitGroupItem
+import com.example.habitstracker.habit.presentation.add_habit.components.defaultsHabitsGroupList
+import com.example.habitstracker.habit.presentation.add_habit.components.scaffold.TopBarAddHabitScreen
 
 @Composable
 @Preview(showSystemUi = false)
@@ -54,7 +54,7 @@ fun AddHabitScreen(modifier: Modifier = Modifier) {
     Scaffold(
         topBar = { TopBarAddHabitScreen() },
         containerColor = MaterialTheme.colorScheme.secondaryContainer,
-        ) { paddingValues ->
+    ) { paddingValues ->
         Box(
             modifier = modifier
                 .padding(paddingValues)
@@ -114,52 +114,9 @@ fun AddHabitScreen(modifier: Modifier = Modifier) {
                     modifier = modifier.fillMaxHeight()
                 ) {
                     item {
-                        DefaultChooseHabitItem(
-                            groupName = "eat",
-                            groupDescribe = "Want to go on a diet and stop eating fatty foods?" +
-                                    " Ready-made presets related to food can be found here",
-                            icon = painterResource(R.drawable.food)
-                        )
-                    }
-
-                    item {
-                        DefaultChooseHabitItem(
-                            groupName = "sport",
-                            groupDescribe = "Wanna looks fit? This preset help you with it",
-                            icon = painterResource(id = R.drawable.baseline_sports_tennis_24)
-                        )
-                    }
-
-                    item {
-                        DefaultChooseHabitItem(
-                            groupName = "sport",
-                            groupDescribe = "Wanna looks fit? This preset help you with it",
-                            icon = painterResource(id = R.drawable.baseline_sports_tennis_24)
-                        )
-                    }
-
-                    item {
-                        DefaultChooseHabitItem(
-                            groupName = "sport",
-                            groupDescribe = "Wanna looks fit? This preset help you with it",
-                            icon = painterResource(id = R.drawable.baseline_sports_tennis_24)
-                        )
-                    }
-
-                    item {
-                        DefaultChooseHabitItem(
-                            groupName = "sport",
-                            groupDescribe = "Wanna looks fit? This preset help you with it",
-                            icon = painterResource(id = R.drawable.baseline_sports_tennis_24)
-                        )
-                    }
-
-                    item {
-                        DefaultChooseHabitItem(
-                            groupName = "sport",
-                            groupDescribe = "Wanna looks fit? This preset help you with it",
-                            icon = painterResource(id = R.drawable.baseline_sports_tennis_24)
-                        )
+                        defaultsHabitsGroupList.forEach { item ->
+                            DefaultHabitGroupItem(item)
+                        }
                     }
                 }
             }
