@@ -35,6 +35,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.habitstracker.R
+import com.example.habitstracker.core.presentation.UiText
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 
 @Composable
@@ -70,7 +72,7 @@ fun DefaultHabitGroupItem(item: DefaultHabitGroupItem) {
                         .size(32.dp),
                     tint = item.iconColor,
                     imageVector = item.icon,
-                    contentDescription = "Eat",
+                    contentDescription = null
                 )
 
                 Column(
@@ -81,16 +83,16 @@ fun DefaultHabitGroupItem(item: DefaultHabitGroupItem) {
                 ) {
                     Text(
                         modifier = Modifier.padding(bottom = 6.dp),
-                        text = item.name,
-                        fontSize = 22.sp,
-                        color = Color.White.copy(alpha = 0.95f),
+                        text = item.name.asString(),
+                        fontSize = 20.sp,
+                        color = Color.White.copy(alpha = 0.85f),
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleSmall,
                     )
 
                     Text(
                         modifier = Modifier.padding(),
-                        text = item.describe,
+                        text = item.describe.asString(),
                         fontSize = 13.sp,
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis
@@ -111,46 +113,46 @@ fun DefaultHabitGroupItem(item: DefaultHabitGroupItem) {
     }
 }
 data class DefaultHabitGroupItem(
-    val name: String,
-    val describe: String,
+    val name: UiText,
+    val describe: UiText,
     val icon: ImageVector,
     val iconColor: Color
 )
 
 val defaultsHabitsGroupList = listOf(
     DefaultHabitGroupItem(
-        name = "Keep active & get fit",
-        describe = "Sweet never lies",
+        name = UiText.StringResources(resId = R.string.keep_active_get_fit),
+        describe = UiText.DynamicString("Sweet never lies"),
         icon = Icons.Rounded.SportsFootball,
         iconColor = Color(0xFFC42310)
     ),
     DefaultHabitGroupItem(
-        name = "Eat & drink healthily",
-        describe = "Stick to healthy eating",
+        name = UiText.StringResources(R.string.eat_drink_healthily),
+        describe = UiText.DynamicString("Stick to healthy eating"),
         icon = Icons.Rounded.Restaurant,
         iconColor = Color(0xFF1BBCC2).copy(0.9f)
     ),
     DefaultHabitGroupItem(
-        name = "Ease stress",
-        describe = "Your efforts deserve a break",
+        name = UiText.StringResources(R.string.ease_stress),
+        describe = UiText.DynamicString("Your efforts deserve a break"),
         icon = Icons.Rounded.SentimentVerySatisfied,
         iconColor = Color(0xFF5AB91F)
     ),
     DefaultHabitGroupItem(
-        name = "Gain self-discipline",
-        describe = "Take control of your own self-management",
+        name = UiText.StringResources(R.string.gain_self_discipline),
+        describe = UiText.DynamicString("Take control of your own self-management"),
         icon = Icons.Filled.BackHand,
         iconColor = Color(0xFFD94141)
     ),
     DefaultHabitGroupItem(
-        name = "Leisure moments",
-        describe = "Live your life to the max",
+        name = UiText.StringResources(R.string.leisure_moments),
+        describe = UiText.DynamicString("Live your life to the max"),
         icon = Icons.Filled.SportsEsports,
         iconColor = Color(0xFF9CCC65)
     ),
     DefaultHabitGroupItem(
-        name = "Before sleep routine",
-        describe = "May your dream be sweat tonight",
+        name = UiText.StringResources(R.string.before_sleep_routine),
+        describe = UiText.DynamicString("May your dream be sweat tonight"),
         icon = Icons.Filled.Bedtime,
         iconColor = Color(0xFF236ADC)
     ),

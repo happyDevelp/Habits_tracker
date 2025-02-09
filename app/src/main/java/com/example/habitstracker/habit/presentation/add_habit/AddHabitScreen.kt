@@ -103,7 +103,7 @@ fun AddHabitScreen(modifier: Modifier = Modifier) {
                 }
 
                 Text(
-                    text = "or select already created",
+                    text = "or choose from presents",
                     fontSize = 15.sp,
                     modifier = modifier.padding(top = 16.dp)
                 )
@@ -113,10 +113,8 @@ fun AddHabitScreen(modifier: Modifier = Modifier) {
                 LazyColumn(
                     modifier = modifier.fillMaxHeight()
                 ) {
-                    item {
-                        defaultsHabitsGroupList.forEach { item ->
-                            DefaultHabitGroupItem(item)
-                        }
+                    defaultsHabitsGroupList.forEach { groupItem ->
+                        item { DefaultHabitGroupItem(groupItem) }
                     }
                 }
             }

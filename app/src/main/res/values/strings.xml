@@ -51,4 +51,12 @@
     <string name="everyday">Everyday</string>
     <string name="create_own_habit">Create own habit</string>
 
+    <!--HabitGroup names-->
+    <string name="keep_active_get_fit"><![CDATA[Keep active & get fit]]></string>
+    <string name="eat_drink_healthily"><![CDATA[Eat & drink healthily]]></string>
+    <string name="ease_stress">Ease stress</string>
+    <string name="gain_self_discipline">Gain self-discipline</string>
+    <string name="leisure_moments">Leisure moments</string>
+    <string name="before_sleep_routine">Before sleep routine</string>
+
 </resources>
