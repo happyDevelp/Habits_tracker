@@ -23,6 +23,9 @@ sealed interface Route {
     data object AddHabit: Route
 
     @Serializable
+    data class GroupHabit(val groupName: String, val groupDescribe: String): Route
+
+    @Serializable
     data class CreateHabit(val param: String?): Route
 
     @Serializable

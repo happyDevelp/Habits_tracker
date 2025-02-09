@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -30,6 +32,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.theme.AppTheme
@@ -41,13 +44,13 @@ import com.example.habitstracker.habit.presentation.detail_habit.components.getG
 @Composable
 fun DetailHabitScreen(
     modifier: Modifier = Modifier,
-    groupName: String = "Keep active & get fit",
-    groupDescribe: String = "Sweat never lies"
+    groupName: String,
+    groupDescribe: String
 ) {
     val context = LocalContext.current
     val navController = LocalNavController.current
     val groupItems = getGroupDetails(groupName, context = context)
-    Scaffold(topBar = { CustomTopBar() }) { paddingValues ->
+    Scaffold(topBar = { CustomTopBar(navController) }) { paddingValues ->
         Box(
             modifier = modifier
                 .padding(paddingValues)
@@ -67,27 +70,30 @@ fun DetailHabitScreen(
                     Text(
                         modifier = modifier.padding(),
                         text = groupName,
-                        fontSize = 20.sp,
-                        fontFamily = PoppinsFontFamily
+                        fontSize = 22.sp,
+                        fontFamily = PoppinsFontFamily,
+                        color = Color.White
                     )
-                    Spacer(modifier.height(8.dp))
                     Text(
                         text = groupDescribe,
-                        fontSize = 14.sp,
+                        fontSize = 15.sp,
                         color = Color.White.copy(0.9f)
                     )
                 }
-                Spacer(modifier.height(10.dp))
-
+                Spacer(modifier.height(4.dp))
                 LazyColumn(
                     modifier = modifier
                         .fillMaxSize()
-                        .clip(RoundedCornerShape(16.dp))
+                        .clip(
+                            RoundedCornerShape(
+                                topStart = 12.dp,
+                                topEnd = 12.dp
+                            )
+                        )
                         .background(screenContainerBackgroundDark)
-
                 ) {
-                    groupItems.forEach { detailItem ->
-                        item { DefaultHabitDetailItem(detailItem) }
+                    items(groupItems) { detailedItem ->
+                        DefaultHabitDetailItem(detailedItem)
                     }
                 }
             }
@@ -97,15 +103,14 @@ fun DetailHabitScreen(
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-private fun CustomTopBar() {
+private fun CustomTopBar(navController: NavController) {
     TopAppBar(
         title = {},
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
         ),
         navigationIcon = {
             IconButton(
-                onClick = { }
+                onClick = { navController.navigateUp() },
             ) {
                 Icon(
                     imageVector = Icons.Default.ArrowBack,
@@ -121,6 +126,11 @@ private fun CustomTopBar() {
 private fun Preview() {
     val mockNavController = rememberNavController()
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
-        AppTheme(darkTheme = true) { DetailHabitScreen() }
+        AppTheme(darkTheme = true) {
+            DetailHabitScreen(
+                groupName = "Keep active & get fit",
+                groupDescribe = "Sweat never lies"
+            )
+        }
     }
 }

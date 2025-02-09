@@ -125,7 +125,7 @@ fun TodayScreen(
                 CompositionLocalProvider(
                     value = LocalRippleTheme provides CustomRippleTheme(color = Color.Black)
                 ) {
-                    Crossfade(targetState = habitListState) { habits ->
+                    Crossfade(targetState = habitListState, label = "Data change animation") { habits ->
                         LazyColumn(
                             modifier = modifier
                                 .padding(top = 95.dp)

@@ -45,7 +45,7 @@
     <string name="select_icon_description">Select icon</string>
     <string name="days_of_habits">Days of habits</string>
     <string name="save">Save</string>
-    <string name="create_your_own">Create your own</string>
+    <string name="create_your_own">CREATE YOUR OWN HABIT</string>
     <string name="update_habit">Update habit</string>
     <string name="executing_time">Executing time</string>
     <string name="everyday">Everyday</string>
@@ -58,5 +58,7 @@
     <string name="gain_self_discipline">Gain self-discipline</string>
     <string name="leisure_moments">Leisure moments</string>
     <string name="before_sleep_routine">Before sleep routine</string>
+    <string name="or_choose_from_presents">OR CHOOSE FROM PRESENTS</string>
+    <string name="here_you_can_create_a_new_habit">Here you can create a new habit</string>
 
 </resources>

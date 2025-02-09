@@ -27,12 +27,13 @@ import com.example.habitstracker.app.navigation.bottombar.NavigationBottomBar
 import com.example.habitstracker.habit.presentation.add_habit.AddHabitScreen
 import com.example.habitstracker.habit.presentation.create_own_habit.CreateOwnHabitRoot
 import com.example.habitstracker.habit.presentation.create_own_habit.components.RepeatPicker
+import com.example.habitstracker.habit.presentation.detail_habit.DetailHabitScreen
 import com.example.habitstracker.habit.presentation.edit_habit.EditHabitRoot
 import com.example.habitstracker.habit.presentation.edit_habit.components.EditRepeatPickerRoot
-import com.example.habitstracker.history.presentation.HistoryScreen
-import com.example.habitstracker.profile.presentation.profile.ProfileScreen
 import com.example.habitstracker.habit.presentation.today_main.MainScreenViewModel
 import com.example.habitstracker.habit.presentation.today_main.TodayScreenRoot
+import com.example.habitstracker.history.presentation.HistoryScreen
+import com.example.habitstracker.profile.presentation.profile.ProfileScreen
 
 @Composable
 fun AppNavigation() {
@@ -89,8 +90,12 @@ fun AppNavigation() {
                 AddHabitScreen()
             }
 
-            composable<Route.CreateHabit>
-            { backStackEntry ->
+            composable<Route.GroupHabit> { backStackEntry ->
+                val args = backStackEntry.toRoute<Route.GroupHabit>()
+                DetailHabitScreen(groupName = args.groupName, groupDescribe = args.groupDescribe)
+            }
+
+            composable<Route.CreateHabit> { backStackEntry ->
                 val args = backStackEntry.toRoute<Route.CreateHabit>()
                 CreateOwnHabitRoot(
                     param = args.param ?: "Everyday teststststs",

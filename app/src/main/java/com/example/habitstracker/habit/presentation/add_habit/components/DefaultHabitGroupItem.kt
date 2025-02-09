@@ -31,24 +31,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
+import com.example.habitstracker.app.LocalNavController
+import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.UiText
+import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 
 @Composable
 fun DefaultHabitGroupItem(item: DefaultHabitGroupItem) {
+    val navController = LocalNavController.current
+    val context = LocalContext.current
     Card(
         modifier = Modifier
             .padding(bottom = 12.dp)
-            .clip(RoundedCornerShape(size = 12.dp))
+            .clip(RoundedCornerShape(size = 8.dp))
             .height(IntrinsicSize.Max)
-            .fillMaxWidth(0.9f)
+            .fillMaxWidth(0.96f)
             .clickable {
-                /*TODO()*/
+                navController.navigate(
+                    Route.GroupHabit(
+                        groupName = item.name.asString(context),
+                        groupDescribe = item.describe.asString(context)
+                    )
+                )
             },
         elevation = CardDefaults.cardElevation(
             defaultElevation = 60.dp,
@@ -57,19 +68,18 @@ fun DefaultHabitGroupItem(item: DefaultHabitGroupItem) {
         colors = CardDefaults.cardColors(containerColor = screenContainerBackgroundDark)
     )
     {
-        val verticalPadding = 6.dp
         Box(modifier = Modifier.fillMaxSize()) {
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(vertical = verticalPadding),
+                    .padding(vertical = 18.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Icon(
                     modifier = Modifier
                         .padding(start = 20.dp, end = 20.dp)
-                        .size(32.dp),
+                        .size(34.dp),
                     tint = item.iconColor,
                     imageVector = item.icon,
                     contentDescription = null
@@ -77,33 +87,31 @@ fun DefaultHabitGroupItem(item: DefaultHabitGroupItem) {
 
                 Column(
                     modifier = Modifier
-                        .padding(end = 12.dp)
+                        .padding(end = 10.dp)
                         .weight(1f),
                     horizontalAlignment = Alignment.Start
                 ) {
                     Text(
-                        modifier = Modifier.padding(bottom = 6.dp),
                         text = item.name.asString(),
-                        fontSize = 20.sp,
-                        color = Color.White.copy(alpha = 0.85f),
-                        fontWeight = FontWeight.Bold,
-                        style = MaterialTheme.typography.titleSmall,
+                        fontSize = 19.sp,
+                        color = Color.White.copy(alpha = 0.90f),
+                        fontFamily = PoppinsFontFamily
                     )
 
                     Text(
-                        modifier = Modifier.padding(),
                         text = item.describe.asString(),
                         fontSize = 13.sp,
                         maxLines = 3,
-                        overflow = TextOverflow.Ellipsis
+                        overflow = TextOverflow.Ellipsis,
+                        lineHeight = 16.sp
                     )
                 }
 
                 Icon(
                     modifier = Modifier
-                        .padding(end = 20.dp)
-                        .size(38.dp),
-                    tint = Color.White.copy(alpha = 0.6f),
+                        .padding(end = 14.dp)
+                        .size(36.dp),
+                    tint = Color.White.copy(alpha = 0.5f),
                     imageVector = Icons.Rounded.ArrowCircleRight,
                     contentDescription = "More about habit"
                 )
@@ -112,6 +120,7 @@ fun DefaultHabitGroupItem(item: DefaultHabitGroupItem) {
         }
     }
 }
+
 data class DefaultHabitGroupItem(
     val name: UiText,
     val describe: UiText,
@@ -124,7 +133,7 @@ val defaultsHabitsGroupList = listOf(
         name = UiText.StringResources(resId = R.string.keep_active_get_fit),
         describe = UiText.DynamicString("Sweet never lies"),
         icon = Icons.Rounded.SportsFootball,
-        iconColor = Color(0xFFC42310)
+        iconColor = Color(0xFFE13C0B)
     ),
     DefaultHabitGroupItem(
         name = UiText.StringResources(R.string.eat_drink_healthily),
@@ -154,6 +163,6 @@ val defaultsHabitsGroupList = listOf(
         name = UiText.StringResources(R.string.before_sleep_routine),
         describe = UiText.DynamicString("May your dream be sweat tonight"),
         icon = Icons.Filled.Bedtime,
-        iconColor = Color(0xFF236ADC)
+        iconColor = Color(0xFF3673DE)
     ),
 )
