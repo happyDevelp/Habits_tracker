@@ -82,8 +82,8 @@ fun IconAndColorPicker(
 
             if (isIconSheetOpen) {
                 IconPicker(
-                    closingSheet = { isIconSheetOpen = false },
-                    clickAddIcon = { selectedIcon ->
+                    onCloseClick = { isIconSheetOpen = false },
+                    onAddIconClick = { selectedIcon ->
                         onIconPick(getIconName(selectedIcon))
                     }
                 )

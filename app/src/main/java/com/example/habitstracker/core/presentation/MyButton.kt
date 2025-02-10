@@ -22,7 +22,6 @@ fun MyButton(
     modifier: Modifier = Modifier,
     padding: PaddingValues = PaddingValues(),
     color: Color = MaterialTheme.colorScheme.primaryContainer,
-
     onClick: () -> Unit = { },
     content: @Composable () -> Unit = { Text(text = "Hello World!") },
 ) {

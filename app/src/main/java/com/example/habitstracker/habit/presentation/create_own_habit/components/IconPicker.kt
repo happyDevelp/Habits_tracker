@@ -1,5 +1,6 @@
 package com.example.habitstracker.habit.presentation.create_own_habit.components
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -22,6 +23,7 @@ import androidx.compose.material.icons.filled.ImageNotSupported
 import androidx.compose.material.icons.filled.ImageSearch
 import androidx.compose.material.icons.filled.More
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.SentimentVerySatisfied
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -31,6 +33,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,7 +56,7 @@ import kotlinx.coroutines.launch
 
 @Preview(showSystemUi = true)
 @Composable
-fun IconPickerPreview() {
+private fun Preview() {
     AppTheme(darkTheme = true) {
         IconPicker()
     }
@@ -69,16 +72,19 @@ data class IconItem(
 @Composable
 fun IconPicker(
     modifier: Modifier = Modifier,
-    closingSheet: () -> Unit = { },
-    clickAddIcon: (ImageVector) -> Unit = { },
+    onCloseClick: () -> Unit = { },
+    onAddIconClick: (ImageVector) -> Unit = { },
 ) {
-
     Surface {
-
         val sheetState = rememberModalBottomSheetState()
         val scope = rememberCoroutineScope()
+        val tabs = listOf("All", "Popular", "Lifestyle", "Health", "Diet")
+        var selectedTabs by remember {
+            mutableStateOf(0)
+        }
 
         val iconList = listOf<IconItem>(
+            IconItem("SentimentVerySatisfied", Icons.Default.SentimentVerySatisfied),
             IconItem("Add", Icons.Default.Add),
             IconItem("AddCard", Icons.Default.AddCard),
             IconItem("ImageNotSupported", Icons.Default.ImageNotSupported),
@@ -92,25 +98,18 @@ fun IconPicker(
         )
 
         ModalBottomSheet(
-            modifier = modifier.fillMaxHeight(0.5f),
+            modifier = modifier.fillMaxHeight(0.6f),
             sheetState = sheetState,
-            onDismissRequest = {
-                closingSheet.invoke()
-            },
+            onDismissRequest = { onCloseClick() },
             dragHandle = null,
-            containerColor = screenContainerBackgroundDark
+            containerColor = screenContainerBackgroundDark,
         ) {
+
 
             Box(
                 modifier = modifier,
                 contentAlignment = Alignment.BottomCenter
             ) {
-
-                // Send icon to [CreateOwnHabitScreen]
-                var pickedIcon by remember {
-                    mutableStateOf(Icons.Default.Error)
-                }
-
                 var selectedItem by remember {
                     mutableStateOf<IconItem?>(null)
                 }
@@ -125,11 +124,7 @@ fun IconPicker(
                         val isSelected = icon == selectedItem
 
                         IconButton(
-                            onClick = {
-                                selectedItem = icon
-
-                                pickedIcon = icon.image ?: Icons.Default.Error
-                            },
+                            onClick = { selectedItem = icon },
                             modifier = modifier
                                 .padding(horizontal = 18.dp)
                                 .clip(RoundedCornerShape(size = 16.dp))
@@ -160,7 +155,7 @@ fun IconPicker(
                         modifier = modifier.weight(1f),
                         color = screenContainerBackgroundDark,
                         onClick = {
-                            closingSheet.invoke()
+                            onCloseClick.invoke()
                             scope.launch { sheetState.hide() }
                         }
                     ) {
@@ -174,8 +169,11 @@ fun IconPicker(
                     MyButton(
                         modifier = modifier.weight(1f),
                         onClick = {
-                            clickAddIcon.invoke(pickedIcon)
-                            closingSheet.invoke()
+                            val icon = selectedItem?.image
+                            if (icon != null) {
+                                onAddIconClick(icon)
+                            }
+                            onCloseClick.invoke()
                             scope.launch { sheetState.hide() }
                         }
                     ) {
