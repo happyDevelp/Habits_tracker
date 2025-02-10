@@ -9,11 +9,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.DirectionsRun
-import androidx.compose.material.icons.filled.DirectionsWalk
-import androidx.compose.material.icons.filled.FitnessCenter
-import androidx.compose.material.icons.filled.Pool
-import androidx.compose.material.icons.filled.SelfImprovement
 import androidx.compose.material.icons.rounded.ArrowCircleRight
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -107,40 +102,15 @@ data class DefaultHabitDetailItem(
 
 fun getGroupDetails(groupName: String, context: Context): List<DefaultHabitDetailItem> {
     return when (groupName) {
-        UiText.StringResources(R.string.keep_active_get_fit).asString(context) -> {
-            listOf(
-                DefaultHabitDetailItem(
-                    "Walking",
-                    "Strengthen muscles and lighten the mood",
-                    Icons.Default.DirectionsWalk,
-                    iconColor = Color(0xEE4CD535)
-                ),
-                DefaultHabitDetailItem(
-                    "Running",
-                    "Faster and further",
-                    Icons.Default.DirectionsRun,
-                    iconColor = Color(0xFF16C793)
-                ),
-                DefaultHabitDetailItem(
-                    "Swimming",
-                    "Activate full body without sweat",
-                    Icons.Default.Pool,
-                    iconColor = Color(0xFF3A7BE7)
-                ),
-                DefaultHabitDetailItem(
-                    "Yoga",
-                    "Calming and smoothing",
-                    Icons.Default.SelfImprovement,
-                    iconColor = Color(0xFFD1E00F)
-                ),
-                DefaultHabitDetailItem(
-                    "Workout",
-                    "Move your body and enjoy burning fat",
-                    Icons.Default.FitnessCenter,
-                    iconColor = Color(0xFFC26519)
-                )
-            )
-        }
+        UiText.StringResources(R.string.keep_active_get_fit).asString(context) -> keepActiveGetFit
+        UiText.StringResources(R.string.eat_drink_healthily).asString(context) -> eatDrinkHealthily
+        UiText.StringResources(R.string.ease_stress).asString(context) -> easeStress
+        UiText.StringResources(R.string.gain_self_discipline).asString(context) -> gainSelfDiscipline
+        UiText.StringResources(R.string.leisure_moments).asString(context) -> leisureMoments
+        UiText.StringResources(R.string.good_morning).asString(context) -> goodMorningHabits
+        UiText.StringResources(R.string.before_sleep_routine).asString(context) -> beforeSleepRoutineHabits
+        UiText.StringResources(R.string.master_productivity).asString(context) -> masterProductivityHabits
+        UiText.StringResources(R.string.stronger_mind).asString(context) -> strongerMindHabits
 
         else -> throw Exception("In 'DefaultHabitDetailsItem' screen there are unknown entered data in 'getGroupDetails' function")
     }

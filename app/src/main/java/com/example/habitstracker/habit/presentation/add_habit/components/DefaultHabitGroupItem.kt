@@ -15,7 +15,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BackHand
 import androidx.compose.material.icons.filled.Bedtime
+import androidx.compose.material.icons.filled.InsertChartOutlined
+import androidx.compose.material.icons.filled.Lightbulb
+import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.SportsEsports
+import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material.icons.rounded.ArrowCircleRight
 import androidx.compose.material.icons.rounded.Restaurant
 import androidx.compose.material.icons.rounded.SentimentVerySatisfied
@@ -23,7 +27,6 @@ import androidx.compose.material.icons.rounded.SportsFootball
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,7 +35,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -160,9 +162,27 @@ val defaultsHabitsGroupList = listOf(
         iconColor = Color(0xFF9CCC65)
     ),
     DefaultHabitGroupItem(
+        name = UiText.StringResources(R.string.good_morning),
+        describe = UiText.DynamicString("In the morning's glow, let the right path show"),
+        icon = Icons.Filled.WbSunny,
+        iconColor = Color(0xFFE7DF0C)
+    ),
+    DefaultHabitGroupItem(
         name = UiText.StringResources(R.string.before_sleep_routine),
         describe = UiText.DynamicString("May your dream be sweat tonight"),
         icon = Icons.Filled.Bedtime,
         iconColor = Color(0xFF3673DE)
+    ),
+    DefaultHabitGroupItem(
+        name = UiText.StringResources(R.string.master_productivity),
+        describe = UiText.DynamicString("Be strategic with your efforts and time"),
+        icon = Icons.Filled.InsertChartOutlined,
+        iconColor = Color(0xFF34D762)
+    ),
+    DefaultHabitGroupItem(
+        name = UiText.StringResources(R.string.stronger_mind),
+        describe = UiText.DynamicString("What doesn`t kill you makes you strokger"),
+        icon = Icons.Filled.Lightbulb,
+        iconColor = Color(0xFFECE82D)
     ),
 )

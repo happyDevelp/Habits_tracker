@@ -44,7 +44,7 @@ class DatabaseTest {
 
         dao.insertHabit(
             HabitEntity(
-                5, "DefaultHabit", "SentimentVerySatisfied", false,
+                5, "DefaultHabit", "SentimentVerySatisfied",
                 blueColor.toHex(), "Everyday", "Anytime", false
             )
         )
