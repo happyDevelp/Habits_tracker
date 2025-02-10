@@ -1,6 +1,7 @@
 package com.example.habitstracker.habit.presentation.create_own_habit.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
@@ -25,45 +26,43 @@ import com.example.habitstracker.core.presentation.utils.TestTags
 fun HabitNameTextField(
     modifier: Modifier = Modifier,
     name: String,
-    onTextChange: (text: String) -> Unit = {  },
+    onTextChange: (text: String) -> Unit = { },
 ) {
     TextField(
-        modifier = modifier.fillMaxWidth().testTag(TestTags.CREATEHABIT_TEXT_FIELD),
+        modifier = modifier
+            .fillMaxWidth()
+            .height(60.dp)
+            .testTag(TestTags.CREATEHABIT_TEXT_FIELD),
         value = name,
         onValueChange = { newText ->
             if (newText.length < 30)
                 onTextChange(newText)
         },
-
         textStyle = TextStyle(
             color = Color.White.copy(alpha = 0.85f),
             fontFamily = PoppinsFontFamily,
             fontSize = 22.sp,
         ),
-
         placeholder = {
             Text(
-                text = stringResource(R.string.create_name_of_habit),
-                color = Color.White.copy(alpha = 0.85f),
+                text = stringResource(R.string.enter_habit_name),
+                color = Color.White.copy(alpha = 0.75f),
                 fontFamily = PoppinsFontFamily,
-                fontSize = 22.sp,
+                fontSize = 21.sp,
             )
         },
-
         trailingIcon = {
             Icon(
                 modifier = Modifier.padding(end = 0.dp),
                 imageVector = Icons.Default.Edit, contentDescription = null
             )
         },
-
         colors = TextFieldDefaults.colors(
             unfocusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
             unfocusedIndicatorColor = Color.Transparent,
             focusedContainerColor = MaterialTheme.colorScheme.secondaryContainer,
             focusedIndicatorColor = Color.Transparent,
         ),
-
         singleLine = true,
     )
 }

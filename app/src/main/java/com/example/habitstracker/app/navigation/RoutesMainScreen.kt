@@ -1,5 +1,6 @@
 package com.example.habitstracker.app.navigation
 
+import androidx.compose.ui.graphics.vector.ImageVector
 import kotlinx.serialization.Serializable
 
 sealed interface Route {
@@ -26,7 +27,7 @@ sealed interface Route {
     data class GroupHabit(val groupName: String, val groupDescribe: String): Route
 
     @Serializable
-    data class CreateHabit(val param: String?): Route
+    data class CreateHabit(val name: String?, val icon: String?, val iconColor: String?): Route
 
     @Serializable
     data object RepeatPicker: Route

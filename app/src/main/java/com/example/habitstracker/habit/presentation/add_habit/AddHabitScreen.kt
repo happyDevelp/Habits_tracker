@@ -84,7 +84,7 @@ fun AddHabitScreen(modifier: Modifier = Modifier) {
                         .testTag(TestTags.CREATE_OWN_HABIT_BUTTON),
 
                     onClick = {
-                        navController.navigate(Route.CreateHabit(param = null))
+                        navController.navigate(Route.CreateHabit(name = null, icon = null, iconColor = null))
                     },
 
                     colors = ButtonDefaults.buttonColors(
@@ -111,7 +111,7 @@ fun AddHabitScreen(modifier: Modifier = Modifier) {
                 )
                 Spacer(modifier = modifier.height(20.dp))
                 LazyColumn(modifier = modifier.fillMaxHeight()) {
-                    items(defaultsHabitsGroupList) {groupItem ->
+                    items(defaultsHabitsGroupList) { groupItem ->
                         DefaultHabitGroupItem(groupItem)
                     }
                 }

@@ -26,16 +26,27 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
+import com.example.habitstracker.app.LocalNavController
+import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.UiText
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
+import com.example.habitstracker.core.presentation.utils.getIconName
+import com.example.habitstracker.core.presentation.utils.toHex
 
 @Composable
 fun DefaultHabitDetailItem(item: DefaultHabitDetailItem) {
+    val navController = LocalNavController.current
     Card(
         modifier = Modifier
             .fillMaxSize()
             .clickable {
-                /*TODO()*/
+                navController.navigate(
+                    Route.CreateHabit(
+                        name = item.name,
+                        icon = getIconName(item.icon),
+                        iconColor = item.iconColor.toHex()
+                    )
+                )
             },
         colors = CardDefaults.cardColors(containerColor = screenContainerBackgroundDark)
     )
@@ -105,11 +116,17 @@ fun getGroupDetails(groupName: String, context: Context): List<DefaultHabitDetai
         UiText.StringResources(R.string.keep_active_get_fit).asString(context) -> keepActiveGetFit
         UiText.StringResources(R.string.eat_drink_healthily).asString(context) -> eatDrinkHealthily
         UiText.StringResources(R.string.ease_stress).asString(context) -> easeStress
-        UiText.StringResources(R.string.gain_self_discipline).asString(context) -> gainSelfDiscipline
+        UiText.StringResources(R.string.gain_self_discipline)
+            .asString(context) -> gainSelfDiscipline
+
         UiText.StringResources(R.string.leisure_moments).asString(context) -> leisureMoments
         UiText.StringResources(R.string.good_morning).asString(context) -> goodMorningHabits
-        UiText.StringResources(R.string.before_sleep_routine).asString(context) -> beforeSleepRoutineHabits
-        UiText.StringResources(R.string.master_productivity).asString(context) -> masterProductivityHabits
+        UiText.StringResources(R.string.before_sleep_routine)
+            .asString(context) -> beforeSleepRoutineHabits
+
+        UiText.StringResources(R.string.master_productivity)
+            .asString(context) -> masterProductivityHabits
+
         UiText.StringResources(R.string.stronger_mind).asString(context) -> strongerMindHabits
 
         else -> throw Exception("In 'DefaultHabitDetailsItem' screen there are unknown entered data in 'getGroupDetails' function")

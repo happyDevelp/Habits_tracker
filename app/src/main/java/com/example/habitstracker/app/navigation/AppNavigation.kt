@@ -98,7 +98,9 @@ fun AppNavigation() {
             composable<Route.CreateHabit> { backStackEntry ->
                 val args = backStackEntry.toRoute<Route.CreateHabit>()
                 CreateOwnHabitRoot(
-                    param = args.param ?: "Everyday teststststs",
+                    name = args.name,
+                    icon = args.icon,
+                    iconColor = args.iconColor,
                     viewModel = mainScreenViewModel
                 )
             }

@@ -40,7 +40,6 @@
     <string name="rate_us">Rate us</string>
     <string name="feedback">Feedback</string>
     <string name="finished">Finished</string>
-    <string name="create_name_of_habit">Name of habit</string>
     <string name="icon_of_habit_description">Icon of habit</string>
     <string name="select_icon_description">Select icon</string>
     <string name="days_of_habits">Days of habits</string>
@@ -49,7 +48,8 @@
     <string name="update_habit">Update habit</string>
     <string name="executing_time">Executing time</string>
     <string name="everyday">Everyday</string>
-    <string name="create_own_habit">Create own habit</string>
+    <string name="or_choose_from_presents">OR CHOOSE FROM PRESENTS</string>
+    <string name="here_you_can_create_a_new_habit">Here you can create a new habit</string>
 
     <!--HabitGroup names-->
     <string name="keep_active_get_fit"><![CDATA[Keep active & get fit]]></string>
@@ -58,10 +58,10 @@
     <string name="gain_self_discipline">Gain self-discipline</string>
     <string name="leisure_moments">Leisure moments</string>
     <string name="before_sleep_routine">Before sleep routine</string>
-    <string name="or_choose_from_presents">OR CHOOSE FROM PRESENTS</string>
-    <string name="here_you_can_create_a_new_habit">Here you can create a new habit</string>
     <string name="master_productivity">Master Productivity</string>
     <string name="stronger_mind">Stronger mind</string>
     <string name="good_morning">Good morning</string>
+    <string name="enter_habit_name">Enter habit name...</string>
+
 
 </resources>
