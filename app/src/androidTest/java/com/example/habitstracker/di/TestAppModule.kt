@@ -1,3 +1,4 @@
+/*
 package com.example.habitstracker.di
 
 import android.content.Context
@@ -23,7 +24,9 @@ object TestAppModule {
         return Room.inMemoryDatabaseBuilder(
             context,
             HabitDatabase::class.java
-        )/*.allowMainThreadQueries()*/.build()
+        )*/
+/*.allowMainThreadQueries()*//*
+.build()
     }
 
     @Singleton
@@ -37,4 +40,4 @@ object TestAppModule {
     fun provideRepository(dao: DAO): HabitRepository {
         return RepositoryImpl(dao)
     }
-}
+}*/

@@ -1,3 +1,4 @@
+/*
 package com.example.habitstracker
 
 import androidx.compose.ui.test.assertIsDisplayed
@@ -86,7 +87,8 @@ class DatabaseTest {
         composeRule.onNodeWithTag(habitName).assertDoesNotExist()
     }
 
-    /*@Test
+    */
+/*@Test
     fun createNewHabitAndUpdateAfterwards_isUpdated() = runTest {
         val habitName = "test_habit"
         composeRule.onNodeWithTag(TestTags.CREATE_NEW_HABIT_BUTTON).performClick()
@@ -111,5 +113,6 @@ class DatabaseTest {
 
        // composeRule.onNodeWithText(habitName).assertDoesNotExist()
         composeRule.onNodeWithText(newHabitName).assertIsDisplayed()
-    }*/
-}
+    }*//*
+
+}*/

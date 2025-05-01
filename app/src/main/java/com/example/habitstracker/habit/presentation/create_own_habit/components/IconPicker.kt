@@ -1,40 +1,38 @@
 package com.example.habitstracker.habit.presentation.create_own_habit.components
 
-import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.AddCard
-import androidx.compose.material.icons.filled.Adjust
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.ImageNotSupported
-import androidx.compose.material.icons.filled.ImageSearch
-import androidx.compose.material.icons.filled.More
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.SentimentVerySatisfied
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.ScrollableTabRow
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -58,7 +56,11 @@ import kotlinx.coroutines.launch
 @Composable
 private fun Preview() {
     AppTheme(darkTheme = true) {
-        IconPicker()
+        IconPicker(
+            onAddIconClick = {},
+            onCloseClick = {},
+            color = Color(0xFFE26A19)
+        )
     }
 }
 
@@ -72,116 +74,183 @@ data class IconItem(
 @Composable
 fun IconPicker(
     modifier: Modifier = Modifier,
-    onCloseClick: () -> Unit = { },
+    color: Color = Color(0xFFE26A19),
     onAddIconClick: (ImageVector) -> Unit = { },
+    onCloseClick: () -> Unit
 ) {
-    Surface {
-        val sheetState = rememberModalBottomSheetState()
-        val scope = rememberCoroutineScope()
-        val tabs = listOf("All", "Popular", "Lifestyle", "Health", "Diet")
-        var selectedTabs by remember {
-            mutableStateOf(0)
-        }
+    val tabItems = listOf(
+        "All",
+        "Popular",
+        "Lifestyle",
+        "Health",
+        "Diet"
+    )
 
-        val iconList = listOf<IconItem>(
-            IconItem("SentimentVerySatisfied", Icons.Default.SentimentVerySatisfied),
-            IconItem("Add", Icons.Default.Add),
-            IconItem("AddCard", Icons.Default.AddCard),
-            IconItem("ImageNotSupported", Icons.Default.ImageNotSupported),
-            IconItem("Adjust", Icons.Default.Adjust),
-            IconItem("More", Icons.Default.More),
-            IconItem("Settings", Icons.Default.Settings),
-            IconItem("ImageSearch", Icons.Default.ImageSearch),
-            IconItem("AccountBox", Icons.Default.AccountBox),
-            IconItem("AccountCircle", Icons.Default.AccountCircle),
-            IconItem("MoreVert", Icons.Default.MoreVert),
+    Surface {
+        val coroutineScope = rememberCoroutineScope()
+        val sheetState = rememberModalBottomSheetState()
+        val pagerState = rememberPagerState(
+            initialPage = 0,
+            initialPageOffsetFraction = 0f
+        ) { tabItems.size }
+
+        val iconList = listOf(
+            all,
+            popular,
+            lifestyle,
+            health,
+            diet
         )
 
+        val selectedItems = remember {
+            mutableStateMapOf<Int, IconItem?>() // Ключ - індекс вкладки, значення - обрана іконка
+        }
+
         ModalBottomSheet(
-            modifier = modifier.fillMaxHeight(0.6f),
+            modifier = modifier.fillMaxHeight(0.5f),
             sheetState = sheetState,
-            onDismissRequest = { onCloseClick() },
+            onDismissRequest = {
+                onCloseClick.invoke()
+                coroutineScope.launch { sheetState.hide() }
+            },
             dragHandle = null,
             containerColor = screenContainerBackgroundDark,
         ) {
-
-
-            Box(
-                modifier = modifier,
-                contentAlignment = Alignment.BottomCenter
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Top
             ) {
-                var selectedItem by remember {
-                    mutableStateOf<IconItem?>(null)
+                ScrollableTabRow(
+                    selectedTabIndex = pagerState.currentPage,
+                    edgePadding = 0.dp,
+                    indicator = { },
+                ) {
+                    tabItems.forEachIndexed { index, title ->
+                        val interactionSource = remember { MutableInteractionSource() }
+                        val isSelected = pagerState.currentPage == index
+                        Tab(
+                            modifier = Modifier
+                                .height(50.dp)
+                                .padding(horizontal = 4.dp)
+                                .clip(RoundedCornerShape(20.dp))
+                                .background(
+                                    color = if (isSelected)
+                                        Color(0xFF3B04BD) else Color.Transparent
+                                )
+                                .selectable(
+                                    selected = isSelected,
+                                    onClick = { },
+                                    interactionSource = interactionSource,
+                                    indication = rememberRipple(
+                                        bounded = false,
+                                        color = Color.White.copy(alpha = 0.3f)
+                                    )
+                                ),
+                            selectedContentColor = Color(0xFF3B04BD),
+                            unselectedContentColor = Color.Transparent,
+                            selected = isSelected,
+                            onClick = {
+                                coroutineScope.launch {
+                                    pagerState.animateScrollToPage(index)
+                                }
+                            },
+                            text = {
+                                Text(
+                                    text = title,
+                                    modifier = Modifier.padding(horizontal = 8.dp),
+                                    color = if (isSelected) Color.White else Color.Gray
+                                )
+                            },
+                        )
+                    }
                 }
 
-                LazyVerticalGrid(
-                    modifier = modifier.padding(bottom = 85.dp, top = 16.dp),
-                    columns = GridCells.Fixed(4),
+                Box(
+                    modifier = Modifier.fillMaxSize(),
                 ) {
+                    val grids = tabItems.mapIndexed { index, _ ->
+                        remember {
+                            iconList[index]
+                        }
+                    }
 
-                    items(iconList) { icon ->
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = 80.dp),
+                    ) { page ->
+                        LazyVerticalGrid(
+                            modifier = Modifier
+                                .padding(top = 12.dp),
+                            verticalArrangement = Arrangement.spacedBy(12.dp),
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                            columns = GridCells.Fixed(4),
+                        ) {
+                            items(grids[page], key = { it.name }) { item ->
+                                IconButton(
+                                    onClick = { selectedItems[page] = item },
+                                    modifier = modifier
+                                        .padding(horizontal = 18.dp)
+                                        .clip(RoundedCornerShape(size = 16.dp))
+                                        .background(
+                                            if (item == selectedItems[page]) color
+                                            else Color.Transparent
+                                        )
+                                ) {
+                                    Icon(
+                                        imageVector = item.image ?: Icons.Default.Error,
+                                        contentDescription = null,
+                                        modifier = modifier
+                                            .size(60.dp)
+                                            .padding(all = 6.dp)
+                                    )
+                                }
+                            }
+                        }
+                    }
 
-                        val isSelected = icon == selectedItem
 
-                        IconButton(
-                            onClick = { selectedItem = icon },
-                            modifier = modifier
-                                .padding(horizontal = 18.dp)
-                                .clip(RoundedCornerShape(size = 16.dp))
-                                .background(
-                                    if (isSelected) Color(0xFFE26A19)
-                                    else Color.Transparent
-                                ),
-
-                            ) {
-                            Icon(
-                                imageVector = icon.image ?: Icons.Default.Error,
-                                contentDescription = null,
-                                modifier = modifier
-                                    .size(60.dp)
-                                    .padding(all = 6.dp)
-
+                    Row(
+                        modifier
+                            .padding(all = 10.dp)
+                            .padding(bottom = 16.dp)
+                            .align(Alignment.BottomEnd),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        MyButton(
+                            modifier = modifier.weight(1f),
+                            onClick = {
+                                val icon = selectedItems[pagerState.currentPage]?.image
+                                if (icon != null) {
+                                    onAddIconClick(icon)
+                                }
+                                onCloseClick.invoke()
+                                coroutineScope.launch { sheetState.hide() }
+                            },
+                        ) {
+                            Text(
+                                text = stringResource(R.string.add),
+                                fontSize = 20.sp,
+                                color = Color.White
                             )
                         }
-                    }
-                }
 
-                Row(
-                    modifier.padding(all = 10.dp),
-                    horizontalArrangement = Arrangement.spacedBy(20.dp)
-                ) {
-
-                    MyButton(
-                        modifier = modifier.weight(1f),
-                        color = screenContainerBackgroundDark,
-                        onClick = {
-                            onCloseClick.invoke()
-                            scope.launch { sheetState.hide() }
-                        }
-                    ) {
-                        Text(
-                            text = stringResource(R.string.cancel),
-                            fontSize = 20.sp,
-                            color = Color.White
-                        )
-                    }
-
-                    MyButton(
-                        modifier = modifier.weight(1f),
-                        onClick = {
-                            val icon = selectedItem?.image
-                            if (icon != null) {
-                                onAddIconClick(icon)
+                        MyButton(
+                            modifier = modifier.weight(1f),
+                            color = screenContainerBackgroundDark,
+                            onClick = {
+                                onCloseClick.invoke()
+                                coroutineScope.launch { sheetState.hide() }
                             }
-                            onCloseClick.invoke()
-                            scope.launch { sheetState.hide() }
+                        ) {
+                            Text(
+                                text = stringResource(R.string.cancel),
+                                fontSize = 20.sp,
+                                color = Color.White
+                            )
                         }
-                    ) {
-                        Text(
-                            text = "Add",
-                            fontSize = 20.sp,
-                            color = Color.White
-                        )
                     }
                 }
             }

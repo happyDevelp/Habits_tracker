@@ -96,6 +96,9 @@ dependencies {
     implementation(libs.kotlin.serialization.core)
     implementation(libs.kotlinx.serialization.json)
 
+    implementation ("com.google.accompanist:accompanist-pager:0.30.1")
+    implementation ("com.google.accompanist:accompanist-pager-indicators:0.30.1")
+
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.navigation.compose)
     testImplementation(libs.junit.junit)

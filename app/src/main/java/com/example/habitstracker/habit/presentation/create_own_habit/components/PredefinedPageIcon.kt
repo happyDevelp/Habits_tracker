@@ -1,0 +1,264 @@
+package com.example.habitstracker.habit.presentation.create_own_habit.components
+
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AddAlarm
+import androidx.compose.material.icons.filled.AddCard
+import androidx.compose.material.icons.filled.Adjust
+import androidx.compose.material.icons.filled.AirlineSeatFlat
+import androidx.compose.material.icons.filled.Alarm
+import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.BakeryDining
+import androidx.compose.material.icons.filled.Bedtime
+import androidx.compose.material.icons.filled.BikeScooter
+import androidx.compose.material.icons.filled.Bolt
+import androidx.compose.material.icons.filled.Book
+import androidx.compose.material.icons.filled.Brush
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.CalendarToday
+import androidx.compose.material.icons.filled.Call
+import androidx.compose.material.icons.filled.CameraAlt
+import androidx.compose.material.icons.filled.CleaningServices
+import androidx.compose.material.icons.filled.DirectionsBike
+import androidx.compose.material.icons.filled.DirectionsRun
+import androidx.compose.material.icons.filled.Eco
+import androidx.compose.material.icons.filled.Egg
+import androidx.compose.material.icons.filled.EmojiEmotions
+import androidx.compose.material.icons.filled.EmojiFlags
+import androidx.compose.material.icons.filled.EmojiFoodBeverage
+import androidx.compose.material.icons.filled.EmojiNature
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Fastfood
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FitnessCenter
+import androidx.compose.material.icons.filled.Flight
+import androidx.compose.material.icons.filled.FreeBreakfast
+import androidx.compose.material.icons.filled.Handshake
+import androidx.compose.material.icons.filled.Handyman
+import androidx.compose.material.icons.filled.Hiking
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Icecream
+import androidx.compose.material.icons.filled.ImageNotSupported
+import androidx.compose.material.icons.filled.ImageSearch
+import androidx.compose.material.icons.filled.KebabDining
+import androidx.compose.material.icons.filled.Keyboard
+import androidx.compose.material.icons.filled.KingBed
+import androidx.compose.material.icons.filled.Language
+import androidx.compose.material.icons.filled.LibraryBooks
+import androidx.compose.material.icons.filled.LocalBar
+import androidx.compose.material.icons.filled.LocalCafe
+import androidx.compose.material.icons.filled.LocalDining
+import androidx.compose.material.icons.filled.LocalDrink
+import androidx.compose.material.icons.filled.LocalHospital
+import androidx.compose.material.icons.filled.LocalLaundryService
+import androidx.compose.material.icons.filled.LocalPharmacy
+import androidx.compose.material.icons.filled.LunchDining
+import androidx.compose.material.icons.filled.Mail
+import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.MedicalServices
+import androidx.compose.material.icons.filled.Message
+import androidx.compose.material.icons.filled.More
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Movie
+import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.filled.NoFood
+import androidx.compose.material.icons.filled.NoMeals
+import androidx.compose.material.icons.filled.OutdoorGrill
+import androidx.compose.material.icons.filled.Palette
+import androidx.compose.material.icons.filled.Park
+import androidx.compose.material.icons.filled.PedalBike
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Pets
+import androidx.compose.material.icons.filled.Pool
+import androidx.compose.material.icons.filled.Public
+import androidx.compose.material.icons.filled.Radio
+import androidx.compose.material.icons.filled.RamenDining
+import androidx.compose.material.icons.filled.Restaurant
+import androidx.compose.material.icons.filled.RestaurantMenu
+import androidx.compose.material.icons.filled.School
+import androidx.compose.material.icons.filled.Science
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.SelfImprovement
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.SentimentVerySatisfied
+import androidx.compose.material.icons.filled.SetMeal
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.ShoppingBag
+import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.filled.Spa
+import androidx.compose.material.icons.filled.SportsBasketball
+import androidx.compose.material.icons.filled.SportsEsports
+import androidx.compose.material.icons.filled.SportsSoccer
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.TakeoutDining
+import androidx.compose.material.icons.filled.TravelExplore
+import androidx.compose.material.icons.filled.TrendingUp
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.Weekend
+import androidx.compose.material.icons.filled.WineBar
+import androidx.compose.material.icons.filled.Work
+
+// Here are lists of all icons that the user can choose in 'Iconpicker'
+
+val all = listOf(
+    IconItem("SentimentVerySatisfied", Icons.Default.SentimentVerySatisfied),
+    IconItem("Add", Icons.Default.Add),
+    IconItem("AddCard", Icons.Default.AddCard),
+    IconItem("ImageNotSupported", Icons.Default.ImageNotSupported),
+    IconItem("Adjust", Icons.Default.Adjust),
+    IconItem("More", Icons.Default.More),
+    IconItem("Settings", Icons.Default.Settings),
+    IconItem("ImageSearch", Icons.Default.ImageSearch),
+    IconItem("AccountBox", Icons.Default.AccountBox),
+    IconItem("AccountCircle", Icons.Default.AccountCircle),
+    IconItem("MoreVert", Icons.Default.MoreVert),
+    IconItem("Home", Icons.Default.Home),
+    IconItem("Favorite", Icons.Default.Favorite),
+    IconItem("Face", Icons.Default.Face),
+    IconItem("Person", Icons.Default.Person),
+    IconItem("DirectionsRun", Icons.Default.DirectionsRun),
+    IconItem("FitnessCenter", Icons.Default.FitnessCenter),
+    IconItem("Pool", Icons.Default.Pool),
+    IconItem("BikeScooter", Icons.Default.BikeScooter),
+    IconItem("CleaningServices", Icons.Default.CleaningServices),
+    IconItem("Restaurant", Icons.Default.Restaurant),
+    IconItem("MusicNote", Icons.Default.MusicNote),
+    IconItem("Movie", Icons.Default.Movie),
+    IconItem("Games", Icons.Default.SportsEsports),
+    IconItem("LibraryBooks", Icons.Default.LibraryBooks),
+    IconItem("Meditation", Icons.Default.SelfImprovement),
+    IconItem("Calendar", Icons.Default.CalendarToday),
+    IconItem("Work", Icons.Default.Work),
+    IconItem("Public", Icons.Default.Public),
+    IconItem("Alarm", Icons.Default.Alarm),
+    IconItem("Book", Icons.Default.Book),
+    IconItem("Pets", Icons.Default.Pets),
+    IconItem("Eco", Icons.Default.Eco),
+    IconItem("EmojiNature", Icons.Default.EmojiNature),
+    IconItem("Star", Icons.Default.Star),
+    IconItem("Map", Icons.Default.Map),
+    IconItem("Keyboard", Icons.Default.Keyboard),
+    IconItem("Mail", Icons.Default.Mail),
+    IconItem("Call", Icons.Default.Call),
+    IconItem("Message", Icons.Default.Message),
+    IconItem("TravelExplore", Icons.Default.TravelExplore),
+    IconItem("CameraAlt", Icons.Default.CameraAlt),
+    IconItem("ShoppingCart", Icons.Default.ShoppingCart),
+    IconItem("Brush", Icons.Default.Brush),
+    IconItem("Science", Icons.Default.Science),
+    IconItem("Language", Icons.Default.Language),
+    IconItem("Handshake", Icons.Default.Handshake),
+    IconItem("Flight", Icons.Default.Flight),
+    IconItem("Radio", Icons.Default.Radio),
+    IconItem("Bolt", Icons.Default.Bolt),
+    IconItem("School", Icons.Default.School),
+    IconItem("Send", Icons.Default.Send),
+    IconItem("TrendingUp", Icons.Default.TrendingUp),
+    IconItem("Visibility", Icons.Default.Visibility),
+    IconItem("Build", Icons.Default.Build),
+    IconItem("Search", Icons.Default.Search)
+)
+
+val popular = listOf(
+    IconItem("Favorite", Icons.Default.Favorite),
+    IconItem("Home", Icons.Default.Home),
+    IconItem("Face", Icons.Default.Face),
+    IconItem("Person", Icons.Default.Person),
+    IconItem("Settings", Icons.Default.Settings),
+    IconItem("FitnessCenter", Icons.Default.FitnessCenter),
+    IconItem("DirectionsRun", Icons.Default.DirectionsRun),
+    IconItem("Pool", Icons.Default.Pool),
+    IconItem("LibraryBooks", Icons.Default.LibraryBooks),
+    IconItem("Work", Icons.Default.Work),
+    IconItem("Calendar", Icons.Default.CalendarToday),
+    IconItem("MusicNote", Icons.Default.MusicNote),
+    IconItem("Games", Icons.Default.SportsEsports),
+    IconItem("Eco", Icons.Default.Eco),
+    IconItem("Meditation", Icons.Default.SelfImprovement),
+    IconItem("Public", Icons.Default.Public),
+    IconItem("Alarm", Icons.Default.Alarm),
+    IconItem("CameraAlt", Icons.Default.CameraAlt),
+    IconItem("ShoppingCart", Icons.Default.ShoppingCart),
+    IconItem("Brush", Icons.Default.Brush),
+    IconItem("Book", Icons.Default.Book),
+    IconItem("Science", Icons.Default.Science),
+    IconItem("TravelExplore", Icons.Default.TravelExplore),
+    IconItem("Pets", Icons.Default.Pets),
+    IconItem("Handshake", Icons.Default.Handshake),
+    IconItem("Star", Icons.Default.Star),
+    IconItem("Map", Icons.Default.Map),
+    IconItem("Flight", Icons.Default.Flight),
+    IconItem("Mail", Icons.Default.Mail),
+    IconItem("Message", Icons.Default.Message)
+)
+
+val lifestyle = listOf(
+    IconItem("Weekend", Icons.Default.Weekend),
+    IconItem("LocalCafe", Icons.Default.LocalCafe),
+    IconItem("DirectionsBike", Icons.Default.DirectionsBike),
+    IconItem("Spa", Icons.Default.Spa),
+    IconItem("RestaurantMenu", Icons.Default.RestaurantMenu),
+    IconItem("LocalBar", Icons.Default.LocalBar),
+    IconItem("ShoppingBag", Icons.Default.ShoppingBag),
+    IconItem("Park", Icons.Default.Park),
+    IconItem("Palette", Icons.Default.Palette),
+    IconItem("MusicNote", Icons.Default.MusicNote),
+    IconItem("FitnessCenter", Icons.Default.FitnessCenter),
+    IconItem("TravelExplore", Icons.Default.TravelExplore),
+    IconItem("CameraAlt", Icons.Default.CameraAlt),
+    IconItem("Eco", Icons.Default.Eco),
+    IconItem("Book", Icons.Default.Book),
+    IconItem("Pets", Icons.Default.Pets),
+    IconItem("LocalLaundryService", Icons.Default.LocalLaundryService),
+    IconItem("Bedtime", Icons.Default.Bedtime),
+    IconItem("Handyman", Icons.Default.Handyman),
+    IconItem("SelfImprovement", Icons.Default.SelfImprovement)
+)
+
+val health = listOf(
+    IconItem("FitnessCenter", Icons.Default.FitnessCenter),
+    IconItem("Pool", Icons.Default.Pool),
+    IconItem("SelfImprovement", Icons.Default.SelfImprovement),
+    IconItem("DirectionsRun", Icons.Default.DirectionsRun),
+    IconItem("PedalBike", Icons.Default.PedalBike),
+    IconItem("Hiking", Icons.Default.Hiking),
+    IconItem("Spa", Icons.Default.Spa),
+    IconItem("MedicalServices", Icons.Default.MedicalServices),
+    IconItem("Nutrition", Icons.Default.LunchDining),
+    IconItem("EmojiNature", Icons.Default.EmojiNature),
+    IconItem("LocalPharmacy", Icons.Default.LocalPharmacy),
+    IconItem("SportsSoccer", Icons.Default.SportsSoccer),
+    IconItem("SportsBasketball", Icons.Default.SportsBasketball),
+    IconItem("KingBed", Icons.Default.KingBed),
+    IconItem("LocalHospital", Icons.Default.LocalHospital),
+    IconItem("Park", Icons.Default.Park),
+    IconItem("AddAlarm", Icons.Default.AddAlarm),
+    IconItem("CleaningServices", Icons.Default.CleaningServices),
+    IconItem("AutoAwesome", Icons.Default.AutoAwesome),
+    IconItem("AirlineSeatFlat", Icons.Default.AirlineSeatFlat)
+)
+
+val diet = listOf(
+    IconItem("LocalDining", Icons.Default.LocalDining),
+    IconItem("LunchDining", Icons.Default.LunchDining),
+    IconItem("EmojiFoodBeverage", Icons.Default.EmojiFoodBeverage),
+    IconItem("Fastfood", Icons.Default.Fastfood),
+    IconItem("NoMeals", Icons.Default.NoMeals),
+    IconItem("Icecream", Icons.Default.Icecream),
+    IconItem("EmojiEmotions", Icons.Default.EmojiEmotions),
+    IconItem("EmojiNature", Icons.Default.EmojiNature),
+    IconItem("FreeBreakfast", Icons.Default.FreeBreakfast),
+    IconItem("BakeryDining", Icons.Default.BakeryDining),
+    IconItem("OutdoorGrill", Icons.Default.OutdoorGrill),
+    IconItem("RamenDining", Icons.Default.RamenDining),
+    IconItem("WineBar", Icons.Default.WineBar),
+    IconItem("Egg", Icons.Default.Egg),
+    IconItem("EmojiFlags", Icons.Default.EmojiFlags),
+    IconItem("NoFood", Icons.Default.NoFood),
+    IconItem("LocalDrink", Icons.Default.LocalDrink),
+    IconItem("SetMeal", Icons.Default.SetMeal),
+    IconItem("TakeoutDining", Icons.Default.TakeoutDining),
+    IconItem("KebabDining", Icons.Default.KebabDining)
+)

@@ -34,11 +34,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.example.habitstracker.R
 import com.example.habitstracker.habit.presentation.create_own_habit.components.ColorPicker
-import com.example.habitstracker.habit.presentation.create_own_habit.components.IconPicker
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.core.presentation.utils.clickWithRipple
 import com.example.habitstracker.core.presentation.utils.getIconName
+import com.example.habitstracker.habit.presentation.create_own_habit.components.IconPicker
 
 @Composable
 fun IconAndColorPicker(
@@ -85,7 +85,8 @@ fun IconAndColorPicker(
                     onCloseClick = { isIconSheetOpen = false },
                     onAddIconClick = { selectedIcon ->
                         onIconPick(getIconName(selectedIcon))
-                    }
+                    },
+                    color = color
                 )
             }
             Box(
