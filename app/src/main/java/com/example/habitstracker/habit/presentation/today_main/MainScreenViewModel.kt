@@ -23,7 +23,9 @@ class MainScreenViewModel @Inject constructor(
     val habitsListState = _habitsListState.asStateFlow()
 
     private val lastDateInDb = runBlocking {
-        LocalDate.parse(habitRepository.getLastAvailableDate()?.currentDate) ?: LocalDate.now()
+        val lastAvailableDate = habitRepository.getLastAvailableDate()
+        if (lastAvailableDate != null)
+        LocalDate.parse(lastAvailableDate.currentDate) else LocalDate.now()
     }
     private val _selectedDate = MutableStateFlow(lastDateInDb)
     val selectedDate = _selectedDate.asStateFlow()
