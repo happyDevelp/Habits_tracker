@@ -18,4 +18,6 @@ interface HabitRepository {
     suspend fun insertHabitDate(habitDate: DateHabitEntity)
 
     suspend fun getHabitsByDate(date: String): Flow<List<ShownHabit>> // YYYY-MM-DD
+
+    suspend fun dateExistsForHabit(habitId: Int, date: String): Boolean
 }

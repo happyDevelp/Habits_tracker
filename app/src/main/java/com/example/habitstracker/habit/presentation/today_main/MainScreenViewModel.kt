@@ -2,11 +2,12 @@ package com.example.habitstracker.habit.presentation.today_main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.domain.HabitRepository
-import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.ShownHabit
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
@@ -23,39 +24,53 @@ class MainScreenViewModel @Inject constructor(
     val habitsListState = _habitsListState.asStateFlow()
 
     private val lastDateInDb = runBlocking {
-        val lastAvailableDate = habitRepository.getLastAvailableDate()
-        if (lastAvailableDate != null)
-        LocalDate.parse(lastAvailableDate.currentDate) else LocalDate.now()
+        getLastAvailableDate()?.let { LocalDate.parse(it.currentDate) }
+            ?: LocalDate.now()
     }
-    private val _selectedDate = MutableStateFlow(lastDateInDb)
+
+    private val _selectedDate = MutableStateFlow(LocalDate.now())
     val selectedDate = _selectedDate.asStateFlow()
 
     init {
+        preloadAndFillAllHabits() // immediately try to get the missing dates
+        observeHabitsForSelectedDate()
+    }
+
+
+    private fun preloadAndFillAllHabits() {
         viewModelScope.launch {
-            // subscribe on data from database
-            _selectedDate.collectLatest { date ->
-                habitRepository.getHabitsByDate(date.toString()).collect { habitsList ->
-                    _habitsListState.value = habitsList
-                    fillMissingDates()
-                }
-                _selectedDate.value = LocalDate.now()
+            getHabitsByDate(lastDateInDb.toString()).collect { habits ->
+                // set the last known  data to fillMissingDates() had access
+                _habitsListState.value = habits
+                fillMissingDates()
             }
         }
     }
 
-
     private suspend fun fillMissingDates() {
+        val today = LocalDate.now()
+
         habitsListState.value.forEach { shownHabit ->
-            val allDatesById = habitRepository.getAllDatesByHabitId(shownHabit.id)
+            val allDatesById = getAllDatesByHabitId(shownHabit.id)
 
-            if (allDatesById.isNotEmpty()) {
-                val lastDate = LocalDate.parse(allDatesById.last().currentDate)
-                val today = LocalDate.now()
+            // If there is no dates at all - we create for 'today'
+            if (allDatesById.isEmpty()) {
+                insertHabitDate(
+                    DateHabitEntity(
+                        habitId = shownHabit.id,
+                        currentDate = today.toString(),
+                        isCompleted = false
+                    )
+                )
+                return@forEach
+            }
 
-                var currentDate =
-                    lastDate.plusDays(1) // Start from the day after the last recorded
+            val lastDate = LocalDate.parse(allDatesById.last().currentDate)
+            var currentDate = lastDate.plusDays(1)
 
-                while (currentDate.isBefore(today) || currentDate.isEqual(today)) {
+            while (!currentDate.isAfter(today)) {
+                val alreadyExists = dateExistsForHabit(shownHabit.id, currentDate.toString())
+                if (!alreadyExists) {
                     insertHabitDate(
                         DateHabitEntity(
                             habitId = shownHabit.id,
@@ -63,7 +78,17 @@ class MainScreenViewModel @Inject constructor(
                             isCompleted = false
                         )
                     )
-                    currentDate = currentDate.plusDays(1)
+                }
+                currentDate = currentDate.plusDays(1)
+            }
+        }
+    }
+
+    private fun observeHabitsForSelectedDate() {
+        viewModelScope.launch {
+            selectedDate.collectLatest { date ->
+                getHabitsByDate(date.toString()).collect { habits ->
+                    _habitsListState.value = habits
                 }
             }
         }
@@ -100,5 +125,21 @@ class MainScreenViewModel @Inject constructor(
         viewModelScope.launch {
             habitRepository.updateDateSelectState(id, isDone, selectDate)
         }
+    }
+
+    private suspend fun getHabitsByDate(date: String): Flow<List<ShownHabit>> {
+        return habitRepository.getHabitsByDate(date)
+    }
+
+    private suspend fun dateExistsForHabit(habitId: Int, date: String): Boolean {
+        return habitRepository.dateExistsForHabit(habitId, date)
+    }
+
+    private suspend fun getLastAvailableDate(): DateHabitEntity? {
+        return habitRepository.getLastAvailableDate()
+    }
+
+    private suspend fun getAllDatesByHabitId(id: Int): List<DateHabitEntity> {
+        return habitRepository.getAllDatesByHabitId(id)
     }
 }

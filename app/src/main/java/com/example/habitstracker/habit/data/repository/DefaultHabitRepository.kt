@@ -59,4 +59,8 @@ class DefaultHabitRepository(private val dao: DAO) : HabitRepository {
             dao.getHabitsByDate(date) // YYYY-MM-DD
         }
     }
+
+    override suspend fun dateExistsForHabit(habitId: Int, date: String): Boolean {
+        return dao.dateExistsForHabit(habitId, date)
+    }
 }

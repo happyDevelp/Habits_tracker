@@ -21,7 +21,8 @@ fun CalendarRowList(
     onDateChangeClick: (newDate: LocalDate) -> Unit,
     selectedDate: LocalDate
 ) {
-    val firstMonday = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+    val now = LocalDate.now()
+    val firstMonday = now.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
 
     val totalDays = 700
 
@@ -37,7 +38,7 @@ fun CalendarRowList(
 
     // Find the index of the week in which `selectedDate` is now located
     val initialPageIndex = weeks.indexOfFirst { week ->
-        selectedDate in week
+        selectedDate  in week
     }.coerceAtLeast(0) // coerceAtLeast(0) ensures that the value is not less than 0
 
     val pagerState = rememberPagerState(

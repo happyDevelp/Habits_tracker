@@ -44,4 +44,15 @@ sealed interface DAO {
 
     @Query("SELECT * FROM date_table WHERE habitId=:id")
     fun getAllDatesByHabitId(id: Int): List<DateHabitEntity>
+
+    @Query(
+        """
+        SELECT EXISTS(
+            SELECT 1 FROM date_table 
+            WHERE habitId = :habitId AND currentDate = :date
+        )
+    """
+    )
+    suspend fun dateExistsForHabit(habitId: Int, date: String): Boolean
+
 }
