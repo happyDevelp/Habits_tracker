@@ -61,8 +61,7 @@ import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.presentation.today_main.MainScreenViewModel
 import com.example.habitstracker.core.presentation.utils.clickWithRipple
 import com.example.habitstracker.core.presentation.utils.getCorrectSelectedDaysList
-import com.example.habitstracker.core.presentation.utils.habitEntityExample
-import com.example.habitstracker.core.presentation.utils.shownHabitExample
+import com.example.habitstracker.core.presentation.utils.shownHabitExample1
 import com.example.habitstracker.core.presentation.utils.textState
 import com.example.habitstracker.habit.domain.ShownHabit
 import kotlinx.coroutines.launch
@@ -548,7 +547,7 @@ private fun Preview() {
         AppTheme(darkTheme = true) {
             EditRepeatPickerScreen(
                 onSaveClick = {},
-                habit = shownHabitExample
+                habit = shownHabitExample1
             )
         }
     }

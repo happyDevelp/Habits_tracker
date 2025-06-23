@@ -1,6 +1,7 @@
 package com.example.habitstracker.habit.presentation.today_main
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -37,13 +37,14 @@ import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
-import com.example.habitstracker.core.presentation.CustomRippleTheme
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
 import com.example.habitstracker.core.presentation.utils.TestTags
-import com.example.habitstracker.core.presentation.utils.shownHabitExample
+import com.example.habitstracker.core.presentation.utils.shownHabitExample1
+import com.example.habitstracker.core.presentation.utils.shownHabitExample2
+import com.example.habitstracker.core.presentation.utils.shownHabitExample3
 import com.example.habitstracker.habit.domain.ShownHabit
 import com.example.habitstracker.habit.presentation.today_main.components.HabitItem
 import com.example.habitstracker.habit.presentation.today_main.components.TopBarMainScreen
@@ -91,7 +92,7 @@ fun TodayScreen(
     dateState: LocalDate,
     onSelectClick: (id: Int, isDone: Boolean, selectDate: String) -> Unit,
     onDeleteClick: (id: Int) -> Unit,
-    onDateChangeClick   : (newDate: LocalDate) -> Unit
+    onDateChangeClick: (newDate: LocalDate) -> Unit
 ) {
     val navController = LocalNavController.current
 
@@ -112,42 +113,65 @@ fun TodayScreen(
                     .fillMaxSize(),
                 contentAlignment = Alignment.TopCenter
             ) {
-
-                Column {
+                Column(
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     CalendarRowList(
                         onDateChangeClick = { newDate ->
                             onDateChangeClick(newDate)
                         },
                         selectedDate = dateState
                     )
-                }
 
-                CompositionLocalProvider(
-                    value = LocalRippleTheme provides CustomRippleTheme(color = Color.Black)
-                ) {
-                    Crossfade(targetState = habitListState, label = "Data change animation") { habits ->
+                    val groupedHabits = habitListState.groupBy { it.executionTime }
+
+                    val dayPartsOrder = listOf("Anytime", "Morning", "Day", "Evening")
+
+                    Crossfade(
+                        targetState = groupedHabits,
+                        label = "Data change animation"
+                    ) { habits ->
                         LazyColumn(
                             modifier = modifier
-                                .padding(top = 95.dp)
+                                .padding(top = 20.dp)
                                 .fillMaxHeight(1f)
                                 .fillMaxWidth(),
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
 
-                            items(habits) { habit ->
-                                HabitItem(
-                                    shownHabit = habit,
-                                    currentDate = dateState,
-                                    onSelectClick = onSelectClick,
-                                    onDeleteClick = onDeleteClick,
-                                )
-                                Spacer(modifier = modifier.height(20.dp))
+                            dayPartsOrder.forEach { dayPart ->
+                                val habitsInPart = habits[dayPart].orEmpty()
+                                if(habitsInPart.isNotEmpty()) {
+                                    item {
+                                        Text(
+                                            modifier = modifier
+                                                .fillMaxWidth()
+                                                .padding(top = 8.dp, start = 20.dp, bottom = 12.dp),
+                                            text = dayPart,
+                                            color = Color.White.copy(alpha = 0.8f),
+                                            fontSize = 15.sp,
+                                            fontWeight = FontWeight.Bold,
+                                            fontFamily = PoppinsFontFamily,
+                                        )
+                                    }
+
+                                    items(habitsInPart) {habit ->
+                                        HabitItem(
+                                            shownHabit = habit,
+                                            currentDate = dateState,
+                                            onSelectClick = onSelectClick,
+                                            onDeleteClick = onDeleteClick
+                                        )
+                                        Spacer(modifier = modifier.height(20.dp))
+                                    }
+                                }
                             }
 
                             item {
                                 Spacer(modifier = modifier.height(6.dp))
 
-                                if(dateState == LocalDate.now()) {
+                                if (dateState == LocalDate.now()) {
                                     Button(
                                         modifier = modifier
                                             .padding(bottom = 20.dp)
@@ -185,7 +209,10 @@ fun TodayScreen(
                             }
                         }
                     }
+
+
                 }
+
             }
         }
     }
@@ -196,7 +223,9 @@ fun TodayScreen(
 private fun Preview() {
     val mockNavController = rememberNavController()
     val mockList = listOf(
-        shownHabitExample
+        shownHabitExample1,
+        shownHabitExample2,
+        shownHabitExample3
     )
 
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
