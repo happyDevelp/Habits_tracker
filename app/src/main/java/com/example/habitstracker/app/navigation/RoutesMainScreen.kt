@@ -1,6 +1,5 @@
 package com.example.habitstracker.app.navigation
 
-import androidx.compose.ui.graphics.vector.ImageVector
 import kotlinx.serialization.Serializable
 
 sealed interface Route {
@@ -12,7 +11,7 @@ sealed interface Route {
     data object HabitGraph: Route*/
 
     @Serializable
-    data object Today: Route
+    data class Today(val historyDate: String? = null): Route
 
     @Serializable
     data object History: Route

@@ -50,7 +50,7 @@ fun CreateButton(
         onClick = {
             coroutineScope.launch {
                 onAddHabitClick(habit)
-                navController.popBackStack(Route.Today, false)
+                navController.popBackStack(Route.Today(), false)
             }
         },
 

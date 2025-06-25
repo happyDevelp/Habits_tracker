@@ -1,7 +1,6 @@
 package com.example.habitstracker.history.presentation.tab_screens
 
 import android.content.Context
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,6 +24,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -40,36 +40,38 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
+import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.MyText
+import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
+import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
 import com.example.habitstracker.history.presentation.components.calendar.CalendarItem
 import com.example.habitstracker.history.presentation.components.calendar.SpacerItem
 import com.example.habitstracker.history.presentation.components.calendar.TopPanel
 import com.example.habitstracker.history.presentation.components.statistic_containers.CustomBlank
 import com.example.habitstracker.history.presentation.components.statistic_containers.getFilledBlankList
-import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
-import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-
 @Preview(showSystemUi = true)
 @Composable
 fun HistoryCalendarScreenPreview(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(screensBackgroundDark)
-    )
-    { HistoryCalendarScreen() }
+    val mockNavController = rememberNavController()
+    CompositionLocalProvider(value = LocalNavController provides mockNavController) {
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .background(screensBackgroundDark)
+        )
+        { HistoryCalendarScreen() }
+    }
 }
-
 
 @Composable
 fun HistoryCalendarScreen(modifier: Modifier = Modifier) {
-
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -84,14 +86,9 @@ fun HistoryCalendarScreen(modifier: Modifier = Modifier) {
     )
 
     LazyColumnContainer {
-
-        /** Statistic containers **/
         /** Statistic containers **/
         DrawStatisticContainers(modifier, context)
-
         Spacer(modifier = modifier.height(12.dp))
-
-        /** Calendar **/
 
         /** Calendar **/
         Card(
@@ -101,14 +98,12 @@ fun HistoryCalendarScreen(modifier: Modifier = Modifier) {
                 .height(355.dp),
             colors = CardDefaults.cardColors(containerColor = screenContainerBackgroundDark),
         ) {
-
             Column(
                 modifier
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-
                 TopPanel(
                     currentDate = currentDate,
                     minusMonth = {
@@ -125,15 +120,12 @@ fun HistoryCalendarScreen(modifier: Modifier = Modifier) {
                         }
                     }
                 )
-
                 Spacer(modifier = modifier.height(4.dp))
 
                 val lengthOfMonth = currentDate.lengthOfMonth()
-                val daysOfWeek = getDaysOfWeek()
 
                 // List that will be displayed on the screen
                 val displayedCalendarList = mutableListOf<Pair<String, String>>()
-                addDaysOfWeek(daysOfWeek, displayedCalendarList)
 
                 val firstDayOfWeek = currentDate.withDayOfMonth(1).dayOfWeek
                 val spacerDays = firstDayOfWeek.ordinal
@@ -148,12 +140,11 @@ fun HistoryCalendarScreen(modifier: Modifier = Modifier) {
                 }
 
                 // HorizontalPager to scroll between month
-                CalendarHorizontalPager(pagerState, modifier, displayedCalendarList)
+                CalendarHorizontalPager(pagerState, modifier, displayedCalendarList, currentDate)
             }
         }
 
         StatisticSection()
-
     }
 }
 
@@ -182,7 +173,6 @@ private fun DrawStatisticContainers(modifier: Modifier, context: Context) {
         }
     }
 }
-
 
 @Composable
 private fun StatisticSection(modifier: Modifier = Modifier) {
@@ -215,24 +205,42 @@ private fun CalendarHorizontalPager(
     pagerState: PagerState,
     modifier: Modifier,
     displayedCalendarList: MutableList<Pair<String, String>>,
+    currentDate: LocalDate
 ) {
-    HorizontalPager(
-        state = pagerState
-    ) { page ->
-
-        LazyVerticalGrid(
-            modifier = modifier
-                .wrapContentSize()
-                .padding(horizontal = 4.dp),
-            columns = GridCells.Fixed(7),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+    Column(modifier = Modifier.fillMaxSize()) {
+        Row(
+            modifier = modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceAround
         ) {
-            displayedCalendarList.forEach { (numOfDay, _) ->
-                item {
-                    if (numOfDay.isNotEmpty())
-                        CalendarItem(day = numOfDay)
-                    else SpacerItem()
+            val list = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+            list.forEach { day ->
+                MyText(
+                    text = day,
+                    textSize = 15.sp,
+                )
+            }
+        }
+        Spacer(modifier = modifier.height(16.dp))
+
+        HorizontalPager(
+            state = pagerState
+        ) { page ->
+            LazyVerticalGrid(
+                modifier = modifier
+                    .wrapContentSize()
+                    .padding(horizontal = 4.dp),
+                columns = GridCells.Fixed(7),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                displayedCalendarList.forEach { (numOfDay, _) ->
+                    item {
+                        val dayInt = numOfDay.toIntOrNull()
+                        if (dayInt != null) {
+                            val date = currentDate.withDayOfMonth(numOfDay.toInt())
+                            CalendarItem(date = date)
+                        } else SpacerItem()
+                    }
                 }
             }
         }
@@ -240,7 +248,6 @@ private fun CalendarHorizontalPager(
 }
 
 /** Add days of month to [displayedCalendarList] **/
-
 fun addDaysOfMonth(
     lengthOfMonth: Int,
     displayedCalendarList: MutableList<Pair<String, String>>,
@@ -254,34 +261,12 @@ fun addDaysOfMonth(
     }
 }
 
-/** Add names of days of the week (Mon, Tue, Wed,...) to [displayedCalendarList] **/
-fun addDaysOfWeek(
-    daysOfWeek: MutableList<Pair<String, String>>,
-    displayedCalendarList: MutableList<Pair<String, String>>,
-) {
-    daysOfWeek.forEach { day ->
-        displayedCalendarList.add(Pair(day.first, day.second))
-    }
-}
-
 /** Add spacer to [displayedCalendarList]
  * For example if first day of month is Wed, then we should to add a spacer for Mon and Tue **/
 fun addSpacerDays(emptyDays: Int, displayedCalendarList: MutableList<Pair<String, String>>) {
     for (i in 1..emptyDays) {
         displayedCalendarList.add(Pair("", ""))
     }
-}
-
-fun getDaysOfWeek(): MutableList<Pair<String, String>> {
-    return mutableListOf(
-        Pair("Mon", ""),
-        Pair("Tue", ""),
-        Pair("Wed", ""),
-        Pair("Thu", ""),
-        Pair("Fri", ""),
-        Pair("Sat", ""),
-        Pair("Sun", "")
-    )
 }
 
 @Composable

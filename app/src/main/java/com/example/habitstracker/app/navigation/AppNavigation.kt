@@ -71,10 +71,14 @@ fun AppNavigation() {
             modifier = Modifier.padding(paddingValues)
         ) {
             navigation<Route.BottomBarGraph>(
-                startDestination = Route.Today
+                startDestination = Route.Today()
             ) {
-                composable<Route.Today> {
-                    TodayScreenRoot(viewModel = mainScreenViewModel)
+                composable<Route.Today> { backStackEntry ->
+                    val args = backStackEntry.toRoute<Route.Today>()
+                    TodayScreenRoot(
+                        viewModel = mainScreenViewModel,
+                        historyDate = args.historyDate
+                    )
                 }
 
                 composable<Route.History> {
@@ -133,7 +137,8 @@ fun getBottomBarState(navBackStackEntry: NavBackStackEntry?): Boolean {
     val currentRoute = navBackStackEntry?.destination?.route
 
     return when (currentRoute) {
-        baseRouteName + Route.Today -> true
+        //"Today?historyDate={historyDate}"
+        baseRouteName + "Today?historyDate={historyDate}" -> true
         baseRouteName + Route.History -> true
         baseRouteName + Route.Profile -> true
 

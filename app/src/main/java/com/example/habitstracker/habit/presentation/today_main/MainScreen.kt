@@ -53,9 +53,15 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable
-fun TodayScreenRoot(viewModel: MainScreenViewModel) {
+fun TodayScreenRoot(
+    viewModel: MainScreenViewModel,
+    historyDate: String?
+    ) {
     val coroutineScope = rememberCoroutineScope()
 
+    if (historyDate != null) {
+        viewModel.updateSelectedDate(LocalDate.parse(historyDate))
+    }
     val habitListState by viewModel.habitsListState.collectAsStateWithLifecycle()
     val dateState by viewModel.selectedDate.collectAsStateWithLifecycle()
     val onSelectClick: (
@@ -142,7 +148,7 @@ fun TodayScreen(
 
                             dayPartsOrder.forEach { dayPart ->
                                 val habitsInPart = habits[dayPart].orEmpty()
-                                if(habitsInPart.isNotEmpty()) {
+                                if (habitsInPart.isNotEmpty()) {
                                     item {
                                         Text(
                                             modifier = modifier
@@ -156,7 +162,7 @@ fun TodayScreen(
                                         )
                                     }
 
-                                    items(habitsInPart) {habit ->
+                                    items(habitsInPart) { habit ->
                                         HabitItem(
                                             shownHabit = habit,
                                             currentDate = dateState,
