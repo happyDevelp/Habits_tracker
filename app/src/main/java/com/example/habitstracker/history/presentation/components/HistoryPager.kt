@@ -39,7 +39,10 @@ import kotlinx.coroutines.launch
 
 
 @Composable
-fun HistoryPager(modifier: Modifier = Modifier) {
+fun HistoryPager(
+    modifier: Modifier = Modifier,
+    changeSelectedItemState: (index: Int) -> Unit
+) {
 
     val coroutineScope = rememberCoroutineScope()
     val tabs = listOf("Calendar", "All habits", "Achievements")
@@ -89,7 +92,7 @@ fun HistoryPager(modifier: Modifier = Modifier) {
         ) { page ->
 
             when (page) {
-                0 -> HistoryCalendarScreen()
+                0 -> HistoryCalendarScreen(changeSelectedItemState = changeSelectedItemState)
 
                 1 -> AllHabitScreen()
 
@@ -98,7 +101,6 @@ fun HistoryPager(modifier: Modifier = Modifier) {
         }
     }
 }
-
 
 
 @SuppressLint("ModifierFactoryUnreferencedReceiver")

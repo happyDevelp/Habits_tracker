@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
+import com.example.habitstracker.app.navigation.bottombar.NavigationBottomBar
 import com.example.habitstracker.core.presentation.MyText
 import java.time.LocalDate
 
@@ -22,6 +23,7 @@ import java.time.LocalDate
 fun CalendarItem(
     modifier: Modifier = Modifier,
     date: LocalDate? = null,
+    changeSelectedItemState: (index: Int) -> Unit
 ) {
     val navController = LocalNavController.current
     Box(
@@ -33,9 +35,8 @@ fun CalendarItem(
             .clickable {
                 navController.navigate(
                     if (date != null) {
-                        Route.Today(
-                            historyDate = date.toString()
-                        )
+                        changeSelectedItemState(0)
+                        Route.Today(historyDate = date.toString())
                     } else Route.Today()
                 )
             },
@@ -50,5 +51,5 @@ fun CalendarItem(
 
 @Composable
 fun SpacerItem() {
-    CalendarItem()
+    CalendarItem(changeSelectedItemState = {})
 }

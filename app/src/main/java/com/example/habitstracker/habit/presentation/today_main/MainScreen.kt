@@ -4,6 +4,7 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -39,6 +40,7 @@ import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
+import com.example.habitstracker.core.presentation.theme.QuickSandFontFamily
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
 import com.example.habitstracker.core.presentation.utils.TestTags
@@ -123,6 +125,20 @@ fun TodayScreen(
                     verticalArrangement = Arrangement.Top,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    val weekDays = listOf("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN")
+
+                    Row(modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceAround) {
+                        weekDays.forEach { day ->
+                            Text(
+                                text = day,
+                                fontSize = 13.sp,
+                                color = Color.White,
+                                fontFamily = QuickSandFontFamily,
+                            )
+                        }
+                    }
+
                     CalendarRowList(
                         onDateChangeClick = { newDate ->
                             onDateChangeClick(newDate)

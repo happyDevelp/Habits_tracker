@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -45,6 +48,13 @@ fun AppNavigation() {
 
     val density = LocalDensity.current
 
+    var selectedItemIndex by rememberSaveable {
+        mutableStateOf(0)
+    }
+    val changeSelectedItemState: (index: Int) -> Unit = { index ->
+        selectedItemIndex = index
+    }
+
     Scaffold(
         bottomBar = {
             AnimatedVisibility(
@@ -61,7 +71,11 @@ fun AppNavigation() {
                 ),
                 exit = slideOutVertically() + shrinkVertically() + fadeOut()
             ) {
-                NavigationBottomBar(navController)
+                NavigationBottomBar(
+                    navController,
+                    selectedItemIndex,
+                    changeSelectedItemState
+                )
             }
         }
     ) { paddingValues ->
@@ -82,7 +96,7 @@ fun AppNavigation() {
                 }
 
                 composable<Route.History> {
-                    HistoryScreen()
+                    HistoryScreen(changeSelectedItemState = changeSelectedItemState)
                 }
 
                 composable<Route.Profile> {
@@ -145,3 +159,6 @@ fun getBottomBarState(navBackStackEntry: NavBackStackEntry?): Boolean {
         else -> false
     }
 }
+//com.example.habitstracker.app.navigation.Route.Today?historyDate={historyDate}
+//com.example.habitstracker.app.navigation.Route.Today?historyDate={historyDate}
+//com.example.habitstracker.app.navigation.Route.Today?historyDate={historyDate}

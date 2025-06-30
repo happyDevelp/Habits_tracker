@@ -66,12 +66,15 @@ fun HistoryCalendarScreenPreview(modifier: Modifier = Modifier) {
                 .fillMaxSize()
                 .background(screensBackgroundDark)
         )
-        { HistoryCalendarScreen() }
+        { HistoryCalendarScreen(changeSelectedItemState = {}) }
     }
 }
 
 @Composable
-fun HistoryCalendarScreen(modifier: Modifier = Modifier) {
+fun HistoryCalendarScreen(
+    modifier: Modifier = Modifier,
+    changeSelectedItemState: (index: Int) -> Unit
+) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
@@ -140,7 +143,13 @@ fun HistoryCalendarScreen(modifier: Modifier = Modifier) {
                 }
 
                 // HorizontalPager to scroll between month
-                CalendarHorizontalPager(pagerState, modifier, displayedCalendarList, currentDate)
+                CalendarHorizontalPager(
+                    pagerState,
+                    modifier,
+                    displayedCalendarList,
+                    currentDate,
+                    changeSelectedItemState
+                )
             }
         }
 
@@ -205,7 +214,8 @@ private fun CalendarHorizontalPager(
     pagerState: PagerState,
     modifier: Modifier,
     displayedCalendarList: MutableList<Pair<String, String>>,
-    currentDate: LocalDate
+    currentDate: LocalDate,
+    changeSelectedItemState: (index: Int) -> Unit
 ) {
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
@@ -238,7 +248,10 @@ private fun CalendarHorizontalPager(
                         val dayInt = numOfDay.toIntOrNull()
                         if (dayInt != null) {
                             val date = currentDate.withDayOfMonth(numOfDay.toInt())
-                            CalendarItem(date = date)
+                            CalendarItem(
+                                date = date,
+                                changeSelectedItemState = changeSelectedItemState
+                            )
                         } else SpacerItem()
                     }
                 }

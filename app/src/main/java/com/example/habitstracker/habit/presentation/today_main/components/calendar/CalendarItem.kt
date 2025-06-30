@@ -1,6 +1,5 @@
 package com.example.habitstracker.habit.presentation.today_main.components.calendar
 
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,8 +21,6 @@ import com.example.habitstracker.core.presentation.theme.MyFontFamily
 import com.example.habitstracker.core.presentation.theme.QuickSandFontFamily
 import java.time.LocalDate
 
-
-
 @Preview(showBackground = true, backgroundColor = 0xFF242C33)
 @Composable
 fun CalendarItem(
@@ -31,25 +28,13 @@ fun CalendarItem(
     isSelected: Boolean = false,
     onItemClicked: (() -> Unit)? = null,
 ) {
-
     val color = MaterialTheme.colorScheme.primaryContainer
+
     Box(
         modifier = Modifier
             .size(width = 50.dp, height = 65.dp)
     ) {
-
-        Column(
-            modifier = Modifier.fillMaxSize()
-
-        ) {
-            Text(
-                text = date!!.dayOfWeek.name.substring(0, 3),
-                fontSize = 13.sp,
-                color = Color.White,
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-                fontFamily = QuickSandFontFamily,
-            )
-
+        Column(modifier = Modifier.fillMaxSize()) {
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -70,16 +55,13 @@ fun CalendarItem(
                             )
                         }
                     },
-
                     color = Color.White,
-                    text = date.dayOfMonth.toString(),
+                    text = date?.dayOfMonth.toString(),
                     fontSize = 20.sp,
                     fontFamily = MyFontFamily,
                     fontWeight = FontWeight.Bold,
                 )
             }
         }
-
-    }
-
+    } 
 }
