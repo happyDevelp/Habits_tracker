@@ -14,8 +14,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.app.LocalNavController
-import com.example.habitstracker.app.navigation.Route
-import com.example.habitstracker.app.navigation.bottombar.NavigationBottomBar
 import com.example.habitstracker.core.presentation.MyText
 import java.time.LocalDate
 
@@ -33,12 +31,14 @@ fun CalendarItem(
             .clip(RoundedCornerShape(30.dp))
             .background(Color.Transparent)
             .clickable {
-                navController.navigate(
-                    if (date != null) {
-                        changeSelectedItemState(0)
-                        Route.Today(historyDate = date.toString())
-                    } else Route.Today()
-                )
+                if (date == null) return@clickable
+                changeSelectedItemState(0)
+
+                navController.popBackStack()
+                navController.currentBackStackEntry
+                    ?.savedStateHandle
+                    ?.set("current_date", date.toString())
+
             },
         contentAlignment = Alignment.Center
     ) {

@@ -89,9 +89,10 @@ fun AppNavigation() {
             ) {
                 composable<Route.Today> { backStackEntry ->
                     val args = backStackEntry.toRoute<Route.Today>()
+                    val date = backStackEntry.savedStateHandle.get<String>("current_date")
                     TodayScreenRoot(
                         viewModel = mainScreenViewModel,
-                        historyDate = args.historyDate
+                        historyDate = if (date == null) args.historyDate else date
                     )
                 }
 

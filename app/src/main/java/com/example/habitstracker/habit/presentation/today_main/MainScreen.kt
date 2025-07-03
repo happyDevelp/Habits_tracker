@@ -22,6 +22,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -61,8 +62,12 @@ fun TodayScreenRoot(
     ) {
     val coroutineScope = rememberCoroutineScope()
 
-    if (historyDate != null) {
-        viewModel.updateSelectedDate(LocalDate.parse(historyDate))
+    var isHistoryHandled: Boolean = false
+    LaunchedEffect(historyDate) {
+        if (historyDate != null && !isHistoryHandled) {
+            viewModel.updateSelectedDate(LocalDate.parse(historyDate))
+            isHistoryHandled = true
+        }
     }
     val habitListState by viewModel.habitsListState.collectAsStateWithLifecycle()
     val dateState by viewModel.selectedDate.collectAsStateWithLifecycle()

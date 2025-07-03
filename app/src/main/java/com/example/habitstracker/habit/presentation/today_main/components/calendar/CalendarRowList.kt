@@ -24,7 +24,7 @@ fun CalendarRowList(
 
     //val dateSet = generateDateSequence(displayedData, 500)
 
-    // Отримуємо список дат, де сьогодні знаходиться посередині
+    // We get a list of dates where today is in the middle
     val dateSet =
         List(2 * totalDays) { num ->
             firstMonday.minusDays(totalDays.toLong()).plusDays(num.toLong())
