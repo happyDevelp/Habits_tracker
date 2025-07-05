@@ -22,7 +22,7 @@ val listOfNavItems = listOf(
         title = "Today",
         selectedIcon = Icons.Filled.DateRange,
         unSelectedIcon = Icons.Outlined.DateRange,
-        route = Route.Today
+        route = Route.Today()
     ),
     BottomNavigationItem(
         title = "History",

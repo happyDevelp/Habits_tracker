@@ -15,6 +15,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.presentation.edit_habit.components.SelectedDay
 import com.example.habitstracker.core.presentation.theme.blueColor
+import com.example.habitstracker.core.presentation.theme.greenColor
+import com.example.habitstracker.core.presentation.theme.orangeColor
 import com.example.habitstracker.habit.domain.ShownHabit
 import java.time.LocalDate
 
@@ -59,14 +61,14 @@ fun iconByName(name: String): ImageVector {
     return method.invoke(null, Icons.Filled) as ImageVector
 }
 
-val habitEntityExample = HabitEntity(
-0, "habit example", "SentimentVerySatisfied",
-blueColor.toHex(), "Everyday", "Anytime", false,
-)
-
-val shownHabitExample = ShownHabit(0, "habit example", "SentimentVerySatisfied",
+val shownHabitExample1 = ShownHabit(0, "habit example 1", "SentimentVerySatisfied",
     blueColor.toHex(), "Everyday", "Anytime", false, false)
 
+val shownHabitExample2 = ShownHabit(1, "habit example 2", "SentimentVerySatisfied",
+    orangeColor.toHex(), "Everyday", "Anytime", false, false)
+
+val shownHabitExample3 = ShownHabit(2, "habit example 3", "SentimentVerySatisfied",
+    greenColor.toHex(), "Everyday", "Evening", false, false)
 
 // Using in Edit/RepeatPicker
 fun textState(dayStates: SnapshotStateList<SelectedDay>): Pair<String, String> {

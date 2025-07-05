@@ -18,17 +18,17 @@ import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 @Composable
 fun NavigationBottomBar(
     navController: NavHostController,
+    selectedItemIndex: Int,
+    changeSelectedItemState: (index: Int) -> Unit
 ) {
-    var selectedItemIndex by rememberSaveable {
-        mutableStateOf(0)
-    }
     NavigationBar {
         listOfNavItems.forEachIndexed() { index, item ->
+            val itemRoute = item.route.toString()
             NavigationBarItem(
-                selected = selectedItemIndex == index,
+                selected = true/*selectedItemIndex == index*/,
 
                 onClick = {
-                    selectedItemIndex = index
+                    changeSelectedItemState(index)
                     navController.navigate(item.route) {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true

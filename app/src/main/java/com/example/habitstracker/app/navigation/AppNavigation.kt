@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
@@ -45,6 +48,13 @@ fun AppNavigation() {
 
     val density = LocalDensity.current
 
+    var selectedItemIndex by rememberSaveable {
+        mutableStateOf(0)
+    }
+    val changeSelectedItemState: (index: Int) -> Unit = { index ->
+        selectedItemIndex = index
+    }
+
     Scaffold(
         bottomBar = {
             AnimatedVisibility(
@@ -61,7 +71,11 @@ fun AppNavigation() {
                 ),
                 exit = slideOutVertically() + shrinkVertically() + fadeOut()
             ) {
-                NavigationBottomBar(navController)
+                NavigationBottomBar(
+                    navController,
+                    selectedItemIndex,
+                    changeSelectedItemState
+                )
             }
         }
     ) { paddingValues ->
@@ -71,14 +85,19 @@ fun AppNavigation() {
             modifier = Modifier.padding(paddingValues)
         ) {
             navigation<Route.BottomBarGraph>(
-                startDestination = Route.Today
+                startDestination = Route.Today()
             ) {
-                composable<Route.Today> {
-                    TodayScreenRoot(viewModel = mainScreenViewModel)
+                composable<Route.Today> { backStackEntry ->
+                    val args = backStackEntry.toRoute<Route.Today>()
+                    val date = backStackEntry.savedStateHandle.get<String>("current_date")
+                    TodayScreenRoot(
+                        viewModel = mainScreenViewModel,
+                        historyDate = if (date == null) args.historyDate else date
+                    )
                 }
 
                 composable<Route.History> {
-                    HistoryScreen()
+                    HistoryScreen(changeSelectedItemState = changeSelectedItemState)
                 }
 
                 composable<Route.Profile> {
@@ -133,10 +152,14 @@ fun getBottomBarState(navBackStackEntry: NavBackStackEntry?): Boolean {
     val currentRoute = navBackStackEntry?.destination?.route
 
     return when (currentRoute) {
-        baseRouteName + Route.Today -> true
+        //"Today?historyDate={historyDate}"
+        baseRouteName + "Today?historyDate={historyDate}" -> true
         baseRouteName + Route.History -> true
         baseRouteName + Route.Profile -> true
 
         else -> false
     }
 }
+//com.example.habitstracker.app.navigation.Route.Today?historyDate={historyDate}
+//com.example.habitstracker.app.navigation.Route.Today?historyDate={historyDate}
+//com.example.habitstracker.app.navigation.Route.Today?historyDate={historyDate}

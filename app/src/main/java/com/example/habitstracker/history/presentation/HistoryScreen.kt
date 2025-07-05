@@ -22,14 +22,17 @@ private fun HistoryScreenPreview() {
     val mockNavController = rememberNavController()
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
         AppTheme(darkTheme = true) {
-            HistoryScreen()
+            HistoryScreen(changeSelectedItemState = {})
         }
     }
 }
 
 
 @Composable
-fun HistoryScreen(modifier: Modifier = Modifier) {
+fun HistoryScreen(
+    modifier: Modifier = Modifier,
+    changeSelectedItemState: (index: Int) -> Unit
+) {
     Scaffold(
         topBar = { TopBarHistoryScreen() },
         containerColor = screensBackgroundDark
@@ -40,7 +43,7 @@ fun HistoryScreen(modifier: Modifier = Modifier) {
                 .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
-            HistoryPager()
+            HistoryPager(changeSelectedItemState = changeSelectedItemState)
         }
     }
 }

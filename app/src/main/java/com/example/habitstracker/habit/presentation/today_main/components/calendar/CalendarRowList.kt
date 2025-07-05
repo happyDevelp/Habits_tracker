@@ -7,10 +7,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -28,7 +25,7 @@ fun CalendarRowList(
 
     //val dateSet = generateDateSequence(displayedData, 500)
 
-    // Отримуємо список дат, де сьогодні знаходиться посередині
+    // We get a list of dates where today is in the middle
     val dateSet =
         List(2 * totalDays) { num ->
             firstMonday.minusDays(totalDays.toLong()).plusDays(num.toLong())
@@ -45,6 +42,13 @@ fun CalendarRowList(
         pageCount = { weeks.size },
         initialPage = initialPageIndex
     )
+
+    LaunchedEffect(selectedDate) {
+        val newPageIndex = weeks.indexOfFirst { week ->
+            selectedDate in week
+        }
+        pagerState.animateScrollToPage(newPageIndex)
+    }
 
     HorizontalPager(
         state = pagerState,
