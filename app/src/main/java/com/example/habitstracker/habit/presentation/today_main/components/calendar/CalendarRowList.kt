@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -41,6 +42,13 @@ fun CalendarRowList(
         pageCount = { weeks.size },
         initialPage = initialPageIndex
     )
+
+    LaunchedEffect(selectedDate) {
+        val newPageIndex = weeks.indexOfFirst { week ->
+            selectedDate in week
+        }
+        pagerState.animateScrollToPage(newPageIndex)
+    }
 
     HorizontalPager(
         state = pagerState,
