@@ -50,17 +50,17 @@ fun HistoryScreenRoot(
     historyViewModel: HistoryViewModel,
     changeSelectedItemState: (index: Int) -> Unit
 ) {
-    val testList by historyViewModel.dateHabitHist.collectAsStateWithLifecycle()
+    val streakList by historyViewModel.dateHabitList.collectAsStateWithLifecycle()
     HistoryScreen(
         changeSelectedItemState = changeSelectedItemState,
-        testList = testList
+        streakList = streakList
     )
 }
 
 @Composable
 fun HistoryScreen(
     modifier: Modifier = Modifier,
-    testList: List<DateHabitEntity>,
+    streakList: List<DateHabitEntity>,
     changeSelectedItemState: (index: Int) -> Unit
 ) {
     Scaffold(
@@ -126,7 +126,7 @@ fun HistoryScreen(
                     when (page) {
                         0 -> HistoryCalendarScreen(
                             changeSelectedItemState = changeSelectedItemState,
-                            testList = testList
+                            streakList = streakList
                         )
 
                         1 -> AllHabitScreen()
@@ -138,7 +138,6 @@ fun HistoryScreen(
         }
     }
 }
-
 
 @SuppressLint("ModifierFactoryUnreferencedReceiver")
 fun Modifier.tabIndicatorOffset(pagerState: PagerState, tabPositions: List<TabPosition>): Modifier {
@@ -174,7 +173,7 @@ private fun HistoryScreenPreview() {
     val mockNavController = rememberNavController()
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
         AppTheme(darkTheme = true) {
-            HistoryScreen(changeSelectedItemState = {}, testList = listOf())
+            HistoryScreen(changeSelectedItemState = {}, streakList = listOf())
         }
     }
 }

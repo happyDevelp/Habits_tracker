@@ -16,16 +16,16 @@ data class BlankItem(
     val color: Color,
     val topText: String,
     val middleText: String,
-    val bottomText: String,
+    val bottomText: String
 )
 
-fun getFilledBlankList(context: Context): List<BlankItem> {
+fun getFilledBlankList(context: Context, currentStreak: String): List<BlankItem> {
     val listOf = listOf(
         BlankItem(
             width = 140.dp,
             color = blueColor,
             topText = context.getString(R.string.current_streak),
-            middleText = "0",
+            middleText = currentStreak,
             bottomText = "The best streak of success: ",
         ),
 

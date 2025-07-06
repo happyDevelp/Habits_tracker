@@ -1,6 +1,7 @@
 package com.example.habitstracker.history.presentation.tab_screens
 
 import android.content.Context
+import android.icu.util.LocaleData
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -61,7 +63,7 @@ import java.util.Locale
 @Composable
 fun HistoryCalendarScreen(
     modifier: Modifier = Modifier,
-    testList: List<DateHabitEntity>,
+    streakList: List<DateHabitEntity>,
     changeSelectedItemState: (index: Int) -> Unit
 ) {
     val context = LocalContext.current
@@ -79,13 +81,8 @@ fun HistoryCalendarScreen(
 
     LazyColumnContainer {
         /** Statistic containers **/
-        DrawStatisticContainers(modifier, context)
+        DrawStatisticContainers(context, streakList = streakList)
         Spacer(modifier = modifier.height(12.dp))
-
-        Text(
-            text = testList.joinToString(separator = ", ") { it.id.toString() },
-            color = Color.White
-        )
 
         /** Calendar **/
         Card(
@@ -152,20 +149,21 @@ fun HistoryCalendarScreen(
 }
 
 @Composable
-private fun DrawStatisticContainers(modifier: Modifier, context: Context) {
+private fun DrawStatisticContainers(
+    context: Context,
+    streakList: List<DateHabitEntity>
+) {
+    val currentStreak by remember { mutableIntStateOf(getCurrentStreak(streakList)) }
     LazyRow(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 16.dp)
             .wrapContentHeight(),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.Top
     ) {
-        /*val currentStreakList = getCurrentStreakList() {
-
-        }*/
-
-        val statsList = getFilledBlankList(context = context)
+        val statsList =
+            getFilledBlankList(context = context, currentStreak = currentStreak.toString())
 
         statsList.forEach { blankItem ->
             item {
@@ -173,16 +171,28 @@ private fun DrawStatisticContainers(modifier: Modifier, context: Context) {
                     color = blankItem.color,
                     topText = blankItem.topText,
                     middleText = blankItem.middleText,
-                    bottomText = blankItem.bottomText
+                    bottomText = blankItem.bottomText,
                 )
             }
         }
     }
 }
 
-/*private fun getCurrentStreakList(function: () -> Unit): List<Int> {
+private fun getCurrentStreak(streakList: List<DateHabitEntity>): Int {
+    var streak = 0
+    val groupedStreakList = streakList.groupBy { it.currentDate }
 
-}*/
+    groupedStreakList.forEach { mapDateAndHabits ->
+        val habitsCount = mapDateAndHabits.value.count()
+        val isCompletedCount = mapDateAndHabits.value.count { it.isCompleted }
+        if (habitsCount == isCompletedCount)
+            streak++
+        else return streak
+    }
+
+
+    return streak
+}
 
 @Composable
 private fun StatisticSection(modifier: Modifier = Modifier) {
@@ -327,6 +337,6 @@ fun HistoryCalendarScreenPreview() {
                 .fillMaxSize()
                 .background(screensBackgroundDark)
         )
-        { HistoryCalendarScreen(changeSelectedItemState = {}, testList = listOf()) }
+        { HistoryCalendarScreen(changeSelectedItemState = {}, streakList = listOf()) }
     }
 }
