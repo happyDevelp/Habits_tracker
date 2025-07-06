@@ -4,10 +4,12 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.domain.DateHabitEntity
+import com.example.habitstracker.history.data.db.HistoryDAO
 
 @Database(entities = [HabitEntity::class, DateHabitEntity::class], exportSchema = true, version = 11)
 abstract class HabitDatabase: RoomDatabase() {
-    abstract val dao: DAO
+    abstract val habitDao: HabitDao
+    abstract val historyDao: HistoryDAO
 
     // Moved to AppModule using DI
    /* companion object {

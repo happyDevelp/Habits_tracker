@@ -23,6 +23,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -46,6 +47,7 @@ import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
+import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.history.presentation.components.calendar.CalendarItem
 import com.example.habitstracker.history.presentation.components.calendar.SpacerItem
 import com.example.habitstracker.history.presentation.components.calendar.TopPanel
@@ -56,23 +58,10 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-@Preview(showSystemUi = true)
-@Composable
-fun HistoryCalendarScreenPreview(modifier: Modifier = Modifier) {
-    val mockNavController = rememberNavController()
-    CompositionLocalProvider(value = LocalNavController provides mockNavController) {
-        Box(
-            modifier = modifier
-                .fillMaxSize()
-                .background(screensBackgroundDark)
-        )
-        { HistoryCalendarScreen(changeSelectedItemState = {}) }
-    }
-}
-
 @Composable
 fun HistoryCalendarScreen(
     modifier: Modifier = Modifier,
+    testList: List<DateHabitEntity>,
     changeSelectedItemState: (index: Int) -> Unit
 ) {
     val context = LocalContext.current
@@ -92,6 +81,11 @@ fun HistoryCalendarScreen(
         /** Statistic containers **/
         DrawStatisticContainers(modifier, context)
         Spacer(modifier = modifier.height(12.dp))
+
+        Text(
+            text = testList.joinToString(separator = ", ") { it.id.toString() },
+            color = Color.White
+        )
 
         /** Calendar **/
         Card(
@@ -167,6 +161,9 @@ private fun DrawStatisticContainers(modifier: Modifier, context: Context) {
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.Top
     ) {
+        /*val currentStreakList = getCurrentStreakList() {
+
+        }*/
 
         val statsList = getFilledBlankList(context = context)
 
@@ -182,6 +179,10 @@ private fun DrawStatisticContainers(modifier: Modifier, context: Context) {
         }
     }
 }
+
+/*private fun getCurrentStreakList(function: () -> Unit): List<Int> {
+
+}*/
 
 @Composable
 private fun StatisticSection(modifier: Modifier = Modifier) {
@@ -314,4 +315,18 @@ fun CustomStatisticContainer(modifier: Modifier = Modifier, height: Dp) {
 @Composable
 fun LazyColumnContainer(content: @Composable () -> Unit) {
     LazyColumn { item { content.invoke() } }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun HistoryCalendarScreenPreview() {
+    val mockNavController = rememberNavController()
+    CompositionLocalProvider(value = LocalNavController provides mockNavController) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(screensBackgroundDark)
+        )
+        { HistoryCalendarScreen(changeSelectedItemState = {}, testList = listOf()) }
+    }
 }

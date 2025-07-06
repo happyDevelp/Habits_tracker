@@ -1,6 +1,6 @@
 package com.example.habitstracker.habit.data.repository
 
-import com.example.habitstracker.habit.data.db.DAO
+import com.example.habitstracker.habit.data.db.HabitDao
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.domain.HabitRepository
 import com.example.habitstracker.habit.domain.DateHabitEntity
@@ -11,56 +11,56 @@ import kotlinx.coroutines.withContext
 
 // The Domain layer is independent of data sources.
 
-class DefaultHabitRepository(private val dao: DAO) : HabitRepository {
+class DefaultHabitRepository(private val habitDao: HabitDao) : HabitRepository {
     override suspend fun addHabit(habit: HabitEntity): Long {
         return withContext(Dispatchers.IO) {
-            dao.insertHabit(habit)
+            habitDao.insertHabit(habit)
         }
     }
 
     override suspend fun getAllDatesByHabitId(id: Int): List<DateHabitEntity> {
         return withContext(Dispatchers.IO) {
-            dao.getAllDatesByHabitId(id)
+            habitDao.getAllDatesByHabitId(id)
         }
     }
 
     override suspend fun getLastAvailableDate(): DateHabitEntity? {
         return withContext(Dispatchers.IO) {
-            dao.getLastAvailableDate()
+            habitDao.getLastAvailableDate()
         }
     }
 
     override suspend fun updateDateSelectState(id: Int, isDone: Boolean, selectDate: String) {
         return withContext(Dispatchers.IO) {
-            dao.updateDateSelectState(id, isDone, selectDate)
+            habitDao.updateDateSelectState(id, isDone, selectDate)
         }
     }
 
     override suspend fun deleteHabit(id: Int) {
         return withContext(Dispatchers.IO) {
-            dao.deleteHabit(id)
+            habitDao.deleteHabit(id)
         }
     }
 
     override suspend fun updateHabit(habit: HabitEntity) {
         return withContext(Dispatchers.IO) {
-            dao.updateHabit(habit)
+            habitDao.updateHabit(habit)
         }
     }
 
     override suspend fun insertHabitDate(habitDate: DateHabitEntity) {
         return withContext(Dispatchers.IO) {
-            dao.insertHabitDate(habitDate)
+            habitDao.insertHabitDate(habitDate)
         }
     }
 
     override suspend fun getHabitsByDate(date: String): Flow<List<ShownHabit>> {
         return withContext(Dispatchers.IO) {
-            dao.getHabitsByDate(date) // YYYY-MM-DD
+            habitDao.getHabitsByDate(date) // YYYY-MM-DD
         }
     }
 
     override suspend fun dateExistsForHabit(habitId: Int, date: String): Boolean {
-        return dao.dateExistsForHabit(habitId, date)
+        return habitDao.dateExistsForHabit(habitId, date)
     }
 }
