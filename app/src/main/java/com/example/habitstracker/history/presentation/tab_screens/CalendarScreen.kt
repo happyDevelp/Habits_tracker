@@ -1,7 +1,5 @@
 package com.example.habitstracker.history.presentation.tab_screens
 
-import android.content.Context
-import android.icu.util.LocaleData
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -24,7 +22,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -45,6 +42,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
+import com.example.habitstracker.app.DataStoreManager
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
@@ -66,7 +64,6 @@ fun HistoryCalendarScreen(
     streakList: List<DateHabitEntity>,
     changeSelectedItemState: (index: Int) -> Unit
 ) {
-    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
     var currentDate by remember {
@@ -81,7 +78,7 @@ fun HistoryCalendarScreen(
 
     LazyColumnContainer {
         /** Statistic containers **/
-        DrawStatisticContainers(context, streakList = streakList)
+        DrawStatisticContainers(streakList = streakList)
         Spacer(modifier = modifier.height(12.dp))
 
         /** Calendar **/
@@ -149,11 +146,12 @@ fun HistoryCalendarScreen(
 }
 
 @Composable
-private fun DrawStatisticContainers(
-    context: Context,
-    streakList: List<DateHabitEntity>
-) {
+private fun DrawStatisticContainers(streakList: List<DateHabitEntity>) {
+    val context = LocalContext.current
+
     val currentStreak by remember { mutableIntStateOf(getCurrentStreak(streakList)) }
+    val bestStreak by remember { mutableStateOf(getBestStreak(streakList)) }
+
     LazyRow(
         modifier = Modifier
             .fillMaxWidth()
@@ -163,7 +161,11 @@ private fun DrawStatisticContainers(
         verticalAlignment = Alignment.Top
     ) {
         val statsList =
-            getFilledBlankList(context = context, currentStreak = currentStreak.toString())
+            getFilledBlankList(
+                context = context,
+                currentStreak = currentStreak,
+                bestStreak = bestStreak
+            )
 
         statsList.forEach { blankItem ->
             item {
@@ -179,6 +181,8 @@ private fun DrawStatisticContainers(
 }
 
 private fun getCurrentStreak(streakList: List<DateHabitEntity>): Int {
+    if (streakList.isEmpty()) return 0
+
     var streak = 0
     val groupedStreakList = streakList.groupBy { it.currentDate }
 
@@ -190,8 +194,44 @@ private fun getCurrentStreak(streakList: List<DateHabitEntity>): Int {
         else return streak
     }
 
-
     return streak
+}
+
+private fun getBestStreak(streakList: List<DateHabitEntity>): Int {
+    if (streakList.isEmpty()) return 0
+
+    // Group all habit entries by their date
+    val mapDateToHabits = streakList.groupBy { it.currentDate }
+
+    // Sort dates descending (newest first)
+    val sortedDates = mapDateToHabits.keys.sorted()
+
+    var bestStreak = 0
+    var currentStreak = 0
+    var previousDate: LocalDate? = null
+
+    for (date in sortedDates) {
+        val habitsForDate = mapDateToHabits[date].orEmpty()
+        val total = habitsForDate.size
+        val completed = habitsForDate.count { it.isCompleted }
+
+        val allCompleted = (total == completed)
+
+        if (allCompleted) {
+            if (previousDate == null || previousDate.plusDays(1) == LocalDate.parse(date)) {
+                currentStreak++
+            } else {
+                currentStreak = 1
+            }
+            bestStreak = maxOf(bestStreak, currentStreak)
+        } else {
+            currentStreak = 0
+        }
+
+        previousDate = LocalDate.parse(date)
+    }
+
+    return bestStreak
 }
 
 @Composable

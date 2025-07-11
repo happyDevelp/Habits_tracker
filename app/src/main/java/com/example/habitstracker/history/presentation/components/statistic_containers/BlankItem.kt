@@ -5,11 +5,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.habitstracker.R
+import com.example.habitstracker.app.DataStoreManager
 import com.example.habitstracker.core.presentation.theme.blueColor
 import com.example.habitstracker.core.presentation.theme.greenColor
 import com.example.habitstracker.core.presentation.theme.orangeColor
 import com.example.habitstracker.core.presentation.theme.redColor
-
 
 data class BlankItem(
     val width: Dp,
@@ -19,14 +19,14 @@ data class BlankItem(
     val bottomText: String
 )
 
-fun getFilledBlankList(context: Context, currentStreak: String): List<BlankItem> {
+fun getFilledBlankList(context: Context, currentStreak: Int, bestStreak: Int): List<BlankItem> {
     val listOf = listOf(
         BlankItem(
             width = 140.dp,
             color = blueColor,
             topText = context.getString(R.string.current_streak),
-            middleText = currentStreak,
-            bottomText = "The best streak of success: ",
+            middleText = "$currentStreak", /*${dataStoreManager.getBestStreak()}*/
+            bottomText = "The best streak: $bestStreak",
         ),
 
         BlankItem(
