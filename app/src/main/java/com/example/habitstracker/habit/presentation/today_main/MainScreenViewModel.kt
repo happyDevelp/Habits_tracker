@@ -6,11 +6,14 @@ import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.domain.HabitRepository
 import com.example.habitstracker.habit.domain.ShownHabit
+import com.example.habitstracker.habit.domain.mapToShownHabits
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
@@ -39,11 +42,17 @@ class MainScreenViewModel @Inject constructor(
 
     private fun preloadAndFillAllHabits() {
         viewModelScope.launch {
-            getHabitsByDate(lastDateInDb.toString()).collect { habits ->
+
+            val habits = getHabitsByDate(lastDateInDb.toString()).first() // take first value instead of collect
+            _habitsListState.value = habits
+            fillMissingDates()
+
+/*            getHabitsByDate(lastDateInDb.toString()).collect { habits ->
                 // set the last known  data to fillMissingDates() had access
+                println("cccc Habits for $lastDateInDb.toString(): $habits")
                 _habitsListState.value = habits
                 fillMissingDates()
-            }
+            }*/
         }
     }
 
@@ -88,6 +97,7 @@ class MainScreenViewModel @Inject constructor(
         viewModelScope.launch {
             selectedDate.collectLatest { date ->
                 getHabitsByDate(date.toString()).collect { habits ->
+                    //println("aaaa Habits for $date: $habits")
                     _habitsListState.value = habits
                 }
             }
@@ -123,11 +133,14 @@ class MainScreenViewModel @Inject constructor(
 
     fun updateDateSelectState(id: Int, isDone: Boolean, selectDate: String) {
         viewModelScope.launch {
+            println("bbbb Updated habitId=$id, isDone=$isDone, date=$selectDate")
             habitRepository.updateDateSelectState(id, isDone, selectDate)
+            val habits = getHabitsByDate(selectDate).first() // Синхронний запит для перевірки
+            println("bbbb After update, habits for $selectDate: $habits")
         }
     }
 
-    private suspend fun getHabitsByDate(date: String): Flow<List<ShownHabit>> {
+    private fun getHabitsByDate(date: String): Flow<List<ShownHabit>> {
         return habitRepository.getHabitsByDate(date)
     }
 

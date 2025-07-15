@@ -70,6 +70,7 @@ fun TodayScreenRoot(
         }
     }
     val habitListState by viewModel.habitsListState.collectAsStateWithLifecycle()
+    println("aaaa MAINSCREEN habitListState = $habitListState\n================")
     val dateState by viewModel.selectedDate.collectAsStateWithLifecycle()
     val onSelectClick: (
         id: Int,

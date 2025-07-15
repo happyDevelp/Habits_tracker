@@ -54,13 +54,21 @@ class DefaultHabitRepository(private val habitDao: HabitDao) : HabitRepository {
         }
     }
 
-    override suspend fun getHabitsByDate(date: String): Flow<List<ShownHabit>> {
-        return withContext(Dispatchers.IO) {
-            habitDao.getHabitsByDate(date) // YYYY-MM-DD
-        }
+    override fun getHabitsByDate(date: String): Flow<List<ShownHabit>> {
+        return habitDao.getHabitsByDate(date) // YYYY-MM-DD
     }
 
     override suspend fun dateExistsForHabit(habitId: Int, date: String): Boolean {
-        return habitDao.dateExistsForHabit(habitId, date)
+        return withContext(Dispatchers.IO) {
+            habitDao.dateExistsForHabit(habitId, date)
+        }
+    }
+
+    override fun getAllHabits(): Flow<List<HabitEntity>> {
+        return habitDao.getAllHabits()
+    }
+
+    override fun getDateHabitsFor(date: String): Flow<List<DateHabitEntity>> {
+        return habitDao.getDateHabitsFor(date)
     }
 }

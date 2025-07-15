@@ -16,3 +16,31 @@ data class ShownHabit (
     val reminder: Boolean = false, // Advanced setting for habit
     val isSelected: Boolean = false
 )
+
+fun mapToShownHabits(
+    habits: List<HabitEntity>,
+    dateHabits: List<DateHabitEntity>,
+    selectedDate: String
+): List<ShownHabit> {
+    return habits
+        .filter { habit ->
+            dateHabits.any {
+                it.habitId == habit.id && it.currentDate == selectedDate
+            }
+        }
+        .map { habit ->
+            val isCompleted = dateHabits.any {
+                it.habitId == habit.id && it.currentDate == selectedDate && it.isCompleted
+            }
+            ShownHabit(
+                id = habit.id,
+                name = habit.name,
+                iconName = habit.iconName,
+                colorHex = habit.colorHex,
+                days = habit.days,
+                executionTime = habit.executionTime,
+                reminder = habit.reminder,
+                isSelected = isCompleted
+            )
+        }
+}

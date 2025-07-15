@@ -14,10 +14,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 sealed interface HabitDao {
     @Insert
-    fun insertHabit(entity: HabitEntity): Long
+    suspend fun insertHabit(entity: HabitEntity): Long
 
     @Query("delete from habit_table where id=:id")
-    fun deleteHabit(id: Int)
+    suspend fun deleteHabit(id: Int)
 
     @Query("update date_table set isCompleted=:isDone where habitId=:id AND currentDate=:selectDate")
     fun updateDateSelectState(id: Int, isDone: Boolean, selectDate: String)
@@ -26,7 +26,7 @@ sealed interface HabitDao {
     fun getLastAvailableDate(): DateHabitEntity?
 
     @Update
-    fun updateHabit(habit: HabitEntity)
+    suspend fun updateHabit(habit: HabitEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertHabitDate(habitDate: DateHabitEntity)
@@ -52,6 +52,11 @@ sealed interface HabitDao {
         )
     """
     )
-    suspend fun dateExistsForHabit(habitId: Int, date: String): Boolean
+     suspend fun dateExistsForHabit(habitId: Int, date: String): Boolean
 
+    @Query("SELECT * FROM habit_table")
+    fun getAllHabits(): Flow<List<HabitEntity>>
+
+    @Query("SELECT * FROM date_table WHERE currentDate = :date")
+    fun getDateHabitsFor(date: String): Flow<List<DateHabitEntity>>
 }
