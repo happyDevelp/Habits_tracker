@@ -59,4 +59,7 @@ sealed interface HabitDao {
 
     @Query("SELECT * FROM date_table WHERE currentDate = :date")
     fun getDateHabitsFor(date: String): Flow<List<DateHabitEntity>>
+
+    @Query("select * from date_table")
+    fun getAllDateHabits(): Flow<List<DateHabitEntity>>
 }

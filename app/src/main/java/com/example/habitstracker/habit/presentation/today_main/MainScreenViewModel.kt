@@ -8,16 +8,17 @@ import com.example.habitstracker.habit.domain.HabitRepository
 import com.example.habitstracker.habit.domain.ShownHabit
 import com.example.habitstracker.habit.domain.mapToShownHabits
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import javax.inject.Inject
+import kotlin.collections.groupBy
 
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
@@ -37,22 +38,16 @@ class MainScreenViewModel @Inject constructor(
     init {
         preloadAndFillAllHabits() // immediately try to get the missing dates
         observeHabitsForSelectedDate()
+        observeAllHabitsMap()
     }
 
 
     private fun preloadAndFillAllHabits() {
         viewModelScope.launch {
-
-            val habits = getHabitsByDate(lastDateInDb.toString()).first() // take first value instead of collect
+            val habits =
+                getHabitsByDate(lastDateInDb.toString()).first() // take first value instead of collect
             _habitsListState.value = habits
             fillMissingDates()
-
-/*            getHabitsByDate(lastDateInDb.toString()).collect { habits ->
-                // set the last known  data to fillMissingDates() had access
-                println("cccc Habits for $lastDateInDb.toString(): $habits")
-                _habitsListState.value = habits
-                fillMissingDates()
-            }*/
         }
     }
 
@@ -133,10 +128,8 @@ class MainScreenViewModel @Inject constructor(
 
     fun updateDateSelectState(id: Int, isDone: Boolean, selectDate: String) {
         viewModelScope.launch {
-            println("bbbb Updated habitId=$id, isDone=$isDone, date=$selectDate")
             habitRepository.updateDateSelectState(id, isDone, selectDate)
-            val habits = getHabitsByDate(selectDate).first() // Синхронний запит для перевірки
-            println("bbbb After update, habits for $selectDate: $habits")
+            //refreshAllHabitsMap()
         }
     }
 
@@ -154,5 +147,28 @@ class MainScreenViewModel @Inject constructor(
 
     private suspend fun getAllDatesByHabitId(id: Int): List<DateHabitEntity> {
         return habitRepository.getAllDatesByHabitId(id)
+    }
+
+    private val _dateHabitsMap = MutableStateFlow<Map<LocalDate, List<ShownHabit>>>(emptyMap())
+    val dateHabitsMap = _dateHabitsMap.asStateFlow()
+
+    fun observeAllHabitsMap() {
+        viewModelScope.launch {
+            combine(
+                habitRepository.getAllHabits(),
+                habitRepository.getAllDateHabits()
+            ) { allHabits, dateHabits ->
+                dateHabits.groupBy { it.currentDate }
+                .mapValues { entry ->
+                    val date = entry.key
+                    val habitsForDate = entry.value
+                    mapToShownHabits(allHabits, habitsForDate, date)
+                }
+                .mapKeys { (dateStr, _) -> LocalDate.parse(dateStr) }
+            }.collectLatest { resultMap ->
+                _dateHabitsMap.value = resultMap
+            }
+
+        }
     }
 }

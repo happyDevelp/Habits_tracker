@@ -24,7 +24,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -59,7 +62,7 @@ import java.time.LocalDate
 fun TodayScreenRoot(
     viewModel: MainScreenViewModel,
     historyDate: String?
-    ) {
+) {
     val coroutineScope = rememberCoroutineScope()
 
     var isHistoryHandled: Boolean = false
@@ -70,7 +73,6 @@ fun TodayScreenRoot(
         }
     }
     val habitListState by viewModel.habitsListState.collectAsStateWithLifecycle()
-    println("aaaa MAINSCREEN habitListState = $habitListState\n================")
     val dateState by viewModel.selectedDate.collectAsStateWithLifecycle()
     val onSelectClick: (
         id: Int,
@@ -90,9 +92,12 @@ fun TodayScreenRoot(
         viewModel.updateSelectedDate(newDate)
     }
 
+    val mapDateToHabit by viewModel.dateHabitsMap.collectAsStateWithLifecycle()
+
     TodayScreen(
         habitListState = habitListState,
         dateState = dateState,
+        mapDateToHabit = mapDateToHabit,
         onSelectClick = onSelectClick,
         onDeleteClick = onDeleteClick,
         onDateChangeClick = onDateChangeClick
@@ -104,6 +109,7 @@ fun TodayScreen(
     modifier: Modifier = Modifier,
     habitListState: List<ShownHabit>,
     dateState: LocalDate,
+    mapDateToHabit: Map<LocalDate, List<ShownHabit>>,
     onSelectClick: (id: Int, isDone: Boolean, selectDate: String) -> Unit,
     onDeleteClick: (id: Int) -> Unit,
     onDateChangeClick: (newDate: LocalDate) -> Unit
@@ -133,8 +139,10 @@ fun TodayScreen(
                 ) {
                     val weekDays = listOf("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN")
 
-                    Row(modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceAround
+                    ) {
                         weekDays.forEach { day ->
                             Text(
                                 text = day,
@@ -146,6 +154,8 @@ fun TodayScreen(
                     }
 
                     CalendarRowList(
+                        mapDateToHabit = mapDateToHabit,
+                        todayHabits = habitListState,
                         onDateChangeClick = { newDate ->
                             onDateChangeClick(newDate)
                         },
@@ -263,7 +273,8 @@ private fun Preview() {
                 onSelectClick = { _, _, _ -> },
                 onDeleteClick = { _ -> },
                 onDateChangeClick = {},
-                dateState = LocalDate.now()
+                dateState = LocalDate.now(),
+                mapDateToHabit = emptyMap()
             )
         }
     }

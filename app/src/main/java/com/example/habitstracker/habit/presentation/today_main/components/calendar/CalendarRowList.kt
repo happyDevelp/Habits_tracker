@@ -9,12 +9,15 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
+import com.example.habitstracker.habit.domain.ShownHabit
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
 
 @Composable
 fun CalendarRowList(
+    mapDateToHabit: Map<LocalDate, List<ShownHabit>>,
+    todayHabits: List<ShownHabit>,
     onDateChangeClick: (newDate: LocalDate) -> Unit,
     selectedDate: LocalDate
 ) {
@@ -62,7 +65,10 @@ fun CalendarRowList(
             horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
             itemsIndexed(weekDates) { _, date ->
+                val todayHabits = mapDateToHabit[date] ?: emptyList()
+
                 CalendarItem(
+                    todayHabits = todayHabits,
                     date = date,
                     isSelected = date == selectedDate,
                     onItemClicked = { onDateChangeClick(date) }

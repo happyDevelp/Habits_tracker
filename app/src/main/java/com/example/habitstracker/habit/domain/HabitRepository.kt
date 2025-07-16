@@ -24,4 +24,6 @@ interface HabitRepository {
      fun getAllHabits(): Flow<List<HabitEntity>>
 
     fun getDateHabitsFor(date: String): Flow<List<DateHabitEntity>>
+
+    fun getAllDateHabits(): Flow<List<DateHabitEntity>>
 }
