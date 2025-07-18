@@ -63,16 +63,29 @@ fun CalendarRowList(
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly,
         ) {
-            itemsIndexed(weekDates) { _, date ->
+            itemsIndexed(weekDates) { index, date ->
                 val todayHabits = mapDateToHabit[date] ?: emptyList()
+                val isStreakDay = isStreakDay(todayHabits)
+                val isPrevStreak = weekDates.getOrNull(index - 1)
+                    ?.let { isStreakDay(mapDateToHabit[it]) } ?: false
+                val isNextStreak  = weekDates.getOrNull(index + 1)
+                    ?.let { isStreakDay(mapDateToHabit[it]) } ?: false
 
                 CalendarItem(
                     todayHabits = todayHabits,
                     date = date,
                     isSelected = date == selectedDate,
-                    onItemClicked = { onDateChangeClick(date) }
+                    onItemClicked = { onDateChangeClick(date) },
+                    isStreakDay = isStreakDay,
+                    isPrevStreak = isPrevStreak,
+                    isNextStreak = isNextStreak
                 )
             }
         }
     }
+}
+
+fun isStreakDay(habits: List<ShownHabit>?): Boolean {
+    if (habits.isNullOrEmpty()) return false
+    return habits.all { it.isSelected }
 }
