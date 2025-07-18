@@ -155,7 +155,6 @@ fun TodayScreen(
 
                     CalendarRowList(
                         mapDateToHabit = mapDateToHabit,
-                        todayHabits = habitListState,
                         onDateChangeClick = { newDate ->
                             onDateChangeClick(newDate)
                         },

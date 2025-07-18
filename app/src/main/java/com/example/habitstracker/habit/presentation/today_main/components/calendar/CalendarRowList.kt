@@ -17,7 +17,6 @@ import java.time.temporal.TemporalAdjusters
 @Composable
 fun CalendarRowList(
     mapDateToHabit: Map<LocalDate, List<ShownHabit>>,
-    todayHabits: List<ShownHabit>,
     onDateChangeClick: (newDate: LocalDate) -> Unit,
     selectedDate: LocalDate
 ) {

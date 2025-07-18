@@ -157,12 +157,12 @@ class MainScreenViewModel @Inject constructor(
             combine(
                 habitRepository.getAllHabits(),
                 habitRepository.getAllDateHabits()
-            ) { allHabits, dateHabits ->
-                dateHabits.groupBy { it.currentDate }
+            ) { allHabitEntities, allDateHabits ->
+                allDateHabits.groupBy { it.currentDate }
                 .mapValues { entry ->
                     val date = entry.key
                     val habitsForDate = entry.value
-                    mapToShownHabits(allHabits, habitsForDate, date)
+                    mapToShownHabits(allHabitEntities, habitsForDate, date)
                 }
                 .mapKeys { (dateStr, _) -> LocalDate.parse(dateStr) }
             }.collectLatest { resultMap ->
