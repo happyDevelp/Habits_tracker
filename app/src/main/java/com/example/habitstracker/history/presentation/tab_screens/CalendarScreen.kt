@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -54,8 +55,11 @@ import com.example.habitstracker.history.presentation.components.calendar.TopPan
 import com.example.habitstracker.history.presentation.components.statistic_containers.CustomBlank
 import com.example.habitstracker.history.presentation.components.statistic_containers.getFilledBlankList
 import kotlinx.coroutines.launch
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.temporal.TemporalAdjuster
+import java.time.temporal.TemporalAdjusters
 import java.util.Locale
 
 @Composable
@@ -149,8 +153,46 @@ fun HistoryCalendarScreen(
 private fun DrawStatisticContainers(streakList: List<DateHabitEntity>) {
     val context = LocalContext.current
 
-    val currentStreak by remember { mutableIntStateOf(getCurrentStreak(streakList)) }
-    val bestStreak by remember { mutableStateOf(getBestStreak(streakList)) }
+    /** current streak and the best streak*/
+    val currentStreak = getCurrentStreak(streakList)
+    val bestStreak=getBestStreak(streakList)
+
+    /** total completed habits  */
+    val completedHabitsCount = streakList.count { it.isCompleted }
+
+
+    /** total completed habits this week */
+    val currentDate = LocalDate.now()
+    val lastMonday =
+        remember(currentDate) {
+            currentDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+        }
+    val thisWeekSelectedHabits = streakList
+        .filter { it.currentDate >= lastMonday.toString() }
+        .count { it.isCompleted }
+
+
+    /** Percentage of completed habits */
+    val totalHabits = streakList.size
+    val percentage = completedHabitsCount / totalHabits.toFloat() * 100
+
+    /** Perfect days */
+    val perfectDaysCounter by remember {
+        mutableIntStateOf(
+            streakList
+                .groupBy { it.currentDate }
+                .count { (_, habits) -> habits.all { it.isCompleted } }
+        )
+    }
+
+    val thisWeekPerfectedDays by remember {
+        mutableIntStateOf(
+            streakList
+                .filter { it.currentDate >= lastMonday.toString() }
+                .groupBy { it.currentDate }
+                .count { (_, habits) -> habits.all { it.isCompleted } }
+        )
+    }
 
     LazyRow(
         modifier = Modifier
@@ -164,7 +206,13 @@ private fun DrawStatisticContainers(streakList: List<DateHabitEntity>) {
             getFilledBlankList(
                 context = context,
                 currentStreak = currentStreak,
-                bestStreak = bestStreak
+                bestStreak = bestStreak,
+                completedHabitsCount = completedHabitsCount,
+                thisWeekSelectedHabits = thisWeekSelectedHabits,
+                totalHabits = totalHabits,
+                percentage = percentage,
+                perfectDaysCounter = perfectDaysCounter,
+                thisWeekPerfectedDays = thisWeekPerfectedDays
             )
 
         statsList.forEach { blankItem ->

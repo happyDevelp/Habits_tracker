@@ -9,7 +9,4 @@ import kotlinx.coroutines.flow.Flow
 sealed interface HistoryDAO {
     @Query("select * from date_table order by currentDate desc")
     fun getAllDatesForStreak(): Flow<List<DateHabitEntity>>
-
-    @Query("select Count(*) from habit_table")
-    fun getCountOfHabits(): Int
 }

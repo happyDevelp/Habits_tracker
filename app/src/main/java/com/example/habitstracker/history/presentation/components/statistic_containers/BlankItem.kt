@@ -19,13 +19,23 @@ data class BlankItem(
     val bottomText: String
 )
 
-fun getFilledBlankList(context: Context, currentStreak: Int, bestStreak: Int): List<BlankItem> {
+fun getFilledBlankList(
+    context: Context,
+    currentStreak: Int,
+    bestStreak: Int,
+    completedHabitsCount: Int,
+    thisWeekSelectedHabits: Int,
+    totalHabits: Int,
+    percentage: Float,
+    perfectDaysCounter: Int,
+    thisWeekPerfectedDays: Int
+): List<BlankItem> {
     val listOf = listOf(
         BlankItem(
             width = 140.dp,
             color = blueColor,
             topText = context.getString(R.string.current_streak),
-            middleText = "$currentStreak", /*${dataStoreManager.getBestStreak()}*/
+            middleText = "$currentStreak",
             bottomText = "The best streak: $bestStreak",
         ),
 
@@ -33,24 +43,24 @@ fun getFilledBlankList(context: Context, currentStreak: Int, bestStreak: Int): L
             width = 125.dp,
             color = redColor,
             topText = context.getString(R.string.number_of_completed_habits),
-            middleText = "48",
-            bottomText = "This week: ",
+            middleText = "$completedHabitsCount",
+            bottomText = "This week: $thisWeekSelectedHabits"
         ),
 
         BlankItem(
             width = 130.dp,
             color = orangeColor,
             topText = context.getString(R.string.percentage_of_completed_habits),
-            middleText = "20",
-            bottomText = "Habits: 48/242",
+            middleText = "${percentage.toInt()}%",
+            bottomText = "Habits: $completedHabitsCount/$totalHabits",
         ),
 
         BlankItem(
             width = 130.dp,
             color = greenColor,
             topText = context.getString(R.string.perfect_days),
-            middleText = "7",
-            bottomText = "This week: ",
+            middleText = "$perfectDaysCounter",
+            bottomText = "This week: $thisWeekPerfectedDays",
         )
     )
     return listOf
