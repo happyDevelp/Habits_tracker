@@ -1,5 +1,6 @@
 package com.example.habitstracker.habit.presentation.today_main.components.calendar
 
+import android.R.attr.strokeWidth
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,12 +38,8 @@ fun CalendarItem(
     todayHabits: List<ShownHabit>,
     date: LocalDate? = LocalDate.now(),
     isSelected: Boolean = true,
-    isStreakDay: Boolean,
-    isPrevStreak: Boolean,
-    isNextStreak: Boolean,
     onItemClicked: (() -> Unit)? = null,
 ) {
-
     val completedCount = todayHabits.count { it.isSelected }
     val totalCount = todayHabits.count()
 
@@ -68,34 +65,6 @@ fun CalendarItem(
                         .clip(CircleShape)
                         .clickable { onItemClicked?.invoke() }
                 ) {
-                    val centerY = size.height / 2
-                    val strokeWidth = 4.dp.toPx()
-                    val lineLength = 10.dp.toPx()
-                    val circleRadius = size.minDimension / 2.2f
-
-                    // 🔵 Стрік-лінія зліва
-                    if (isStreakDay && isPrevStreak) {
-                        drawLine(
-                            color = progressColor,
-                            start = Offset(x = 0f, y = centerY),
-                            end = Offset(x = size.width / 2 - circleRadius, y = centerY),
-                            strokeWidth = strokeWidth,
-                            cap = StrokeCap.Round
-                        )
-                    }
-
-                    // 🔵 Стрік-лінія справа
-                    if (isStreakDay && isNextStreak) {
-                        drawLine(
-                            color = progressColor,
-                            start = Offset(x = size.width / 2 + circleRadius, y = centerY),
-                            end = Offset(x = size.width, y = centerY),
-                            strokeWidth = strokeWidth,
-                            cap = StrokeCap.Round
-                        )
-                    }
-
-                    // gray-background arc
                     if (completedCount > 0) {
                         drawArc(
                             color = Color(0xDF333333),
@@ -105,21 +74,18 @@ fun CalendarItem(
                             style = Stroke(width = 8.dp.toPx(), cap = StrokeCap.Round)
                         )
                     }
-                    // gray background for today habit
                     if (date == LocalDate.now()) {
                         drawCircle(
                             radius = this.size.maxDimension / 1.8f,
                             color = Color(0xC1565656),
                         )
                     }
-                    // all habits are selected, blue background
                     if (progress == 1f) {
                         drawCircle(
                             radius = this.size.maxDimension / 1.8f,
                             color = progressColor,
                         )
                     }
-                    // progress arc
                     drawArc(
                         color = progressColor,
                         startAngle = -90f,
@@ -157,11 +123,6 @@ fun CalendarItem(
 @Composable
 private fun Preview() {
     AppTheme(darkTheme = true) {
-        CalendarItem(
-            todayHabits = listOf(ShownHabit(0, "preview", "aaa")),
-            isStreakDay = false,
-            isPrevStreak = false,
-            isNextStreak = false,
-        )
+        CalendarItem(todayHabits = listOf(ShownHabit(0, "preview", "aaa")))
     }
 }
