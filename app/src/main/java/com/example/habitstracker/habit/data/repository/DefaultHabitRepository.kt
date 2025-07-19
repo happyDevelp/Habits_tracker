@@ -71,4 +71,8 @@ class DefaultHabitRepository(private val habitDao: HabitDao) : HabitRepository {
     override fun getDateHabitsFor(date: String): Flow<List<DateHabitEntity>> {
         return habitDao.getDateHabitsFor(date)
     }
+
+    override fun getAllDateHabits(): Flow<List<DateHabitEntity>> {
+           return habitDao.getAllDateHabits()
+    }
 }
