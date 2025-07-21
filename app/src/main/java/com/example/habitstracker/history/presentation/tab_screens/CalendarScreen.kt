@@ -1,6 +1,5 @@
 package com.example.habitstracker.history.presentation.tab_screens
 
-import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -46,6 +46,7 @@ import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
+import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.history.presentation.components.calendar.CalendarItem
 import com.example.habitstracker.history.presentation.components.calendar.SpacerItem
 import com.example.habitstracker.history.presentation.components.calendar.TopPanel
@@ -56,26 +57,13 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
 
-@Preview(showSystemUi = true)
-@Composable
-fun HistoryCalendarScreenPreview(modifier: Modifier = Modifier) {
-    val mockNavController = rememberNavController()
-    CompositionLocalProvider(value = LocalNavController provides mockNavController) {
-        Box(
-            modifier = modifier
-                .fillMaxSize()
-                .background(screensBackgroundDark)
-        )
-        { HistoryCalendarScreen(changeSelectedItemState = {}) }
-    }
-}
 
 @Composable
 fun HistoryCalendarScreen(
     modifier: Modifier = Modifier,
+    streakList: List<DateHabitEntity>,
     changeSelectedItemState: (index: Int) -> Unit
 ) {
-    val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
 
     var currentDate by remember {
@@ -90,7 +78,7 @@ fun HistoryCalendarScreen(
 
     LazyColumnContainer {
         /** Statistic containers **/
-        DrawStatisticContainers(modifier, context)
+        DrawStatisticContainers(streakList = streakList)
         Spacer(modifier = modifier.height(12.dp))
 
         /** Calendar **/
@@ -158,17 +146,26 @@ fun HistoryCalendarScreen(
 }
 
 @Composable
-private fun DrawStatisticContainers(modifier: Modifier, context: Context) {
+private fun DrawStatisticContainers(streakList: List<DateHabitEntity>) {
+    val context = LocalContext.current
+
+    val currentStreak by remember { mutableIntStateOf(getCurrentStreak(streakList)) }
+    val bestStreak by remember { mutableStateOf(getBestStreak(streakList)) }
+
     LazyRow(
-        modifier = modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 16.dp)
             .wrapContentHeight(),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.Top
     ) {
-
-        val statsList = getFilledBlankList(context = context)
+        val statsList =
+            getFilledBlankList(
+                context = context,
+                currentStreak = currentStreak,
+                bestStreak = bestStreak
+            )
 
         statsList.forEach { blankItem ->
             item {
@@ -176,11 +173,65 @@ private fun DrawStatisticContainers(modifier: Modifier, context: Context) {
                     color = blankItem.color,
                     topText = blankItem.topText,
                     middleText = blankItem.middleText,
-                    bottomText = blankItem.bottomText
+                    bottomText = blankItem.bottomText,
                 )
             }
         }
     }
+}
+
+private fun getCurrentStreak(streakList: List<DateHabitEntity>): Int {
+    if (streakList.isEmpty()) return 0
+
+    var streak = 0
+    val groupedStreakList = streakList.groupBy { it.currentDate }
+
+    groupedStreakList.forEach { mapDateAndHabits ->
+        val habitsCount = mapDateAndHabits.value.count()
+        val isCompletedCount = mapDateAndHabits.value.count { it.isCompleted }
+        if (habitsCount == isCompletedCount)
+            streak++
+        else return streak
+    }
+
+    return streak
+}
+
+private fun getBestStreak(streakList: List<DateHabitEntity>): Int {
+    if (streakList.isEmpty()) return 0
+
+    // Group all habit entries by their date
+    val mapDateToHabits = streakList.groupBy { it.currentDate }
+
+    // Sort dates descending (newest first)
+    val sortedDates = mapDateToHabits.keys.sorted()
+
+    var bestStreak = 0
+    var currentStreak = 0
+    var previousDate: LocalDate? = null
+
+    for (date in sortedDates) {
+        val habitsForDate = mapDateToHabits[date].orEmpty()
+        val total = habitsForDate.size
+        val completed = habitsForDate.count { it.isCompleted }
+
+        val allCompleted = (total == completed)
+
+        if (allCompleted) {
+            if (previousDate == null || previousDate.plusDays(1) == LocalDate.parse(date)) {
+                currentStreak++
+            } else {
+                currentStreak = 1
+            }
+            bestStreak = maxOf(bestStreak, currentStreak)
+        } else {
+            currentStreak = 0
+        }
+
+        previousDate = LocalDate.parse(date)
+    }
+
+    return bestStreak
 }
 
 @Composable
@@ -314,4 +365,18 @@ fun CustomStatisticContainer(modifier: Modifier = Modifier, height: Dp) {
 @Composable
 fun LazyColumnContainer(content: @Composable () -> Unit) {
     LazyColumn { item { content.invoke() } }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun HistoryCalendarScreenPreview() {
+    val mockNavController = rememberNavController()
+    CompositionLocalProvider(value = LocalNavController provides mockNavController) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(screensBackgroundDark)
+        )
+        { HistoryCalendarScreen(changeSelectedItemState = {}, streakList = listOf()) }
+    }
 }

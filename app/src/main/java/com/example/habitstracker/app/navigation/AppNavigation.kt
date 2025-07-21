@@ -36,6 +36,8 @@ import com.example.habitstracker.habit.presentation.edit_habit.components.EditRe
 import com.example.habitstracker.habit.presentation.today_main.MainScreenViewModel
 import com.example.habitstracker.habit.presentation.today_main.TodayScreenRoot
 import com.example.habitstracker.history.presentation.HistoryScreen
+import com.example.habitstracker.history.presentation.HistoryScreenRoot
+import com.example.habitstracker.history.presentation.HistoryViewModel
 import com.example.habitstracker.profile.presentation.profile.ProfileScreen
 
 @Composable
@@ -43,6 +45,7 @@ fun AppNavigation() {
     val navController = LocalNavController.current
 
     val mainScreenViewModel = hiltViewModel<MainScreenViewModel>()
+    val historyViewModel = hiltViewModel<HistoryViewModel>()
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val showBottomBar = getBottomBarState(navBackStackEntry)
 
@@ -97,7 +100,11 @@ fun AppNavigation() {
                 }
 
                 composable<Route.History> {
-                    HistoryScreen(changeSelectedItemState = changeSelectedItemState)
+
+                    HistoryScreenRoot(
+                        historyViewModel = historyViewModel,
+                        changeSelectedItemState = changeSelectedItemState
+                    )
                 }
 
                 composable<Route.Profile> {

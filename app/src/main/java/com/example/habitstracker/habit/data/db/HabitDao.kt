@@ -4,7 +4,6 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Update
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.domain.DateHabitEntity
@@ -13,12 +12,12 @@ import kotlinx.coroutines.flow.Flow
 
 // Data Access Object
 @Dao
-sealed interface DAO {
+sealed interface HabitDao {
     @Insert
-    fun insertHabit(entity: HabitEntity): Long
+    suspend fun insertHabit(entity: HabitEntity): Long
 
     @Query("delete from habit_table where id=:id")
-    fun deleteHabit(id: Int)
+    suspend fun deleteHabit(id: Int)
 
     @Query("update date_table set isCompleted=:isDone where habitId=:id AND currentDate=:selectDate")
     fun updateDateSelectState(id: Int, isDone: Boolean, selectDate: String)
@@ -27,7 +26,7 @@ sealed interface DAO {
     fun getLastAvailableDate(): DateHabitEntity?
 
     @Update
-    fun updateHabit(habit: HabitEntity)
+    suspend fun updateHabit(habit: HabitEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertHabitDate(habitDate: DateHabitEntity)
@@ -53,6 +52,14 @@ sealed interface DAO {
         )
     """
     )
-    suspend fun dateExistsForHabit(habitId: Int, date: String): Boolean
+     suspend fun dateExistsForHabit(habitId: Int, date: String): Boolean
 
+    @Query("SELECT * FROM habit_table")
+    fun getAllHabits(): Flow<List<HabitEntity>>
+
+    @Query("SELECT * FROM date_table WHERE currentDate = :date")
+    fun getDateHabitsFor(date: String): Flow<List<DateHabitEntity>>
+
+    @Query("select * from date_table")
+    fun getAllDateHabits(): Flow<List<DateHabitEntity>>
 }
