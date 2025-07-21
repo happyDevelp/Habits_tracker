@@ -55,6 +55,7 @@ fun HistoryScreenRoot(
         changeSelectedItemState = changeSelectedItemState,
         streakList = streakList
     )
+
 }
 
 @Composable

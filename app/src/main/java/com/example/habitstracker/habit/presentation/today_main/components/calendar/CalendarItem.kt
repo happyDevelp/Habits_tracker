@@ -59,6 +59,7 @@ fun CalendarItem(
                     .size(40.dp),
                 contentAlignment = Alignment.Center
             ) {
+
                 Canvas(
                     modifier = Modifier
                         .fillMaxSize()
@@ -96,6 +97,7 @@ fun CalendarItem(
                 }
 
                 Text(
+
                     color = Color.White,
                     text = date?.dayOfMonth.toString(),
                     fontSize = 20.sp,

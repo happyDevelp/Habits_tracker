@@ -43,7 +43,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
-import com.example.habitstracker.app.DataStoreManager
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
@@ -61,6 +60,7 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjuster
 import java.time.temporal.TemporalAdjusters
 import java.util.Locale
+
 
 @Composable
 fun HistoryCalendarScreen(

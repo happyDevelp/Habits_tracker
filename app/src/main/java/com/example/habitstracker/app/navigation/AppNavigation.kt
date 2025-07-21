@@ -100,6 +100,7 @@ fun AppNavigation() {
                 }
 
                 composable<Route.History> {
+
                     HistoryScreenRoot(
                         historyViewModel = historyViewModel,
                         changeSelectedItemState = changeSelectedItemState
@@ -166,3 +167,6 @@ fun getBottomBarState(navBackStackEntry: NavBackStackEntry?): Boolean {
         else -> false
     }
 }
+//com.example.habitstracker.app.navigation.Route.Today?historyDate={historyDate}
+//com.example.habitstracker.app.navigation.Route.Today?historyDate={historyDate}
+//com.example.habitstracker.app.navigation.Route.Today?historyDate={historyDate}
