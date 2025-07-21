@@ -22,7 +22,7 @@
     <string name="secondOption_repeatPicker">2</string>
     <string name="previous_month">Previous month</string>
     <string name="current_streak">Current \nstreak</string>
-    <string name="number_of_completed_habits">Number of completed habits</string>
+    <string name="number_of_completed_habits">Total completed habits</string>
     <string name="percentage_of_completed_habits">Percentage of completed habits</string>
     <string name="perfect_days">Perfect \ndays</string>
     <string name="param_selected_days">paramSelectedDays</string>

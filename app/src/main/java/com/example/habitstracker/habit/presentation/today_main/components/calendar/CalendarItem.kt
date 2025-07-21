@@ -1,11 +1,8 @@
 package com.example.habitstracker.habit.presentation.today_main.components.calendar
 
-<<<<<<< HEAD
-=======
 import android.R.attr.strokeWidth
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
->>>>>>> origin/develop
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,10 +33,6 @@ import com.example.habitstracker.habit.domain.ShownHabit
 import java.time.LocalDate
 import kotlin.Boolean
 
-<<<<<<< HEAD
-@Preview(showBackground = true, backgroundColor = 0xFF242C33)
-=======
->>>>>>> origin/develop
 @Composable
 fun CalendarItem(
     todayHabits: List<ShownHabit>,
@@ -47,15 +40,6 @@ fun CalendarItem(
     isSelected: Boolean = true,
     onItemClicked: (() -> Unit)? = null,
 ) {
-<<<<<<< HEAD
-    val color = MaterialTheme.colorScheme.primaryContainer
-
-    Box(
-        modifier = Modifier
-            .size(width = 50.dp, height = 65.dp)
-    ) {
-        Column(modifier = Modifier.fillMaxSize()) {
-=======
     val completedCount = todayHabits.count { it.isSelected }
     val totalCount = todayHabits.count()
 
@@ -68,7 +52,6 @@ fun CalendarItem(
                 .fillMaxSize()
                 .padding()
         ) {
->>>>>>> origin/develop
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -76,22 +59,7 @@ fun CalendarItem(
                     .size(40.dp),
                 contentAlignment = Alignment.Center
             ) {
-<<<<<<< HEAD
-                Text(
-                    modifier = Modifier.drawBehind {
-                        if (isSelected)
-                            drawCircle(
-                                radius = this.size.maxDimension / 1.2f,
-                                color = color
-                            )
-                        else {
-                            drawCircle(
-                                radius = this.size.maxDimension / 0,
-                                color = color
-                            )
-                        }
-                    },
-=======
+
                 Canvas(
                     modifier = Modifier
                         .fillMaxSize()
@@ -129,7 +97,7 @@ fun CalendarItem(
                 }
 
                 Text(
->>>>>>> origin/develop
+
                     color = Color.White,
                     text = date?.dayOfMonth.toString(),
                     fontSize = 20.sp,
@@ -150,11 +118,7 @@ fun CalendarItem(
                 )
             }
         }
-<<<<<<< HEAD
-    } 
-=======
     }
->>>>>>> origin/develop
 }
 
 @Preview(showBackground = true, backgroundColor = 0xFF242C33)

@@ -139,7 +139,6 @@ fun TodayScreen(
                 ) {
                     val weekDays = listOf("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN")
 
-
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceAround
