@@ -24,6 +24,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +45,7 @@ import com.example.habitstracker.history.presentation.tab_screens.AchievementsSc
 import com.example.habitstracker.history.presentation.tab_screens.AllHabitScreen
 import com.example.habitstracker.history.presentation.tab_screens.HistoryCalendarScreen
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 
 @Composable
 fun HistoryScreenRoot(
@@ -64,6 +66,10 @@ fun HistoryScreen(
     streakList: List<DateHabitEntity>,
     changeSelectedItemState: (index: Int) -> Unit
 ) {
+    val mapDateToHabits = remember(streakList) {
+        streakList.groupBy { LocalDate.parse(it.currentDate) }
+    }
+
     Scaffold(
         topBar = { TopBarHistoryScreen() },
         containerColor = screensBackgroundDark
@@ -127,7 +133,8 @@ fun HistoryScreen(
                     when (page) {
                         0 -> HistoryCalendarScreen(
                             changeSelectedItemState = changeSelectedItemState,
-                            streakList = streakList
+                            streakList = streakList,
+                            mapDateToHabits = mapDateToHabits
                         )
 
                         1 -> AllHabitScreen()

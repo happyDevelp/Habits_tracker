@@ -5,7 +5,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.habitstracker.R
-import com.example.habitstracker.app.DataStoreManager
 import com.example.habitstracker.core.presentation.theme.blueColor
 import com.example.habitstracker.core.presentation.theme.greenColor
 import com.example.habitstracker.core.presentation.theme.orangeColor

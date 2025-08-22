@@ -11,11 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -26,7 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,8 +44,7 @@ import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
 import com.example.habitstracker.habit.domain.DateHabitEntity
-import com.example.habitstracker.history.presentation.components.calendar.CalendarItem
-import com.example.habitstracker.history.presentation.components.calendar.SpacerItem
+import com.example.habitstracker.history.presentation.components.calendar.HistoryCalendarDay
 import com.example.habitstracker.history.presentation.components.calendar.TopPanel
 import com.example.habitstracker.history.presentation.components.statistic_containers.CustomBlank
 import com.example.habitstracker.history.presentation.components.statistic_containers.getFilledBlankList
@@ -57,16 +52,15 @@ import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.time.temporal.TemporalAdjuster
 import java.time.temporal.TemporalAdjusters
 import java.util.Locale
-
 
 @Composable
 fun HistoryCalendarScreen(
     modifier: Modifier = Modifier,
     streakList: List<DateHabitEntity>,
-    changeSelectedItemState: (index: Int) -> Unit
+    changeSelectedItemState: (index: Int) -> Unit,
+    mapDateToHabits: Map<LocalDate, List<DateHabitEntity>>
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -117,18 +111,6 @@ fun HistoryCalendarScreen(
                 )
                 Spacer(modifier = modifier.height(4.dp))
 
-                val lengthOfMonth = currentDate.lengthOfMonth()
-
-                // List that will be displayed on the screen
-                val displayedCalendarList = mutableListOf<Pair<String, String>>()
-
-                val firstDayOfWeek = currentDate.withDayOfMonth(1).dayOfWeek
-                val spacerDays = firstDayOfWeek.ordinal
-
-                addSpacerDays(spacerDays, displayedCalendarList)
-
-                addDaysOfMonth(lengthOfMonth, displayedCalendarList, currentDate)
-
                 //parameter means, if value is changed, do this code
                 LaunchedEffect(pagerState.currentPage) {
                     currentDate = currentDate.withMonth(pagerState.currentPage)
@@ -136,11 +118,11 @@ fun HistoryCalendarScreen(
 
                 // HorizontalPager to scroll between month
                 CalendarHorizontalPager(
-                    pagerState,
-                    modifier,
-                    displayedCalendarList,
-                    currentDate,
-                    changeSelectedItemState
+                    pagerState = pagerState,
+                    modifier = modifier,
+                    currentDate = currentDate,
+                    mapDateToHabits = mapDateToHabits,
+                    changeSelectedItemState = changeSelectedItemState
                 )
             }
         }
@@ -155,7 +137,7 @@ private fun DrawStatisticContainers(streakList: List<DateHabitEntity>) {
 
     /** current streak and the best streak*/
     val currentStreak = getCurrentStreak(streakList)
-    val bestStreak=getBestStreak(streakList)
+    val bestStreak = getBestStreak(streakList)
 
     /** total completed habits  */
     val completedHabitsCount = streakList.count { it.isCompleted }
@@ -224,6 +206,45 @@ private fun DrawStatisticContainers(streakList: List<DateHabitEntity>) {
                     bottomText = blankItem.bottomText,
                 )
             }
+        }
+    }
+}
+
+private fun buildMonthGrid(yearMonth: LocalDate): List<LocalDate?> {
+    val firstOfMonth = yearMonth.withDayOfMonth(1)
+    val length = yearMonth.lengthOfMonth()
+    val firstDow = firstOfMonth.dayOfWeek.value
+    //val leadingNulls = if(firstDow == 7) 0 else firstDow - 1
+    val leadingNulls = (firstDow + 6) % 7  // 0..6, Sunday -> 6
+
+    val days = (1..length).map { day ->
+        firstOfMonth.withDayOfMonth(day)
+    }
+    return List(leadingNulls) { null } + days
+}
+
+private fun isPerfectDay(list: List<DateHabitEntity>?): Boolean =
+    list?.isNotEmpty() == true && list.all { it.isCompleted }
+
+@Composable
+private fun WeekRow(
+    week: List<LocalDate?>,
+    mapDateToHabits: Map<LocalDate, List<DateHabitEntity>>,
+    onDateClick: (LocalDate) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        week.forEach { date ->
+            val habits = if (date == null) emptyList()
+            else (mapDateToHabits[date] ?: emptyList())
+            HistoryCalendarDay(
+                date = date,
+                habits = habits,
+                onClick = onDateClick
+            )
         }
     }
 }
@@ -312,72 +333,52 @@ private fun StatisticSection(modifier: Modifier = Modifier) {
 private fun CalendarHorizontalPager(
     pagerState: PagerState,
     modifier: Modifier,
-    displayedCalendarList: MutableList<Pair<String, String>>,
     currentDate: LocalDate,
+    mapDateToHabits: Map<LocalDate, List<DateHabitEntity>>,
     changeSelectedItemState: (index: Int) -> Unit
 ) {
+
     Column(modifier = Modifier.fillMaxSize()) {
         Row(
             modifier = modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceAround
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
             val list = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
             list.forEach { day ->
                 MyText(
                     text = day,
-                    textSize = 15.sp,
+                    textSize = 14.sp,
                 )
             }
         }
         Spacer(modifier = modifier.height(16.dp))
 
-        HorizontalPager(
-            state = pagerState
-        ) { page ->
-            LazyVerticalGrid(
-                modifier = modifier
-                    .wrapContentSize()
-                    .padding(horizontal = 4.dp),
-                columns = GridCells.Fixed(7),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                displayedCalendarList.forEach { (numOfDay, _) ->
-                    item {
-                        val dayInt = numOfDay.toIntOrNull()
-                        if (dayInt != null) {
-                            val date = currentDate.withDayOfMonth(numOfDay.toInt())
-                            CalendarItem(
-                                date = date,
-                                changeSelectedItemState = changeSelectedItemState
+        HorizontalPager(state = pagerState) { page ->
+            val ym = currentDate.withMonth(page)
+            val grid = buildMonthGrid(ym)
+            val tail = (7 - (grid.size % 7)) % 7
+            val weeks = (grid + List(tail) { null }).chunked(7)
+
+            Column(modifier = Modifier.fillMaxWidth()) {
+                val nav = LocalNavController.current
+
+                weeks.forEach { week ->
+                    WeekRow(
+                        week = week,
+                        mapDateToHabits = mapDateToHabits,
+                        onDateClick = { d ->
+                            changeSelectedItemState(0)
+                            nav.popBackStack()
+                            nav.currentBackStackEntry?.savedStateHandle?.set(
+                                "current_date",
+                                d.toString()
                             )
-                        } else SpacerItem()
-                    }
+                        }
+                    )
+                    Spacer(Modifier.height(10.dp))
                 }
             }
         }
-    }
-}
-
-/** Add days of month to [displayedCalendarList] **/
-fun addDaysOfMonth(
-    lengthOfMonth: Int,
-    displayedCalendarList: MutableList<Pair<String, String>>,
-    currentDate: LocalDate,
-) {
-    for (day in 1..lengthOfMonth) {
-        val currentDay = day.toString()
-        val currentDayOfWeek = currentDate.withDayOfMonth(day).dayOfWeek.toString()
-
-        displayedCalendarList.add(Pair(currentDay, currentDayOfWeek))
-    }
-}
-
-/** Add spacer to [displayedCalendarList]
- * For example if first day of month is Wed, then we should to add a spacer for Mon and Tue **/
-fun addSpacerDays(emptyDays: Int, displayedCalendarList: MutableList<Pair<String, String>>) {
-    for (i in 1..emptyDays) {
-        displayedCalendarList.add(Pair("", ""))
     }
 }
 
@@ -425,6 +426,12 @@ fun HistoryCalendarScreenPreview() {
                 .fillMaxSize()
                 .background(screensBackgroundDark)
         )
-        { HistoryCalendarScreen(changeSelectedItemState = {}, streakList = listOf()) }
+        {
+            HistoryCalendarScreen(
+                changeSelectedItemState = {},
+                streakList = listOf(),
+                mapDateToHabits = emptyMap()
+            )
+        }
     }
 }
