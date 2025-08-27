@@ -63,6 +63,7 @@
     <string name="good_morning">Good morning</string>
     <string name="enter_habit_name">Enter habit name...</string>
     <string name="add">Add</string>
+    <string name="statistic_avg_completion_rate">Avg. completion rate</string>
 
 
 </resources>

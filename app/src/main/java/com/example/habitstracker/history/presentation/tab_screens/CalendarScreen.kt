@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,6 +24,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
@@ -34,9 +36,12 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -47,6 +52,8 @@ import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.MyText
+import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
+import com.example.habitstracker.core.presentation.theme.blueColor
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
 import com.example.habitstracker.habit.domain.DateHabitEntity
@@ -68,6 +75,15 @@ fun HistoryCalendarScreen(
     changeSelectedItemState: (index: Int) -> Unit,
     mapDateToHabits: Map<LocalDate, List<DateHabitEntity>>
 ) {
+    val monday = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+    val week = (0..6).map { monday.plusDays(it.toLong()) }
+
+    val completedPercentage = week.map { date ->
+        val habits = streakList.filter { LocalDate.parse(it.currentDate) == date }
+        if (habits.isEmpty()) 0f
+        else habits.count { it.isCompleted }.toFloat() / habits.size.toFloat()
+    }
+
     val coroutineScope = rememberCoroutineScope()
 
     var currentDate by remember {
@@ -133,7 +149,7 @@ fun HistoryCalendarScreen(
             }
         }
 
-        StatisticSection()
+        StatisticSection(completedPercentageList = completedPercentage)
     }
 }
 
@@ -393,32 +409,6 @@ private fun getBestStreak(streakList: List<DateHabitEntity>): Int {
 }
 
 @Composable
-private fun StatisticSection(modifier: Modifier = Modifier) {
-    Spacer(modifier = modifier.height(24.dp))
-
-    MyText(
-        modifier = modifier.padding(start = 16.dp),
-        text = "STATISTICS",
-        textSize = 18.sp
-    )
-
-    val formatter = DateTimeFormatter.ofPattern(
-        stringResource(id = R.string.month_and_year_pattern),
-        Locale.getDefault()
-    )
-
-    val formattedCurrentDate = LocalDate.now().format(formatter)
-    MyText(
-        modifier = modifier.padding(start = 16.dp, top = 6.dp),
-        text = formattedCurrentDate,
-        textSize = 14.sp,
-        color = Color.White.copy(0.7f)
-    )
-
-    CustomStatisticContainer(height = 280.dp)
-}
-
-@Composable
 private fun CalendarHorizontalPager(
     pagerState: PagerState,
     modifier: Modifier,
@@ -465,7 +455,43 @@ private fun CalendarHorizontalPager(
 }
 
 @Composable
-fun CustomStatisticContainer(modifier: Modifier = Modifier, height: Dp) {
+private fun StatisticSection(modifier: Modifier = Modifier, completedPercentageList: List<Float>) {
+    Spacer(modifier = modifier.height(24.dp))
+
+    MyText(
+        modifier = modifier.padding(start = 16.dp),
+        text = "STATISTICS",
+        textSize = 18.sp
+    )
+
+    val formatter = DateTimeFormatter.ofPattern(
+        stringResource(id = R.string.month_and_year_pattern),
+        Locale.getDefault()
+    )
+
+    val formattedCurrentDate = LocalDate.now().format(formatter)
+    MyText(
+        modifier = modifier.padding(start = 12.5.dp, top = 6.dp),
+        text = formattedCurrentDate,
+        textSize = 14.sp,
+        color = Color.White.copy(0.7f)
+    )
+
+    // percentage list of completed habits
+    //val completedHabitsList = listOf(0.66f, 0.33f, 1f, 0f, 0f, 0f, 0f)
+
+    CustomStatisticContainer(
+        height = 300.dp,
+        percentageList = completedPercentageList
+    )
+}
+
+@Composable
+fun CustomStatisticContainer(
+    modifier: Modifier = Modifier, height: Dp,
+    percentageList: List<Float>
+) {
+    val horizontalPadding = 12.dp
     Card(
         modifier = modifier
             .height(height)
@@ -476,21 +502,145 @@ fun CustomStatisticContainer(modifier: Modifier = Modifier, height: Dp) {
     ) {
         Row(
             modifier = modifier
-                .padding(top = 12.dp)
-                .padding(horizontal = 16.dp)
+                .padding(top = 16.dp)
+                .padding(horizontal = horizontalPadding)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            MyText(text = "Sep 15 - 21", textSize = 17.sp)
-            MyText(text = "91%", textSize = 15.sp)
+            val today = LocalDate.now()
+            val monday = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+            val sunday = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
+
+            Column(horizontalAlignment = Alignment.Start) {
+                MyText(
+                    text = "${monday.dayOfMonth} ${
+                        monday.month.toString()
+                            .take(3).lowercase().replaceFirstChar { it.uppercase() }
+                    } - ${sunday.dayOfMonth} ${
+                        monday.month.toString()
+                            .take(3).lowercase().replaceFirstChar { it.uppercase() }
+                    }",
+                    textSize = 17.sp
+                )
+                Text(
+                    text = today.year.toString(),
+                    fontSize = 12.5.sp,
+                    color = Color.White.copy(0.6f),
+                    fontFamily = PoppinsFontFamily,
+                )
+            }
+
+            Column(horizontalAlignment = Alignment.End) {
+                val avgCompleted = (percentageList.average() * 100).toInt().toString() + "%"
+                MyText(text = avgCompleted, textSize = 17.sp)
+                Text(
+                    text = stringResource(R.string.statistic_avg_completion_rate),
+                    fontSize = 12.5.sp,
+                    color = Color.White.copy(0.6f),
+                    fontFamily = PoppinsFontFamily,
+                )
+            }
         }
 
-        MyText(
-            modifier = modifier.padding(start = 70.dp, top = 100.dp),
-            text = "TODO execution diagram",
-            textSize = 15.sp
-        )
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(200.dp)
+                .padding(horizontal = horizontalPadding),
+            contentAlignment = Alignment.BottomStart
+        ) {
+            WeeklyBars(
+                percentageList = percentageList
+            )
+        }
     }
+}
+
+@Composable
+private fun WeeklyBars(
+    percentageList: List<Float>,
+    barWidth: Dp = 24.dp,
+    barMaxHeight: Dp = 150.dp,      // The standard height statistic column on all devices
+    topPadding: Dp = 4.dp,
+    labelGap: Dp = 8.dp,
+    labelSlot: Dp = 20.dp
+) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(topPadding + barMaxHeight + labelSlot)
+    ) {
+        // percent text
+        Canvas(modifier = Modifier.matchParentSize()) {
+            val stroke = 1.dp.toPx()
+            val chartHeight = barMaxHeight.toPx()
+            val textPaint = android.graphics.Paint().apply {
+                color = android.graphics.Color.WHITE
+                textSize = 28f
+                alpha = 180
+            }
+
+            for (percent in 20..100 step 20) {
+                val y = topPadding.toPx() + (1f - percent / 100f) * chartHeight
+
+                // line
+                drawLine(
+                    color = Color.Gray.copy(alpha = if (percent == 100) 0.7f else 0.4f),
+                    start = Offset(0f, y),
+                    end = Offset(size.width, y),
+                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f), 0f),
+                    strokeWidth = stroke
+                )
+
+                // percentage text on left
+                drawContext.canvas.nativeCanvas.drawText(
+                    "$percent%",
+                    0f,
+                    y - 4f, // трохи над лінією
+                    textPaint
+                )
+            }
+        }
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 32.dp), // відступ, щоб текст зліва не перекривав бари
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.Bottom
+        ) {
+            val weekDays = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+
+            percentageList.forEachIndexed { index, percentage ->
+                val clamped = percentage.coerceIn(0f, 1f)
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    val emptyBar = clamped == 0f
+                    Box(
+                        modifier = Modifier
+                            .width(barWidth)
+                            .height(barMaxHeight),
+                        contentAlignment = Alignment.BottomCenter
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight(if (emptyBar) 0.03f else clamped)
+                                .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
+                                .background(if (emptyBar) Color.Gray.copy(0.8f) else blueColor),
+                        )
+                    }
+                    Spacer(Modifier.height(labelGap))
+
+                    Text(
+                        text = weekDays[index],
+                        color = Color.White.copy(0.75f),
+                        fontFamily = PoppinsFontFamily,
+                        fontSize = 12.sp
+                    )
+                }
+            }
+        }
+    }
+
 }
 
 @Composable
