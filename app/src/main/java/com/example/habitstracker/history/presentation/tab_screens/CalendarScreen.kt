@@ -3,6 +3,7 @@ package com.example.habitstracker.history.presentation.tab_screens
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -65,6 +67,7 @@ import kotlinx.coroutines.launch
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
 import java.util.Locale
 
@@ -531,7 +534,14 @@ fun CustomStatisticContainer(
             }
 
             Column(horizontalAlignment = Alignment.End) {
-                val avgCompleted = (percentageList.average() * 100).toInt().toString() + "%"
+                val today = LocalDate.now()
+                val monday = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+                val todayIndex = ChronoUnit.DAYS.between(monday, today).toInt()
+                val pastDays = percentageList.take(todayIndex + 1)
+
+                val avgCompleted = if (pastDays.isNotEmpty()) {
+                    (pastDays.average() * 100).toInt().toString() + "%"
+                } else "0%"
                 MyText(text = avgCompleted, textSize = 17.sp)
                 Text(
                     text = stringResource(R.string.statistic_avg_completion_rate),
@@ -560,17 +570,18 @@ fun CustomStatisticContainer(
 private fun WeeklyBars(
     percentageList: List<Float>,
     barWidth: Dp = 24.dp,
-    barMaxHeight: Dp = 150.dp,      // The standard height statistic column on all devices
+    barMaxHeight: Dp = 150.dp,
     topPadding: Dp = 4.dp,
     labelGap: Dp = 8.dp,
     labelSlot: Dp = 20.dp
 ) {
+    var selectedIndex by remember { mutableStateOf<Int?>(null) }
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .height(topPadding + barMaxHeight + labelSlot)
     ) {
-        // percent text
         Canvas(modifier = Modifier.matchParentSize()) {
             val stroke = 1.dp.toPx()
             val chartHeight = barMaxHeight.toPx()
@@ -583,7 +594,6 @@ private fun WeeklyBars(
             for (percent in 20..100 step 20) {
                 val y = topPadding.toPx() + (1f - percent / 100f) * chartHeight
 
-                // line
                 drawLine(
                     color = Color.Gray.copy(alpha = if (percent == 100) 0.7f else 0.4f),
                     start = Offset(0f, y),
@@ -592,56 +602,97 @@ private fun WeeklyBars(
                     strokeWidth = stroke
                 )
 
-                // percentage text on left
                 drawContext.canvas.nativeCanvas.drawText(
                     "$percent%",
                     0f,
-                    y - 4f, // трохи над лінією
+                    y - 4f,
                     textPaint
                 )
             }
         }
+
+        // Бари
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 32.dp), // відступ, щоб текст зліва не перекривав бари
+                .padding(start = 24.dp, end = 4.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.Bottom
         ) {
             val weekDays = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
 
             percentageList.forEachIndexed { index, percentage ->
-                val clamped = percentage.coerceIn(0f, 1f)
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    val emptyBar = clamped == 0f
-                    Box(
-                        modifier = Modifier
-                            .width(barWidth)
-                            .height(barMaxHeight),
-                        contentAlignment = Alignment.BottomCenter
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .fillMaxHeight(if (emptyBar) 0.03f else clamped)
-                                .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
-                                .background(if (emptyBar) Color.Gray.copy(0.8f) else blueColor),
-                        )
-                    }
-                    Spacer(Modifier.height(labelGap))
+                BarWithTooltip(
+                    index = index,
+                    selectedIndex = selectedIndex,
+                    onSelect = { i ->
+                        selectedIndex = if (selectedIndex == i) null else i
+                    },
+                    percentage = percentage.coerceIn(0f, 1f),
+                    label = weekDays[index],
+                    barWidth = barWidth,
+                    barMaxHeight = barMaxHeight,
+                    labelGap = labelGap
+                )
+            }
+        }
+    }
+}
 
+@Composable
+fun BarWithTooltip(
+    index: Int,
+    selectedIndex: Int?,
+    onSelect: (Int) -> Unit,
+    percentage: Float,
+    label: String,
+    barWidth: Dp,
+    barMaxHeight: Dp,
+    labelGap: Dp
+) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Box(
+            modifier = Modifier
+                .width(barWidth)
+                .height(barMaxHeight),
+            contentAlignment = Alignment.BottomCenter
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fillMaxHeight(if (percentage == 0f) 0.03f else percentage)
+                    .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
+                    .background(if (percentage == 0f) Color.Gray.copy(0.8f) else blueColor)
+                    .clickable { onSelect(index) }
+            )
+
+            if (selectedIndex == index) {
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.TopCenter)
+                        .offset(y = (-24).dp)
+                ) {
                     Text(
-                        text = weekDays[index],
-                        color = Color.White.copy(0.75f),
+                        text = "${(percentage * 100).toInt()}%",
+                        color = Color.White,
+                        fontSize = 8.7.sp,
                         fontFamily = PoppinsFontFamily,
-                        fontSize = 12.sp
                     )
                 }
             }
         }
-    }
 
+        Spacer(Modifier.height(labelGap))
+
+        Text(
+            text = label,
+            color = Color.White.copy(0.75f),
+            fontFamily = PoppinsFontFamily,
+            fontSize = 12.sp
+        )
+    }
 }
+
 
 @Composable
 fun LazyColumnContainer(content: @Composable () -> Unit) {
