@@ -64,6 +64,9 @@
     <string name="enter_habit_name">Enter habit name...</string>
     <string name="add">Add</string>
     <string name="statistic_avg_completion_rate">Avg. completion rate</string>
+    <string name="achiev_habits_finished">Habits Finished</string>
+    <string name="achiev_perfect_days">Perfect Days</string>
+    <string name="achiev_beast_streak">Beast Streak</string>
 
 
 </resources>
