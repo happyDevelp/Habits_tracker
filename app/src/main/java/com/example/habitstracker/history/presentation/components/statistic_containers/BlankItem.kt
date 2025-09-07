@@ -22,7 +22,7 @@ fun getFilledBlankList(
     context: Context,
     currentStreak: Int,
     bestStreak: Int,
-    completedHabitsCount: Int,
+    totalCompletedHabits: Int,
     thisWeekSelectedHabits: Int,
     totalHabits: Int,
     percentage: Float,
@@ -42,7 +42,7 @@ fun getFilledBlankList(
             width = 125.dp,
             color = redColor,
             topText = context.getString(R.string.number_of_completed_habits),
-            middleText = "$completedHabitsCount",
+            middleText = "$totalCompletedHabits",
             bottomText = "This week: $thisWeekSelectedHabits"
         ),
 
@@ -51,7 +51,7 @@ fun getFilledBlankList(
             color = orangeColor,
             topText = context.getString(R.string.percentage_of_completed_habits),
             middleText = "${percentage.toInt()}%",
-            bottomText = "Habits: $completedHabitsCount/$totalHabits",
+            bottomText = "Habits: $totalCompletedHabits/$totalHabits",
         ),
 
         BlankItem(

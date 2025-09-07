@@ -165,7 +165,7 @@ private fun DrawStatisticContainers(streakList: List<DateHabitEntity>) {
     val bestStreak = getBestStreak(streakList)
 
     /** total completed habits  */
-    val completedHabitsCount = streakList.count { it.isCompleted }
+    val totalCompletedHabits = streakList.count { it.isCompleted }
 
 
     /** total completed habits this week */
@@ -181,7 +181,7 @@ private fun DrawStatisticContainers(streakList: List<DateHabitEntity>) {
 
     /** Percentage of completed habits */
     val totalHabits = streakList.size
-    val percentage = completedHabitsCount / totalHabits.toFloat() * 100
+    val percentage = totalCompletedHabits / totalHabits.toFloat() * 100
 
     /** Perfect days */
     val perfectDaysCounter by remember {
@@ -214,7 +214,7 @@ private fun DrawStatisticContainers(streakList: List<DateHabitEntity>) {
                 context = context,
                 currentStreak = currentStreak,
                 bestStreak = bestStreak,
-                completedHabitsCount = completedHabitsCount,
+                totalCompletedHabits = totalCompletedHabits,
                 thisWeekSelectedHabits = thisWeekSelectedHabits,
                 totalHabits = totalHabits,
                 percentage = percentage,

@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -39,6 +40,8 @@ import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.blueColor
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
+import com.example.habitstracker.habit.domain.DateHabitEntity
+import java.time.LocalDate
 
 @Preview(showSystemUi = true)
 @Composable
@@ -48,57 +51,75 @@ fun AchievementsScreenPreview(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .background(screensBackgroundDark)
     )
-    { AchievementsScreen() }
+    {
+        AchievementsScreen(
+            mapHabitsToDate = mapOf()
+        )
+    }
 }
 
 @Composable
-fun AchievementsScreen() {
+fun AchievementsScreen(mapHabitsToDate: Map<LocalDate, List<DateHabitEntity>>) {
+    val totalFinishedHabits = mapHabitsToDate
+
+        .values
+        .flatten()
+        .count { it.isCompleted }
+
+    val totalPerfectDays = mapHabitsToDate
+        .values
+        .count {
+            it.all { habit -> habit.isCompleted } // if all habits are completed
+        }
+
+    val bestStreak = getBestStreak(mapHabitsToDate)
+
     val sections = listOf(
         // first section
         AchievementSection(
             title = stringResource(R.string.achiev_habits_finished),
-            achievedText = "4/6 achieved",
             iconRes = R.drawable.dart_board,
-            targets = listOf("1", "10", "25", "100", "500", "1000")
+            targets = listOf("1", "10", "25", "100", "500", "1000"),
+            progress = totalFinishedHabits
         ),
 
         // second section
         AchievementSection(
             title = stringResource(R.string.achiev_perfect_days),
-            achievedText = "2/6 achieved",
             iconRes = R.drawable.calendar_hexagon,
-            targets = listOf("3", "10", "25", "50", "100", "250")
+            targets = listOf("3", "10", "25", "50", "100", "250"),
+            progress = totalPerfectDays
         ),
 
         //third section
         AchievementSection(
-            title = stringResource(R.string.achiev_beast_streak),
-            achievedText = "5/6 achieved",
+            title = stringResource(R.string.achiev_best_streak),
             iconRes = R.drawable.streak_achiev,
-            targets = listOf("3", "5", "10", "20", "50", "100")
+            targets = listOf("3", "5", "10", "20", "50", "100"),
+            progress = bestStreak
         ),
     )
 
     LazyColumn {
         items(sections.size) { index ->
-            HabitsFinishedBox(
-                section = sections[index],
-            )
+            HabitsBox(section = sections[index])
         }
     }
 }
 
 
 @Composable
-fun HabitsFinishedBox(
+fun HabitsBox(
     modifier: Modifier = Modifier,
     section: AchievementSection,
 ) {
+    val unlockedAchievements = section.targets.count { section.progress >= it.toInt() }
+    val totalAchievements = section.targets.size
+
     Card(
         modifier = modifier
             .padding(horizontal = 12.dp)
-            .padding(top = 12.dp)
-        ,
+            .padding(top = 12.dp),
         colors = CardDefaults.cardColors(containerColor = screenContainerBackgroundDark)
     ) {
         Column(
@@ -115,7 +136,7 @@ fun HabitsFinishedBox(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = section.achievedText,
+                text = "$unlockedAchievements/$totalAchievements unlocked",
                 fontSize = 11.sp,
                 fontFamily = PoppinsFontFamily,
                 color = Color.White.copy(0.7f),
@@ -144,10 +165,21 @@ fun HabitsFinishedBox(
                         Box(
                             contentAlignment = Alignment.Center
                         ) {
+                            val target = section.targets[index].toInt()
+                            val isAchieved = section.progress >= target
+
                             Icon(
                                 painter = painterResource(id = section.iconRes),
                                 contentDescription = "achievements picture",
-                                modifier = Modifier.size(85.dp),
+                                modifier = Modifier
+                                    .size(
+                                        if (section.title == "Best Streak") 80.dp else 85.dp
+                                    )
+                                    .graphicsLayer {
+                                        if (!isAchieved) {
+                                            alpha = 0.5f
+                                        }
+                                    },
                                 tint = Color.Unspecified
                             )
 
@@ -159,7 +191,7 @@ fun HabitsFinishedBox(
                                             when (section.title) {
                                                 stringResource(R.string.achiev_habits_finished) -> (-7).dp
                                                 stringResource(R.string.achiev_perfect_days) -> (-27).dp
-                                                stringResource(R.string.achiev_beast_streak) -> (2).dp
+                                                stringResource(R.string.achiev_best_streak) -> (2).dp
 
                                                 else -> 0.dp
                                             }
@@ -190,10 +222,10 @@ fun HabitsFinishedBox(
                                     stringResource(R.string.achiev_perfect_days) ->
                                         "${section.targets[index]} Perfect Days"
 
-                                    stringResource(R.string.achiev_beast_streak) ->
+                                    stringResource(R.string.achiev_best_streak) ->
                                         "${section.targets[index]} Days Streak"
 
-                                    else -> "0.dp"
+                                    else -> "Error achievementsScreen"
                                 },
                             fontSize = 11.sp,
                             fontFamily = PoppinsFontFamily,
@@ -211,13 +243,27 @@ fun HabitsFinishedBox(
     }
 }
 
+private fun getBestStreak(mapHabitsToDate: Map<LocalDate, List<DateHabitEntity>>): Int {
+    val dates = mapHabitsToDate.keys.toList().sorted()
+    var currentStreak = 0
+    var bestStreak = 0
+
+    for (date in dates) {
+        val habits = mapHabitsToDate[date].orEmpty()
+        val isPerfect = habits.isNotEmpty() && habits.all { it.isCompleted }
+
+        if (isPerfect) {
+            currentStreak++
+            bestStreak = maxOf(currentStreak, bestStreak)
+        } else currentStreak = 0
+    }
+
+    return bestStreak
+}
+
 data class AchievementSection(
     val title: String,
-    val achievedText: String,
     @DrawableRes val iconRes: Int,
     val targets: List<String>, // ["1","10","25",...]
-    val description: (String) -> String = { t ->
-        if (t == "1") "Finish Your Habit First Time"
-        else "Finish Habit For The $t Times"
-    }
+    val progress: Int
 )

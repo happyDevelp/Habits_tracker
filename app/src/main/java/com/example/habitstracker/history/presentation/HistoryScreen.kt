@@ -66,10 +66,6 @@ fun HistoryScreen(
     streakList: List<DateHabitEntity>,
     changeSelectedItemState: (index: Int) -> Unit
 ) {
-    val mapDateToHabits = remember(streakList) {
-        streakList.groupBy { LocalDate.parse(it.currentDate) }
-    }
-
     Scaffold(
         topBar = { TopBarHistoryScreen() },
         containerColor = screensBackgroundDark
@@ -125,6 +121,9 @@ fun HistoryScreen(
                     }
                 }
 
+                val mapHabitsToDate = remember(streakList) {
+                    streakList.groupBy { LocalDate.parse(it.currentDate) }
+                }
                 HorizontalPager(
                     modifier = modifier.fillMaxSize(),
                     verticalAlignment = Alignment.Top,
@@ -134,12 +133,12 @@ fun HistoryScreen(
                         0 -> HistoryCalendarScreen(
                             changeSelectedItemState = changeSelectedItemState,
                             streakList = streakList,
-                            mapDateToHabits = mapDateToHabits
+                            mapDateToHabits = mapHabitsToDate
                         )
 
                         1 -> AllHabitScreen()
 
-                        2 -> AchievementsScreen()
+                        2 -> AchievementsScreen(mapHabitsToDate = mapHabitsToDate)
                     }
                 }
             }
