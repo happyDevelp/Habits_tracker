@@ -611,7 +611,6 @@ private fun WeeklyBars(
             }
         }
 
-        // Бари
         Row(
             modifier = Modifier
                 .fillMaxSize()

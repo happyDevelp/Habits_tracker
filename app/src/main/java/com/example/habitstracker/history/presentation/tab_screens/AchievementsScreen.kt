@@ -18,13 +18,23 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
@@ -35,6 +45,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.blueColor
@@ -52,9 +63,7 @@ fun AchievementsScreenPreview(modifier: Modifier = Modifier) {
             .background(screensBackgroundDark)
     )
     {
-        AchievementsScreen(
-            mapHabitsToDate = mapOf()
-        )
+        AchievementsScreen(mapHabitsToDate = mapOf())
     }
 }
 
@@ -80,6 +89,10 @@ fun AchievementsScreen(mapHabitsToDate: Map<LocalDate, List<DateHabitEntity>>) {
             title = stringResource(R.string.achiev_habits_finished),
             iconRes = R.drawable.dart_board,
             targets = listOf("1", "10", "25", "100", "500", "1000"),
+            description = { target, index ->
+                if (index == 0) "Finish Your Habit First Time"
+                else "Finish Habit For The $target Times"
+            },
             progress = totalFinishedHabits
         ),
 
@@ -88,7 +101,10 @@ fun AchievementsScreen(mapHabitsToDate: Map<LocalDate, List<DateHabitEntity>>) {
             title = stringResource(R.string.achiev_perfect_days),
             iconRes = R.drawable.calendar_hexagon,
             targets = listOf("3", "10", "25", "50", "100", "250"),
-            progress = totalPerfectDays
+            progress = totalPerfectDays,
+            description = { target, index ->
+                "$target Perfect Days"
+            }
         ),
 
         //third section
@@ -96,7 +112,10 @@ fun AchievementsScreen(mapHabitsToDate: Map<LocalDate, List<DateHabitEntity>>) {
             title = stringResource(R.string.achiev_best_streak),
             iconRes = R.drawable.streak_achiev,
             targets = listOf("3", "5", "10", "20", "50", "100"),
-            progress = bestStreak
+            progress = bestStreak,
+            description = { target, index ->
+                "$target Days Streak"
+            }
         ),
     )
 
@@ -113,6 +132,20 @@ fun HabitsBox(
     modifier: Modifier = Modifier,
     section: AchievementSection,
 ) {
+    var showDialog by remember { mutableStateOf(false) }
+    var selectedIndex by remember { mutableIntStateOf(0) }
+
+    if (showDialog) {
+        AchievementDialog(
+            onDismiss = {
+                showDialog = false
+            },
+            date = "12.12.2023",
+            section = section,
+            index = selectedIndex,
+        )
+    }
+
     val unlockedAchievements = section.targets.count { section.progress >= it.toInt() }
     val totalAchievements = section.targets.size
 
@@ -158,6 +191,8 @@ fun HabitsBox(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
+                                showDialog = true
+                                selectedIndex = index
                             },
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -189,9 +224,9 @@ fun HabitsBox(
                                     .offset(
                                         y =
                                             when (section.title) {
-                                                stringResource(R.string.achiev_habits_finished) -> (-7).dp
-                                                stringResource(R.string.achiev_perfect_days) -> (-27).dp
-                                                stringResource(R.string.achiev_best_streak) -> (2).dp
+                                                stringResource(R.string.achiev_habits_finished) -> (-5).dp
+                                                stringResource(R.string.achiev_perfect_days) -> (-28).dp
+                                                stringResource(R.string.achiev_best_streak) -> (4).dp
 
                                                 else -> 0.dp
                                             }
@@ -205,28 +240,14 @@ fun HabitsBox(
                                     fontSize = 15.sp,
                                     fontFamily = PoppinsFontFamily,
                                     fontWeight = FontWeight.Bold,
-                                    color = blueColor,
+                                    color = if (isAchieved) blueColor else Color.Black.copy(0.5f),
                                     textAlign = TextAlign.Center
                                 )
                             }
                         }
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
-                            text =
-                                when (section.title) {
-                                    stringResource(R.string.achiev_habits_finished) -> {
-                                        if (index == 0) "Finish Your Habit First Time"
-                                        else "Finish Habit For The ${section.targets[index]} Times"
-                                    }
-
-                                    stringResource(R.string.achiev_perfect_days) ->
-                                        "${section.targets[index]} Perfect Days"
-
-                                    stringResource(R.string.achiev_best_streak) ->
-                                        "${section.targets[index]} Days Streak"
-
-                                    else -> "Error achievementsScreen"
-                                },
+                            text = section.description.invoke(section.targets[index], index),
                             fontSize = 11.sp,
                             fontFamily = PoppinsFontFamily,
                             lineHeight = 12.sp,
@@ -241,6 +262,156 @@ fun HabitsBox(
             }
         }
     }
+}
+
+@Composable
+fun AchievementDialog(
+    onDismiss: () -> Unit,
+    date: String,
+    section: AchievementSection,
+    index: Int
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        val isAchieved = section.progress >= section.targets[index].toInt()
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(16.dp),
+            colors = CardDefaults.cardColors(containerColor = screenContainerBackgroundDark)
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(100.dp)
+                    .background(
+                        brush = Brush.linearGradient(
+                            colors = if (isAchieved)
+                                listOf(Color(0xFF2196F3), Color(0xFF0D47A1))
+                            else
+                                listOf(Color(0x28D0D0D0), screenContainerBackgroundDark),
+                            start = Offset(0f, 0f),
+                            end = Offset(0f, Float.POSITIVE_INFINITY)
+                        ),
+                        shape = RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp),
+                    ),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = if (isAchieved) date else "Not achieved",
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    modifier = Modifier
+                        .background(
+                            color = Color(0x9C313747),
+                            shape = RoundedCornerShape(50)
+                        )
+                        .padding(horizontal = 16.dp, vertical = 6.dp)
+                )
+            }
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .padding(top = 16.dp, bottom = 38.dp)
+                    .fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(120.dp)
+                        .graphicsLayer {
+                            if (!isAchieved) {
+                                alpha = 0.5f
+                            }
+                        }
+                ) {
+                    Icon(
+                        painter = painterResource(id = section.iconRes),
+                        contentDescription = null,
+                        tint = Color.Unspecified,
+                        modifier = Modifier.size(140.dp)
+                    )
+                    Text(
+                        text = section.targets[index],
+                        fontSize = 18.sp,
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        color = if (isAchieved) blueColor else Color.Black.copy(0.8f),
+                        modifier = Modifier
+                            .align(Alignment.BottomCenter)
+                            .offset(
+                                y = when (section.title) {
+                                    stringResource(R.string.achiev_habits_finished) -> (-12).dp
+                                    stringResource(R.string.achiev_perfect_days) -> (-43).dp
+                                    stringResource(R.string.achiev_best_streak) -> (0).dp
+                                    else -> 0.dp
+                                }
+                            )
+                            .graphicsLayer {
+                                if (!isAchieved) {
+                                    alpha = 0.5f
+                                }
+                            }
+                    )
+                }
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Text(
+                    text = if (isAchieved) "Unlocked!" else "Keep Going!",
+                    fontSize = 18.sp,
+                    fontFamily = PoppinsFontFamily,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(18.dp))
+                Text(
+                    text = section.description.invoke(section.targets[index], index),
+                    fontSize = 14.sp,
+                    fontFamily = PoppinsFontFamily,
+                    color = Color.White.copy(0.8f),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(38.dp))
+
+                Button(
+                    modifier = Modifier
+                        .fillMaxWidth(0.7f)
+                        .height(50.dp),
+                    onClick = { onDismiss() },
+                    colors = ButtonDefaults.buttonColors(containerColor = blueColor),
+                    shape = RoundedCornerShape(50)
+                ) {
+                    Text(
+                        text = "CLOSE",
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White
+                    )
+                }
+            }
+        }
+
+    }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun AchievementDialogPreview() {
+    AchievementDialog(
+        onDismiss = {},
+        date = "Jan 27, 2025",
+        section = AchievementSection(
+            title = "Best Streak",
+            iconRes = R.drawable.dart_board,
+            targets = listOf("3", "5", "10", "20", "50", "100"),
+            progress = 1,
+            description = { target, index ->
+                "$target Days Streak"
+            }
+        ),
+        index = 1,
+    )
 }
 
 private fun getBestStreak(mapHabitsToDate: Map<LocalDate, List<DateHabitEntity>>): Int {
@@ -265,5 +436,6 @@ data class AchievementSection(
     val title: String,
     @DrawableRes val iconRes: Int,
     val targets: List<String>, // ["1","10","25",...]
-    val progress: Int
+    val progress: Int,
+    val description: (target: String, index: Int) -> String
 )
