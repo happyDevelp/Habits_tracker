@@ -182,7 +182,9 @@ private  fun AchievementDialogPreview() {
             progress = 1,
             description = { target, index ->
                 "$target Days Streak"
-            }
+            },
+            isNotified = emptyList(),
+            unlockedAt = emptyList()
         ),
         index = 1,
     )

@@ -40,6 +40,9 @@ class HistoryViewModel @Inject constructor(
         }
     }
 
+    suspend fun updateUnlockedDate(unlockedAt: String, isNotified: Boolean, id: Int) {
+        historyRepository.updateUnlockedDate(unlockedAt, isNotified, id)
+    }
     private fun getAllAchievements(): Flow<List<AchievementEntity>> {
         return historyRepository.getAllAchievements()
     }

@@ -12,7 +12,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
 import com.example.habitstracker.habit.domain.DateHabitEntity
-import com.example.habitstracker.habit.presentation.create_own_habit.components.all
 import com.example.habitstracker.history.domain.AchievementEntity
 import com.example.habitstracker.history.presentation.components.HabitBox
 import java.time.LocalDate
@@ -57,8 +56,9 @@ fun AchievementsScreenPreview(modifier: Modifier = Modifier) {
             .background(screensBackgroundDark)
     ) {
         AchievementsScreen(
-            mapHabitsToDate = mapOf(), // можна теж підкласти тестові дати
-            allAchievements = fakeAchievements
+            mapHabitsToDate = mapOf(),
+            allAchievements = fakeAchievements,
+            onUpdateUnlockedDate = { _, _, _ -> }
         )
     }
 }
@@ -66,10 +66,10 @@ fun AchievementsScreenPreview(modifier: Modifier = Modifier) {
 @Composable
 fun AchievementsScreen(
     mapHabitsToDate: Map<LocalDate, List<DateHabitEntity>>,
-    allAchievements: List<AchievementEntity>
+    allAchievements: List<AchievementEntity>,
+    onUpdateUnlockedDate: (unlockedAt: String, isNotified: Boolean, id: Int) -> Unit
 ) {
     val totalFinishedHabits = mapHabitsToDate
-
         .values
         .flatten()
         .count { it.isCompleted }
@@ -100,27 +100,33 @@ fun AchievementsScreen(
             description = { target, index ->
                 if (index == 0) "Finish Your Habit First Time"
                 else "Finish Habit For The $target Times"
-            }
+            },
+            isNotified = habitsFinished.map { it.isNotified },
+            unlockedAt = habitsFinished.map { it.unlockedAt }
         ),
         AchievementSection(
             title = "Perfect Days",
             iconRes = R.drawable.calendar_hexagon,
             targets = perfectDays.map { it.target.toString() },
             progress = totalPerfectDays,
-            description = { target, _ -> "$target Perfect Days" }
+            description = { target, _ -> "$target Perfect Days" },
+            isNotified = habitsFinished.map { it.isNotified },
+            unlockedAt = habitsFinished.map { it.unlockedAt }
         ),
         AchievementSection(
             title = "Best Streak",
             iconRes = R.drawable.streak_achiev,
             targets = bestStreaks.map { it.target.toString() },
             progress = bestStreak,
-            description = { target, _ -> "$target Days Streak" }
+            description = { target, _ -> "$target Days Streak" },
+            isNotified = habitsFinished.map { it.isNotified },
+            unlockedAt = habitsFinished.map { it.unlockedAt }
         )
     )
 
     LazyColumn {
         items(sections.size) { index ->
-            HabitBox(section = sections[index])
+            HabitBox(section = sections[index], onUpdateUnlockedDate = onUpdateUnlockedDate)
         }
     }
 }
@@ -148,5 +154,7 @@ data class AchievementSection(
     @DrawableRes val iconRes: Int,
     val targets: List<String>, // ["1","10","25",...]
     val progress: Int,
-    val description: (target: String, index: Int) -> String
+    val description: (target: String, index: Int) -> String,
+    val isNotified: List<Boolean>,
+    val unlockedAt: List<String>
 )

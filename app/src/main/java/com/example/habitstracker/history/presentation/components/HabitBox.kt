@@ -41,12 +41,14 @@ import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.blueColor
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.history.presentation.tab_screens.AchievementSection
+import java.time.LocalDate
 import kotlin.text.toInt
 
 @Composable
 fun HabitBox(
     modifier: Modifier = Modifier,
     section: AchievementSection,
+    onUpdateUnlockedDate: (unlockedAt: String, isNotified: Boolean, id: Int) -> Unit
 ) {
     var showDialog by remember { mutableStateOf(false) }
     var selectedIndex by remember { mutableIntStateOf(0) }
@@ -119,6 +121,14 @@ fun HabitBox(
                             val target = section.targets[index].toInt()
                             val isAchieved = section.progress >= target
 
+                            if (isAchieved && !section.isNotified[index]) {
+                                onUpdateUnlockedDate(
+                                    LocalDate.now().toString(),
+                                    isAchieved,
+                                    index
+                                )
+                            }
+
                             Icon(
                                 painter = painterResource(id = section.iconRes),
                                 contentDescription = "achievements picture",
@@ -190,7 +200,10 @@ fun HabitBoxPreview() {
             iconRes = R.drawable.dart_board,
             targets = listOf("10", "10", "10", "10", "10", "10", "10", "10", "10", "10"),
             progress = 10,
-            description = { a, _ -> a }
-        )
+            description = { a, _ -> a },
+            isNotified = emptyList(),
+            unlockedAt = emptyList()
+        ),
+        onUpdateUnlockedDate = { _, _, _ -> }
     )
 }

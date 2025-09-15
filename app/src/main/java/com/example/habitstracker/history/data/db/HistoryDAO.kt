@@ -2,7 +2,6 @@ package com.example.habitstracker.history.data.db
 
 import androidx.room.Dao
 import androidx.room.Query
-import androidx.room.Update
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.history.domain.AchievementEntity
 import kotlinx.coroutines.flow.Flow
@@ -10,8 +9,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 sealed interface HistoryDAO {
 
-    @Update
-    suspend fun updateAchievement(achievement: AchievementEntity)
+    @Query("update achievement_table set isNotified =:isNotified, unlockedAt =:unlockedAt where id =:id")
+    suspend fun updateUnlockedDate(unlockedAt: String, isNotified: Boolean, id: Int)
 
     @Query("select * from achievement_table")
     fun getAllAchievement(): Flow<List<AchievementEntity>>
