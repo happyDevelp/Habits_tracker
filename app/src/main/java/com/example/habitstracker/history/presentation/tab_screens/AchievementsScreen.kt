@@ -12,24 +12,62 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
 import com.example.habitstracker.habit.domain.DateHabitEntity
+import com.example.habitstracker.habit.presentation.create_own_habit.components.all
+import com.example.habitstracker.history.domain.AchievementEntity
 import com.example.habitstracker.history.presentation.components.HabitBox
 import java.time.LocalDate
 
 @Preview(showSystemUi = true)
 @Composable
 fun AchievementsScreenPreview(modifier: Modifier = Modifier) {
+    val fakeAchievements = listOf(
+        AchievementEntity(
+            id = 1,
+            section = "Habits Finished",
+            target = 1,
+            isNotified = false,
+            unlockedAt = "2025-01-27"
+        ),
+        AchievementEntity(
+            id = 2,
+            section = "Habits Finished",
+            target = 10,
+            isNotified = false,
+            unlockedAt = "2025-01-29"
+        ),
+        AchievementEntity(
+            id = 3,
+            section = "Perfect Days",
+            target = 3,
+            isNotified = true,
+            unlockedAt = "2025-01-28"
+        ),
+        AchievementEntity(
+            id = 4,
+            section = "Best Streak",
+            target = 5,
+            isNotified = false,
+            unlockedAt = "2025-01-30"
+        )
+    )
+
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(screensBackgroundDark)
-    )
-    {
-        AchievementsScreen(mapHabitsToDate = mapOf())
+    ) {
+        AchievementsScreen(
+            mapHabitsToDate = mapOf(), // можна теж підкласти тестові дати
+            allAchievements = fakeAchievements
+        )
     }
 }
 
 @Composable
-fun AchievementsScreen(mapHabitsToDate: Map<LocalDate, List<DateHabitEntity>>) {
+fun AchievementsScreen(
+    mapHabitsToDate: Map<LocalDate, List<DateHabitEntity>>,
+    allAchievements: List<AchievementEntity>
+) {
     val totalFinishedHabits = mapHabitsToDate
 
         .values
@@ -44,40 +82,40 @@ fun AchievementsScreen(mapHabitsToDate: Map<LocalDate, List<DateHabitEntity>>) {
 
     val bestStreak = getBestStreak(mapHabitsToDate)
 
+    val habitsFinished =
+        allAchievements.filter { it.section == stringResource(R.string.achiev_habits_finished) }
+    val perfectDays =
+        allAchievements.filter { it.section == stringResource(R.string.achiev_perfect_days) }
+    val bestStreaks =
+        allAchievements.filter { it.section == stringResource(R.string.achiev_best_streak) }
+
+    println("AAAA " + habitsFinished.map { it.target.toString() })
+
     val sections = listOf(
-        // first section
         AchievementSection(
-            title = stringResource(R.string.achiev_habits_finished),
+            title = "Habits Finished",
             iconRes = R.drawable.dart_board,
-            targets = listOf("1", "10", "25", "100", "500", "1000"),
+            targets = habitsFinished.map { it.target.toString() },
+            progress = totalFinishedHabits,
             description = { target, index ->
                 if (index == 0) "Finish Your Habit First Time"
                 else "Finish Habit For The $target Times"
-            },
-            progress = totalFinishedHabits
+            }
         ),
-
-        // second section
         AchievementSection(
-            title = stringResource(R.string.achiev_perfect_days),
+            title = "Perfect Days",
             iconRes = R.drawable.calendar_hexagon,
-            targets = listOf("3", "10", "25", "50", "100", "250"),
+            targets = perfectDays.map { it.target.toString() },
             progress = totalPerfectDays,
-            description = { target, index ->
-                "$target Perfect Days"
-            }
+            description = { target, _ -> "$target Perfect Days" }
         ),
-
-        //third section
         AchievementSection(
-            title = stringResource(R.string.achiev_best_streak),
+            title = "Best Streak",
             iconRes = R.drawable.streak_achiev,
-            targets = listOf("3", "5", "10", "20", "50", "100"),
+            targets = bestStreaks.map { it.target.toString() },
             progress = bestStreak,
-            description = { target, index ->
-                "$target Days Streak"
-            }
-        ),
+            description = { target, _ -> "$target Days Streak" }
+        )
     )
 
     LazyColumn {

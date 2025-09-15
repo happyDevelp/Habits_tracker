@@ -36,11 +36,12 @@ import androidx.compose.ui.unit.times
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.app.LocalNavController
-import com.example.habitstracker.history.presentation.components.scaffold.TopBarHistoryScreen
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
 import com.example.habitstracker.habit.domain.DateHabitEntity
+import com.example.habitstracker.history.domain.AchievementEntity
+import com.example.habitstracker.history.presentation.components.scaffold.TopBarHistoryScreen
 import com.example.habitstracker.history.presentation.tab_screens.AchievementsScreen
 import com.example.habitstracker.history.presentation.tab_screens.AllHabitScreen
 import com.example.habitstracker.history.presentation.tab_screens.HistoryCalendarScreen
@@ -53,17 +54,20 @@ fun HistoryScreenRoot(
     changeSelectedItemState: (index: Int) -> Unit
 ) {
     val streakList by historyViewModel.dateHabitList.collectAsStateWithLifecycle()
+    val allAchievements by historyViewModel.allAchievements.collectAsStateWithLifecycle()
+
     HistoryScreen(
         changeSelectedItemState = changeSelectedItemState,
-        streakList = streakList
+        streakList = streakList,
+        allAchievements = allAchievements
     )
-
 }
 
 @Composable
 fun HistoryScreen(
     modifier: Modifier = Modifier,
     streakList: List<DateHabitEntity>,
+    allAchievements: List<AchievementEntity>,
     changeSelectedItemState: (index: Int) -> Unit
 ) {
     Scaffold(
@@ -138,7 +142,10 @@ fun HistoryScreen(
 
                         1 -> AllHabitScreen()
 
-                        2 -> AchievementsScreen(mapHabitsToDate = mapHabitsToDate)
+                        2 -> AchievementsScreen(
+                            mapHabitsToDate = mapHabitsToDate,
+                            allAchievements = allAchievements
+                        )
                     }
                 }
             }
@@ -180,7 +187,11 @@ private fun HistoryScreenPreview() {
     val mockNavController = rememberNavController()
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
         AppTheme(darkTheme = true) {
-            HistoryScreen(changeSelectedItemState = {}, streakList = listOf())
+            HistoryScreen(
+                changeSelectedItemState = {},
+                allAchievements = emptyList(),
+                streakList = emptyList()
+            )
         }
     }
 }

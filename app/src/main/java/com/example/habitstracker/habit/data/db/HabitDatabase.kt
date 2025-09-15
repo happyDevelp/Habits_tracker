@@ -5,8 +5,9 @@ import androidx.room.RoomDatabase
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.history.data.db.HistoryDAO
+import com.example.habitstracker.history.domain.AchievementEntity
 
-@Database(entities = [HabitEntity::class, DateHabitEntity::class], exportSchema = true, version = 11)
+@Database(entities = [HabitEntity::class, DateHabitEntity::class, AchievementEntity::class], exportSchema = true, version = 12)
 abstract class HabitDatabase: RoomDatabase() {
     abstract val habitDao: HabitDao
     abstract val historyDao: HistoryDAO
