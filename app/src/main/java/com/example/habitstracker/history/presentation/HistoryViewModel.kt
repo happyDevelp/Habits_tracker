@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.history.domain.AchievementEntity
 import com.example.habitstracker.history.domain.HistoryRepository
+import com.example.habitstracker.history.domain.StatisticEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,8 +33,21 @@ class HistoryViewModel @Inject constructor(
         initialValue = emptyList()
     )
 
+    private val _statisticFlow = getStatistic()
+
+    val statistic: StateFlow<StatisticEntity> = _statisticFlow.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Lazily,
+        initialValue = StatisticEntity(0, 0, 0, 0)
+    )
+
     init {
         viewModelScope.launch {
+            val statistic = historyRepository.getStatisticOnce()
+            if (statistic == null) {
+                historyRepository.insertStatistic(StatisticEntity(0, 0, 0, 0))
+            }
+
             getAllDatesForStreak().collect { habits ->
                 _dateHabitsList.value = habits
             }
@@ -50,4 +64,13 @@ class HistoryViewModel @Inject constructor(
     private fun getAllDatesForStreak(): Flow<List<DateHabitEntity>> {
         return historyRepository.getAllDatesForStreak()
     }
+
+    private fun getStatistic() : Flow<StatisticEntity> {
+        return historyRepository.getStatistic()
+    }
+
+    suspend fun updateStatistic(completedHabits: Int, bestStreak: Int, perfectDays: Int) {
+        historyRepository.updateStatistic(completedHabits, bestStreak, perfectDays)
+    }
+
 }

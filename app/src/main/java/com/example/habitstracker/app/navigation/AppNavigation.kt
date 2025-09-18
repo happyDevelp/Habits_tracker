@@ -95,6 +95,7 @@ fun AppNavigation() {
                     val date = backStackEntry.savedStateHandle.get<String>("current_date")
                     TodayScreenRoot(
                         viewModel = mainScreenViewModel,
+                        historyViewModel = historyViewModel,
                         historyDate = if (date == null) args.historyDate else date
                     )
                 }

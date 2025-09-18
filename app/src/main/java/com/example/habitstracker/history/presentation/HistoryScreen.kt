@@ -64,6 +64,10 @@ fun HistoryScreenRoot(
             }
         }
 
+    val statistic = historyViewModel.statistic.collectAsStateWithLifecycle()
+
+    println("aaaa: $statistic")
+
     HistoryScreen(
         changeSelectedItemState = changeSelectedItemState,
         streakList = streakList,

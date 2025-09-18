@@ -359,7 +359,7 @@ private fun getCurrentStreak(streakList: List<DateHabitEntity>): Int {
     return streak
 }
 
-private fun getBestStreak(streakList: List<DateHabitEntity>): Int {
+fun getBestStreak(streakList: List<DateHabitEntity>): Int {
     if (streakList.isEmpty()) return 0
 
     // Group all habit entries by their date

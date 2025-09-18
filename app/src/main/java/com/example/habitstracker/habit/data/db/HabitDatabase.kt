@@ -6,29 +6,34 @@ import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.history.data.db.HistoryDAO
 import com.example.habitstracker.history.domain.AchievementEntity
+import com.example.habitstracker.history.domain.StatisticEntity
 
-@Database(entities = [HabitEntity::class, DateHabitEntity::class, AchievementEntity::class], exportSchema = true, version = 12)
-abstract class HabitDatabase: RoomDatabase() {
+@Database(
+    entities = [HabitEntity::class, DateHabitEntity::class, AchievementEntity::class, StatisticEntity::class],
+    exportSchema = true,
+    version = 14
+)
+abstract class HabitDatabase : RoomDatabase() {
     abstract val habitDao: HabitDao
     abstract val historyDao: HistoryDAO
 
     // Moved to AppModule using DI
-   /* companion object {
-        @Volatile
-        private var INSTANCE: HabitDatabase? = null
+    /* companion object {
+         @Volatile
+         private var INSTANCE: HabitDatabase? = null
 
-        fun getDatabase(context: Context): HabitDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    HabitDatabase::class.java,
-                    TABLE_NAME
-                )
-                    .fallbackToDestructiveMigration()
-                    .build()
-                INSTANCE = instance
-                instance
-            }
-        }
-    }*/
+         fun getDatabase(context: Context): HabitDatabase {
+             return INSTANCE ?: synchronized(this) {
+                 val instance = Room.databaseBuilder(
+                     context.applicationContext,
+                     HabitDatabase::class.java,
+                     TABLE_NAME
+                 )
+                     .fallbackToDestructiveMigration()
+                     .build()
+                 INSTANCE = instance
+                 instance
+             }
+         }
+     }*/
 }

@@ -9,4 +9,11 @@ interface HistoryRepository {
     fun getAllAchievements(): Flow<List<AchievementEntity>>
 
     fun getAllDatesForStreak(): Flow<List<DateHabitEntity>>
+
+    suspend fun insertStatistic(statisticEntity: StatisticEntity)
+
+    suspend fun updateStatistic(completedHabits: Int, bestStreak: Int, perfectDays: Int)
+    fun getStatistic(): Flow<StatisticEntity>
+
+    suspend fun getStatisticOnce(): StatisticEntity?
 }
