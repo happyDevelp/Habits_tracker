@@ -22,9 +22,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -55,14 +53,11 @@ import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.core.presentation.utils.shownHabitExample1
 import com.example.habitstracker.core.presentation.utils.shownHabitExample2
 import com.example.habitstracker.core.presentation.utils.shownHabitExample3
-import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.ShownHabit
 import com.example.habitstracker.habit.presentation.today_main.components.HabitItem
 import com.example.habitstracker.habit.presentation.today_main.components.TopBarMainScreen
 import com.example.habitstracker.habit.presentation.today_main.components.calendar.CalendarRowList
-import com.example.habitstracker.history.domain.StatisticEntity
 import com.example.habitstracker.history.presentation.HistoryViewModel
-import com.example.habitstracker.history.presentation.tab_screens.getBestStreak
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -73,21 +68,18 @@ fun TodayScreenRoot(
     historyDate: String?
 ) {
     val coroutineScope = rememberCoroutineScope()
-    val statistic by historyViewModel.statistic.collectAsStateWithLifecycle() // поточна статистика з БД
 
-    var newRecordMessage by remember { mutableStateOf<String?>(null) } // локальний тригер діалогу
-
-    var isHistoryHandled: Boolean = false
-    LaunchedEffect(historyDate) {
-        if (historyDate != null && !isHistoryHandled) {
-            viewModel.updateSelectedDate(LocalDate.parse(historyDate))
-            isHistoryHandled = true
-        }
-    }
     val habitListState by viewModel.habitsListState.collectAsStateWithLifecycle()
-    val streakList by historyViewModel.dateHabitList.collectAsStateWithLifecycle()
     val dateState by viewModel.selectedDate.collectAsStateWithLifecycle()
+    val mapDateToHabits by viewModel.dateHabitsMap.collectAsStateWithLifecycle()
 
+    println("AAAA: habitListState: $habitListState, dateState: $dateState, mapDateToHabit: $mapDateToHabits")
+
+
+    var isOpen by remember { mutableStateOf(false) }
+    val onDismiss = { isOpen = false }
+
+    val allAchievements = historyViewModel.allAchievements.collectAsStateWithLifecycle().value
 
     val onSelectClick: (id: Int, isDone: Boolean, selectDate: String) -> Unit =
         { id, isDone, selectDate ->
@@ -103,27 +95,46 @@ fun TodayScreenRoot(
                         this[LocalDate.parse(selectDate)] = updatedHabits
                     }
 
+                // 1. count
                 val completedHabits = map.values.flatten().count { it.isSelected }
                 val bestStreak = getBestStreak(map)
                 val perfectDays =
                     map.values.count { habits -> habits.isNotEmpty() && habits.all { it.isSelected } }
 
-                // 3) перевірити рекорд **до** запису в БД (і лише у відповідь на дію),
-                //    встановлюємо message тільки якщо ще не показаний
-                if (newRecordMessage == null) {
-                    // пріоритет вибирай сам: тут — спочатку streak, потім perfect, потім completed
-                    when {
-                        bestStreak > statistic.bestStreak ->
-                            newRecordMessage = "Найкращий стрік: $bestStreak"
-                        perfectDays > statistic.perfectDays ->
-                            newRecordMessage = "Perfect days: $perfectDays"
-                        completedHabits > statistic.completedHabits ->
-                            newRecordMessage = "Total completed habits: $completedHabits"
-                    }
+                // 2.Metric dictionary by sections
+                val metrics = mapOf(
+                    AchievementSection.HABITS_FINISHED to completedHabits,
+                    AchievementSection.BEST_STREAK to bestStreak,
+                    AchievementSection.PERFECT_DAYS to perfectDays,
+                )
+
+                // 3. Find all the achievements that are now done but not notified yet
+                val newlyUnlocked = allAchievements.filter { ach ->
+                    val section = AchievementSection.fromString(ach.section)
+                    !ach.isNotified && (metrics[section] ?: 0) >= ach.target
                 }
 
-                // 4) оновити БД зі статистикою (після того, як вирішили показати діалог)
-                historyViewModel.updateStatistic(completedHabits, bestStreak, perfectDays)
+                // 4.If several are one - choose one (policy: priority by section)
+                // Example -Priority: Best Streak -> Perfect Days -> Habits Finished
+                fun sectionPriority(section: String) = when (section) {
+                    "Best Streak" -> 0
+                    "Perfect Days" -> 1
+                    "Habits Finished" -> 2
+                    else -> 3
+                }
+
+                val toShow = newlyUnlocked.sortedWith(
+                    compareBy(
+                        { sectionPriority(it.section) }, { it.target }
+                    )
+                ).firstOrNull()
+
+                // If there are new unlocked achievement and they are isNotified then we show a dialogue and update the data
+                if (toShow != null) {
+                    val today = LocalDate.now().toString()
+                    historyViewModel.updateUnlockedDate(today, true, toShow.id)
+                    isOpen = true
+                }
             }
         }
 
@@ -137,19 +148,16 @@ fun TodayScreenRoot(
         viewModel.updateSelectedDate(newDate)
     }
 
-    val mapDateToHabit by viewModel.dateHabitsMap.collectAsStateWithLifecycle()
 
     TodayScreen(
         habitListState = habitListState,
         dateState = dateState,
-        mapDateToHabit = mapDateToHabit, // може прибрати?
-        //streakList = streakList,
-        statistic = statistic,
-        newRecordMessage = newRecordMessage,
-        onDismissNewRecord = { newRecordMessage = null },
+        mapDateToHabits = mapDateToHabits,
         onSelectClick = onSelectClick,
         onDeleteClick = onDeleteClick,
-        onDateChangeClick = onDateChangeClick
+        onDateChangeClick = onDateChangeClick,
+        onDismiss = onDismiss,
+        isOpen = isOpen
     )
 }
 
@@ -158,19 +166,18 @@ fun TodayScreen(
     modifier: Modifier = Modifier,
     habitListState: List<ShownHabit>,
     dateState: LocalDate,
-    statistic: StatisticEntity,
-    newRecordMessage: String?,
-    onDismissNewRecord: () -> Unit,
-    mapDateToHabit: Map<LocalDate, List<ShownHabit>>,
+    mapDateToHabits: Map<LocalDate, List<ShownHabit>>,
     onSelectClick: (id: Int, isDone: Boolean, selectDate: String) -> Unit,
     onDeleteClick: (id: Int) -> Unit,
-    onDateChangeClick: (newDate: LocalDate) -> Unit
+    onDateChangeClick: (newDate: LocalDate) -> Unit,
+    isOpen: Boolean,
+    onDismiss: () -> Unit
 ) {
-
     val navController = LocalNavController.current
-// показ діалогу лише коли newRecordMessage не null
-    if (newRecordMessage != null) {
-        Dialog(onDismissRequest = onDismissNewRecord) {
+
+    if (isOpen == true) {
+        Dialog(onDismissRequest = { onDismiss() }) {
+
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -178,16 +185,22 @@ fun TodayScreen(
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = screenContainerBackgroundDark)
             ) {
-                Column(modifier = Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    modifier = Modifier.padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     Text(
-                        text = newRecordMessage,
+                        text = "TEST TEXT",
                         color = Color.White,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    Button(onClick = onDismissNewRecord, colors = ButtonDefaults.buttonColors(containerColor = blueColor)) {
+                    Button(
+                        onClick = { onDismiss() },
+                        colors = ButtonDefaults.buttonColors(containerColor = blueColor)
+                    ) {
                         Text("CLOSE", color = Color.White, fontWeight = FontWeight.Bold)
                     }
                 }
@@ -233,7 +246,7 @@ fun TodayScreen(
                     }
 
                     CalendarRowList(
-                        mapDateToHabit = mapDateToHabit,
+                        mapDateToHabit = mapDateToHabits,
                         onDateChangeClick = { newDate ->
                             onDateChangeClick(newDate)
                         },
@@ -326,10 +339,7 @@ fun TodayScreen(
                             }
                         }
                     }
-
-
                 }
-
             }
         }
     }
@@ -354,6 +364,19 @@ fun getBestStreak(mapHabitsToDate: Map<LocalDate, List<ShownHabit>>): Int {
     return bestStreak
 }
 
+enum class AchievementSection{
+    HABITS_FINISHED, BEST_STREAK, PERFECT_DAYS;
+
+    companion object {
+        fun fromString(section: String) = when (section) {
+            "Habits Finished" -> HABITS_FINISHED
+            "Best Streak" -> BEST_STREAK
+            "Perfect Days" -> PERFECT_DAYS
+            else -> throw IllegalArgumentException("Invalid section: $section")
+        }
+    }
+}
+
 @Composable
 @Preview(showSystemUi = false)
 private fun Preview() {
@@ -372,11 +395,9 @@ private fun Preview() {
                 onDeleteClick = { _ -> },
                 onDateChangeClick = {},
                 dateState = LocalDate.now(),
-                mapDateToHabit = emptyMap(),
-                //streakList = emptyList(),
-                statistic = StatisticEntity(0,0,0,0),
-                newRecordMessage = null,
-                onDismissNewRecord = {}
+                mapDateToHabits = emptyMap(),
+                isOpen = false,
+                onDismiss = {}
             )
         }
     }

@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 14,
-    "identityHash": "3d7ea73b28e855a2e7ed346245df2c34",
+    "version": 16,
+    "identityHash": "f2fa97982ce3387962bbe833abe55dc5",
     "entities": [
       {
         "tableName": "habit_table",
@@ -153,50 +153,12 @@
         },
         "indices": [],
         "foreignKeys": []
-      },
-      {
-        "tableName": "statistic_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `completedHabits` INTEGER NOT NULL, `bestStreak` INTEGER NOT NULL, `perfectDays` INTEGER NOT NULL, PRIMARY KEY(`id`))",
-        "fields": [
-          {
-            "fieldPath": "id",
-            "columnName": "id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "completedHabits",
-            "columnName": "completedHabits",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "bestStreak",
-            "columnName": "bestStreak",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "perfectDays",
-            "columnName": "perfectDays",
-            "affinity": "INTEGER",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
-        },
-        "indices": [],
-        "foreignKeys": []
       }
     ],
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3d7ea73b28e855a2e7ed346245df2c34')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f2fa97982ce3387962bbe833abe55dc5')"
     ]
   }
 }

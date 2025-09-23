@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.history.domain.AchievementEntity
 import com.example.habitstracker.history.domain.HistoryRepository
-import com.example.habitstracker.history.domain.StatisticEntity
+import com.example.habitstracker.history.domain.achievementsList
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,21 +33,10 @@ class HistoryViewModel @Inject constructor(
         initialValue = emptyList()
     )
 
-    private val _statisticFlow = getStatistic()
-
-    val statistic: StateFlow<StatisticEntity> = _statisticFlow.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Lazily,
-        initialValue = StatisticEntity(0, 0, 0, 0)
-    )
-
     init {
-        viewModelScope.launch {
-            val statistic = historyRepository.getStatisticOnce()
-            if (statistic == null) {
-                historyRepository.insertStatistic(StatisticEntity(0, 0, 0, 0))
-            }
+        firstEntryDbFilling()
 
+        viewModelScope.launch {
             getAllDatesForStreak().collect { habits ->
                 _dateHabitsList.value = habits
             }
@@ -57,6 +46,7 @@ class HistoryViewModel @Inject constructor(
     suspend fun updateUnlockedDate(unlockedAt: String, isNotified: Boolean, id: Int) {
         historyRepository.updateUnlockedDate(unlockedAt, isNotified, id)
     }
+
     private fun getAllAchievements(): Flow<List<AchievementEntity>> {
         return historyRepository.getAllAchievements()
     }
@@ -65,12 +55,12 @@ class HistoryViewModel @Inject constructor(
         return historyRepository.getAllDatesForStreak()
     }
 
-    private fun getStatistic() : Flow<StatisticEntity> {
-        return historyRepository.getStatistic()
+    private fun firstEntryDbFilling() {
+        viewModelScope.launch {
+            val achievements = historyRepository.getAchievementOnce()
+            if (achievements == null) {
+                historyRepository.insertAchievements(achievementsList)
+            }
+        }
     }
-
-    suspend fun updateStatistic(completedHabits: Int, bestStreak: Int, perfectDays: Int) {
-        historyRepository.updateStatistic(completedHabits, bestStreak, perfectDays)
-    }
-
 }
