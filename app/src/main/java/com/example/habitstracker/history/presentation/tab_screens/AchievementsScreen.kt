@@ -16,58 +16,10 @@ import com.example.habitstracker.history.domain.AchievementEntity
 import com.example.habitstracker.history.presentation.components.HabitBox
 import java.time.LocalDate
 
-@Preview(showSystemUi = true)
-@Composable
-fun AchievementsScreenPreview(modifier: Modifier = Modifier) {
-    val fakeAchievements = listOf(
-        AchievementEntity(
-            id = 1,
-            section = "Habits Finished",
-            target = 1,
-            isNotified = false,
-            unlockedAt = "2025-01-27"
-        ),
-        AchievementEntity(
-            id = 2,
-            section = "Habits Finished",
-            target = 10,
-            isNotified = false,
-            unlockedAt = "2025-01-29"
-        ),
-        AchievementEntity(
-            id = 3,
-            section = "Perfect Days",
-            target = 3,
-            isNotified = true,
-            unlockedAt = "2025-01-28"
-        ),
-        AchievementEntity(
-            id = 4,
-            section = "Best Streak",
-            target = 5,
-            isNotified = false,
-            unlockedAt = "2025-01-30"
-        )
-    )
-
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(screensBackgroundDark)
-    ) {
-        AchievementsScreen(
-            mapHabitsToDate = mapOf(),
-            allAchievements = fakeAchievements,
-            onUpdateUnlockedDate = { _, _, _ -> }
-        )
-    }
-}
-
 @Composable
 fun AchievementsScreen(
     mapHabitsToDate: Map<LocalDate, List<DateHabitEntity>>,
     allAchievements: List<AchievementEntity>,
-    onUpdateUnlockedDate: (unlockedAt: String, isNotified: Boolean, id: Int) -> Unit
 ) {
     val totalFinishedHabits = mapHabitsToDate
         .values
@@ -126,7 +78,7 @@ fun AchievementsScreen(
 
     LazyColumn {
         items(sections.size) { index ->
-            HabitBox(section = sections[index], onUpdateUnlockedDate = onUpdateUnlockedDate)
+            HabitBox(section = sections[index], allAchievements = allAchievements)
         }
     }
 }
@@ -158,3 +110,49 @@ data class AchievementSection(
     val isNotified: List<Boolean>,
     val unlockedAt: List<String>
 )
+
+@Preview(showSystemUi = true)
+@Composable
+fun AchievementsScreenPreview(modifier: Modifier = Modifier) {
+    val fakeAchievements = listOf(
+        AchievementEntity(
+            id = 1,
+            section = "Habits Finished",
+            target = 1,
+            isNotified = false,
+            unlockedAt = "2025-01-27"
+        ),
+        AchievementEntity(
+            id = 2,
+            section = "Habits Finished",
+            target = 10,
+            isNotified = false,
+            unlockedAt = "2025-01-29"
+        ),
+        AchievementEntity(
+            id = 3,
+            section = "Perfect Days",
+            target = 3,
+            isNotified = true,
+            unlockedAt = "2025-01-28"
+        ),
+        AchievementEntity(
+            id = 4,
+            section = "Best Streak",
+            target = 5,
+            isNotified = false,
+            unlockedAt = "2025-01-30"
+        )
+    )
+
+    Box(
+        modifier = modifier
+            .fillMaxSize()
+            .background(screensBackgroundDark)
+    ) {
+        AchievementsScreen(
+            mapHabitsToDate = mapOf(),
+            allAchievements = fakeAchievements,
+        )
+    }
+}

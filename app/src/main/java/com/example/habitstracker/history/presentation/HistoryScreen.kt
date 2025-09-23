@@ -57,18 +57,10 @@ fun HistoryScreenRoot(
     val streakList by historyViewModel.dateHabitList.collectAsStateWithLifecycle()
     val allAchievements by historyViewModel.allAchievements.collectAsStateWithLifecycle()
 
-    val onUpdateUnlockedDate: (unlockedAt: String, isNotified: Boolean, id: Int) -> Unit =
-        { unlockedAt, isNotified, id ->
-            coroutineScope.launch {
-                historyViewModel.updateUnlockedDate(unlockedAt, isNotified, id)
-            }
-        }
-
     HistoryScreen(
         changeSelectedItemState = changeSelectedItemState,
         streakList = streakList,
         allAchievements = allAchievements,
-        onUpdateUnlockedDate = onUpdateUnlockedDate
     )
 }
 
@@ -78,7 +70,6 @@ fun HistoryScreen(
     streakList: List<DateHabitEntity>,
     allAchievements: List<AchievementEntity>,
     changeSelectedItemState: (index: Int) -> Unit,
-    onUpdateUnlockedDate: (unlockedAt: String, isNotified: Boolean, id: Int) -> Unit
 ) {
     Scaffold(
         topBar = { TopBarHistoryScreen() },
@@ -155,7 +146,6 @@ fun HistoryScreen(
                         2 -> AchievementsScreen(
                             mapHabitsToDate = mapHabitsToDate,
                             allAchievements = allAchievements,
-                            onUpdateUnlockedDate = onUpdateUnlockedDate
                         )
                     }
                 }
@@ -202,7 +192,6 @@ private fun HistoryScreenPreview() {
                 changeSelectedItemState = {},
                 allAchievements = emptyList(),
                 streakList = emptyList(),
-                onUpdateUnlockedDate = { _, _, _ -> }
             )
         }
     }

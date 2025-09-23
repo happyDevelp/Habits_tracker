@@ -22,6 +22,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -67,14 +68,19 @@ fun TodayScreenRoot(
     historyViewModel: HistoryViewModel,
     historyDate: String?
 ) {
+    var isHistoryHandled: Boolean = false
+    LaunchedEffect(historyDate) {
+        if (historyDate != null && !isHistoryHandled) {
+            viewModel.updateSelectedDate(LocalDate.parse(historyDate))
+            isHistoryHandled = true
+        }
+    }
+
     val coroutineScope = rememberCoroutineScope()
 
     val habitListState by viewModel.habitsListState.collectAsStateWithLifecycle()
     val dateState by viewModel.selectedDate.collectAsStateWithLifecycle()
     val mapDateToHabits by viewModel.dateHabitsMap.collectAsStateWithLifecycle()
-
-    println("AAAA: habitListState: $habitListState, dateState: $dateState, mapDateToHabit: $mapDateToHabits")
-
 
     var isOpen by remember { mutableStateOf(false) }
     val onDismiss = { isOpen = false }
@@ -148,7 +154,6 @@ fun TodayScreenRoot(
         viewModel.updateSelectedDate(newDate)
     }
 
-
     TodayScreen(
         habitListState = habitListState,
         dateState = dateState,
@@ -176,8 +181,7 @@ fun TodayScreen(
     val navController = LocalNavController.current
 
     if (isOpen == true) {
-        Dialog(onDismissRequest = { onDismiss() }) {
-
+        Dialog(onDismissRequest = { onDismiss() }) {``
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
