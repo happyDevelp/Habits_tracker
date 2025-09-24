@@ -1,6 +1,7 @@
 package com.example.habitstracker.habit.presentation.today_main
 
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,7 +11,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,6 +21,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,8 +34,13 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -45,12 +54,14 @@ import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.theme.AppTheme
+import com.example.habitstracker.core.presentation.theme.BoldFontFamily
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.QuickSandFontFamily
 import com.example.habitstracker.core.presentation.theme.blueColor
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
 import com.example.habitstracker.core.presentation.utils.TestTags
+import com.example.habitstracker.core.presentation.utils.clickWithRipple
 import com.example.habitstracker.core.presentation.utils.shownHabitExample1
 import com.example.habitstracker.core.presentation.utils.shownHabitExample2
 import com.example.habitstracker.core.presentation.utils.shownHabitExample3
@@ -68,7 +79,7 @@ fun TodayScreenRoot(
     historyViewModel: HistoryViewModel,
     historyDate: String?
 ) {
-    var isHistoryHandled: Boolean = false
+    var isHistoryHandled = false
     LaunchedEffect(historyDate) {
         if (historyDate != null && !isHistoryHandled) {
             viewModel.updateSelectedDate(LocalDate.parse(historyDate))
@@ -181,32 +192,135 @@ fun TodayScreen(
     val navController = LocalNavController.current
 
     if (isOpen == true) {
-        Dialog(onDismissRequest = { onDismiss() }) {``
+        Dialog(onDismissRequest = { onDismiss() }) {
             Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
+                modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(containerColor = screenContainerBackgroundDark)
             ) {
-                Column(
-                    modifier = Modifier.padding(20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(100.dp)
+                        .background(
+                            brush = Brush.linearGradient(
+                                colors = listOf(Color(0xFF2196F3), Color(0xFF0D47A1)),
+                                start = Offset(0f, 0f),
+                                end = Offset(0f, Float.POSITIVE_INFINITY)
+                            ),
+                            shape = RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp),
+                        ),
+                    contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "TEST TEXT",
-                        color = Color.White,
-                        fontSize = 18.sp,
+                        text = "Congratulations!",
+                        fontSize = 21.sp,
                         fontWeight = FontWeight.Bold,
+                        color = Color.White,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
+                    )
+                }
+
+                Column(
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .padding(top = 16.dp)
+                        .fillMaxWidth(),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier.size(150.dp)
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.dart_board),
+                            contentDescription = null,
+                            tint = Color.Unspecified,
+                            modifier = Modifier.size(150.dp)
+                        )
+                        Text(
+                            text = "100"/*section.targets[index]*/,
+                            fontSize = 20.sp,
+                            fontFamily = PoppinsFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            color = blueColor,
+                            modifier = Modifier
+                                .align(Alignment.BottomCenter)
+                                .offset(
+                                    y = (-16.dp)/*when (section.title) {
+                                        stringResource(R.string.achiev_habits_finished) -> (-12).dp
+                                        stringResource(R.string.achiev_perfect_days) -> (-43).dp
+                                        stringResource(R.string.achiev_best_streak) -> (0).dp
+                                        else -> 0.dp
+                                    }*/
+                                )
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Text(
+                        text = stringResource(R.string.new_achievement),
+                        fontSize = 20.sp,
+                        fontFamily = PoppinsFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.White,
                         textAlign = TextAlign.Center
                     )
-                    Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Text(
+                        text = "Finish Habit 100 Times"/*section.description.invoke(section.targets[index], index)*/,
+                        fontSize = 14.sp,
+                        fontFamily = PoppinsFontFamily,
+                        color = Color.White.copy(0.8f),
+                        textAlign = TextAlign.Center
+                    )
+                    Spacer(modifier = Modifier.height(26.dp))
+
                     Button(
+                        modifier = Modifier
+                            .fillMaxWidth(0.7f)
+                            .height(55.dp),
                         onClick = { onDismiss() },
-                        colors = ButtonDefaults.buttonColors(containerColor = blueColor)
+                        colors = ButtonDefaults.buttonColors(containerColor = blueColor),
+                        shape = RoundedCornerShape(50)
                     ) {
-                        Text("CLOSE", color = Color.White, fontWeight = FontWeight.Bold)
+                        Text(
+                            text = "CLOSE",
+                            fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
                     }
+                    Spacer(modifier = Modifier.height(2.dp))
+
+                    Text(
+                        text = stringResource(R.string.my_achievements)/*section.description.invoke(section.targets[index], index)*/,
+                        fontSize = 14.sp,
+                        fontFamily = BoldFontFamily,
+                        fontWeight = FontWeight.Thin,
+                        color = Color.White,
+                        textAlign = TextAlign.Center,
+                        modifier = Modifier
+                            .drawBehind {
+                                val underlineHeight = 1.dp.toPx() // Line thickness
+                                val y = size.height
+                                drawRect(
+                                    color = Color.White.copy(0.85f),
+                                    topLeft = Offset(4.dp.toPx(), y - underlineHeight),
+                                    size = Size(size.width - 8.dp.toPx(), underlineHeight - 2.7.dp.toPx())
+                                )
+                            }
+                            .clickWithRipple(Color.White) {
+                                navController.navigate(Route.History) {
+                                    popUpTo(Route.BottomBarGraph) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true // do not create a pile of historyScreen when repeated clicks
+                                    restoreState = true // restore the state if the tab was already opened before
+                                }
+                            }
+                            .padding(bottom = 4.dp, top = 2.dp, start = 4.dp, end = 4.dp)
+                    )
                 }
             }
         }
@@ -368,7 +482,7 @@ fun getBestStreak(mapHabitsToDate: Map<LocalDate, List<ShownHabit>>): Int {
     return bestStreak
 }
 
-enum class AchievementSection{
+enum class AchievementSection {
     HABITS_FINISHED, BEST_STREAK, PERFECT_DAYS;
 
     companion object {
@@ -400,7 +514,7 @@ private fun Preview() {
                 onDateChangeClick = {},
                 dateState = LocalDate.now(),
                 mapDateToHabits = emptyMap(),
-                isOpen = false,
+                isOpen = true,
                 onDismiss = {}
             )
         }

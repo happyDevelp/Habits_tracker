@@ -67,6 +67,8 @@
     <string name="achiev_habits_finished">Habits Finished</string>
     <string name="achiev_perfect_days">Perfect Days</string>
     <string name="achiev_best_streak">Best Streak</string>
+    <string name="new_achievement">NEW ACHIEVEMENT</string>
+    <string name="my_achievements">My achievements</string>
 
 
 </resources>

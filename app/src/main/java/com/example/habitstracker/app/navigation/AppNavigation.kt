@@ -101,7 +101,6 @@ fun AppNavigation() {
                 }
 
                 composable<Route.History> {
-
                     HistoryScreenRoot(
                         historyViewModel = historyViewModel,
                         changeSelectedItemState = changeSelectedItemState
