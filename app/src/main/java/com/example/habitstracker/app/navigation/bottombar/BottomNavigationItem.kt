@@ -28,7 +28,7 @@ val listOfNavItems = listOf(
         title = "History",
         selectedIcon = Icons.Filled.Home,
         unSelectedIcon = Icons.Outlined.Home,
-        route = Route.History
+        route = Route.History()
     ),
     BottomNavigationItem(
         title = "Profile",

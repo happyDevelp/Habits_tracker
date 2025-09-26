@@ -1,5 +1,4 @@
 package com.example.habitstracker.core.presentation.theme
-import androidx.compose.material3.ColorScheme
 import androidx.compose.ui.graphics.Color
 
 val primaryLight = Color(0xFF226488)
@@ -220,7 +219,7 @@ val surfaceContainerHighestDarkHighContrast = Color(0xFF313539)
 
 
 /** Custom colors **/
-val screensBackgroundDark = Color(0xFF21242B) //background
+val screenBackgroundDark = Color(0xFF21242B) //background
 val screenContainerBackgroundDark = Color(0xFF313747) //background
 
 

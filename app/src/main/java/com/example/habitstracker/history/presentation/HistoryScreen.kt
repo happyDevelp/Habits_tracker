@@ -38,7 +38,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
-import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
+import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.history.domain.AchievementEntity
 import com.example.habitstracker.history.presentation.components.scaffold.TopBarHistoryScreen
@@ -51,24 +51,17 @@ import java.time.LocalDate
 @Composable
 fun HistoryScreenRoot(
     historyViewModel: HistoryViewModel,
+    startTab: Int,
     changeSelectedItemState: (index: Int) -> Unit
 ) {
-    val coroutineScope = rememberCoroutineScope()
     val streakList by historyViewModel.dateHabitList.collectAsStateWithLifecycle()
     val allAchievements by historyViewModel.allAchievements.collectAsStateWithLifecycle()
-
-    val onUpdateUnlockedDate: (unlockedAt: String, isNotified: Boolean, id: Int) -> Unit =
-        { unlockedAt, isNotified, id ->
-            coroutineScope.launch {
-                historyViewModel.updateUnlockedDate(unlockedAt, isNotified, id)
-            }
-        }
 
     HistoryScreen(
         changeSelectedItemState = changeSelectedItemState,
         streakList = streakList,
         allAchievements = allAchievements,
-        onUpdateUnlockedDate = onUpdateUnlockedDate
+        startTab = startTab
     )
 }
 
@@ -77,12 +70,12 @@ fun HistoryScreen(
     modifier: Modifier = Modifier,
     streakList: List<DateHabitEntity>,
     allAchievements: List<AchievementEntity>,
+    startTab: Int,
     changeSelectedItemState: (index: Int) -> Unit,
-    onUpdateUnlockedDate: (unlockedAt: String, isNotified: Boolean, id: Int) -> Unit
 ) {
     Scaffold(
         topBar = { TopBarHistoryScreen() },
-        containerColor = screensBackgroundDark
+        containerColor = screenBackgroundDark
     ) { paddingValues ->
         Box(
             modifier = modifier
@@ -92,7 +85,10 @@ fun HistoryScreen(
         ) {
             val coroutineScope = rememberCoroutineScope()
             val tabs = listOf("Calendar", "All habits", "Achievements")
-            val pagerState = rememberPagerState(pageCount = { tabs.size })
+            val pagerState = rememberPagerState(
+                initialPage = startTab,
+                pageCount = { tabs.size }
+            )
 
             Column(
                 modifier = modifier.fillMaxSize(),
@@ -110,7 +106,7 @@ fun HistoryScreen(
                     modifier = modifier,
                     selectedTabIndex = pagerState.currentPage,
                     indicator = indicator, // Need to fix lag with last rowIndex when sliding (or delete indicator)
-                    containerColor = screensBackgroundDark,
+                    containerColor = screenBackgroundDark,
                 ) {
                     tabs.forEachIndexed { index, tab ->
                         Tab(
@@ -155,7 +151,6 @@ fun HistoryScreen(
                         2 -> AchievementsScreen(
                             mapHabitsToDate = mapHabitsToDate,
                             allAchievements = allAchievements,
-                            onUpdateUnlockedDate = onUpdateUnlockedDate
                         )
                     }
                 }
@@ -202,7 +197,7 @@ private fun HistoryScreenPreview() {
                 changeSelectedItemState = {},
                 allAchievements = emptyList(),
                 streakList = emptyList(),
-                onUpdateUnlockedDate = { _, _, _ -> }
+                startTab = 0
             )
         }
     }

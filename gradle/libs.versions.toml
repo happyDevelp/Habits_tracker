@@ -5,6 +5,7 @@ constraintlayoutComposeVersion = "1.0.1"
 datastorePreferences = "1.1.7"
 foundation = "1.7.1"
 hiltNavigationCompose = "1.2.0"
+konfettiCompose = "2.0.5"
 kotlin = "1.9.21"
 coreKtx = "1.13.1"
 junit = "4.13.2"
@@ -29,6 +30,7 @@ androidx-datastore-preferences = { module = "androidx.datastore:datastore-prefer
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomKtx" }
 hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "daggerHilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "daggerHilt" }
+konfetti-compose = { module = "nl.dionsegijn:konfetti-compose", version.ref = "konfettiCompose" }
 kotlin-serialization-core = { module = "org.jetbrains.kotlinx:kotlinx-serialization-core", version.ref = "ktxSerialization" }
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidx-constraintlayout-compose = { module = "androidx.constraintlayout:constraintlayout-compose", version.ref = "constraintlayoutComposeVersion" }
