@@ -3,6 +3,7 @@ package com.example.habitstracker.history.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habitstracker.habit.domain.DateHabitEntity
+import com.example.habitstracker.habit.presentation.today_main.components.UnlockedAchievement
 import com.example.habitstracker.history.domain.AchievementEntity
 import com.example.habitstracker.history.domain.HistoryRepository
 import com.example.habitstracker.history.domain.achievementsList
@@ -33,6 +34,13 @@ class HistoryViewModel @Inject constructor(
         initialValue = emptyList()
     )
 
+    private val _unlockedAchievementFlow = MutableStateFlow<UnlockedAchievement?>(null)
+    val unlockedAchievement: StateFlow<UnlockedAchievement?> = _unlockedAchievementFlow.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Lazily,
+        initialValue = null
+    )
+
     init {
         firstEntryDbFilling()
 
@@ -41,6 +49,19 @@ class HistoryViewModel @Inject constructor(
                 _dateHabitsList.value = habits
             }
         }
+    }
+
+    fun onAchievementUnlocked(achievement: UnlockedAchievement) {
+        _unlockedAchievementFlow.value = UnlockedAchievement(
+            iconRes = achievement.iconRes,
+            target = achievement.target,
+            description = achievement.description,
+            textPadding = achievement.textPadding
+        )
+    }
+
+    fun clearUnlockedAchievement() {
+        _unlockedAchievementFlow.value = null
     }
 
     suspend fun updateUnlockedDate(unlockedAt: String, isNotified: Boolean, id: Int) {

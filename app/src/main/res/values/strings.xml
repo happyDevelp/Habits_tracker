@@ -69,6 +69,9 @@
     <string name="achiev_best_streak">Best Streak</string>
     <string name="new_achievement">NEW ACHIEVEMENT</string>
     <string name="my_achievements">My achievements</string>
+    <string name="achDescription_finishHabitTimes">Finish Habit %1$d Times</string>
+    <string name="achDescription_perfectDays">%1$d Perfect Days</string>
+    <string name="achDescription_daysStreak">%1$d Days Streak</string>
 
 
 </resources>

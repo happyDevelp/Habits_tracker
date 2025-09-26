@@ -28,10 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -39,6 +36,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -58,16 +56,18 @@ import com.example.habitstracker.core.presentation.theme.BoldFontFamily
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.QuickSandFontFamily
 import com.example.habitstracker.core.presentation.theme.blueColor
+import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
-import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
 import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.core.presentation.utils.clickWithRipple
 import com.example.habitstracker.core.presentation.utils.shownHabitExample1
 import com.example.habitstracker.core.presentation.utils.shownHabitExample2
 import com.example.habitstracker.core.presentation.utils.shownHabitExample3
 import com.example.habitstracker.habit.domain.ShownHabit
+import com.example.habitstracker.habit.presentation.today_main.components.AchievementMetadata
 import com.example.habitstracker.habit.presentation.today_main.components.HabitItem
 import com.example.habitstracker.habit.presentation.today_main.components.TopBarMainScreen
+import com.example.habitstracker.habit.presentation.today_main.components.UnlockedAchievement
 import com.example.habitstracker.habit.presentation.today_main.components.calendar.CalendarRowList
 import com.example.habitstracker.history.presentation.HistoryViewModel
 import kotlinx.coroutines.launch
@@ -77,7 +77,8 @@ import java.time.LocalDate
 fun TodayScreenRoot(
     viewModel: MainScreenViewModel,
     historyViewModel: HistoryViewModel,
-    historyDate: String?
+    historyDate: String?,
+    changeSelectedItemState: (index: Int) -> Unit
 ) {
     var isHistoryHandled = false
     LaunchedEffect(historyDate) {
@@ -88,15 +89,16 @@ fun TodayScreenRoot(
     }
 
     val coroutineScope = rememberCoroutineScope()
+    val context = LocalContext.current
 
     val habitListState by viewModel.habitsListState.collectAsStateWithLifecycle()
     val dateState by viewModel.selectedDate.collectAsStateWithLifecycle()
     val mapDateToHabits by viewModel.dateHabitsMap.collectAsStateWithLifecycle()
 
-    var isOpen by remember { mutableStateOf(false) }
-    val onDismiss = { isOpen = false }
-
     val allAchievements = historyViewModel.allAchievements.collectAsStateWithLifecycle().value
+    val unlockedAchievement by historyViewModel.unlockedAchievement.collectAsStateWithLifecycle()
+
+    val onDismiss = { historyViewModel.clearUnlockedAchievement() }
 
     val onSelectClick: (id: Int, isDone: Boolean, selectDate: String) -> Unit =
         { id, isDone, selectDate ->
@@ -150,7 +152,14 @@ fun TodayScreenRoot(
                 if (toShow != null) {
                     val today = LocalDate.now().toString()
                     historyViewModel.updateUnlockedDate(today, true, toShow.id)
-                    isOpen = true
+                    historyViewModel.onAchievementUnlocked(
+                        UnlockedAchievement(
+                            iconRes = AchievementMetadata.icons(toShow.section, context),
+                            target = toShow.target,
+                            description = AchievementMetadata.description(toShow, context),
+                            textPadding = AchievementMetadata.textPadding(toShow.section, context)
+                        )
+                    )
                 }
             }
         }
@@ -169,11 +178,12 @@ fun TodayScreenRoot(
         habitListState = habitListState,
         dateState = dateState,
         mapDateToHabits = mapDateToHabits,
+        unlockedAchievement = unlockedAchievement,
         onSelectClick = onSelectClick,
         onDeleteClick = onDeleteClick,
         onDateChangeClick = onDateChangeClick,
+        changeSelectedItemState = changeSelectedItemState,
         onDismiss = onDismiss,
-        isOpen = isOpen
     )
 }
 
@@ -183,15 +193,16 @@ fun TodayScreen(
     habitListState: List<ShownHabit>,
     dateState: LocalDate,
     mapDateToHabits: Map<LocalDate, List<ShownHabit>>,
+    unlockedAchievement: UnlockedAchievement?,
+    onDismiss: () -> Unit,
     onSelectClick: (id: Int, isDone: Boolean, selectDate: String) -> Unit,
     onDeleteClick: (id: Int) -> Unit,
     onDateChangeClick: (newDate: LocalDate) -> Unit,
-    isOpen: Boolean,
-    onDismiss: () -> Unit
+    changeSelectedItemState: (index: Int) -> Unit
 ) {
     val navController = LocalNavController.current
 
-    if (isOpen == true) {
+    if (unlockedAchievement != null) {
         Dialog(onDismissRequest = { onDismiss() }) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -233,27 +244,20 @@ fun TodayScreen(
                         modifier = Modifier.size(150.dp)
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.dart_board),
+                            painter = painterResource(id = unlockedAchievement.iconRes),
                             contentDescription = null,
                             tint = Color.Unspecified,
                             modifier = Modifier.size(150.dp)
                         )
                         Text(
-                            text = "100"/*section.targets[index]*/,
+                            text = unlockedAchievement.target.toString(),
                             fontSize = 20.sp,
                             fontFamily = PoppinsFontFamily,
                             fontWeight = FontWeight.Bold,
                             color = blueColor,
                             modifier = Modifier
                                 .align(Alignment.BottomCenter)
-                                .offset(
-                                    y = (-16.dp)/*when (section.title) {
-                                        stringResource(R.string.achiev_habits_finished) -> (-12).dp
-                                        stringResource(R.string.achiev_perfect_days) -> (-43).dp
-                                        stringResource(R.string.achiev_best_streak) -> (0).dp
-                                        else -> 0.dp
-                                    }*/
-                                )
+                                .padding(bottom = unlockedAchievement.textPadding)
                         )
                     }
                     Spacer(modifier = Modifier.height(24.dp))
@@ -268,7 +272,7 @@ fun TodayScreen(
                     )
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
-                        text = "Finish Habit 100 Times"/*section.description.invoke(section.targets[index], index)*/,
+                        text = unlockedAchievement.description,
                         fontSize = 14.sp,
                         fontFamily = PoppinsFontFamily,
                         color = Color.White.copy(0.8f),
@@ -294,7 +298,7 @@ fun TodayScreen(
                     Spacer(modifier = Modifier.height(2.dp))
 
                     Text(
-                        text = stringResource(R.string.my_achievements)/*section.description.invoke(section.targets[index], index)*/,
+                        text = stringResource(R.string.my_achievements),
                         fontSize = 14.sp,
                         fontFamily = BoldFontFamily,
                         fontWeight = FontWeight.Thin,
@@ -307,16 +311,23 @@ fun TodayScreen(
                                 drawRect(
                                     color = Color.White.copy(0.85f),
                                     topLeft = Offset(4.dp.toPx(), y - underlineHeight),
-                                    size = Size(size.width - 8.dp.toPx(), underlineHeight - 2.7.dp.toPx())
+                                    size = Size(
+                                        size.width - 8.dp.toPx(),
+                                        underlineHeight - 2.7.dp.toPx()
+                                    )
                                 )
                             }
                             .clickWithRipple(Color.White) {
-                                navController.navigate(Route.History) {
+                                onDismiss()
+                                changeSelectedItemState(1)
+                                navController.navigate(Route.History(2)) {
                                     popUpTo(Route.BottomBarGraph) {
                                         saveState = true
                                     }
-                                    launchSingleTop = true // do not create a pile of historyScreen when repeated clicks
-                                    restoreState = true // restore the state if the tab was already opened before
+                                    // do not create a pile of historyScreen when repeated clicks
+                                    launchSingleTop = true
+                                    // restore the state if the tab was already opened before
+                                    restoreState = true
                                 }
                             }
                             .padding(bottom = 4.dp, top = 2.dp, start = 4.dp, end = 4.dp)
@@ -332,7 +343,7 @@ fun TodayScreen(
                 .fillMaxSize()
                 .padding(paddingValues),
             colors = CardDefaults.cardColors(
-                containerColor = screensBackgroundDark,
+                containerColor = screenBackgroundDark,
             ),
             shape = RoundedCornerShape(topStart = 27.dp, topEnd = 27.dp)
         )
@@ -514,8 +525,12 @@ private fun Preview() {
                 onDateChangeClick = {},
                 dateState = LocalDate.now(),
                 mapDateToHabits = emptyMap(),
-                isOpen = true,
-                onDismiss = {}
+                onDismiss = {},
+                changeSelectedItemState = { },
+                unlockedAchievement = UnlockedAchievement(
+                    R.drawable.streak_achiev, 100, "Finish 100 Habits",
+                    textPadding = 0.dp
+                ),
             )
         }
     }

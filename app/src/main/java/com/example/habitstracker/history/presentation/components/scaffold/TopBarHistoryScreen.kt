@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.MyText
-import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
+import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -32,7 +32,7 @@ fun TopBarHistoryScreen() {
         },
 
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = screensBackgroundDark
+            containerColor = screenBackgroundDark
         )
     )
 }

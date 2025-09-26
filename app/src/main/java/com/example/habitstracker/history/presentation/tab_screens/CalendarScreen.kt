@@ -44,7 +44,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
-import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
+import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.history.presentation.components.StatisticSection
 import com.example.habitstracker.history.presentation.components.calendar.HistoryCalendarDay
@@ -455,7 +455,7 @@ fun HistoryCalendarScreenPreview() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(screensBackgroundDark)
+                .background(screenBackgroundDark)
         )
         {
             HistoryCalendarScreen(

@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.habitstracker.R
-import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
+import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.history.domain.AchievementEntity
 import com.example.habitstracker.history.presentation.components.HabitBox
@@ -50,8 +50,7 @@ fun AchievementsScreen(
             targets = habitsFinished.map { it.target.toString() },
             progress = totalFinishedHabits,
             description = { target, index ->
-                if (index == 0) "Finish Your Habit First Time"
-                else "Finish Habit For The $target Times"
+                 "$target Habits Finished"
             },
             isNotified = habitsFinished.map { it.isNotified },
             unlockedAt = habitsFinished.map { it.unlockedAt }
@@ -148,7 +147,7 @@ fun AchievementsScreenPreview(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(screensBackgroundDark)
+            .background(screenBackgroundDark)
     ) {
         AchievementsScreen(
             mapHabitsToDate = mapOf(),

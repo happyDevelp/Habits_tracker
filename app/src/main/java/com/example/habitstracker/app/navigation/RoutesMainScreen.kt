@@ -14,7 +14,7 @@ sealed interface Route {
     data class Today(val historyDate: String? = null): Route
 
     @Serializable
-    data object History: Route
+    data class History(val startTab: Int = 0): Route
 
     @Serializable
     data object Profile: Route

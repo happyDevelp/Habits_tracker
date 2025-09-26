@@ -14,14 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.navigation.Route
-import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.habit.domain.HabitEntity
 import kotlinx.coroutines.launch
 

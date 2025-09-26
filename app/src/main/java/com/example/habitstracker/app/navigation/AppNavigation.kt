@@ -11,7 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -35,7 +35,6 @@ import com.example.habitstracker.habit.presentation.edit_habit.EditHabitRoot
 import com.example.habitstracker.habit.presentation.edit_habit.components.EditRepeatPickerRoot
 import com.example.habitstracker.habit.presentation.today_main.MainScreenViewModel
 import com.example.habitstracker.habit.presentation.today_main.TodayScreenRoot
-import com.example.habitstracker.history.presentation.HistoryScreen
 import com.example.habitstracker.history.presentation.HistoryScreenRoot
 import com.example.habitstracker.history.presentation.HistoryViewModel
 import com.example.habitstracker.profile.presentation.profile.ProfileScreen
@@ -52,7 +51,7 @@ fun AppNavigation() {
     val density = LocalDensity.current
 
     var selectedItemIndex by rememberSaveable {
-        mutableStateOf(0)
+        mutableIntStateOf(0)
     }
     val changeSelectedItemState: (index: Int) -> Unit = { index ->
         selectedItemIndex = index
@@ -96,14 +95,17 @@ fun AppNavigation() {
                     TodayScreenRoot(
                         viewModel = mainScreenViewModel,
                         historyViewModel = historyViewModel,
-                        historyDate = if (date == null) args.historyDate else date
+                        historyDate = if (date == null) args.historyDate else date,
+                        changeSelectedItemState = changeSelectedItemState
                     )
                 }
 
-                composable<Route.History> {
+                composable<Route.History> { backStackEntry ->
+                    val args = backStackEntry.toRoute<Route.History>()
                     HistoryScreenRoot(
                         historyViewModel = historyViewModel,
-                        changeSelectedItemState = changeSelectedItemState
+                        startTab = args.startTab,
+                        changeSelectedItemState = changeSelectedItemState,
                     )
                 }
 
@@ -158,14 +160,22 @@ fun getBottomBarState(navBackStackEntry: NavBackStackEntry?): Boolean {
     val baseRouteName = "com.example.habitstracker.app.navigation.Route."
     val currentRoute = navBackStackEntry?.destination?.route
 
-    return when (currentRoute) {
+    val cleanRoute = currentRoute?.substringBefore("?")
+
+    return when (cleanRoute) {
+        baseRouteName + "Today" -> true
+        baseRouteName + "History" -> true
+        baseRouteName + "Profile" -> true
+        else -> false
+    }
+   /* return when (currentRoute) {
         //"Today?historyDate={historyDate}"
         baseRouteName + "Today?historyDate={historyDate}" -> true
         baseRouteName + Route.History -> true
         baseRouteName + Route.Profile -> true
 
         else -> false
-    }
+    }*/
 }
 //com.example.habitstracker.app.navigation.Route.Today?historyDate={historyDate}
 //com.example.habitstracker.app.navigation.Route.Today?historyDate={historyDate}
