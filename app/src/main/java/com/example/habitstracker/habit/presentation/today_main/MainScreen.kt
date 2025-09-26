@@ -1,7 +1,6 @@
 package com.example.habitstracker.habit.presentation.today_main
 
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,9 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -21,7 +18,6 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,45 +27,37 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.theme.AppTheme
-import com.example.habitstracker.core.presentation.theme.BoldFontFamily
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.QuickSandFontFamily
-import com.example.habitstracker.core.presentation.theme.blueColor
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.core.presentation.utils.TestTags
-import com.example.habitstracker.core.presentation.utils.clickWithRipple
 import com.example.habitstracker.core.presentation.utils.shownHabitExample1
 import com.example.habitstracker.core.presentation.utils.shownHabitExample2
 import com.example.habitstracker.core.presentation.utils.shownHabitExample3
 import com.example.habitstracker.habit.domain.ShownHabit
-import com.example.habitstracker.habit.presentation.today_main.components.AchievementMetadata
 import com.example.habitstracker.habit.presentation.today_main.components.HabitItem
+import com.example.habitstracker.habit.presentation.today_main.components.NotificationDialog
 import com.example.habitstracker.habit.presentation.today_main.components.TopBarMainScreen
 import com.example.habitstracker.habit.presentation.today_main.components.UnlockedAchievement
 import com.example.habitstracker.habit.presentation.today_main.components.calendar.CalendarRowList
 import com.example.habitstracker.history.presentation.HistoryViewModel
+import com.example.habitstracker.habit.presentation.today_main.components.AchievementMetadata
+import com.example.habitstracker.habit.presentation.today_main.utility.getBestStreak
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -202,267 +190,138 @@ fun TodayScreen(
 ) {
     val navController = LocalNavController.current
 
-    if (unlockedAchievement != null) {
-        Dialog(onDismissRequest = { onDismiss() }) {
+    Box(modifier = modifier.fillMaxSize()) {
+        Scaffold(topBar = { TopBarMainScreen(modifier, navController) }) { paddingValues ->
             Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = screenContainerBackgroundDark)
-            ) {
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                colors = CardDefaults.cardColors(
+                    containerColor = screenBackgroundDark,
+                ),
+                shape = RoundedCornerShape(topStart = 27.dp, topEnd = 27.dp)
+            )
+            {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(100.dp)
-                        .background(
-                            brush = Brush.linearGradient(
-                                colors = listOf(Color(0xFF2196F3), Color(0xFF0D47A1)),
-                                start = Offset(0f, 0f),
-                                end = Offset(0f, Float.POSITIVE_INFINITY)
-                            ),
-                            shape = RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp),
-                        ),
-                    contentAlignment = Alignment.Center
+                    modifier = modifier
+                        .padding(top = 20.dp)
+                        .fillMaxSize(),
+                    contentAlignment = Alignment.TopCenter
                 ) {
-                    Text(
-                        text = "Congratulations!",
-                        fontSize = 21.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 6.dp)
-                    )
-                }
-
-                Column(
-                    modifier = Modifier
-                        .padding(12.dp)
-                        .padding(top = 16.dp)
-                        .fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier.size(150.dp)
+                    Column(
+                        verticalArrangement = Arrangement.Top,
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Icon(
-                            painter = painterResource(id = unlockedAchievement.iconRes),
-                            contentDescription = null,
-                            tint = Color.Unspecified,
-                            modifier = Modifier.size(150.dp)
-                        )
-                        Text(
-                            text = unlockedAchievement.target.toString(),
-                            fontSize = 20.sp,
-                            fontFamily = PoppinsFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            color = blueColor,
-                            modifier = Modifier
-                                .align(Alignment.BottomCenter)
-                                .padding(bottom = unlockedAchievement.textPadding)
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(24.dp))
+                        val weekDays = listOf("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN")
 
-                    Text(
-                        text = stringResource(R.string.new_achievement),
-                        fontSize = 20.sp,
-                        fontFamily = PoppinsFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(6.dp))
-                    Text(
-                        text = unlockedAchievement.description,
-                        fontSize = 14.sp,
-                        fontFamily = PoppinsFontFamily,
-                        color = Color.White.copy(0.8f),
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(26.dp))
-
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth(0.7f)
-                            .height(55.dp),
-                        onClick = { onDismiss() },
-                        colors = ButtonDefaults.buttonColors(containerColor = blueColor),
-                        shape = RoundedCornerShape(50)
-                    ) {
-                        Text(
-                            text = "CLOSE",
-                            fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(2.dp))
-
-                    Text(
-                        text = stringResource(R.string.my_achievements),
-                        fontSize = 14.sp,
-                        fontFamily = BoldFontFamily,
-                        fontWeight = FontWeight.Thin,
-                        color = Color.White,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier
-                            .drawBehind {
-                                val underlineHeight = 1.dp.toPx() // Line thickness
-                                val y = size.height
-                                drawRect(
-                                    color = Color.White.copy(0.85f),
-                                    topLeft = Offset(4.dp.toPx(), y - underlineHeight),
-                                    size = Size(
-                                        size.width - 8.dp.toPx(),
-                                        underlineHeight - 2.7.dp.toPx()
-                                    )
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceAround
+                        ) {
+                            weekDays.forEach { day ->
+                                Text(
+                                    text = day,
+                                    fontSize = 13.sp,
+                                    color = Color.White,
+                                    fontFamily = QuickSandFontFamily,
                                 )
                             }
-                            .clickWithRipple(Color.White) {
-                                onDismiss()
-                                changeSelectedItemState(1)
-                                navController.navigate(Route.History(2)) {
-                                    popUpTo(Route.BottomBarGraph) {
-                                        saveState = true
-                                    }
-                                    // do not create a pile of historyScreen when repeated clicks
-                                    launchSingleTop = true
-                                    // restore the state if the tab was already opened before
-                                    restoreState = true
-                                }
-                            }
-                            .padding(bottom = 4.dp, top = 2.dp, start = 4.dp, end = 4.dp)
-                    )
-                }
-            }
-        }
-    }
-
-    Scaffold(topBar = { TopBarMainScreen(modifier, navController) }) { paddingValues ->
-        Card(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            colors = CardDefaults.cardColors(
-                containerColor = screenBackgroundDark,
-            ),
-            shape = RoundedCornerShape(topStart = 27.dp, topEnd = 27.dp)
-        )
-        {
-            Box(
-                modifier = modifier
-                    .padding(top = 20.dp)
-                    .fillMaxSize(),
-                contentAlignment = Alignment.TopCenter
-            ) {
-                Column(
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    val weekDays = listOf("MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN")
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceAround
-                    ) {
-                        weekDays.forEach { day ->
-                            Text(
-                                text = day,
-                                fontSize = 13.sp,
-                                color = Color.White,
-                                fontFamily = QuickSandFontFamily,
-                            )
                         }
-                    }
 
-                    CalendarRowList(
-                        mapDateToHabit = mapDateToHabits,
-                        onDateChangeClick = { newDate ->
-                            onDateChangeClick(newDate)
-                        },
-                        selectedDate = dateState
-                    )
+                        CalendarRowList(
+                            mapDateToHabit = mapDateToHabits,
+                            onDateChangeClick = { newDate ->
+                                onDateChangeClick(newDate)
+                            },
+                            selectedDate = dateState
+                        )
 
-                    val groupedHabits = habitListState.groupBy { it.executionTime }
+                        val groupedHabits = habitListState.groupBy { it.executionTime }
 
-                    val dayPartsOrder = listOf("Anytime", "Morning", "Day", "Evening")
+                        val dayPartsOrder = listOf("Anytime", "Morning", "Day", "Evening")
 
-                    Crossfade(
-                        targetState = groupedHabits,
-                        label = "Data change animation"
-                    ) { habits ->
-                        LazyColumn(
-                            modifier = modifier
-                                .padding(top = 20.dp)
-                                .fillMaxHeight(1f)
-                                .fillMaxWidth(),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
+                        Crossfade(
+                            targetState = groupedHabits,
+                            label = "Data change animation"
+                        ) { habits ->
+                            LazyColumn(
+                                modifier = modifier
+                                    .padding(top = 20.dp)
+                                    .fillMaxHeight(1f)
+                                    .fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
 
-                            dayPartsOrder.forEach { dayPart ->
-                                val habitsInPart = habits[dayPart].orEmpty()
-                                if (habitsInPart.isNotEmpty()) {
-                                    item {
-                                        Text(
+                                dayPartsOrder.forEach { dayPart ->
+                                    val habitsInPart = habits[dayPart].orEmpty()
+                                    if (habitsInPart.isNotEmpty()) {
+                                        item {
+                                            Text(
+                                                modifier = modifier
+                                                    .fillMaxWidth()
+                                                    .padding(
+                                                        top = 8.dp,
+                                                        start = 20.dp,
+                                                        bottom = 12.dp
+                                                    ),
+                                                text = dayPart,
+                                                color = Color.White.copy(alpha = 0.8f),
+                                                fontSize = 15.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                fontFamily = PoppinsFontFamily,
+                                            )
+                                        }
+
+
+                                        items(habitsInPart) { habit ->
+                                            HabitItem(
+                                                shownHabit = habit,
+                                                currentDate = dateState,
+                                                onSelectClick = onSelectClick,
+                                                onDeleteClick = onDeleteClick
+                                            )
+                                            Spacer(modifier = modifier.height(20.dp))
+                                        }
+                                    }
+                                }
+
+                                item {
+                                    Spacer(modifier = modifier.height(6.dp))
+
+                                    if (dateState == LocalDate.now()) {
+                                        Button(
                                             modifier = modifier
-                                                .fillMaxWidth()
-                                                .padding(top = 8.dp, start = 20.dp, bottom = 12.dp),
-                                            text = dayPart,
-                                            color = Color.White.copy(alpha = 0.8f),
-                                            fontSize = 15.sp,
-                                            fontWeight = FontWeight.Bold,
-                                            fontFamily = PoppinsFontFamily,
-                                        )
-                                    }
+                                                .padding(bottom = 20.dp)
+                                                .fillMaxWidth(0.7f)
+                                                .height(50.dp)
+                                                .testTag(TestTags.CREATE_NEW_HABIT_BUTTON),
 
+                                            onClick = {
+                                                navController.navigate(Route.AddHabit)
+                                            },
 
-                                    items(habitsInPart) { habit ->
-                                        HabitItem(
-                                            shownHabit = habit,
-                                            currentDate = dateState,
-                                            onSelectClick = onSelectClick,
-                                            onDeleteClick = onDeleteClick
-                                        )
-                                        Spacer(modifier = modifier.height(20.dp))
-                                    }
-                                }
-                            }
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = screenContainerBackgroundDark,
+                                                contentColor = Color.White.copy(alpha = 0.75f)
+                                            ),
 
-                            item {
-                                Spacer(modifier = modifier.height(6.dp))
+                                            shape = RoundedCornerShape(10.dp),
 
-                                if (dateState == LocalDate.now()) {
-                                    Button(
-                                        modifier = modifier
-                                            .padding(bottom = 20.dp)
-                                            .fillMaxWidth(0.7f)
-                                            .height(50.dp)
-                                            .testTag(TestTags.CREATE_NEW_HABIT_BUTTON),
+                                            elevation = ButtonDefaults.buttonElevation(
+                                                defaultElevation = 6.dp,
+                                                pressedElevation = 16.dp
+                                            ),
 
-                                        onClick = {
-                                            navController.navigate(Route.AddHabit)
-                                        },
-
-                                        colors = ButtonDefaults.buttonColors(
-                                            containerColor = screenContainerBackgroundDark,
-                                            contentColor = Color.White.copy(alpha = 0.75f)
-                                        ),
-
-                                        shape = RoundedCornerShape(10.dp),
-
-                                        elevation = ButtonDefaults.buttonElevation(
-                                            defaultElevation = 6.dp,
-                                            pressedElevation = 16.dp
-                                        ),
-
-                                        ) {
-                                        Text(
-                                            text = stringResource(R.string.create_a_new_habit),
-                                            modifier = modifier.padding(horizontal = 8.dp),
-                                            fontSize = 15.sp,
-                                            fontWeight = FontWeight.Bold,
-                                            fontFamily = PoppinsFontFamily,
-                                            color = Color.White,
-                                        )
+                                            ) {
+                                            Text(
+                                                text = stringResource(R.string.create_a_new_habit),
+                                                modifier = modifier.padding(horizontal = 8.dp),
+                                                fontSize = 15.sp,
+                                                fontWeight = FontWeight.Bold,
+                                                fontFamily = PoppinsFontFamily,
+                                                color = Color.White,
+                                            )
+                                        }
                                     }
                                 }
                             }
@@ -472,25 +331,13 @@ fun TodayScreen(
             }
         }
     }
-}
-
-fun getBestStreak(mapHabitsToDate: Map<LocalDate, List<ShownHabit>>): Int {
-    val dates = mapHabitsToDate.keys.toList().sorted()
-    var currentStreak = 0
-    var bestStreak = 0
-
-    for (date in dates) {
-        val habits = mapHabitsToDate[date].orEmpty()
-        val isPerfectDay = habits.isNotEmpty() && habits.all { it.isSelected }
-
-        if (isPerfectDay) {
-            currentStreak++
-            bestStreak = maxOf(bestStreak, currentStreak)
-        } else {
-            currentStreak = 0
-        }
+    if (unlockedAchievement != null) {
+        NotificationDialog(
+            unlockedAchievement = unlockedAchievement,
+            onDismiss = onDismiss,
+            changeSelectedItemState = changeSelectedItemState
+        )
     }
-    return bestStreak
 }
 
 enum class AchievementSection {

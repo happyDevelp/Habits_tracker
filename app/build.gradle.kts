@@ -95,6 +95,7 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     implementation(libs.kotlin.serialization.core)
     implementation(libs.kotlinx.serialization.json)
+    implementation(libs.konfetti.compose)
 
     implementation(libs.androidx.datastore.preferences)
 
