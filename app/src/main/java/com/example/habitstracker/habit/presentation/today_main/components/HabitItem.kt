@@ -52,6 +52,7 @@ import com.example.habitstracker.core.presentation.theme.notSelectedColor
 import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.core.presentation.utils.getColorFromHex
 import com.example.habitstracker.core.presentation.utils.iconByName
+import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.ShownHabit
 import java.time.LocalDate
 
@@ -93,6 +94,7 @@ fun HabitItem(
                     shownHabit = shownHabit,
                     onClick = {
                         onSelectClick(shownHabit.id, !shownHabit.isSelected, currentDate.toString())
+
                     }
                 )
             }

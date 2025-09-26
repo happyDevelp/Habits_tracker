@@ -36,6 +36,7 @@ import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.blueColor
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.history.presentation.tab_screens.AchievementSection
+import java.time.LocalDate
 
 
 @Composable
@@ -69,9 +70,18 @@ fun AchievementDialog(
                     ),
                 contentAlignment = Alignment.Center
             ) {
+                var topText = "Not achieved"
+                if (isAchieved) {
+                    val achDate = LocalDate.parse(date)
+                    val month = achDate.month.name
+                        .take(3).lowercase().replaceFirstChar { it.uppercase() }
+                    val day = achDate.dayOfMonth
+                    val year = achDate.year
+                    topText = "Achieved at $month $day, $year"
+                }
+
                 Text(
-                    // TODO achieve date tracking
-                    text = if (isAchieved) "Achieved!" else "Not achieved",
+                    text = topText,
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
@@ -171,7 +181,7 @@ fun AchievementDialog(
 
 @Preview(showSystemUi = true)
 @Composable
-private  fun AchievementDialogPreview() {
+private fun AchievementDialogPreview() {
     AchievementDialog(
         onDismiss = {},
         date = "Jan 27, 2025",
@@ -182,7 +192,9 @@ private  fun AchievementDialogPreview() {
             progress = 1,
             description = { target, index ->
                 "$target Days Streak"
-            }
+            },
+            isNotified = emptyList(),
+            unlockedAt = emptyList()
         ),
         index = 1,
     )

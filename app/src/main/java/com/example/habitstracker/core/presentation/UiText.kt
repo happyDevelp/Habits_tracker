@@ -17,7 +17,7 @@ sealed class UiText {
         // this here, is an instant of actual UiText class
         return when(this) {
             is DynamicString -> value
-            is StringResources -> stringResource(id = resId, formatArgs = args)
+            is StringResources -> stringResource(id = resId, formatArgs = *args)
         }
     }
 
@@ -25,7 +25,7 @@ sealed class UiText {
         // this here, is an instant of actual UiText class
         return when(this) {
             is DynamicString -> value
-            is StringResources -> context.getString(resId, args)
+            is StringResources -> context.getString(resId, *args)
         }
     }
 }

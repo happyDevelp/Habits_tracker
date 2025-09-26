@@ -12,12 +12,12 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
+import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 
 @Preview(showSystemUi = true)
 @Composable
 fun AllHabitsScreenPreview(modifier: Modifier = Modifier) {
-    Box(modifier = modifier.fillMaxSize().background(screensBackgroundDark))
+    Box(modifier = modifier.fillMaxSize().background(screenBackgroundDark))
     { AllHabitScreen() }
 }
 

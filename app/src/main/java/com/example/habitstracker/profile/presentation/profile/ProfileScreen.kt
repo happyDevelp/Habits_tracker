@@ -30,7 +30,7 @@ import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.blueColor
 import com.example.habitstracker.core.presentation.theme.orangeColor
 import com.example.habitstracker.core.presentation.theme.redColor
-import com.example.habitstracker.core.presentation.theme.screensBackgroundDark
+import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.core.presentation.utils.APP_VERSION
 
 @Composable
@@ -43,7 +43,7 @@ private fun ProfileScreenPreview() {
 fun ProfileScreen(modifier: Modifier = Modifier) {
     Scaffold(
         topBar = { TopBarProfileScreen() },
-        containerColor = screensBackgroundDark
+        containerColor = screenBackgroundDark
     ) { paddingValues ->
 
         Column(

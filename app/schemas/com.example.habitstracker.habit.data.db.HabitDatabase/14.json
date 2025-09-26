@@ -1,8 +1,8 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 11,
-    "identityHash": "45fa12be09c44428bd36953588db039d",
+    "version": 14,
+    "identityHash": "3d7ea73b28e855a2e7ed346245df2c34",
     "entities": [
       {
         "tableName": "habit_table",
@@ -112,7 +112,7 @@
       },
       {
         "tableName": "achievement_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `section` TEXT NOT NULL, `target` INTEGER NOT NULL, `unlockedAt` TEXT NOT NULL, `isNotified` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `section` TEXT NOT NULL, `target` INTEGER NOT NULL, `unlockedAt` TEXT NOT NULL, `isNotified` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -146,7 +146,45 @@
           }
         ],
         "primaryKey": {
-          "autoGenerate": true,
+          "autoGenerate": false,
+          "columnNames": [
+            "id"
+          ]
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "statistic_table",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `completedHabits` INTEGER NOT NULL, `bestStreak` INTEGER NOT NULL, `perfectDays` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "fields": [
+          {
+            "fieldPath": "id",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "completedHabits",
+            "columnName": "completedHabits",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "bestStreak",
+            "columnName": "bestStreak",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "perfectDays",
+            "columnName": "perfectDays",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "id"
           ]
@@ -158,7 +196,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '45fa12be09c44428bd36953588db039d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3d7ea73b28e855a2e7ed346245df2c34')"
     ]
   }
 }
