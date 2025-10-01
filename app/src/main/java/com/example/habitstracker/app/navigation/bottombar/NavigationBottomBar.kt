@@ -1,11 +1,16 @@
 package com.example.habitstracker.app.navigation.bottombar
 
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
@@ -17,12 +22,14 @@ fun NavigationBottomBar(
     selectedItemIndex: Int,
     changeSelectedItemState: (index: Int) -> Unit
 ) {
-    NavigationBar {
-        listOfNavItems.forEachIndexed() { index, item ->
-            val itemRoute = item.route.toString()
+    NavigationBar(
+        modifier = Modifier
+            .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp)),
+        containerColor = Color(0xFF363641)
+    ) {
+        listOfNavItems.forEachIndexed { index, item ->
             NavigationBarItem(
-                selected = true/*selectedItemIndex == index*/,
-
+                selected = selectedItemIndex == index,
                 onClick = {
                     changeSelectedItemState(index)
                     navController.navigate(item.route) {
@@ -48,7 +55,12 @@ fun NavigationBottomBar(
                         fontFamily = PoppinsFontFamily,
                         color = Color.White.copy(0.7f)
                     )
-                }
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    indicatorColor = Color.Transparent,
+                    selectedIconColor = Color.White,
+                    unselectedIconColor = Color.Gray
+                )
             )
         }
     }

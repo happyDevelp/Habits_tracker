@@ -219,8 +219,8 @@ val surfaceContainerHighestDarkHighContrast = Color(0xFF313539)
 
 
 /** Custom colors **/
-val screenBackgroundDark = Color(0xFF21242B) //background
-val screenContainerBackgroundDark = Color(0xFF313747) //background
+val screenBackgroundDark = Color(0xFF21212B)/*Color(0xFF21242B)*/ //background
+val screenContainerBackgroundDark = Color(0xFF313747)
 
 
 /** Colors for interface elements **/
@@ -236,8 +236,8 @@ data class HabitGradient(val light: Color, val dark: Color)
 
 object HabitColor {
     val SkyBlue = HabitGradient(
-        light = Color(0xFF6DD5FA),
-        dark = Color(0xFF2193B0)
+        light = Color(0xFF6CD1F5),
+        dark = Color(0xFF24A6C5)
     )
 
     val LeafGreen = HabitGradient(

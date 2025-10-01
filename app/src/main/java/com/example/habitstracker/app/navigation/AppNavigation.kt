@@ -8,6 +8,7 @@ import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -16,6 +17,8 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -27,6 +30,8 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.bottombar.NavigationBottomBar
+import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
+import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.habit.presentation.add_habit.AddHabitScreen
 import com.example.habitstracker.habit.presentation.create_own_habit.CreateOwnHabitRoot
 import com.example.habitstracker.habit.presentation.create_own_habit.components.RepeatPicker
@@ -58,6 +63,7 @@ fun AppNavigation() {
     }
 
     Scaffold(
+        containerColor = screenBackgroundDark,
         bottomBar = {
             AnimatedVisibility(
                 visible = showBottomBar,

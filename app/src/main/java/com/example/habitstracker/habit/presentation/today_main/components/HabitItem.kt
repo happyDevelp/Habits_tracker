@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
@@ -31,6 +33,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,18 +47,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.CustomCheckbox
+import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.core.presentation.utils.getColorFromHex
 import com.example.habitstracker.core.presentation.utils.iconByName
+import com.example.habitstracker.core.presentation.utils.shownHabitExample1
 import com.example.habitstracker.habit.domain.ShownHabit
 import java.time.LocalDate
 
@@ -68,7 +75,7 @@ fun HabitItem(
     onDeleteClick: (id: Int) -> Unit,
 ) {
     val navController = LocalNavController.current
-    val itemHeight: Dp = 90.dp
+    val itemHeight: Dp = 85.dp
     val selectedAlpha: Float = 0.75f
 
     val color = shownHabit.colorHex.getColorFromHex()
@@ -80,35 +87,64 @@ fun HabitItem(
         label = "habit selected state"
     )
 
-    Box(modifier = modifier.fillMaxSize()) {
+    Box(modifier = modifier.wrapContentSize()) {
         Row(
-            modifier = modifier.fillMaxWidth(0.95f),
+            modifier = modifier.fillMaxWidth(0.97f).padding(end = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(
                 modifier = modifier
                     .height(itemHeight)
-                    .weight(1f)
+                    .weight(0.7f)
                     .testTag(TestTags.HABIT_ITEM),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Center
             ) {
-                CustomCheckbox(
-                    shownHabit = shownHabit,
-                    onClick = {
-                        onSelectClick(shownHabit.id, !shownHabit.isSelected, currentDate.toString())
+                IconButton(
+                    onClick = { isMenuExpanded = !isMenuExpanded },
+                    Modifier.fillMaxHeight()
+                ) {
+                    Icon(
+                        modifier = modifier.fillMaxHeight(),
+                        tint = Color.White.copy(alpha = selectedAlpha),
+                        imageVector = Icons.Default.MoreVert,
+                        contentDescription = "More about habit"
+                    )
 
+                    DropdownMenu(
+                        expanded = isMenuExpanded,
+                        onDismissRequest = { isMenuExpanded = false },
+                    ) {
+
+                        DropdownMenuItem(
+                            text = { Text(text = "Edit") },
+                            trailingIcon = { Icons.Default.Edit },
+                            onClick = {
+                                isMenuExpanded = false
+                                navController.navigate(Route.EditHabit(id = shownHabit.id))
+                            }
+                        )
+
+                        DropdownMenuItem(
+                            text = { Text(text = "Delete") },
+                            trailingIcon = { Icons.Default.Delete },
+                            onClick = {
+                                isMenuExpanded = false
+                                onDeleteClick.invoke(shownHabit.id)
+                            }
+                        )
                     }
-                )
+                }
             }
+
 
             Card(
                 modifier = modifier
                     .clip(RoundedCornerShape(size = 20.dp))
                     .height(itemHeight)
                     .fillMaxWidth()
-                    .clickable { /*TODO()*/ }
+                    .clickable {  }
                     .weight(4f),
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 60.dp,
@@ -119,41 +155,46 @@ fun HabitItem(
                 )
 
             ) {
-                //val testColor = MyPalette.greenColor/*Color(0xFF50B05B)*/
                 Box(
                     modifier = modifier
                         .fillMaxSize()
                         .background(
                             brush = Brush.radialGradient(
                                 colors = listOf(
-                                    Color(0xFF6CD1F5), // світлий центр
-                                    Color(0xFF24A6C5)  // темніший фон
+                                    HabitColor.SkyBlue.light,
+                                    HabitColor.SkyBlue.dark,
                                 ),
-                                center = Offset(120f, 0f), // верхній лівий кут
-                                radius = 700f           // радіус поширення
+                                center = Offset(120f, 20f),
+                                radius = 700f // Distribution radius
                             )
-                        /*gradientBackgroundBrush(
-                                isVertical = false,
-                                colors = listOf(HabitColor.SkyBlue.light, HabitColor.SkyBlue.dark)
-                            )*/
                         )
                 ) {
                     Row(
-                        modifier = modifier.fillMaxSize(),
+                        modifier = modifier.fillMaxSize()
+                            .padding(horizontal = 16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            modifier = modifier
-                                .padding(start = 20.dp)
-                                .size(32.dp),
-                            tint = Color.White.copy(alpha = 0.90f),
-                            imageVector = iconByName(shownHabit.iconName),
-                            contentDescription = stringResource(R.string.icon_of_habit_description),
-                        )
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .background(
+                                    color = Color.White.copy(alpha = 0.2f),
+                                    shape = CircleShape
+                                ),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(30.dp),
+                                tint = Color.White.copy(alpha = 0.90f),
+                                imageVector = iconByName(shownHabit.iconName),
+                                contentDescription = stringResource(R.string.icon_of_habit_description),
+                            )
+                        }
 
                         Column(
-                            modifier = modifier.padding(end = 30.dp),
+                            modifier = Modifier
+                                .padding(start = 16.dp, end = 16.dp),
                             verticalArrangement = Arrangement.Center,
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
@@ -189,59 +230,44 @@ fun HabitItem(
                             }
                         }
 
-                        IconButton(
-                            onClick = { isMenuExpanded = !isMenuExpanded },
-                            Modifier.fillMaxHeight()
+
+                        Row(
+                            modifier = modifier
+                                .height(itemHeight)
+                                //.weight(1f)
+                                .testTag(TestTags.HABIT_ITEM),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
                         ) {
-                            Icon(
-                                modifier = modifier.fillMaxHeight(),
-                                tint = Color.White.copy(alpha = selectedAlpha),
-                                imageVector = Icons.Default.MoreVert,
-                                contentDescription = "More about habit"
+                            CustomCheckbox(
+                                shownHabit = shownHabit,
+                                onClick = {
+                                    onSelectClick(shownHabit.id, !shownHabit.isSelected, currentDate.toString())
+
+                                }
                             )
-
-                            DropdownMenu(
-                                expanded = isMenuExpanded,
-                                onDismissRequest = { isMenuExpanded = false },
-                            ) {
-
-                                DropdownMenuItem(
-                                    text = { Text(text = "Edit") },
-                                    trailingIcon = { Icons.Default.Edit },
-                                    onClick = {
-                                        isMenuExpanded = false
-                                        navController.navigate(Route.EditHabit(id = shownHabit.id))
-                                    }
-                                )
-
-                                DropdownMenuItem(
-                                    text = { Text(text = "Delete") },
-                                    trailingIcon = { Icons.Default.Delete },
-                                    onClick = {
-                                        isMenuExpanded = false
-                                        onDeleteClick.invoke(shownHabit.id)
-                                    }
-                                )
-                            }
                         }
                     }
+
                 }
             }
         }
     }
 }
 
+@Preview(showSystemUi = false)
 @Composable
-private fun gradientBackgroundBrush(
-    isVertical: Boolean,
-    colors: List<Color>
-): Brush {
-    val endOffset = if (isVertical) Offset(0f, Float.POSITIVE_INFINITY)
-    else Offset(Float.POSITIVE_INFINITY, 0f)
-
-    return Brush.linearGradient(
-        colors = colors,
-        start = Offset.Zero,
-        end = endOffset
-    )
+private fun HabitItemPreview(modifier: Modifier = Modifier) {
+    CompositionLocalProvider(
+        LocalNavController provides rememberNavController() // підставляємо тестовий
+    ) {
+        AppTheme(darkTheme = true) {
+            HabitItem(
+                shownHabit = shownHabitExample1,
+                modifier = Modifier,
+                currentDate = LocalDate.now(),
+                onSelectClick = { _, _, _ -> },
+            ) { }
+        }
+    }
 }
