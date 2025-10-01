@@ -47,8 +47,8 @@ import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.theme.AppTheme
+import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
-import com.example.habitstracker.core.presentation.theme.orangeColor
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.core.presentation.utils.clickWithRipple
 import com.example.habitstracker.core.presentation.utils.getColorFromHex
@@ -128,7 +128,7 @@ fun CreateOwnHabitScreen(
                 mutableStateOf(
                     if (iconColor != null)
                         iconColor.getColorFromHex()
-                    else orangeColor
+                    else MyPalette.orangeColor
                 )
             }
             val selectedDays by remember { mutableStateOf(param) }

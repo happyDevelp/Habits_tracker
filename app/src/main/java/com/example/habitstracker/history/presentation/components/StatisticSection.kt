@@ -37,8 +37,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.MyText
+import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
-import com.example.habitstracker.core.presentation.theme.blueColor
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -251,7 +251,7 @@ private fun BarWithTooltip(
                     .fillMaxWidth()
                     .fillMaxHeight(if (percentage == 0f) 0.03f else percentage)
                     .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
-                    .background(if (percentage == 0f) Color.Gray.copy(0.8f) else blueColor)
+                    .background(if (percentage == 0f) Color.Gray.copy(0.8f) else MyPalette.blueColor)
                     .clickable { onSelect(index) }
             )
 

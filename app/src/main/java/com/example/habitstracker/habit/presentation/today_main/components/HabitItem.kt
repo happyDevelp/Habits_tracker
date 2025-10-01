@@ -2,6 +2,7 @@ package com.example.habitstracker.habit.presentation.today_main.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -37,6 +38,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -48,11 +51,11 @@ import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.CustomCheckbox
-import com.example.habitstracker.core.presentation.theme.notSelectedColor
+import com.example.habitstracker.core.presentation.theme.HabitColor
+import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.core.presentation.utils.getColorFromHex
 import com.example.habitstracker.core.presentation.utils.iconByName
-import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.ShownHabit
 import java.time.LocalDate
 
@@ -73,7 +76,8 @@ fun HabitItem(
     var isMenuExpanded by remember { mutableStateOf(false) }
 
     val currentColor by animateColorAsState(
-        targetValue = if (shownHabit.isSelected) notSelectedColor else color, label = "habit selected state"
+        targetValue = if (shownHabit.isSelected) MyPalette.notSelectedColor else color,
+        label = "habit selected state"
     )
 
     Box(modifier = modifier.fillMaxSize()) {
@@ -106,16 +110,34 @@ fun HabitItem(
                     .fillMaxWidth()
                     .clickable { /*TODO()*/ }
                     .weight(4f),
-
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 60.dp,
                     pressedElevation = 26.dp
                 ),
                 colors = CardDefaults.cardColors(
-                    containerColor = currentColor
+                    containerColor = Color.Transparent//currentColor
                 )
+
             ) {
-                Box(modifier = modifier.fillMaxSize()) {
+                //val testColor = MyPalette.greenColor/*Color(0xFF50B05B)*/
+                Box(
+                    modifier = modifier
+                        .fillMaxSize()
+                        .background(
+                            brush = Brush.radialGradient(
+                                colors = listOf(
+                                    Color(0xFF6CD1F5), // світлий центр
+                                    Color(0xFF24A6C5)  // темніший фон
+                                ),
+                                center = Offset(120f, 0f), // верхній лівий кут
+                                radius = 700f           // радіус поширення
+                            )
+                        /*gradientBackgroundBrush(
+                                isVertical = false,
+                                colors = listOf(HabitColor.SkyBlue.light, HabitColor.SkyBlue.dark)
+                            )*/
+                        )
+                ) {
                     Row(
                         modifier = modifier.fillMaxSize(),
                         horizontalArrangement = Arrangement.SpaceBetween,
@@ -207,4 +229,19 @@ fun HabitItem(
             }
         }
     }
+}
+
+@Composable
+private fun gradientBackgroundBrush(
+    isVertical: Boolean,
+    colors: List<Color>
+): Brush {
+    val endOffset = if (isVertical) Offset(0f, Float.POSITIVE_INFINITY)
+    else Offset(Float.POSITIVE_INFINITY, 0f)
+
+    return Brush.linearGradient(
+        colors = colors,
+        start = Offset.Zero,
+        end = endOffset
+    )
 }

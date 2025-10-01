@@ -13,7 +13,7 @@ import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.history.domain.AchievementEntity
-import com.example.habitstracker.history.presentation.components.HabitBox
+import com.example.habitstracker.history.presentation.components.AchievementBox
 import java.time.LocalDate
 
 @Composable
@@ -77,7 +77,7 @@ fun AchievementsScreen(
 
     LazyColumn {
         items(sections.size) { index ->
-            HabitBox(section = sections[index], allAchievements = allAchievements)
+            AchievementBox(section = sections[index], allAchievements = allAchievements)
         }
     }
 }

@@ -41,8 +41,9 @@ import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.UiText
 import com.example.habitstracker.core.presentation.theme.BoldFontFamily
+import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
-import com.example.habitstracker.core.presentation.theme.blueColor
+import com.example.habitstracker.core.presentation.theme.MyPalette.blueColor
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.core.presentation.utils.clickWithRipple
 import com.example.habitstracker.history.domain.AchievementEntity
@@ -119,7 +120,7 @@ fun NotificationDialog(
                         fontSize = 20.sp,
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Bold,
-                        color = blueColor,
+                        color = MyPalette.blueColor,
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
                             .padding(bottom = unlockedAchievement.textPadding)
@@ -150,7 +151,7 @@ fun NotificationDialog(
                         .fillMaxWidth(0.7f)
                         .height(55.dp),
                     onClick = { onDismiss() },
-                    colors = ButtonDefaults.buttonColors(containerColor = blueColor),
+                    colors = ButtonDefaults.buttonColors(containerColor = MyPalette.blueColor),
                     shape = RoundedCornerShape(50)
                 ) {
                     Text(

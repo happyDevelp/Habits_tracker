@@ -54,7 +54,8 @@ object AppModule {
             HabitDatabase::class.java,
             name = HABIT_TABLE_NAME
         )
-            .addMigrations(MIGRATION_15_16)
+            //.addMigrations(MIGRATION_15_16)
+            .fallbackToDestructiveMigration()
             .build()
     }
 }

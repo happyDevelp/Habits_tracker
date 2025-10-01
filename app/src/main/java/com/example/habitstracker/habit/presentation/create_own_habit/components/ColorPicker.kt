@@ -59,14 +59,14 @@ fun ColorPicker(
         val sheetState = rememberModalBottomSheetState()
         val scope = rememberCoroutineScope()
 
-        val colorList = listOf<Color>(
-            Color(0xFF068FF7),
-            Color(0xFF259705),
+        val colorList = listOf(
+            Color(0xFF60c7d6),
+            Color(0xFF55b85d),
             Color(0xFFFCA800),
             Color(0xFF005EFF),
             Color(0xFFB13423),
             Color(0xFF01ADD8),
-            Color(0xFFFF7700),
+            Color(0xFFe88629),
             Color(0xFF00A092),
             Color(0xFFFFB700),
             Color(0xFF8BC700),
@@ -77,7 +77,6 @@ fun ColorPicker(
             Color(0xFF127700),
             Color(0xFFC2AC5E),
         )
-
         ModalBottomSheet(
             modifier = modifier.fillMaxHeight(0.5f),
             sheetState = sheetState,

@@ -41,8 +41,8 @@ import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.theme.AppTheme
+import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
-import com.example.habitstracker.core.presentation.theme.blueColor
 import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.habit.presentation.add_habit.components.DefaultHabitGroupItem
 import com.example.habitstracker.habit.presentation.add_habit.components.defaultsHabitsGroupList
@@ -88,7 +88,7 @@ fun AddHabitScreen(modifier: Modifier = Modifier) {
                     },
 
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = blueColor
+                        containerColor = MyPalette.blueColor
                     ),
                     elevation = ButtonDefaults.buttonElevation(
                         defaultElevation = 6.dp,

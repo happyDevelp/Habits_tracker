@@ -374,10 +374,10 @@ private fun Preview() {
                 mapDateToHabits = emptyMap(),
                 onDismiss = {},
                 changeSelectedItemState = { },
-                unlockedAchievement = UnlockedAchievement(
+                unlockedAchievement = null /*UnlockedAchievement(
                     R.drawable.streak_achiev, 100, "Finish 100 Habits",
                     textPadding = 0.dp
-                ),
+                )*/,
             )
         }
     }

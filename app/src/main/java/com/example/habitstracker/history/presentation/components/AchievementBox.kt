@@ -35,14 +35,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
+import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
-import com.example.habitstracker.core.presentation.theme.blueColor
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.history.domain.AchievementEntity
 import com.example.habitstracker.history.presentation.tab_screens.AchievementSection
 
 @Composable
-fun HabitBox(
+fun AchievementBox(
     modifier: Modifier = Modifier,
     section: AchievementSection,
     allAchievements: List<AchievementEntity>
@@ -155,7 +155,7 @@ fun HabitBox(
                                                 fontSize = 15.sp,
                                                 fontFamily = PoppinsFontFamily,
                                                 fontWeight = FontWeight.Bold,
-                                                color = if (isAchieved) blueColor else Color.Black.copy(0.5f),
+                                                color = if (isAchieved) MyPalette.blueColor else Color.Black.copy(0.5f),
                                                 textAlign = TextAlign.Center
                                             )
                                         }
@@ -193,7 +193,7 @@ fun HabitBox(
 @Preview(showBackground = true)
 @Composable
 fun HabitBoxPreview() {
-    HabitBox(
+    AchievementBox(
         modifier = Modifier,
         section = AchievementSection(
             title = "a",

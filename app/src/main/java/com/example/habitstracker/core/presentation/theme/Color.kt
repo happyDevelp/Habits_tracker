@@ -224,10 +224,94 @@ val screenContainerBackgroundDark = Color(0xFF313747) //background
 
 
 /** Colors for interface elements **/
-val notSelectedColor = Color(0xFF313747)
-val blueColor = Color(0xFF3176FF)
-val orangeColor = Color(0xFFf56936)
-val redColor = Color(0xFFc43a3a)
-val greenColor = Color(0xFF3c843a)
+object MyPalette{
+    val notSelectedColor = Color(0xFF313747)
+    val blueColor = Color(0xFF3176FF)
+    val orangeColor = Color(0xFFf56936)
+    val redColor = Color(0xFFc43a3a)
+    val greenColor = Color(0xFF50B05B)
+}
 
+data class HabitGradient(val light: Color, val dark: Color)
 
+object HabitColor {
+    val SkyBlue = HabitGradient(
+        light = Color(0xFF6DD5FA),
+        dark = Color(0xFF2193B0)
+    )
+
+    val LeafGreen = HabitGradient(
+        light = Color(0xFF81D742),
+        dark = Color(0xFF3CA55C)
+    )
+
+    val Amber = HabitGradient(
+        light = Color(0xFFFFE259),
+        dark = Color(0xFFFFA751)
+    )
+
+    val DeepBlue = HabitGradient(
+        light = Color(0xFF56CCF2),
+        dark = Color(0xFF2F80ED)
+    )
+
+    val BrickRed = HabitGradient(
+        light = Color(0xFFFF6E7F),
+        dark = Color(0xFFB13423)
+    )
+
+    val Cyan = HabitGradient(
+        light = Color(0xFF43C6AC),
+        dark = Color(0xFF191654)
+    )
+
+    val Orange = HabitGradient(
+        light = Color(0xFFFFA751),
+        dark = Color(0xFFE88629)
+    )
+
+    val Teal = HabitGradient(
+        light = Color(0xFF00C9A7),
+        dark = Color(0xFF005F73)
+    )
+
+    val Golden = HabitGradient(
+        light = Color(0xFFFFE259),
+        dark = Color(0xFFFFA751)
+    )
+
+    val Lime = HabitGradient(
+        light = Color(0xFFA8E063),
+        dark = Color(0xFF56AB2F)
+    )
+
+    val Aqua = HabitGradient(
+        light = Color(0xFF4AC29A),
+        dark = Color(0xFFBDFFF3)
+    )
+
+    val Purple = HabitGradient(
+        light = Color(0xFF8E2DE2),
+        dark = Color(0xFF4A00E0)
+    )
+
+    val Terracotta = HabitGradient(
+        light = Color(0xFFFFA17F),
+        dark = Color(0xFF00223E)
+    )
+
+    val Rose = HabitGradient(
+        light = Color(0xFFF45C43),
+        dark = Color(0xFFEB3349)
+    )
+
+    val DarkGreen = HabitGradient(
+        light = Color(0xFF56AB2F),
+        dark = Color(0xFFA8E063)
+    )
+
+    val Sand = HabitGradient(
+        light = Color(0xFFEEBA6D),
+        dark = Color(0xFFD1913C)
+    )
+}

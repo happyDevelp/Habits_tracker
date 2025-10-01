@@ -32,8 +32,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.habitstracker.R
+import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
-import com.example.habitstracker.core.presentation.theme.blueColor
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.history.presentation.tab_screens.AchievementSection
 import java.time.LocalDate
@@ -121,7 +121,7 @@ fun AchievementDialog(
                         fontSize = 18.sp,
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Bold,
-                        color = if (isAchieved) blueColor else Color.Black.copy(0.8f),
+                        color = if (isAchieved) MyPalette.blueColor else Color.Black.copy(0.8f),
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
                             .offset(
@@ -164,7 +164,7 @@ fun AchievementDialog(
                         .fillMaxWidth(0.7f)
                         .height(50.dp),
                     onClick = { onDismiss() },
-                    colors = ButtonDefaults.buttonColors(containerColor = blueColor),
+                    colors = ButtonDefaults.buttonColors(containerColor = MyPalette.blueColor),
                     shape = RoundedCornerShape(50)
                 ) {
                     Text(

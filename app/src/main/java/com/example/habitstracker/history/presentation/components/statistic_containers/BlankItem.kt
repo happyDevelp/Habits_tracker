@@ -5,10 +5,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.habitstracker.R
-import com.example.habitstracker.core.presentation.theme.blueColor
-import com.example.habitstracker.core.presentation.theme.greenColor
-import com.example.habitstracker.core.presentation.theme.orangeColor
-import com.example.habitstracker.core.presentation.theme.redColor
+import com.example.habitstracker.core.presentation.theme.MyPalette
 
 data class BlankItem(
     val width: Dp,
@@ -32,7 +29,7 @@ fun getFilledBlankList(
     val listOf = listOf(
         BlankItem(
             width = 140.dp,
-            color = blueColor,
+            color = MyPalette.blueColor,
             topText = context.getString(R.string.current_streak),
             middleText = "$currentStreak",
             bottomText = "The best streak: $bestStreak",
@@ -40,7 +37,7 @@ fun getFilledBlankList(
 
         BlankItem(
             width = 125.dp,
-            color = redColor,
+            color = MyPalette.redColor,
             topText = context.getString(R.string.number_of_completed_habits),
             middleText = "$totalCompletedHabits",
             bottomText = "This week: $thisWeekSelectedHabits"
@@ -48,7 +45,7 @@ fun getFilledBlankList(
 
         BlankItem(
             width = 130.dp,
-            color = orangeColor,
+            color = MyPalette.orangeColor,
             topText = context.getString(R.string.percentage_of_completed_habits),
             middleText = "${percentage.toInt()}%",
             bottomText = "Habits: $totalCompletedHabits/$totalHabits",
@@ -56,7 +53,7 @@ fun getFilledBlankList(
 
         BlankItem(
             width = 130.dp,
-            color = greenColor,
+            color = MyPalette.greenColor,
             topText = context.getString(R.string.perfect_days),
             middleText = "$perfectDaysCounter",
             bottomText = "This week: $thisWeekPerfectedDays",

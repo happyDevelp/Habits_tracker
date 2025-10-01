@@ -22,16 +22,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.MyText
+import com.example.habitstracker.core.presentation.theme.AppTheme
+import com.example.habitstracker.core.presentation.theme.MyPalette
+import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
+import com.example.habitstracker.core.presentation.utils.APP_VERSION
 import com.example.habitstracker.profile.presentation.profile.component.ButtonItem
 import com.example.habitstracker.profile.presentation.profile.component.CustomContainer
 import com.example.habitstracker.profile.presentation.profile.component.SettingsButtonItem
 import com.example.habitstracker.profile.presentation.profile.component.scaffold.TopBarProfileScreen
-import com.example.habitstracker.core.presentation.theme.AppTheme
-import com.example.habitstracker.core.presentation.theme.blueColor
-import com.example.habitstracker.core.presentation.theme.orangeColor
-import com.example.habitstracker.core.presentation.theme.redColor
-import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
-import com.example.habitstracker.core.presentation.utils.APP_VERSION
 
 @Composable
 @Preview(showSystemUi = false)
@@ -97,17 +95,17 @@ fun getTopButtonsList() =
     listOf(
         ButtonItem(
             icon = Icons.Default.Notifications,
-            iconBackground = blueColor,
+            iconBackground = MyPalette.blueColor,
             text = stringResource(id = R.string.notification)
         ),
         ButtonItem(
             icon = Icons.Default.Settings,
-            iconBackground = orangeColor,
+            iconBackground = MyPalette.orangeColor,
             text = stringResource(R.string.general_settings)
         ),
         ButtonItem(
             icon = Icons.Default.Language,
-            iconBackground = redColor,
+            iconBackground = MyPalette.redColor,
             text = stringResource(R.string.language_options)
         ),
     )
@@ -117,7 +115,7 @@ fun getBottomButtonsList() =
     listOf(
         ButtonItem(
             icon = Icons.Default.Share,
-            iconBackground = blueColor,
+            iconBackground = MyPalette.blueColor,
             text = stringResource(R.string.share_with_friends)
         ),
         ButtonItem(
