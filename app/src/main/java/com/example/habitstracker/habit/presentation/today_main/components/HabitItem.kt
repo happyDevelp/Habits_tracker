@@ -58,7 +58,6 @@ import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.CustomCheckbox
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.HabitColor
-import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.core.presentation.utils.getColorFromHex
 import com.example.habitstracker.core.presentation.utils.iconByName
@@ -76,20 +75,34 @@ fun HabitItem(
 ) {
     val navController = LocalNavController.current
     val itemHeight: Dp = 85.dp
-    val selectedAlpha: Float = 0.75f
+    val selectedAlpha = 0.75f
 
-    val color = shownHabit.colorHex.getColorFromHex()
+    val color = getGradientByLightColor(shownHabit.colorHex.getColorFromHex())
 
     var isMenuExpanded by remember { mutableStateOf(false) }
 
-    val currentColor by animateColorAsState(
-        targetValue = if (shownHabit.isSelected) MyPalette.notSelectedColor else color,
-        label = "habit selected state"
+    val targetGradient = if (shownHabit.isSelected) {
+        HabitColor.DefaultColor
+    } else {
+        color
+    }
+
+    // Animation of both colors separately
+    val animatedLight by animateColorAsState(
+        targetValue = targetGradient.light,
+        label = "light gradient animation"
+    )
+
+    val animatedDark by animateColorAsState(
+        targetValue = targetGradient.dark,
+        label = "dark gradient animation"
     )
 
     Box(modifier = modifier.wrapContentSize()) {
         Row(
-            modifier = modifier.fillMaxWidth(0.97f).padding(end = 12.dp),
+            modifier = modifier
+                .fillMaxWidth(0.97f)
+                .padding(end = 12.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -144,33 +157,30 @@ fun HabitItem(
                     .clip(RoundedCornerShape(size = 20.dp))
                     .height(itemHeight)
                     .fillMaxWidth()
-                    .clickable {  }
+                    .clickable { }
                     .weight(4f),
                 elevation = CardDefaults.cardElevation(
                     defaultElevation = 60.dp,
                     pressedElevation = 26.dp
                 ),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color.Transparent//currentColor
+                    containerColor = Color.Transparent
                 )
-
             ) {
                 Box(
                     modifier = modifier
                         .fillMaxSize()
                         .background(
                             brush = Brush.radialGradient(
-                                colors = listOf(
-                                    HabitColor.SkyBlue.light,
-                                    HabitColor.SkyBlue.dark,
-                                ),
+                                colors = listOf(animatedLight, animatedDark),
                                 center = Offset(120f, 20f),
                                 radius = 700f // Distribution radius
                             )
                         )
                 ) {
                     Row(
-                        modifier = modifier.fillMaxSize()
+                        modifier = modifier
+                            .fillMaxSize()
                             .padding(horizontal = 16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
@@ -208,8 +218,8 @@ fun HabitItem(
                                 fontWeight = FontWeight.Bold,
                                 style = MaterialTheme.typography.titleSmall,
                             )
-
-                            AnimatedVisibility(visible = shownHabit.isSelected) { // Hide the second text when selected
+                            // Hide the second text when selected
+                            AnimatedVisibility(visible = shownHabit.isSelected) {
                                 Row(
                                     horizontalArrangement = Arrangement.Center,
                                     verticalAlignment = Alignment.CenterVertically
@@ -242,24 +252,48 @@ fun HabitItem(
                             CustomCheckbox(
                                 shownHabit = shownHabit,
                                 onClick = {
-                                    onSelectClick(shownHabit.id, !shownHabit.isSelected, currentDate.toString())
+                                    onSelectClick(
+                                        shownHabit.id,
+                                        !shownHabit.isSelected,
+                                        currentDate.toString()
+                                    )
 
                                 }
                             )
                         }
                     }
-
                 }
             }
         }
     }
 }
 
+fun getGradientByLightColor(lightColor: Color) = when (lightColor) {
+    HabitColor.SkyBlue.light -> HabitColor.SkyBlue
+    HabitColor.LeafGreen.light -> HabitColor.LeafGreen
+    HabitColor.Amber.light -> HabitColor.Amber
+    HabitColor.DeepBlue.light -> HabitColor.DeepBlue
+    HabitColor.BrickRed.light -> HabitColor.BrickRed
+    HabitColor.Cyan.light -> HabitColor.Cyan
+    HabitColor.Orange.light -> HabitColor.Orange
+    HabitColor.Teal.light -> HabitColor.Teal
+    HabitColor.Golden.light -> HabitColor.Golden
+    HabitColor.Lime.light -> HabitColor.Lime
+    HabitColor.Aqua.light -> HabitColor.Aqua
+    HabitColor.Purple.light -> HabitColor.Purple
+    HabitColor.Terracotta.light -> HabitColor.Terracotta
+    HabitColor.Rose.light -> HabitColor.Rose
+    HabitColor.DarkGreen.light -> HabitColor.DarkGreen
+    HabitColor.Sand.light -> HabitColor.Sand
+
+    else -> HabitColor.DefaultColor // fallback
+}
+
 @Preview(showSystemUi = false)
 @Composable
-private fun HabitItemPreview(modifier: Modifier = Modifier) {
+private fun HabitItemPreview() {
     CompositionLocalProvider(
-        LocalNavController provides rememberNavController() // підставляємо тестовий
+        LocalNavController provides rememberNavController()
     ) {
         AppTheme(darkTheme = true) {
             HabitItem(

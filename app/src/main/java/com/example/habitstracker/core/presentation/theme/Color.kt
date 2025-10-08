@@ -232,85 +232,90 @@ object MyPalette{
     val greenColor = Color(0xFF50B05B)
 }
 
-data class HabitGradient(val light: Color, val dark: Color)
+data class ColorGradient( val light: Color, val dark: Color)
 
 object HabitColor {
-    val SkyBlue = HabitGradient(
+    val DefaultColor = ColorGradient(
+        light = Color(0xFF313747),
+        dark = Color(0xFF262936)
+    )
+
+    val SkyBlue = ColorGradient(
         light = Color(0xFF6CD1F5),
         dark = Color(0xFF24A6C5)
     )
 
-    val LeafGreen = HabitGradient(
+    val LeafGreen = ColorGradient(
         light = Color(0xFF81D742),
         dark = Color(0xFF3CA55C)
     )
 
-    val Amber = HabitGradient(
+    val Amber = ColorGradient(
         light = Color(0xFFFFE259),
         dark = Color(0xFFFFA751)
     )
 
-    val DeepBlue = HabitGradient(
+    val DeepBlue = ColorGradient(
         light = Color(0xFF56CCF2),
         dark = Color(0xFF2F80ED)
     )
 
-    val BrickRed = HabitGradient(
+    val BrickRed = ColorGradient(
         light = Color(0xFFFF6E7F),
         dark = Color(0xFFB13423)
     )
 
-    val Cyan = HabitGradient(
+    val Cyan = ColorGradient(
         light = Color(0xFF43C6AC),
         dark = Color(0xFF191654)
     )
 
-    val Orange = HabitGradient(
-        light = Color(0xFFFFA751),
-        dark = Color(0xFFE88629)
+    val Orange = ColorGradient(
+        light = Color(0xFFE88629),
+        dark = Color(0xFFf56936)
     )
 
-    val Teal = HabitGradient(
+    val Teal = ColorGradient(
         light = Color(0xFF00C9A7),
         dark = Color(0xFF005F73)
     )
 
-    val Golden = HabitGradient(
+    val Golden = ColorGradient(
         light = Color(0xFFFFE259),
         dark = Color(0xFFFFA751)
     )
 
-    val Lime = HabitGradient(
+    val Lime = ColorGradient(
         light = Color(0xFFA8E063),
         dark = Color(0xFF56AB2F)
     )
 
-    val Aqua = HabitGradient(
+    val Aqua = ColorGradient(
         light = Color(0xFF4AC29A),
         dark = Color(0xFFBDFFF3)
     )
 
-    val Purple = HabitGradient(
+    val Purple = ColorGradient(
         light = Color(0xFF8E2DE2),
         dark = Color(0xFF4A00E0)
     )
 
-    val Terracotta = HabitGradient(
+    val Terracotta = ColorGradient(
         light = Color(0xFFFFA17F),
         dark = Color(0xFF00223E)
     )
 
-    val Rose = HabitGradient(
+    val Rose = ColorGradient(
         light = Color(0xFFF45C43),
         dark = Color(0xFFEB3349)
     )
 
-    val DarkGreen = HabitGradient(
+    val DarkGreen = ColorGradient(
         light = Color(0xFF56AB2F),
         dark = Color(0xFFA8E063)
     )
 
-    val Sand = HabitGradient(
+    val Sand = ColorGradient(
         light = Color(0xFFEEBA6D),
         dark = Color(0xFFD1913C)
     )

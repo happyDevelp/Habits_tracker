@@ -1,5 +1,6 @@
 package com.example.habitstracker.habit.presentation.today_main
 
+import android.content.Context
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,6 +41,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
+import com.example.habitstracker.core.presentation.UiText
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.QuickSandFontFamily
@@ -340,14 +342,14 @@ fun TodayScreen(
     }
 }
 
-enum class AchievementSection {
+enum class AchievementSection() {
     HABITS_FINISHED, BEST_STREAK, PERFECT_DAYS;
 
     companion object {
-        fun fromString(section: String) = when (section) {
-            "Habits Finished" -> HABITS_FINISHED
-            "Best Streak" -> BEST_STREAK
-            "Perfect Days" -> PERFECT_DAYS
+        fun fromString(section: String, context: Context) = when (section) {
+            UiText.StringResources(R.string.achiev_habits_finished).asString(context) -> HABITS_FINISHED
+            UiText.StringResources(R.string.achiev_best_streak).asString(context) -> BEST_STREAK
+            UiText.StringResources(R.string.achiev_perfect_days).asString(context) -> PERFECT_DAYS
             else -> throw IllegalArgumentException("Invalid section: $section")
         }
     }

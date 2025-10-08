@@ -1,6 +1,7 @@
 package com.example.habitstracker.habit.presentation.create_own_habit
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,11 +15,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.SentimentVerySatisfied
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -32,6 +36,7 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -47,7 +52,7 @@ import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.theme.AppTheme
-import com.example.habitstracker.core.presentation.theme.MyPalette
+import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.core.presentation.utils.clickWithRipple
@@ -58,11 +63,11 @@ import com.example.habitstracker.core.presentation.utils.toHex
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.presentation.add_habit.components.AdvancedSettings
-import com.example.habitstracker.habit.presentation.add_habit.components.CreateButton
 import com.example.habitstracker.habit.presentation.add_habit.components.ExecutionTimePicker
 import com.example.habitstracker.habit.presentation.add_habit.components.IconAndColorPicker
 import com.example.habitstracker.habit.presentation.create_own_habit.components.HabitNameTextField
 import com.example.habitstracker.habit.presentation.today_main.MainScreenViewModel
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable
@@ -128,7 +133,7 @@ fun CreateOwnHabitScreen(
                 mutableStateOf(
                     if (iconColor != null)
                         iconColor.getColorFromHex()
-                    else MyPalette.orangeColor
+                    else HabitColor.Orange.light
                 )
             }
             val selectedDays by remember { mutableStateOf(param) }
@@ -236,14 +241,44 @@ fun CreateOwnHabitScreen(
                 days = selectedDays,
                 executionTime = executionTime,
             )
-            CreateButton(
-                modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 16.dp),
-                navController,
-                habit = habit,
-                onAddHabitClick = onAddHabitClick
-            )
+            val coroutineScope = rememberCoroutineScope()
+
+            Button(
+                modifier = modifier
+                    .align(alignment = Alignment.BottomCenter)
+                    .padding(bottom = 16.dp)
+                    .fillMaxWidth(0.9f)
+                    .height(60.dp)
+                    .border(
+                        1.dp,
+                        color = Color.Black,
+                        shape = RoundedCornerShape(corner = CornerSize(50.dp))
+                    ),
+                enabled = habit.name.length >= 4,
+                onClick = {
+                    coroutineScope.launch {
+                        onAddHabitClick(habit)
+                        navController.popBackStack(Route.Today(), false)
+                    }
+                },
+
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    contentColor = Color.White,
+                    disabledContainerColor = Color.White.copy(0.05f),
+                    disabledContentColor = Color.White.copy(0.6f)
+                ),
+
+                elevation = ButtonDefaults.buttonElevation(
+                    defaultElevation = 6.dp,
+                    pressedElevation = 16.dp
+                )
+            ) {
+                Text(
+                    text = stringResource(R.string.add_habit),
+                    fontSize = 20.sp,
+                )
+            }
         }
     }
 }

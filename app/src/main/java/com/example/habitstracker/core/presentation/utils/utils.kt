@@ -12,6 +12,7 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.habit.domain.ShownHabit
 import com.example.habitstracker.habit.presentation.edit_habit.components.SelectedDay
@@ -59,13 +60,13 @@ fun iconByName(name: String): ImageVector {
 }
 
 val shownHabitExample1 = ShownHabit(0, "habit example 1", "SentimentVerySatisfied",
-    MyPalette.blueColor.toHex(), "Everyday", "Anytime", false, false)
+    HabitColor.SkyBlue.light.toHex(), "Everyday", "Anytime", false, false)
 
 val shownHabitExample2 = ShownHabit(1, "habit example 2", "SentimentVerySatisfied",
-    MyPalette.orangeColor.toHex(), "Everyday", "Anytime", false, false)
+    HabitColor.Orange.light.toHex(), "Everyday", "Anytime", false, false)
 
 val shownHabitExample3 = ShownHabit(2, "habit example 3", "SentimentVerySatisfied",
-    MyPalette.greenColor.toHex(), "Everyday", "Evening", false, false)
+    HabitColor.LeafGreen.light.toHex(), "Everyday", "Evening", false, false)
 
 // Using in Edit/RepeatPicker
 fun textState(dayStates: SnapshotStateList<SelectedDay>): Pair<String, String> {

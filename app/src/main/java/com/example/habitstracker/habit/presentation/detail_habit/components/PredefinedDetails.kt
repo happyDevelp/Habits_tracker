@@ -89,23 +89,88 @@ import androidx.compose.material.icons.filled.TrendingUp
 import androidx.compose.material.icons.filled.VideogameAsset
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.filled.WbSunny
-import androidx.compose.ui.graphics.Color
+import com.example.habitstracker.core.presentation.theme.HabitColor
 
 
 val keepActiveGetFit = listOf(
-    DefaultHabitDetailItem("Workout", "Move your body and enjoy burning fat", Icons.Default.FitnessCenter, Color(0xFFC26519)),
-    DefaultHabitDetailItem("Walking", "Boost your steps daily", Icons.Default.DirectionsWalk, Color(0xFF4CAF50)),
-    DefaultHabitDetailItem("Running", "Increase stamina and energy", Icons.Default.DirectionsRun, Color(0xFF8E24AA)),
-    DefaultHabitDetailItem("Yoga", "Improve flexibility and calm your mind", Icons.Default.SelfImprovement, Color(0xFF009688)),
-    DefaultHabitDetailItem("Swimming", "Full body workout without sweat", Icons.Default.Pool, Color(0xFF3A7BE7)),
-    DefaultHabitDetailItem("Stretching", "Release tension and increase flexibility", Icons.Default.Accessibility, Color(0xFFFF6F00)),
-    DefaultHabitDetailItem("Cycling", "Strengthen legs and explore outdoors", Icons.Default.PedalBike, Color(0xFF64B5F6)),
-    DefaultHabitDetailItem("Jump rope", "Boost your cardio and coordination", Icons.Default.SportsVolleyball, Color(0xFFFF9800)),
-    DefaultHabitDetailItem("Hiking", "Embrace nature and stay active", Icons.Default.Terrain, Color(0xFF4CAF50)),
-    DefaultHabitDetailItem("Push-ups", "Increase upper body strength", Icons.Default.PushPin, Color(0xFF9C27B0)),
-    DefaultHabitDetailItem("Plank challenge", "Strengthen your core", Icons.Default.Build, Color(0xFFFF5722)),
-    DefaultHabitDetailItem("Block screen time", "Lock screen and glue attention", Icons.Default.PhonelinkOff, Color(0xFF0081CB)),
-    DefaultHabitDetailItem("Sleep over 8h", "Enough time for sweet dreams", Icons.Default.Hotel, Color(0xFFFFA726))
+    DefaultHabitDetailItem(
+        "Workout",
+        "Move your body and enjoy burning fat",
+        Icons.Default.FitnessCenter,
+        HabitColor.Orange.light
+    ),
+    DefaultHabitDetailItem(
+        "Walking",
+        "Boost your steps daily",
+        Icons.Default.DirectionsWalk,
+        HabitColor.LeafGreen.light
+    ),
+    DefaultHabitDetailItem(
+        "Running",
+        "Increase stamina and energy",
+        Icons.Default.DirectionsRun,
+        HabitColor.Purple.light
+    ),
+    DefaultHabitDetailItem(
+        "Yoga",
+        "Improve flexibility and calm your mind",
+        Icons.Default.SelfImprovement,
+        HabitColor.Teal.light
+    ),
+    DefaultHabitDetailItem(
+        "Swimming",
+        "Full body workout without sweat",
+        Icons.Default.Pool,
+        HabitColor.DeepBlue.light
+    ),
+    DefaultHabitDetailItem(
+        "Stretching",
+        "Release tension and increase flexibility",
+        Icons.Default.Accessibility,
+        HabitColor.Amber.light
+    ),
+    DefaultHabitDetailItem(
+        "Cycling",
+        "Strengthen legs and explore outdoors",
+        Icons.Default.PedalBike,
+        HabitColor.SkyBlue.light
+    ),
+    DefaultHabitDetailItem(
+        "Jump rope",
+        "Boost your cardio and coordination",
+        Icons.Default.SportsVolleyball,
+        HabitColor.Orange.light
+    ),
+    DefaultHabitDetailItem(
+        "Hiking",
+        "Embrace nature and stay active",
+        Icons.Default.Terrain,
+        HabitColor.LeafGreen.light
+    ),
+    DefaultHabitDetailItem(
+        "Push-ups",
+        "Increase upper body strength",
+        Icons.Default.PushPin,
+        HabitColor.Purple.light
+    ),
+    DefaultHabitDetailItem(
+        "Plank challenge",
+        "Strengthen your core",
+        Icons.Default.Build,
+        HabitColor.BrickRed.light
+    ),
+    DefaultHabitDetailItem(
+        "Block screen time",
+        "Lock screen and glue attention",
+        Icons.Default.PhonelinkOff,
+        HabitColor.DeepBlue.light
+    ),
+    DefaultHabitDetailItem(
+        "Sleep over 8h",
+        "Enough time for sweet dreams",
+        Icons.Default.Hotel,
+        HabitColor.Golden.light
+    )
 )
 
 val eatDrinkHealthily = listOf(
@@ -113,76 +178,86 @@ val eatDrinkHealthily = listOf(
         "Go sugar-free",
         "See your body change with being sugar-free",
         Icons.Default.NoMeals,
-        iconColor = Color(0xFF64B5F6)
+        HabitColor.SkyBlue.light
     ),
     DefaultHabitDetailItem(
         "Limit caffeine intake",
         "Replace with other healthy choices",
         Icons.Default.CoffeeMaker,
-        iconColor = Color(0xFF81C784)
+        HabitColor.LeafGreen.light
     ),
     DefaultHabitDetailItem(
         "No alcohol",
         "Life is way better without alcohol",
         Icons.Default.LocalBar,
-        iconColor = Color(0xFFD32F2F)
+        HabitColor.BrickRed.light
     ),
     DefaultHabitDetailItem(
         "No fried food",
         "An easy way to lose fat",
         Icons.Default.Fastfood,
-        iconColor = Color(0xFFFFA726)
+        HabitColor.Amber.light
     ),
     DefaultHabitDetailItem(
         "Intermittent fasting",
         "Your stomach needs a little rest",
         Icons.Default.Timer,
-        iconColor = Color(0xFF607D8B)
+        HabitColor.Teal.light
     ),
     DefaultHabitDetailItem(
         "Take greens & fruits",
         "Don't forget the natural snacks",
         Icons.Default.Eco,
-        iconColor = Color(0xFF4CAF50)
+        HabitColor.LeafGreen.light
     ),
     DefaultHabitDetailItem(
         "Have breakfast",
         "Wake up your body with energy",
         Icons.Default.BreakfastDining,
-        iconColor = Color(0xFF8E24AA)
+        HabitColor.Purple.light
     ),
     DefaultHabitDetailItem(
         "Drink 8 cups of water",
         "Keep your body hydrated",
         Icons.Default.LocalDrink,
-        iconColor = Color(0xFF0288D1)
+        HabitColor.DeepBlue.light
     ),
     DefaultHabitDetailItem(
         "Snack wisely",
         "Choose healthy snacks like nuts or fruits",
         Icons.Default.Spa,
-        iconColor = Color(0xFF9CCC65)
+        HabitColor.Lime.light
     ),
     DefaultHabitDetailItem(
         "Plan your meals",
         "Avoid overeating by staying organized",
         Icons.Default.CalendarToday,
-        iconColor = Color(0xFF3F51B5)
+        HabitColor.DeepBlue.light
     ),
     DefaultHabitDetailItem(
         "Eat slowly",
         "Let your body recognize when it's full",
         Icons.Default.HourglassBottom,
-        iconColor = Color(0xFF00ACC1)
+        HabitColor.Teal.light
     ),
     DefaultHabitDetailItem(
         "Prepare home-cooked meals",
         "Control ingredients and portions",
         Icons.Default.Kitchen,
-        iconColor = Color(0xFFFF7043)
+        HabitColor.Orange.light
     ),
-    DefaultHabitDetailItem("Avoid processed food", "Stick to whole and fresh ingredients", Icons.Default.Warning, iconColor = Color(0xFFF44336)),
-    DefaultHabitDetailItem("Monitor your portion size", "Keep your servings balanced", Icons.Default.Scale, iconColor = Color(0xFF795548))
+    DefaultHabitDetailItem(
+        "Avoid processed food",
+        "Stick to whole and fresh ingredients",
+        Icons.Default.Warning,
+        HabitColor.BrickRed.light
+    ),
+    DefaultHabitDetailItem(
+        "Monitor your portion size",
+        "Keep your servings balanced",
+        Icons.Default.Scale,
+        HabitColor.Sand.light
+    )
 )
 
 val easeStress = listOf(
@@ -190,91 +265,91 @@ val easeStress = listOf(
         "Practice meditation",
         "Connect with your inner peace",
         Icons.Default.SelfImprovement,
-        iconColor = Color(0xFF64B5F6)
+        HabitColor.SkyBlue.light
     ),
     DefaultHabitDetailItem(
         "Practice breathing",
         "Calm yourself from every in and out",
         Icons.Default.Air,
-        iconColor = Color(0xFF81C784)
+        HabitColor.LeafGreen.light
     ),
     DefaultHabitDetailItem(
         "Read a book",
         "Let your mind wander through stories",
         Icons.Default.MenuBook,
-        iconColor = Color(0xFF5E35B1)
+        HabitColor.Purple.light
     ),
     DefaultHabitDetailItem(
         "Keep a journal",
         "Know yourself better through writing",
         Icons.Default.Create,
-        iconColor = Color(0xFFE57373)
+        HabitColor.Rose.light
     ),
     DefaultHabitDetailItem(
         "Do stretching exercises",
         "Release tension and stress",
         Icons.Default.FitnessCenter,
-        iconColor = Color(0xFF4CAF50)
+        HabitColor.LeafGreen.light
     ),
     DefaultHabitDetailItem(
         "Do yoga",
         "Calming and smoothing",
         Icons.Default.SelfImprovement,
-        iconColor = Color(0xFFEF6C00)
+        HabitColor.Orange.light
     ),
     DefaultHabitDetailItem(
         "Get enough sleep",
         "Allow your body to recover and recharge",
         Icons.Default.Bedtime,
-        iconColor = Color(0xFF212121)
+        HabitColor.Sand.light
     ),
     DefaultHabitDetailItem(
         "Enjoy nature",
         "Embrace nature to calm your mind",
         Icons.Default.NaturePeople,
-        iconColor = Color(0xFF66BB6A)
+        HabitColor.Lime.light
     ),
     DefaultHabitDetailItem(
         "Disconnect from devices",
         "Take a break from screens and notifications",
         Icons.Default.PhoneDisabled,
-        iconColor = Color(0xFF9E9E9E)
+        HabitColor.Sand.light
     ),
     DefaultHabitDetailItem(
         "Laugh more",
         "Find a moment that makes you smile",
         Icons.Default.EmojiEmotions,
-        iconColor = Color(0xFFFFEB3B)
+        HabitColor.Golden.light
     ),
     DefaultHabitDetailItem(
         "Allow yourself to cry",
         "Release emotional tension and feel relief",
         Icons.Default.Cloud,
-        iconColor = Color(0xFF90CAF9)
+        HabitColor.SkyBlue.light
     ),
     DefaultHabitDetailItem(
         "Declutter your space",
         "Organize your environment for mental clarity",
         Icons.Default.CleaningServices,
-        iconColor = Color(0xFF795548)
+        HabitColor.Sand.light
     ),
     DefaultHabitDetailItem(
         "Practice gratitude",
         "Focus on positive aspects of your life",
         Icons.Default.Favorite,
-        iconColor = Color(0xFFF44336)
+        HabitColor.BrickRed.light
     ),
     DefaultHabitDetailItem(
         "Take a warm bath",
         "Feel the healing power of relaxation",
         Icons.Default.Bathtub,
-        iconColor = Color(0xFF03A9F4)
+        HabitColor.DeepBlue.light
     ),
     DefaultHabitDetailItem(
         "Listen to calming music",
         "Let soothing melodies relax you",
         Icons.Default.MusicNote,
-        iconColor = Color(0xFFAB47BC)
+        HabitColor.Purple.light
     )
 )
 
@@ -283,91 +358,91 @@ val gainSelfDiscipline = listOf(
         "Limit screen time",
         "Reduce distractions by controlling screen use",
         Icons.Default.ScreenLockLandscape,
-        iconColor = Color(0xFF1E88E5)
+        HabitColor.DeepBlue.light
     ),
     DefaultHabitDetailItem(
         "No emotional spending",
         "Distinguish your needs and wants",
         Icons.Default.AttachMoney,
-        iconColor = Color(0xFF43A047)
+        HabitColor.LeafGreen.light
     ),
     DefaultHabitDetailItem(
         "Go sugar-free",
         "See your body change with being sugar-free",
         Icons.Default.NoFood,
-        iconColor = Color(0xFFD32F2F)
+        HabitColor.BrickRed.light
     ),
     DefaultHabitDetailItem(
         "Avoid alcohol",
         "Life is way better without alcohol",
         Icons.Default.LocalBar,
-        iconColor = Color(0xFF8E24AA)
+        HabitColor.Purple.light
     ),
     DefaultHabitDetailItem(
         "Limit caffeine intake",
         "Replace with other healthy choices",
         Icons.Default.Coffee,
-        iconColor = Color(0xFF795548)
+        HabitColor.Sand.light
     ),
     DefaultHabitDetailItem(
         "Quit smoking",
         "Don't have 'just one'",
         Icons.Default.SmokingRooms,
-        iconColor = Color(0xFFB71C1C)
+        HabitColor.BrickRed.light
     ),
     DefaultHabitDetailItem(
         "Avoid fried food",
         "An easy way to lose fat",
         Icons.Default.Fastfood,
-        iconColor = Color(0xFFF57C00)
+        HabitColor.Orange.light
     ),
     DefaultHabitDetailItem(
         "No excessive gaming",
         "Winners don't just exist in games",
         Icons.Default.VideogameAsset,
-        iconColor = Color(0xFF43A047)
+        HabitColor.LeafGreen.light
     ),
     DefaultHabitDetailItem(
         "Wake up early",
         "Start your day with a productive mindset",
         Icons.Default.WbSunny,
-        iconColor = Color(0xFFFFEB3B)
+        HabitColor.Golden.light
     ),
     DefaultHabitDetailItem(
         "Create a to-do list",
         "Plan your day to avoid procrastination",
         Icons.Default.List,
-        iconColor = Color(0xFF3949AB)
+        HabitColor.DeepBlue.light
     ),
     DefaultHabitDetailItem(
         "Set small goals",
         "Achieve success step by step",
         Icons.Default.Lightbulb,
-        iconColor = Color(0xFFFFA000)
+        HabitColor.Amber.light
     ),
     DefaultHabitDetailItem(
         "Keep a daily journal",
         "Track your progress and self-growth",
         Icons.Default.Edit,
-        iconColor = Color(0xFF4CAF50)
+        HabitColor.LeafGreen.light
     ),
     DefaultHabitDetailItem(
         "Clean up your workspace",
         "Less mess equals less stress",
         Icons.Default.CleaningServices,
-        iconColor = Color(0xFF6D4C41)
+        HabitColor.Sand.light
     ),
     DefaultHabitDetailItem(
         "Practice delayed gratification",
         "Train yourself to resist instant pleasures",
         Icons.Default.HourglassEmpty,
-        iconColor = Color(0xFF607D8B)
+        HabitColor.Teal.light
     ),
     DefaultHabitDetailItem(
         "Stay hydrated",
         "Drink water to maintain focus and energy",
         Icons.Default.LocalDrink,
-        iconColor = Color(0xFF2196F3)
+        HabitColor.SkyBlue.light
     )
 )
 
@@ -376,172 +451,171 @@ val leisureMoments = listOf(
         "Watch a movie",
         "Get yourself a film therapy",
         Icons.Default.Movie,
-        iconColor = Color(0xFF0288D1)
+        HabitColor.DeepBlue.light
     ),
     DefaultHabitDetailItem(
         "Practice a hobby",
         "Fill your time, life won't pass you by",
         Icons.Default.Brush,
-        iconColor = Color(0xFF4CAF50)
+        HabitColor.LeafGreen.light
     ),
     DefaultHabitDetailItem(
         "Learn a new language",
         "Deepen your connection to other cultures",
         Icons.Default.Language,
-        iconColor = Color(0xFFD32F2F)
+        HabitColor.BrickRed.light
     ),
     DefaultHabitDetailItem(
         "Learn a musical instrument",
         "Run your fingers through your soul",
         Icons.Default.MusicNote,
-        iconColor = Color(0xFFE91E63)
+        HabitColor.Rose.light
     ),
     DefaultHabitDetailItem(
         "Board games with friends",
         "More than just fun and games",
         Icons.Default.VideogameAsset,
-        iconColor = Color(0xFF43A047)
+        HabitColor.LeafGreen.light
     ),
     DefaultHabitDetailItem(
         "Draw or paint something",
         "Find your inner Van Gogh",
         Icons.Default.Palette,
-        iconColor = Color(0xFFF57C00)
+        HabitColor.Orange.light
     ),
     DefaultHabitDetailItem(
         "Take a photo",
         "Record it as lifetime memories",
         Icons.Default.PhotoCamera,
-        iconColor = Color(0xFF673AB7)
+        HabitColor.Purple.light
     ),
     DefaultHabitDetailItem(
         "Time for self-care",
         "Take time to nourish your body properly",
         Icons.Default.Spa,
-        iconColor = Color(0xFF009688)
+        HabitColor.Teal.light
     ),
     DefaultHabitDetailItem(
         "Read a book",
         "Lose yourself in another world",
         Icons.Default.Book,
-        iconColor = Color(0xFF1E88E5)
+        HabitColor.DeepBlue.light
     ),
     DefaultHabitDetailItem(
         "Go for a nature walk",
         "Reconnect with nature and yourself",
         Icons.Default.Forest,
-        iconColor = Color(0xFF66BB6A)
+        HabitColor.Lime.light
     ),
     DefaultHabitDetailItem(
         "Attend a live event",
         "Enjoy live music, theater, or sports",
         Icons.Default.Event,
-        iconColor = Color(0xFFC2185B)
+        HabitColor.Rose.light
     ),
     DefaultHabitDetailItem(
         "Journal your thoughts",
         "Reflect on your experiences and emotions",
         Icons.Default.Edit,
-        iconColor = Color(0xFFFFC107)
+        HabitColor.Golden.light
     ),
     DefaultHabitDetailItem(
         "Try a new recipe",
         "Experiment with flavors and cuisines",
         Icons.Default.Restaurant,
-        iconColor = Color(0xFF9C27B0)
+        HabitColor.Purple.light
     ),
     DefaultHabitDetailItem(
         "Stargaze",
         "Lose track of time under the night sky",
         Icons.Default.Star,
-        iconColor = Color(0xFFFF9800)
+        HabitColor.Orange.light
     ),
     DefaultHabitDetailItem(
         "Call a friend",
         "Strengthen your connections",
         Icons.Default.Call,
-        iconColor = Color(0xFF607D8B)
+        HabitColor.Teal.light
     )
 )
-
 val goodMorningHabits = listOf(
     DefaultHabitDetailItem(
         "Get up early",
         "Shine before the sun does",
         Icons.Default.WbSunny,
-        iconColor = Color(0xFFDEEA13)
+        HabitColor.Golden.light
     ),
     DefaultHabitDetailItem(
         "Dress up",
         "A good look lights up your day",
         Icons.Default.Checkroom,
-        iconColor = Color(0xFF795548)
+        HabitColor.Sand.light
     ),
     DefaultHabitDetailItem(
         "Have breakfast",
         "Wake up your body with energy",
         Icons.Default.Restaurant,
-        iconColor = Color(0xFFFF9800)
+        HabitColor.Orange.light
     ),
     DefaultHabitDetailItem(
         "Make the bed",
         "Clean your bed, clear your mind",
         Icons.Default.Bed,
-        iconColor = Color(0xFF9C27B0)
+        HabitColor.Purple.light
     ),
     DefaultHabitDetailItem(
         "Empty trash",
         "Leave home with no mess",
         Icons.Default.Delete,
-        iconColor = Color(0xFFE91E63)
+        HabitColor.Rose.light
     ),
     DefaultHabitDetailItem(
         "Say 'You're the best!'",
         "Start your day with positive affirmations",
         Icons.Default.EmojiEmotions,
-        iconColor = Color(0xFFFFEB3B)
+        HabitColor.Golden.light
     ),
     DefaultHabitDetailItem(
         "Warm up",
         "A natural morning pick-me-up",
         Icons.Default.FitnessCenter,
-        iconColor = Color(0xFF43A047)
+        HabitColor.LeafGreen.light
     ),
     DefaultHabitDetailItem(
         "Plan your day",
         "Set your intentions and priorities",
         Icons.Default.CalendarToday,
-        iconColor = Color(0xFF607D8B)
+        HabitColor.Teal.light
     ),
     DefaultHabitDetailItem(
         "Meditate",
         "Connect with your inner peace",
         Icons.Default.SelfImprovement,
-        iconColor = Color(0xFF009688)
+        HabitColor.Teal.light
     ),
     DefaultHabitDetailItem(
         "Hydrate",
         "Start your day with a glass of water",
         Icons.Default.LocalDrink,
-        iconColor = Color(0xFF1E88E5)
+        HabitColor.SkyBlue.light
     ),
     DefaultHabitDetailItem(
         "Listen to music",
         "Boost your mood with your favorite tunes",
         Icons.Default.MusicNote,
-        iconColor = Color(0xFFD32F2F)
+        HabitColor.Rose.light
     ),
     DefaultHabitDetailItem(
         "Stretch",
         "Release tension and wake up your muscles",
         Icons.Default.AirlineSeatReclineNormal,
-        iconColor = Color(0xFF4CAF50)
+        HabitColor.LeafGreen.light
     ),
     DefaultHabitDetailItem(
         "Smile at yourself in the mirror",
         "Acknowledge yourself with kindness",
         Icons.Default.Face,
-        iconColor = Color(0xFFFF5722)
+        HabitColor.Orange.light
     )
 )
 
@@ -550,85 +624,85 @@ val beforeSleepRoutineHabits = listOf(
         "Stop eating before bed",
         "Your stomach also needs a good sleep",
         Icons.Default.NoFood,
-        iconColor = Color(0xFFB71C1C)
+        HabitColor.BrickRed.light
     ),
     DefaultHabitDetailItem(
         "Go to bed early",
         "Early to bed, early to rise",
         Icons.Default.Bedtime,
-        iconColor = Color(0xFF0D47A1)
+        HabitColor.DeepBlue.light
     ),
     DefaultHabitDetailItem(
         "Stretch",
         "Release tension & stress",
         Icons.Default.FitnessCenter,
-        iconColor = Color(0xFF43A047)
+        HabitColor.LeafGreen.light
     ),
     DefaultHabitDetailItem(
         "Practice meditation",
         "Connect with your inner peace",
         Icons.Default.SelfImprovement,
-        iconColor = Color(0xFF00ACC1)
+        HabitColor.Teal.light
     ),
     DefaultHabitDetailItem(
         "Practice breathing",
         "Calm yourself from every in and out",
         Icons.Default.Air,
-        iconColor = Color(0xFF1DE9B6)
+        HabitColor.Teal.light
     ),
     DefaultHabitDetailItem(
         "Keep a journal",
         "Reflect on your day and release thoughts",
         Icons.Default.EditNote,
-        iconColor = Color(0xFFFF6F00)
+        HabitColor.Orange.light
     ),
     DefaultHabitDetailItem(
         "Read a book",
         "Never enough books before bedtime",
         Icons.Default.MenuBook,
-        iconColor = Color(0xFF5E35B1)
+        HabitColor.Purple.light
     ),
     DefaultHabitDetailItem(
         "Take a bath",
         "Feel the healing power of a warm bath",
         Icons.Default.Bathtub,
-        iconColor = Color(0xFF0288D1)
+        HabitColor.DeepBlue.light
     ),
     DefaultHabitDetailItem(
         "Drink hot milk",
         "Relax your mind and body with warm milk",
         Icons.Default.LocalCafe,
-        iconColor = Color(0xFFF57F17)
+        HabitColor.Amber.light
     ),
     DefaultHabitDetailItem(
         "Set tomorrow's plan",
         "Organize your tasks for a smooth day ahead",
         Icons.Default.EventNote,
-        iconColor = Color(0xFF455A64)
+        HabitColor.Sand.light
     ),
     DefaultHabitDetailItem(
         "Dim the lights",
         "Create a calming atmosphere",
         Icons.Default.LightMode,
-        iconColor = Color(0xFFFFB300)
+        HabitColor.Golden.light
     ),
     DefaultHabitDetailItem(
         "Turn off screens",
         "Disconnect and let your mind unwind",
         Icons.Default.DoNotDisturb,
-        iconColor = Color(0xFFD50000)
+        HabitColor.BrickRed.light
     ),
     DefaultHabitDetailItem(
         "Express gratitude",
         "End your day with positive reflections",
         Icons.Default.ThumbUp,
-        iconColor = Color(0xFF388E3C)
+        HabitColor.LeafGreen.light
     ),
     DefaultHabitDetailItem(
         "Visualize dreams",
         "Picture your ideal future before sleeping",
         Icons.Default.Paragliding,
-        iconColor = Color(0xFF7E57C2)
+        HabitColor.Purple.light
     )
 )
 
@@ -637,79 +711,79 @@ val masterProductivityHabits = listOf(
         "Set small goals",
         "Make goals more specific and achievable",
         Icons.Default.TipsAndUpdates,
-        iconColor = Color(0xFF0288D1)
+        HabitColor.DeepBlue.light
     ),
     DefaultHabitDetailItem(
         "Work with white noise",
         "A scientific way to overcome distraction",
         Icons.Default.Audiotrack,
-        iconColor = Color(0xFF29B6F6)
+        HabitColor.SkyBlue.light
     ),
     DefaultHabitDetailItem(
         "Prepare tomorrow's to-do list",
         "Make your time visible and countable",
         Icons.Default.List,
-        iconColor = Color(0xFF558B2F)
+        HabitColor.Lime.light
     ),
     DefaultHabitDetailItem(
         "Get things done",
         "Never put off until tomorrow",
         Icons.Default.Task,
-        iconColor = Color(0xFFE53935)
+        HabitColor.BrickRed.light
     ),
     DefaultHabitDetailItem(
         "Clean up workspace",
         "Less mess equals less stress",
         Icons.Default.CleaningServices,
-        iconColor = Color(0xFF689F38)
+        HabitColor.Lime.light
     ),
     DefaultHabitDetailItem(
         "Block screen time",
         "Lock screen and glue attention",
         Icons.Default.PhoneLocked,
-        iconColor = Color(0xFFFF6D00)
+        HabitColor.Orange.light
     ),
     DefaultHabitDetailItem(
         "Get up early",
         "Shine before the sun does",
         Icons.Default.WbSunny,
-        iconColor = Color(0xFFFFA000)
+        HabitColor.Amber.light
     ),
     DefaultHabitDetailItem(
         "Check all unread",
         "Zero your inbox",
         Icons.Default.Mail,
-        iconColor = Color(0xFF1E88E5)
+        HabitColor.DeepBlue.light
     ),
     DefaultHabitDetailItem(
         "Focus on one task",
         "Avoid multitasking to increase efficiency",
         Icons.Default.CenterFocusStrong,
-        iconColor = Color(0xFF7B1FA2)
+        HabitColor.Purple.light
     ),
     DefaultHabitDetailItem(
         "Track your progress",
         "Measure your achievements daily",
         Icons.Default.TrendingUp,
-        iconColor = Color(0xFF4CAF50)
+        HabitColor.LeafGreen.light
     ),
     DefaultHabitDetailItem(
         "Take regular breaks",
         "Stay productive without burnout",
         Icons.Default.AirlineSeatReclineNormal,
-        iconColor = Color(0xFF00695C)
+        HabitColor.Teal.light
     ),
     DefaultHabitDetailItem(
         "Set priorities",
         "Handle the most important tasks first",
         Icons.Default.PriorityHigh,
-        iconColor = Color(0xFFD81B60)
+        HabitColor.Rose.light
     ),
     DefaultHabitDetailItem(
         "Review your goals",
         "Adjust your plans for continuous improvement",
         Icons.Default.AssignmentTurnedIn,
-        iconColor = Color(0xFF009688)
+        HabitColor.Teal.light
     )
 )
 
@@ -718,90 +792,90 @@ val strongerMindHabits = listOf(
         "Read every day",
         "Expand your knowledge and creativity",
         Icons.Default.MenuBook,
-        iconColor = Color(0xFF4CAF50)
+        HabitColor.LeafGreen.light
     ),
     DefaultHabitDetailItem(
         "Meditate regularly",
         "Improve focus and reduce anxiety",
         Icons.Default.SelfImprovement,
-        iconColor = Color(0xFF00ACC1)
+        HabitColor.Teal.light
     ),
     DefaultHabitDetailItem(
         "Learn something new",
         "Expand your horizons daily",
         Icons.Default.School,
-        iconColor = Color(0xFFFFA726)
+        HabitColor.Amber.light
     ),
     DefaultHabitDetailItem(
         "Keep a journal",
         "Reflect on your thoughts and experiences",
         Icons.Default.Edit,
-        iconColor = Color(0xFF7E57C2)
+        HabitColor.Purple.light
     ),
     DefaultHabitDetailItem(
         "Practice gratitude",
         "Appreciate the good things in your life",
         Icons.Default.ThumbUp,
-        iconColor = Color(0xFFFF5722)
+        HabitColor.Orange.light
     ),
     DefaultHabitDetailItem(
         "Solve puzzles",
         "Keep your brain sharp and active",
         Icons.Default.Extension,
-        iconColor = Color(0xFF5C6BC0)
+        HabitColor.DeepBlue.light
     ),
     DefaultHabitDetailItem(
         "Avoid negative thoughts",
         "Train your mind to focus on positivity",
         Icons.Default.RemoveCircle,
-        iconColor = Color(0xFFD32F2F)
+        HabitColor.BrickRed.light
     ),
     DefaultHabitDetailItem(
         "Practice deep breathing",
         "Calm your mind and body",
         Icons.Default.Air,
-        iconColor = Color(0xFF64B5F6)
+        HabitColor.SkyBlue.light
     ),
     DefaultHabitDetailItem(
         "Develop critical thinking",
         "Question and analyze everything critically",
         Icons.Default.Analytics,
-        iconColor = Color(0xFF009688)
+        HabitColor.Teal.light
     ),
     DefaultHabitDetailItem(
         "Limit social media",
         "Protect your mind from digital overload",
         Icons.Default.SocialDistance,
-        iconColor = Color(0xFF607D8B)
+        HabitColor.Sand.light
     ),
     DefaultHabitDetailItem(
         "Listen to podcasts",
         "Gain new perspectives and insights",
         Icons.Default.Podcasts,
-        iconColor = Color(0xFF8E24AA)
+        HabitColor.Purple.light
     ),
     DefaultHabitDetailItem(
         "Take mindful breaks",
         "Recharge by stepping away from work",
         Icons.Default.HourglassEmpty,
-        iconColor = Color(0xFFBDBDBD)
+        HabitColor.Sand.light
     ),
     DefaultHabitDetailItem(
         "Learn a new language",
         "Enhance your cognitive abilities",
         Icons.Default.Language,
-        iconColor = Color(0xFF673AB7)
+        HabitColor.Purple.light
     ),
     DefaultHabitDetailItem(
         "Maintain a balanced diet",
         "Fuel your brain with healthy nutrients",
         Icons.Default.NoMeals,
-        iconColor = Color(0xFF9E9E9E)
+        HabitColor.Sand.light
     ),
     DefaultHabitDetailItem(
         "Develop problem-solving skills",
         "Challenge yourself to find solutions",
         Icons.Default.Lightbulb,
-        iconColor = Color(0xFFFFC107)
+        HabitColor.Golden.light
     )
 )

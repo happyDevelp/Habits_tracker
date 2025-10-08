@@ -27,6 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,6 +36,8 @@ import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.MyButton
 import com.example.habitstracker.core.presentation.theme.AppTheme
+import com.example.habitstracker.core.presentation.theme.ColorGradient
+import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import kotlinx.coroutines.launch
 
@@ -60,23 +63,24 @@ fun ColorPicker(
         val scope = rememberCoroutineScope()
 
         val colorList = listOf(
-            Color(0xFF60c7d6),
-            Color(0xFF55b85d),
-            Color(0xFFFCA800),
-            Color(0xFF005EFF),
-            Color(0xFFB13423),
-            Color(0xFF01ADD8),
-            Color(0xFFe88629),
-            Color(0xFF00A092),
-            Color(0xFFFFB700),
-            Color(0xFF8BC700),
-            Color(0xFF61CED8),
-            Color(0xFF8F62C4),
-            Color(0xFFCE6849),
-            Color(0xFFCC5A7B),
-            Color(0xFF127700),
-            Color(0xFFC2AC5E),
+            HabitColor.SkyBlue,
+            HabitColor.LeafGreen,
+            HabitColor.Amber,
+            HabitColor.DeepBlue,
+            HabitColor.BrickRed,
+            //HabitColor.Cyan,
+            HabitColor.Orange,
+            HabitColor.Teal,
+            HabitColor.Golden,
+            HabitColor.Lime,
+            //HabitColor.Aqua,
+            HabitColor.Purple,
+            //HabitColor.Terracotta,
+            HabitColor.Rose,
+            //HabitColor.DarkGreen,
+            HabitColor.Sand,
         )
+
         ModalBottomSheet(
             modifier = modifier.fillMaxHeight(0.5f),
             sheetState = sheetState,
@@ -93,12 +97,11 @@ fun ColorPicker(
             ) {
 
                 // Send icon to [CreateOwnHabitScreen]
-                var pickedColor by remember {
-                    mutableStateOf(Color.Transparent)
-                }
+                var pickedGradient by remember {
+                    mutableStateOf<ColorGradient?>(null) }
 
-                var selectedColor by remember {
-                    mutableStateOf<Color?>(null)
+                var selectedGradient by remember {
+                    mutableStateOf<ColorGradient?>(null)
                 }
 
                 LazyVerticalGrid(
@@ -107,9 +110,9 @@ fun ColorPicker(
                     //verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
 
-                    items(colorList) { currentColor ->
+                    items(colorList) { gradient ->
 
-                        val isSelected = currentColor == selectedColor
+                        val isSelected = gradient == selectedGradient
 
                         IconButton(
                             modifier = modifier
@@ -117,13 +120,12 @@ fun ColorPicker(
                                 .padding(16.dp)
                                 .clip(RoundedCornerShape(size = 8.dp))
                                 .background(
-                                    if (isSelected) currentColor.copy(alpha = 0.4f)
-                                    else Color.Transparent
+                                    if (isSelected) Color.White.copy(alpha = 0.2f) else Color.Transparent
+                                //if (isSelected) currentColor.copy(alpha = 0.4f) else Color.Transparent
                                 ),
                             onClick = {
-                                selectedColor = currentColor
-
-                                pickedColor = currentColor
+                                selectedGradient = gradient
+                                pickedGradient = gradient
                             },
 
                             ) {
@@ -131,7 +133,11 @@ fun ColorPicker(
                                 modifier = modifier
                                     .size(50.dp)
                                     .clip(RoundedCornerShape(size = 12.dp))
-                                    .background(currentColor)
+                                    .background(
+                                        brush = Brush.horizontalGradient(
+                                            colors = listOf(gradient.light, gradient.dark)
+                                        )
+                                    )
                             )
                         }
 
@@ -161,7 +167,7 @@ fun ColorPicker(
                     MyButton(
                         modifier = modifier.weight(1f),
                         onClick = {
-                            clickAddColor.invoke(pickedColor)
+                            pickedGradient?.let { clickAddColor.invoke(pickedGradient!!.light) }
                             closingSheet.invoke()
                             scope.launch { sheetState.hide() }
                         }
