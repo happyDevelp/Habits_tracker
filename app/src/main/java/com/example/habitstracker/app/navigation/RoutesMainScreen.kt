@@ -28,8 +28,6 @@ sealed interface Route {
     @Serializable
     data class CreateHabit(val name: String?, val icon: String?, val iconColor: String?): Route
 
-    @Serializable
-    data object RepeatPicker: Route
 
     @Serializable
     data class EditHabit(val id: Int): Route

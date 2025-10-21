@@ -13,12 +13,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.SentimentVerySatisfied
 import androidx.compose.material3.Button
@@ -55,7 +53,6 @@ import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
-import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.utils.clickWithRipple
 import com.example.habitstracker.core.presentation.utils.getColorFromHex
 import com.example.habitstracker.core.presentation.utils.getIconName
@@ -73,7 +70,6 @@ import java.time.LocalDate
 
 @Composable
 fun CreateOwnHabitRoot(
-    param: String = "no value",
     viewModel: MainScreenViewModel,
     name: String?,
     icon: String?,
@@ -91,7 +87,6 @@ fun CreateOwnHabitRoot(
         }
     }
     CreateOwnHabitScreen(
-        param = param,
         onAddHabitClick = onAddHabitClick,
         name = name,
         icon = icon,
@@ -101,7 +96,6 @@ fun CreateOwnHabitRoot(
 
 @Composable
 fun CreateOwnHabitScreen(
-    param: String,
     modifier: Modifier = Modifier,
     onAddHabitClick: (habit: HabitEntity) -> Unit,
     name: String?,
@@ -138,7 +132,7 @@ fun CreateOwnHabitScreen(
                     else HabitColor.Orange.light
                 )
             }
-            val selectedDays by remember { mutableStateOf(param) }
+            var selectedDays by remember { mutableStateOf<List<String>>(emptyList()) }
             var executionTime by remember { mutableStateOf("Anytime") }
 
             val onExecutionTimeButtonClickListener: (executionTimeText: String) -> Unit = { text ->
@@ -179,56 +173,24 @@ fun CreateOwnHabitScreen(
                         }
                     )
 
-                    Spacer(modifier = modifier.height(24.dp))
+                    Spacer(modifier = modifier.height(28.dp))
 
                     Text(
-                        text = "REPEAT (Long-term habits)",
+                        text = "Repetitions",
                         fontFamily = PoppinsFontFamily,
                         fontSize = 13.sp,
                         color = Color.White.copy(alpha = 0.50f),
                     )
                     Spacer(modifier = modifier.height(12.dp))
-                    Row(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .height(55.dp)
-                            .clip(RoundedCornerShape(18.dp))
-                            .background(color = containerBackgroundDark)
-                            .clickWithRipple(
-                                color = Color.White
-                            ) { navController.navigate(Route.RepeatPicker) },
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text(
-                            modifier = modifier.padding(start = 16.dp),
-                            text = stringResource(R.string.days_of_habits),
-                            fontFamily = PoppinsFontFamily,
-                            fontSize = 14.sp,
-                            color = Color.White,
-                        )
 
-                        Row(
-                            modifier = modifier.padding(end = 12.dp),
-                            horizontalArrangement = Arrangement.End
-                        ) {
-                            Text(
-                                text = param,
-                                fontFamily = PoppinsFontFamily,
-                                fontSize = 12.sp,
-                                color = Color.White.copy(alpha = 0.5f),
-                            )
-
-                            Spacer(modifier = modifier.width(12.dp))
-                            Icon(
-                                imageVector = Icons.Default.ChevronRight,
-                                contentDescription = null,
-                                tint = Color.White.copy(0.7f)
-                            )
+                    DaysOfWeekPicker(
+                        color = habitColor,
+                        onDaysChanged = { days ->
+                            selectedDays = days
                         }
-                    }
+                    )
 
-                    Spacer(modifier = modifier.height(12.dp))
+                    Spacer(modifier = modifier.height(28.dp))
 
                     ExecutionTimePicker(onButtonClicked = onExecutionTimeButtonClickListener)
                     Spacer(modifier = modifier.height(16.dp))
@@ -237,12 +199,11 @@ fun CreateOwnHabitScreen(
                 }
             }
 
-
             val habit = HabitEntity(
                 name = habitName,
                 iconName = habitIconName,
                 colorHex = habitColor.toHex(),
-                days = selectedDays,
+                days = selectedDays.joinToString(","),
                 executionTime = executionTime,
             )
             val coroutineScope = rememberCoroutineScope()
@@ -310,6 +271,75 @@ private fun CustomTopBar(navController: NavController) {
     )
 }
 
+
+@Composable
+private fun DaysOfWeekPicker(
+    modifier: Modifier = Modifier,
+    color: Color,
+    onDaysChanged: (List<String>) -> Unit
+) {
+    val days = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+
+    // by default all selected
+    var selectedDays by remember { mutableStateOf(days.toSet()) }
+
+    Column(modifier = modifier) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            days.forEach { day ->
+                DayItem(
+                    day = day,
+                    isSelected = selectedDays.contains(day),
+                    color = color,
+                    onClick = {
+                        // do not allow to remove the last day
+                        if (selectedDays.contains(day) && selectedDays.size == 1) {
+                            return@DayItem // do nothing
+                        }
+                        selectedDays = if (selectedDays.contains(day)) {
+                            selectedDays - day
+                        } else {
+                            selectedDays + day
+                        }
+                        onDaysChanged(selectedDays.toList())
+                    }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun DayItem(
+    day: String,
+    isSelected: Boolean,
+    color: Color,
+    onClick: () -> Unit
+) {
+    Box(
+        modifier = Modifier
+            .size(38.dp)
+            .clip(RoundedCornerShape(8.dp))
+            .background(
+                if (isSelected) MaterialTheme.colorScheme.primaryContainer
+                else Color(0xFF404B53)
+            )
+            .clickWithRipple {
+                onClick()
+            },
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = day,
+            color = if (isSelected) Color.White else Color.White.copy(0.6f),
+            fontFamily = PoppinsFontFamily,
+            fontSize = 14.sp
+        )
+    }
+}
+
 @Composable
 @Preview(showSystemUi = true)
 private fun Preview() {
@@ -317,7 +347,6 @@ private fun Preview() {
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
         AppTheme(darkTheme = true) {
             CreateOwnHabitScreen(
-                param = "Fake param",
                 onAddHabitClick = { },
                 name = null,
                 icon = null,

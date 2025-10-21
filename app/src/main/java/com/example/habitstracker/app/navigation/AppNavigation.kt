@@ -30,7 +30,6 @@ import com.example.habitstracker.app.navigation.bottombar.NavigationBottomBar
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.habit.presentation.add_habit.AddHabitScreen
 import com.example.habitstracker.habit.presentation.create_own_habit.CreateOwnHabitRoot
-import com.example.habitstracker.habit.presentation.create_own_habit.components.RepeatPicker
 import com.example.habitstracker.habit.presentation.detail_habit.DetailHabitScreen
 import com.example.habitstracker.habit.presentation.edit_habit.EditHabitRoot
 import com.example.habitstracker.habit.presentation.edit_habit.components.EditRepeatPickerRoot
@@ -133,10 +132,6 @@ fun AppNavigation() {
                     iconColor = args.iconColor,
                     viewModel = mainScreenViewModel
                 )
-            }
-
-            composable<Route.RepeatPicker> {
-                RepeatPicker()
             }
 
             composable<Route.EditHabit> { backStackEntry ->

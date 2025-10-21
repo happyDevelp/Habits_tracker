@@ -58,20 +58,6 @@ fun IconAndColorPicker(
             .background(color = Color.Transparent),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        /*IconButton(
-            modifier = modifier
-                .fillMaxHeight()
-                .fillMaxWidth(0.18f),
-            onClick = { *//*TODO*//* },
-        ) {
-            Icon(
-                modifier = modifier.size(32.dp),
-                imageVector = icon,
-                contentDescription = stringResource(R.string.select_icon_description),
-                tint = color
-            )
-        }*/
-
         var isIconSheetOpen by remember {
             mutableStateOf(false)
         }
@@ -173,12 +159,6 @@ fun IconAndColorPicker(
                         .background(color)
                         .width(150.dp)
                 )
-                /*Icon(
-                    imageVector = Icons.Default.ChevronRight,
-                    contentDescription = null,
-                    tint = Color.White.copy(0.7f),
-                    modifier = Modifier.size(20.dp)
-                )*/
             }
 
             Text(
@@ -191,113 +171,6 @@ fun IconAndColorPicker(
                 fontSize = 16.sp
             )
         }
-
-        /*        Column(
-                    modifier = modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center
-                ) {
-
-                    var isIconSheetOpen by remember {
-                        mutableStateOf(false)
-                    }
-
-                    if (isIconSheetOpen) {
-                        IconPicker(
-                            onCloseClick = { isIconSheetOpen = false },
-                            onAddIconClick = { selectedIcon ->
-                                onIconPick(getIconName(selectedIcon))
-                            },
-                            color = color
-                        )
-                    }
-                    Box(
-                        modifier = modifier
-                            .fillMaxSize()
-                            .weight(1f)
-                            .clickWithRipple(color = Color.White) {
-                                isIconSheetOpen = true
-                            },
-
-                        contentAlignment = Alignment.CenterStart,
-                    ) {
-                        Text(
-                            modifier = modifier.padding(start = 8.dp),
-                            text = "Icon",
-                            fontFamily = PoppinsFontFamily,
-                            color = Color.White,
-                        )
-
-                        Icon(
-                            modifier = modifier
-                                .align(Alignment.CenterEnd)
-                                .padding(12.dp),
-                            imageVector = Icons.Default.ChevronRight,
-                            tint = Color.White.copy(0.70f),
-                            contentDescription = null
-                        )
-                    }
-
-                    HorizontalDivider(
-                        thickness = 0.25.dp,
-                        color = Color.White
-                    )
-
-
-                    var isColorSheetOpen by remember {
-                        mutableStateOf(false)
-                    }
-                    if (isColorSheetOpen) {
-                        ColorPicker(
-                            closingSheet = { isColorSheetOpen = false },
-                            clickAddColor = { selectedColor ->
-                                onColorPick(selectedColor)
-                            }
-                        )
-                    }
-                    Box(
-                        modifier = modifier
-                            .fillMaxSize()
-                            .weight(1f)
-                            .clickWithRipple(color = Color.White) {
-                                isColorSheetOpen = true
-                            },
-                        contentAlignment = Alignment.CenterStart
-                    ) {
-
-                        Text(
-                            modifier = modifier.padding(start = 8.dp),
-
-                            text = "Color",
-                            fontFamily = PoppinsFontFamily,
-                            color = Color.White,
-                        )
-
-                        Row(
-                            modifier = modifier
-                                .align(Alignment.CenterEnd)
-                                .padding(end = 12.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-
-                            Box(
-                                modifier = modifier
-                                    .size(14.dp)
-                                    .clip(RoundedCornerShape(50.dp))
-                                    .background(color)
-                                    .width(150.dp)
-                            )
-
-                            Spacer(modifier = modifier.width(14.dp))
-
-                            Icon(
-                                imageVector = Icons.Default.ChevronRight,
-                                tint = Color.White.copy(0.70f),
-                                contentDescription = null
-                            )
-                        }
-                    }
-                }*/
     }
 }
 
