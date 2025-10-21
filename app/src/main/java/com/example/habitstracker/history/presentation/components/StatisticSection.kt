@@ -39,7 +39,7 @@ import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
-import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
+import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -90,7 +90,7 @@ fun CustomStatisticContainer(
             .fillMaxWidth()
             .padding(12.dp),
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = screenContainerBackgroundDark),
+        colors = CardDefaults.cardColors(containerColor = containerBackgroundDark),
     ) {
         Row(
             modifier = modifier

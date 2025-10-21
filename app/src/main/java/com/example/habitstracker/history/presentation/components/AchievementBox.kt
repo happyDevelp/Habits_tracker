@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
-import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
+import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.history.domain.AchievementEntity
 import com.example.habitstracker.history.presentation.tab_screens.AchievementSection
 
@@ -67,7 +67,7 @@ fun AchievementBox(
         modifier = modifier
             .padding(horizontal = 12.dp)
             .padding(top = 12.dp),
-        colors = CardDefaults.cardColors(containerColor = screenContainerBackgroundDark)
+        colors = CardDefaults.cardColors(containerColor = containerBackgroundDark)
     ) {
         Column(
             modifier = Modifier

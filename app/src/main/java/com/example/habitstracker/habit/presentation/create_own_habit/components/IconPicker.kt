@@ -31,12 +31,9 @@ import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,7 +46,7 @@ import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.MyButton
 import com.example.habitstracker.core.presentation.theme.AppTheme
-import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
+import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import kotlinx.coroutines.launch
 
 @Preview(showSystemUi = true)
@@ -114,7 +111,7 @@ fun IconPicker(
                 coroutineScope.launch { sheetState.hide() }
             },
             dragHandle = null,
-            containerColor = screenContainerBackgroundDark,
+            containerColor = containerBackgroundDark,
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
@@ -239,7 +236,7 @@ fun IconPicker(
 
                         MyButton(
                             modifier = modifier.weight(1f),
-                            color = screenContainerBackgroundDark,
+                            color = containerBackgroundDark,
                             onClick = {
                                 onCloseClick.invoke()
                                 coroutineScope.launch { sheetState.hide() }

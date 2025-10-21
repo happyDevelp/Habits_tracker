@@ -54,7 +54,7 @@ import com.example.habitstracker.core.presentation.MyButton
 import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.habit.presentation.edit_habit.components.SelectedDay
 import com.example.habitstracker.core.presentation.theme.AppTheme
-import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
+import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.utils.clickWithRipple
 import com.example.habitstracker.core.presentation.utils.textState
 
@@ -113,7 +113,7 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                             RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)
                         else RoundedCornerShape(size = 8.dp)
                     )
-                    .background(screenContainerBackgroundDark)
+                    .background(containerBackgroundDark)
                     .clickWithRipple { currentOptionSelected = firstOption }
                     .constrainAs(certainWeekDaysShort) {
                         top.linkTo(parent.top)
@@ -170,7 +170,7 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                         .clip(RoundedCornerShape(bottomEnd = 8.dp, bottomStart = 8.dp))
-                        .background(screenContainerBackgroundDark)
+                        .background(containerBackgroundDark)
                         .constrainAs(certainWeekDaysFull) {
                             top.linkTo(certainWeekDaysShort.bottom)
                         },
@@ -214,7 +214,7 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                             RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp)
                         else RoundedCornerShape(size = 8.dp)
                     )
-                    .background(screenContainerBackgroundDark)
+                    .background(containerBackgroundDark)
                     .clickWithRipple { currentOptionSelected = secondOption }
 
                     .constrainAs(dayCountsInAWeekShort) {
@@ -274,7 +274,7 @@ fun RepeatPicker(modifier: Modifier = Modifier) {
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp)
                         .clip(RoundedCornerShape(bottomEnd = 8.dp, bottomStart = 8.dp))
-                        .background(screenContainerBackgroundDark)
+                        .background(containerBackgroundDark)
                         .constrainAs(dayCountsInAWeekFull) {
                             top.linkTo(dayCountsInAWeekShort.bottom)
                         },

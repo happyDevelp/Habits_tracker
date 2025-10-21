@@ -50,7 +50,7 @@ import com.example.habitstracker.habit.presentation.edit_habit.components.EditIc
 import com.example.habitstracker.habit.presentation.edit_habit.components.scaffold.TopBarEditHabitScreen
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
-import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
+import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.habit.presentation.today_main.MainScreenViewModel
 import com.example.habitstracker.core.presentation.utils.clickWithRipple
 import com.example.habitstracker.core.presentation.utils.getColorFromHex
@@ -184,7 +184,7 @@ fun EditHabitScreen(
                         .fillMaxWidth()
                         .height(55.dp)
                         .clip(RoundedCornerShape(18.dp))
-                        .background(color = screenContainerBackgroundDark)
+                        .background(color = containerBackgroundDark)
                         .clickWithRipple(
                             color = Color.White
                         ) {

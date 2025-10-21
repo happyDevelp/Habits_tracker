@@ -36,7 +36,7 @@ import com.example.habitstracker.R
 import com.example.habitstracker.habit.presentation.create_own_habit.components.ColorPicker
 import com.example.habitstracker.habit.presentation.create_own_habit.components.IconPicker
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
-import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
+import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.utils.clickWithRipple
 import com.example.habitstracker.core.presentation.utils.getIconName
 
@@ -54,7 +54,7 @@ fun EditIconAndColorPicker(
             .fillMaxWidth()
             .height(100.dp)
             .clip(RoundedCornerShape(18.dp))
-            .background(color = screenContainerBackgroundDark),
+            .background(color = containerBackgroundDark),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         IconButton(

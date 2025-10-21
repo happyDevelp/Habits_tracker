@@ -46,7 +46,7 @@ import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.QuickSandFontFamily
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
-import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
+import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.core.presentation.utils.shownHabitExample1
 import com.example.habitstracker.core.presentation.utils.shownHabitExample2
@@ -303,7 +303,7 @@ fun TodayScreen(
                                             },
 
                                             colors = ButtonDefaults.buttonColors(
-                                                containerColor = screenContainerBackgroundDark,
+                                                containerColor = containerBackgroundDark,
                                                 contentColor = Color.White.copy(alpha = 0.75f)
                                             ),
 

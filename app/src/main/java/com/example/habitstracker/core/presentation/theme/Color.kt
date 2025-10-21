@@ -220,7 +220,7 @@ val surfaceContainerHighestDarkHighContrast = Color(0xFF313539)
 
 /** Custom colors **/
 val screenBackgroundDark = Color(0xFF21212B)/*Color(0xFF21242B)*/ //background
-val screenContainerBackgroundDark = Color(0xFF313747)
+val containerBackgroundDark = Color(0xFF313747)
 
 
 /** Colors for interface elements **/

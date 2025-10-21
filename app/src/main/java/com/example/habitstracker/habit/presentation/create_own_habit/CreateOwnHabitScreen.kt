@@ -55,7 +55,7 @@ import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
-import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
+import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.utils.clickWithRipple
 import com.example.habitstracker.core.presentation.utils.getColorFromHex
 import com.example.habitstracker.core.presentation.utils.getIconName
@@ -111,12 +111,13 @@ fun CreateOwnHabitScreen(
     val navController = LocalNavController.current
     Scaffold(
         topBar = { CustomTopBar(navController) },
-        containerColor = screenBackgroundDark
+        containerColor = screenBackgroundDark,
     ) { paddingValues ->
         Box(
             modifier = modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .padding(horizontal = 16.dp)
         ) {
             var habitName by remember {
                 mutableStateOf(
@@ -144,11 +145,12 @@ fun CreateOwnHabitScreen(
                 executionTime = text
             }
             Column(modifier = modifier.fillMaxSize()) {
+                Spacer(Modifier.height(16.dp))
+
                 Column(
                     modifier = modifier
                         .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(3.dp),
+                        .wrapContentHeight(),
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Top
                 ) {
@@ -161,8 +163,7 @@ fun CreateOwnHabitScreen(
                 Column(
                     modifier = modifier
                         .fillMaxWidth()
-                        .fillMaxHeight(0.9f)
-                        .padding(horizontal = 16.dp),
+                        .fillMaxHeight(0.9f),
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Top
                 ) {
@@ -177,7 +178,9 @@ fun CreateOwnHabitScreen(
                             habitColor = color
                         }
                     )
-                    Spacer(modifier = modifier.height(12.dp))
+
+                    Spacer(modifier = modifier.height(24.dp))
+
                     Text(
                         text = "REPEAT (Long-term habits)",
                         fontFamily = PoppinsFontFamily,
@@ -190,7 +193,7 @@ fun CreateOwnHabitScreen(
                             .fillMaxWidth()
                             .height(55.dp)
                             .clip(RoundedCornerShape(18.dp))
-                            .background(color = screenContainerBackgroundDark)
+                            .background(color = containerBackgroundDark)
                             .clickWithRipple(
                                 color = Color.White
                             ) { navController.navigate(Route.RepeatPicker) },

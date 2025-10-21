@@ -11,7 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
+import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 
 @Composable
 fun CustomContainer(
@@ -21,7 +21,7 @@ fun CustomContainer(
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = screenContainerBackgroundDark)
+        colors = CardDefaults.cardColors(containerColor = containerBackgroundDark)
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter)
         {

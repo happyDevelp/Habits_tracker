@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
-import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
+import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.utils.clickWithRipple
 
 @Composable
@@ -125,7 +125,7 @@ private fun ExecutionTimeItem(
             .height(52.dp)
             .clip(RoundedCornerShape(14.dp))
             .background(
-                color = if (!isSelected) screenContainerBackgroundDark
+                color = if (!isSelected) containerBackgroundDark
                 else MaterialTheme.colorScheme.primaryContainer
             )
             .clickWithRipple(color = Color.White) {
