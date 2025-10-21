@@ -135,7 +135,7 @@ private fun ExecutionTimeItem(
     ) {
 
         if (icon != null) {
-            Icon(imageVector = icon, contentDescription = null)
+            Icon(imageVector = icon, contentDescription = null, tint = Color.White)
         }
 
         Text(

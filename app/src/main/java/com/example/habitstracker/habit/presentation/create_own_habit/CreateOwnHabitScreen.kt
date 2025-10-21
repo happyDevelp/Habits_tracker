@@ -54,6 +54,7 @@ import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
+import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.core.presentation.utils.clickWithRipple
 import com.example.habitstracker.core.presentation.utils.getColorFromHex
@@ -110,7 +111,7 @@ fun CreateOwnHabitScreen(
     val navController = LocalNavController.current
     Scaffold(
         topBar = { CustomTopBar(navController) },
-        containerColor = MaterialTheme.colorScheme.secondaryContainer
+        containerColor = screenBackgroundDark
     ) { paddingValues ->
         Box(
             modifier = modifier
@@ -301,7 +302,7 @@ private fun CustomTopBar(navController: NavController) {
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = MaterialTheme.colorScheme.secondaryContainer
+            containerColor = screenBackgroundDark
         )
     )
 }
