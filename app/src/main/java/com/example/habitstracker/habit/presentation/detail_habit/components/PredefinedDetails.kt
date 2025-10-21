@@ -14,7 +14,6 @@ import androidx.compose.material.icons.filled.Bedtime
 import androidx.compose.material.icons.filled.Book
 import androidx.compose.material.icons.filled.BreakfastDining
 import androidx.compose.material.icons.filled.Brush
-import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.CalendarToday
 import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.CenterFocusStrong
@@ -40,8 +39,6 @@ import androidx.compose.material.icons.filled.Fastfood
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FitnessCenter
 import androidx.compose.material.icons.filled.Forest
-import androidx.compose.material.icons.filled.Hotel
-import androidx.compose.material.icons.filled.HourglassBottom
 import androidx.compose.material.icons.filled.HourglassEmpty
 import androidx.compose.material.icons.filled.Kitchen
 import androidx.compose.material.icons.filled.Language
@@ -63,12 +60,10 @@ import androidx.compose.material.icons.filled.Paragliding
 import androidx.compose.material.icons.filled.PedalBike
 import androidx.compose.material.icons.filled.PhoneDisabled
 import androidx.compose.material.icons.filled.PhoneLocked
-import androidx.compose.material.icons.filled.PhonelinkOff
 import androidx.compose.material.icons.filled.PhotoCamera
 import androidx.compose.material.icons.filled.Podcasts
 import androidx.compose.material.icons.filled.Pool
 import androidx.compose.material.icons.filled.PriorityHigh
-import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.RemoveCircle
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.Scale
@@ -78,7 +73,6 @@ import androidx.compose.material.icons.filled.SelfImprovement
 import androidx.compose.material.icons.filled.SmokingRooms
 import androidx.compose.material.icons.filled.SocialDistance
 import androidx.compose.material.icons.filled.Spa
-import androidx.compose.material.icons.filled.SportsVolleyball
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Task
 import androidx.compose.material.icons.filled.Terrain
@@ -136,44 +130,26 @@ val keepActiveGetFit = listOf(
         HabitColor.SkyBlue.light
     ),
     DefaultHabitDetailItem(
-        "Jump rope",
-        "Boost your cardio and coordination",
-        Icons.Default.SportsVolleyball,
-        HabitColor.Orange.light
-    ),
-    DefaultHabitDetailItem(
         "Hiking",
         "Embrace nature and stay active",
         Icons.Default.Terrain,
         HabitColor.LeafGreen.light
     ),
-    DefaultHabitDetailItem(
-        "Push-ups",
-        "Increase upper body strength",
-        Icons.Default.PushPin,
-        HabitColor.Purple.light
-    ),
-    DefaultHabitDetailItem(
-        "Plank challenge",
-        "Strengthen your core",
-        Icons.Default.Build,
-        HabitColor.BrickRed.light
-    ),
-    DefaultHabitDetailItem(
-        "Block screen time",
-        "Lock screen and glue attention",
-        Icons.Default.PhonelinkOff,
-        HabitColor.DeepBlue.light
-    ),
-    DefaultHabitDetailItem(
-        "Sleep over 8h",
-        "Enough time for sweet dreams",
-        Icons.Default.Hotel,
-        HabitColor.Golden.light
-    )
 )
 
 val eatDrinkHealthily = listOf(
+    DefaultHabitDetailItem(
+        "No alcohol",
+        "Life is way better without alcohol",
+        Icons.Default.LocalBar,
+        HabitColor.BrickRed.light
+    ),
+    DefaultHabitDetailItem(
+        "No fried food",
+        "An easy way to lose fat",
+        Icons.Default.Fastfood,
+        HabitColor.Amber.light
+    ),
     DefaultHabitDetailItem(
         "Go sugar-free",
         "See your body change with being sugar-free",
@@ -187,16 +163,10 @@ val eatDrinkHealthily = listOf(
         HabitColor.LeafGreen.light
     ),
     DefaultHabitDetailItem(
-        "No alcohol",
-        "Life is way better without alcohol",
-        Icons.Default.LocalBar,
-        HabitColor.BrickRed.light
-    ),
-    DefaultHabitDetailItem(
-        "No fried food",
-        "An easy way to lose fat",
-        Icons.Default.Fastfood,
-        HabitColor.Amber.light
+        "Monitor your portion size",
+        "Keep your servings balanced",
+        Icons.Default.Scale,
+        HabitColor.Sand.light
     ),
     DefaultHabitDetailItem(
         "Intermittent fasting",
@@ -217,28 +187,10 @@ val eatDrinkHealthily = listOf(
         HabitColor.Purple.light
     ),
     DefaultHabitDetailItem(
-        "Drink 8 cups of water",
+        "Drink enough water",
         "Keep your body hydrated",
         Icons.Default.LocalDrink,
         HabitColor.DeepBlue.light
-    ),
-    DefaultHabitDetailItem(
-        "Snack wisely",
-        "Choose healthy snacks like nuts or fruits",
-        Icons.Default.Spa,
-        HabitColor.Lime.light
-    ),
-    DefaultHabitDetailItem(
-        "Plan your meals",
-        "Avoid overeating by staying organized",
-        Icons.Default.CalendarToday,
-        HabitColor.DeepBlue.light
-    ),
-    DefaultHabitDetailItem(
-        "Eat slowly",
-        "Let your body recognize when it's full",
-        Icons.Default.HourglassBottom,
-        HabitColor.Teal.light
     ),
     DefaultHabitDetailItem(
         "Prepare home-cooked meals",
@@ -251,12 +203,6 @@ val eatDrinkHealthily = listOf(
         "Stick to whole and fresh ingredients",
         Icons.Default.Warning,
         HabitColor.BrickRed.light
-    ),
-    DefaultHabitDetailItem(
-        "Monitor your portion size",
-        "Keep your servings balanced",
-        Icons.Default.Scale,
-        HabitColor.Sand.light
     )
 )
 
@@ -313,24 +259,6 @@ val easeStress = listOf(
         "Disconnect from devices",
         "Take a break from screens and notifications",
         Icons.Default.PhoneDisabled,
-        HabitColor.Sand.light
-    ),
-    DefaultHabitDetailItem(
-        "Laugh more",
-        "Find a moment that makes you smile",
-        Icons.Default.EmojiEmotions,
-        HabitColor.Golden.light
-    ),
-    DefaultHabitDetailItem(
-        "Allow yourself to cry",
-        "Release emotional tension and feel relief",
-        Icons.Default.Cloud,
-        HabitColor.SkyBlue.light
-    ),
-    DefaultHabitDetailItem(
-        "Declutter your space",
-        "Organize your environment for mental clarity",
-        Icons.Default.CleaningServices,
         HabitColor.Sand.light
     ),
     DefaultHabitDetailItem(
@@ -448,22 +376,10 @@ val gainSelfDiscipline = listOf(
 
 val leisureMoments = listOf(
     DefaultHabitDetailItem(
-        "Watch a movie",
-        "Get yourself a film therapy",
-        Icons.Default.Movie,
-        HabitColor.DeepBlue.light
-    ),
-    DefaultHabitDetailItem(
         "Practice a hobby",
         "Fill your time, life won't pass you by",
         Icons.Default.Brush,
         HabitColor.LeafGreen.light
-    ),
-    DefaultHabitDetailItem(
-        "Learn a new language",
-        "Deepen your connection to other cultures",
-        Icons.Default.Language,
-        HabitColor.BrickRed.light
     ),
     DefaultHabitDetailItem(
         "Learn a musical instrument",
@@ -472,16 +388,16 @@ val leisureMoments = listOf(
         HabitColor.Rose.light
     ),
     DefaultHabitDetailItem(
-        "Board games with friends",
-        "More than just fun and games",
-        Icons.Default.VideogameAsset,
-        HabitColor.LeafGreen.light
+        "Learn a language",
+        "Deepen your connection to other cultures",
+        Icons.Default.Language,
+        HabitColor.BrickRed.light
     ),
     DefaultHabitDetailItem(
-        "Draw or paint something",
-        "Find your inner Van Gogh",
-        Icons.Default.Palette,
-        HabitColor.Orange.light
+        "Watch a movie",
+        "Get yourself a film therapy",
+        Icons.Default.Movie,
+        HabitColor.DeepBlue.light
     ),
     DefaultHabitDetailItem(
         "Take a photo",
@@ -512,24 +428,6 @@ val leisureMoments = listOf(
         "Enjoy live music, theater, or sports",
         Icons.Default.Event,
         HabitColor.Rose.light
-    ),
-    DefaultHabitDetailItem(
-        "Journal your thoughts",
-        "Reflect on your experiences and emotions",
-        Icons.Default.Edit,
-        HabitColor.Golden.light
-    ),
-    DefaultHabitDetailItem(
-        "Try a new recipe",
-        "Experiment with flavors and cuisines",
-        Icons.Default.Restaurant,
-        HabitColor.Purple.light
-    ),
-    DefaultHabitDetailItem(
-        "Stargaze",
-        "Lose track of time under the night sky",
-        Icons.Default.Star,
-        HabitColor.Orange.light
     ),
     DefaultHabitDetailItem(
         "Call a friend",
@@ -570,12 +468,6 @@ val goodMorningHabits = listOf(
         HabitColor.Rose.light
     ),
     DefaultHabitDetailItem(
-        "Say 'You're the best!'",
-        "Start your day with positive affirmations",
-        Icons.Default.EmojiEmotions,
-        HabitColor.Golden.light
-    ),
-    DefaultHabitDetailItem(
         "Warm up",
         "A natural morning pick-me-up",
         Icons.Default.FitnessCenter,
@@ -599,24 +491,6 @@ val goodMorningHabits = listOf(
         Icons.Default.LocalDrink,
         HabitColor.SkyBlue.light
     ),
-    DefaultHabitDetailItem(
-        "Listen to music",
-        "Boost your mood with your favorite tunes",
-        Icons.Default.MusicNote,
-        HabitColor.Rose.light
-    ),
-    DefaultHabitDetailItem(
-        "Stretch",
-        "Release tension and wake up your muscles",
-        Icons.Default.AirlineSeatReclineNormal,
-        HabitColor.LeafGreen.light
-    ),
-    DefaultHabitDetailItem(
-        "Smile at yourself in the mirror",
-        "Acknowledge yourself with kindness",
-        Icons.Default.Face,
-        HabitColor.Orange.light
-    )
 )
 
 val beforeSleepRoutineHabits = listOf(
@@ -631,12 +505,6 @@ val beforeSleepRoutineHabits = listOf(
         "Early to bed, early to rise",
         Icons.Default.Bedtime,
         HabitColor.DeepBlue.light
-    ),
-    DefaultHabitDetailItem(
-        "Stretch",
-        "Release tension & stress",
-        Icons.Default.FitnessCenter,
-        HabitColor.LeafGreen.light
     ),
     DefaultHabitDetailItem(
         "Practice meditation",
@@ -669,12 +537,6 @@ val beforeSleepRoutineHabits = listOf(
         HabitColor.DeepBlue.light
     ),
     DefaultHabitDetailItem(
-        "Drink hot milk",
-        "Relax your mind and body with warm milk",
-        Icons.Default.LocalCafe,
-        HabitColor.Amber.light
-    ),
-    DefaultHabitDetailItem(
         "Set tomorrow's plan",
         "Organize your tasks for a smooth day ahead",
         Icons.Default.EventNote,
@@ -692,18 +554,6 @@ val beforeSleepRoutineHabits = listOf(
         Icons.Default.DoNotDisturb,
         HabitColor.BrickRed.light
     ),
-    DefaultHabitDetailItem(
-        "Express gratitude",
-        "End your day with positive reflections",
-        Icons.Default.ThumbUp,
-        HabitColor.LeafGreen.light
-    ),
-    DefaultHabitDetailItem(
-        "Visualize dreams",
-        "Picture your ideal future before sleeping",
-        Icons.Default.Paragliding,
-        HabitColor.Purple.light
-    )
 )
 
 val masterProductivityHabits = listOf(
@@ -714,22 +564,10 @@ val masterProductivityHabits = listOf(
         HabitColor.DeepBlue.light
     ),
     DefaultHabitDetailItem(
-        "Work with white noise",
-        "A scientific way to overcome distraction",
-        Icons.Default.Audiotrack,
-        HabitColor.SkyBlue.light
-    ),
-    DefaultHabitDetailItem(
         "Prepare tomorrow's to-do list",
         "Make your time visible and countable",
         Icons.Default.List,
         HabitColor.Lime.light
-    ),
-    DefaultHabitDetailItem(
-        "Get things done",
-        "Never put off until tomorrow",
-        Icons.Default.Task,
-        HabitColor.BrickRed.light
     ),
     DefaultHabitDetailItem(
         "Clean up workspace",
@@ -789,13 +627,13 @@ val masterProductivityHabits = listOf(
 
 val strongerMindHabits = listOf(
     DefaultHabitDetailItem(
-        "Read every day",
+        "Read",
         "Expand your knowledge and creativity",
         Icons.Default.MenuBook,
         HabitColor.LeafGreen.light
     ),
     DefaultHabitDetailItem(
-        "Meditate regularly",
+        "Meditate",
         "Improve focus and reduce anxiety",
         Icons.Default.SelfImprovement,
         HabitColor.Teal.light
@@ -855,13 +693,7 @@ val strongerMindHabits = listOf(
         HabitColor.Purple.light
     ),
     DefaultHabitDetailItem(
-        "Take mindful breaks",
-        "Recharge by stepping away from work",
-        Icons.Default.HourglassEmpty,
-        HabitColor.Sand.light
-    ),
-    DefaultHabitDetailItem(
-        "Learn a new language",
+        "Learn language",
         "Enhance your cognitive abilities",
         Icons.Default.Language,
         HabitColor.Purple.light
@@ -871,11 +703,5 @@ val strongerMindHabits = listOf(
         "Fuel your brain with healthy nutrients",
         Icons.Default.NoMeals,
         HabitColor.Sand.light
-    ),
-    DefaultHabitDetailItem(
-        "Develop problem-solving skills",
-        "Challenge yourself to find solutions",
-        Icons.Default.Lightbulb,
-        HabitColor.Golden.light
     )
 )

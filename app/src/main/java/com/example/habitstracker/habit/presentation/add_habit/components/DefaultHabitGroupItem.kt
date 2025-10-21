@@ -4,7 +4,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -17,10 +16,8 @@ import androidx.compose.material.icons.filled.BackHand
 import androidx.compose.material.icons.filled.Bedtime
 import androidx.compose.material.icons.filled.InsertChartOutlined
 import androidx.compose.material.icons.filled.Lightbulb
-import androidx.compose.material.icons.filled.Psychology
 import androidx.compose.material.icons.filled.SportsEsports
 import androidx.compose.material.icons.filled.WbSunny
-import androidx.compose.material.icons.rounded.ArrowCircleRight
 import androidx.compose.material.icons.rounded.Restaurant
 import androidx.compose.material.icons.rounded.SentimentVerySatisfied
 import androidx.compose.material.icons.rounded.SportsFootball
@@ -35,7 +32,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
@@ -43,18 +39,17 @@ import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.UiText
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
-import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 
 @Composable
-fun DefaultHabitGroupItem(item: DefaultHabitGroupItem) {
+fun DefaultHabitGroupItem(item: DefaultHabitGroupItem, /*modifier: Modifier*/) {
     val navController = LocalNavController.current
     val context = LocalContext.current
     Card(
         modifier = Modifier
             .padding(bottom = 12.dp)
-            .clip(RoundedCornerShape(size = 8.dp))
-            .height(IntrinsicSize.Max)
-            .fillMaxWidth(0.96f)
+            .clip(RoundedCornerShape(size = 18.dp))
+            .height(62.dp)
+            .fillMaxWidth(0.93f)
             .clickable {
                 navController.navigate(
                     Route.GroupHabit(
@@ -67,14 +62,14 @@ fun DefaultHabitGroupItem(item: DefaultHabitGroupItem) {
             defaultElevation = 60.dp,
             pressedElevation = 26.dp
         ),
-        colors = CardDefaults.cardColors(containerColor = screenContainerBackgroundDark)
+        colors = CardDefaults.cardColors(containerColor = Color(0xFF2F3646))
     )
     {
         Box(modifier = Modifier.fillMaxSize()) {
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(vertical = 18.dp),
+                    .padding(vertical = 6.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -95,28 +90,28 @@ fun DefaultHabitGroupItem(item: DefaultHabitGroupItem) {
                 ) {
                     Text(
                         text = item.name.asString(),
-                        fontSize = 19.sp,
+                        fontSize = 18.sp,
                         color = Color.White.copy(alpha = 0.90f),
                         fontFamily = PoppinsFontFamily
                     )
 
-                    Text(
+                    /*Text(
                         text = item.describe.asString(),
                         fontSize = 13.sp,
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis,
                         lineHeight = 16.sp
-                    )
+                    )*/
                 }
 
-                Icon(
+                /*Icon(
                     modifier = Modifier
                         .padding(end = 14.dp)
                         .size(36.dp),
                     tint = Color.White.copy(alpha = 0.5f),
                     imageVector = Icons.Rounded.ArrowCircleRight,
                     contentDescription = "More about habit"
-                )
+                )*/
 
             }
         }
@@ -132,7 +127,7 @@ data class DefaultHabitGroupItem(
 
 val defaultsHabitsGroupList = listOf(
     DefaultHabitGroupItem(
-        name = UiText.StringResources(resId = R.string.keep_active_get_fit),
+        name = UiText.StringResources(resId = R.string.get_fit),
         describe = UiText.DynamicString("Sweet never lies"),
         icon = Icons.Rounded.SportsFootball,
         iconColor = Color(0xFFE13C0B)
@@ -144,13 +139,19 @@ val defaultsHabitsGroupList = listOf(
         iconColor = Color(0xFF1BBCC2).copy(0.9f)
     ),
     DefaultHabitGroupItem(
-        name = UiText.StringResources(R.string.ease_stress),
-        describe = UiText.DynamicString("Your efforts deserve a break"),
-        icon = Icons.Rounded.SentimentVerySatisfied,
-        iconColor = Color(0xFF5AB91F)
+        name = UiText.StringResources(R.string.good_morning),
+        describe = UiText.DynamicString("In the morning's glow, let the right path show"),
+        icon = Icons.Filled.WbSunny,
+        iconColor = Color(0xFFE7DF0C)
     ),
     DefaultHabitGroupItem(
-        name = UiText.StringResources(R.string.gain_self_discipline),
+        name = UiText.StringResources(R.string.before_sleep),
+        describe = UiText.DynamicString("May your dream be sweat tonight"),
+        icon = Icons.Filled.Bedtime,
+        iconColor = Color(0xFF3673DE)
+    ),
+    DefaultHabitGroupItem(
+        name = UiText.StringResources(R.string.self_discipline),
         describe = UiText.DynamicString("Take control of your own self-management"),
         icon = Icons.Filled.BackHand,
         iconColor = Color(0xFFD94141)
@@ -162,26 +163,20 @@ val defaultsHabitsGroupList = listOf(
         iconColor = Color(0xFF9CCC65)
     ),
     DefaultHabitGroupItem(
-        name = UiText.StringResources(R.string.good_morning),
-        describe = UiText.DynamicString("In the morning's glow, let the right path show"),
-        icon = Icons.Filled.WbSunny,
-        iconColor = Color(0xFFE7DF0C)
+        name = UiText.StringResources(R.string.entertainment),
+        describe = UiText.DynamicString("Your efforts deserve a break"),
+        icon = Icons.Rounded.SentimentVerySatisfied,
+        iconColor = Color(0xFF5AB91F)
     ),
     DefaultHabitGroupItem(
-        name = UiText.StringResources(R.string.before_sleep_routine),
-        describe = UiText.DynamicString("May your dream be sweat tonight"),
-        icon = Icons.Filled.Bedtime,
-        iconColor = Color(0xFF3673DE)
-    ),
-    DefaultHabitGroupItem(
-        name = UiText.StringResources(R.string.master_productivity),
+        name = UiText.StringResources(R.string.productivity),
         describe = UiText.DynamicString("Be strategic with your efforts and time"),
         icon = Icons.Filled.InsertChartOutlined,
         iconColor = Color(0xFF34D762)
     ),
     DefaultHabitGroupItem(
         name = UiText.StringResources(R.string.stronger_mind),
-        describe = UiText.DynamicString("What doesn`t kill you makes you strokger"),
+        describe = UiText.DynamicString("What doesn`t kill you makes you stronger"),
         icon = Icons.Filled.Lightbulb,
         iconColor = Color(0xFFECE82D)
     ),

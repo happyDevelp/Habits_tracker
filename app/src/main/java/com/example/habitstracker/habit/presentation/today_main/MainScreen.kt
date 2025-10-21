@@ -119,7 +119,7 @@ fun TodayScreenRoot(
 
                 // 3. Find all the achievements that are now done but not notified yet
                 val newlyUnlocked = allAchievements.filter { ach ->
-                    val section = AchievementSection.fromString(ach.section)
+                    val section = AchievementSection.fromString(ach.section, context)
                     !ach.isNotified && (metrics[section] ?: 0) >= ach.target
                 }
 

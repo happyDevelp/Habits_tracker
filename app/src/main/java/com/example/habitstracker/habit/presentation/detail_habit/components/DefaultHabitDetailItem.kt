@@ -5,7 +5,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -38,7 +41,8 @@ fun DefaultHabitDetailItem(item: DefaultHabitDetailItem) {
     val navController = LocalNavController.current
     Card(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxWidth()
+            .height(60.dp)
             .clickable {
                 navController.navigate(
                     Route.CreateHabit(
@@ -55,7 +59,7 @@ fun DefaultHabitDetailItem(item: DefaultHabitDetailItem) {
             Row(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(vertical = 12.dp, horizontal = 12.dp),
+                    .padding( horizontal = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Icon(
@@ -74,34 +78,15 @@ fun DefaultHabitDetailItem(item: DefaultHabitDetailItem) {
                     Text(
                         modifier = Modifier.padding(top = 4.dp, bottom = 2.dp),
                         text = item.name,
-                        fontSize = 20.sp,
-                        color = Color.White.copy(alpha = 0.95f),
+                        fontSize = 17.sp,
+                        color = Color.White.copy(alpha = 0.88f),
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleSmall,
                     )
-                    Text(
-                        modifier = Modifier.padding(),
-                        text = item.describe,
-                        fontSize = 14.sp,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis,
-                        color = Color.White.copy(alpha = 0.80f)
-                    )
                 }
-
-                Icon(
-                    modifier = Modifier
-                        .padding(end = 8.dp)
-                        .size(32.dp),
-                    tint = Color.White.copy(alpha = 0.5f),
-                    imageVector = Icons.Rounded.ArrowCircleRight,
-                    contentDescription = "More about habit"
-                )
-
             }
         }
     }
-    HorizontalDivider(thickness = 2.dp)
 }
 
 data class DefaultHabitDetailItem(
@@ -113,18 +98,18 @@ data class DefaultHabitDetailItem(
 
 fun getGroupDetails(groupName: String, context: Context): List<DefaultHabitDetailItem> {
     return when (groupName) {
-        UiText.StringResources(R.string.keep_active_get_fit).asString(context) -> keepActiveGetFit
+        UiText.StringResources(R.string.get_fit).asString(context) -> keepActiveGetFit
         UiText.StringResources(R.string.eat_drink_healthily).asString(context) -> eatDrinkHealthily
-        UiText.StringResources(R.string.ease_stress).asString(context) -> easeStress
-        UiText.StringResources(R.string.gain_self_discipline)
+        UiText.StringResources(R.string.entertainment).asString(context) -> easeStress
+        UiText.StringResources(R.string.self_discipline)
             .asString(context) -> gainSelfDiscipline
 
         UiText.StringResources(R.string.leisure_moments).asString(context) -> leisureMoments
         UiText.StringResources(R.string.good_morning).asString(context) -> goodMorningHabits
-        UiText.StringResources(R.string.before_sleep_routine)
+        UiText.StringResources(R.string.before_sleep)
             .asString(context) -> beforeSleepRoutineHabits
 
-        UiText.StringResources(R.string.master_productivity)
+        UiText.StringResources(R.string.productivity)
             .asString(context) -> masterProductivityHabits
 
         UiText.StringResources(R.string.stronger_mind).asString(context) -> strongerMindHabits
