@@ -6,19 +6,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.habitstracker.core.presentation.theme.HabitColor
-import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.habit.domain.ShownHabit
-import com.example.habitstracker.habit.presentation.edit_habit.components.SelectedDay
 import java.time.LocalDate
 
-val APP_VERSION = "0.0.0 (alpha)"
+val APP_VERSION = "0.0.6 (alpha)"
 fun List<LocalDate>.chunked(size: Int): List<List<LocalDate>> {
     return this.withIndex().groupBy { it.index / size }.values.map { it.map { it.value } }
 }
@@ -68,103 +65,23 @@ val shownHabitExample2 = ShownHabit(1, "habit example 2", "SentimentVerySatisfie
 val shownHabitExample3 = ShownHabit(2, "habit example 3", "SentimentVerySatisfied",
     HabitColor.LeafGreen.light.toHex(), "Everyday", "Evening", false, false)
 
-// Using in Edit/RepeatPicker
-fun textState(dayStates: SnapshotStateList<SelectedDay>): Pair<String, String> {
-    return when (dayStates.count { it.isSelect == true }) {
+fun getGradientByLightColor(lightColor: Color) = when (lightColor) {
+    HabitColor.SkyBlue.light -> HabitColor.SkyBlue
+    HabitColor.LeafGreen.light -> HabitColor.LeafGreen
+    HabitColor.Amber.light -> HabitColor.Amber
+    HabitColor.DeepBlue.light -> HabitColor.DeepBlue
+    HabitColor.BrickRed.light -> HabitColor.BrickRed
+    HabitColor.Cyan.light -> HabitColor.Cyan
+    HabitColor.Orange.light -> HabitColor.Orange
+    HabitColor.Teal.light -> HabitColor.Teal
+    HabitColor.Golden.light -> HabitColor.Golden
+    HabitColor.Lime.light -> HabitColor.Lime
+    HabitColor.Aqua.light -> HabitColor.Aqua
+    HabitColor.Purple.light -> HabitColor.Purple
+    HabitColor.Terracotta.light -> HabitColor.Terracotta
+    HabitColor.Rose.light -> HabitColor.Rose
+    HabitColor.DarkGreen.light -> HabitColor.DarkGreen
+    HabitColor.Sand.light -> HabitColor.Sand
 
-        1 -> {
-            val oneSelectedDay = dayStates.first { dayItem ->
-                dayItem.isSelect == true
-            }.day
-
-            val stringForDb = getStringForDbInsert(dayStates)
-            Pair(oneSelectedDay, stringForDb)
-        }
-
-        2 -> {
-            val twoSelectedDays = dayStates.filter { dayItem ->
-                dayItem.isSelect
-            }.joinToString(", ") { it.day }
-
-            val stringForDb = getStringForDbInsert(dayStates)
-            Pair(twoSelectedDays, stringForDb)
-        }
-
-        3 -> {
-            val threeSelectedDays = dayStates.filter { dayItem ->
-                dayItem.isSelect
-            }.joinToString(", ") { it.day }
-
-            val stringForDb = getStringForDbInsert(dayStates)
-            Pair(threeSelectedDays, stringForDb)
-        }
-
-        4 -> {
-            val fourSelectedDays = dayStates
-                .filter { dayItem -> dayItem.isSelect }
-                .take(3)
-                .joinToString { it.day } + "..."
-
-            val stringForDb = getStringForDbInsert(dayStates)
-            Pair(fourSelectedDays, stringForDb)
-        }
-
-        5 -> {
-            val twoUnselectedDays = dayStates.filter { dayItem ->
-                dayItem.isSelect == false
-            }.joinToString(" and ") { it.day }
-
-            val stringForDb = getStringForDbInsert(dayStates)
-            Pair("Everyday except $twoUnselectedDays", stringForDb)
-        }
-
-        6 -> {
-            val oneUnselectedDay = dayStates.filter { dayItem ->
-                !dayItem.isSelect
-            }.joinToString { it.day }
-
-            val stringForDb = getStringForDbInsert(dayStates)
-            Pair("Everyday exept ${oneUnselectedDay}", stringForDb)
-        }
-
-        7 -> {
-            val stringForDb = getStringForDbInsert(dayStates)
-            Pair("Everyday", stringForDb)
-        }
-
-        else -> throw IllegalArgumentException("Custom error in RepeatPicker.kt (textState function)")
-    }
-}
-
-@Composable
-fun getCorrectSelectedDaysList(daysFromDb: String): MutableList<SelectedDay> {
-    val dayStatesList = mutableListOf(
-        SelectedDay(false, "Mon"),
-        SelectedDay(false, "Tue"),
-        SelectedDay(false, "Wed"),
-        SelectedDay(false, "Thu"),
-        SelectedDay(false, "Fri"),
-        SelectedDay(false, "San"),
-        SelectedDay(false, "Sut")
-    )
-
-// daysListParam contains list of days, which should be update
-    val selectedDaysFromDB = if(daysFromDb != "Everyday") daysFromDb.split(", ")
-    else listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sun", "Sut")
-
-
-// Update state of each day in dayStates
-    dayStatesList.forEachIndexed { index, currentDay ->
-        dayStatesList[index] = currentDay.copy(
-            isSelect = selectedDaysFromDB.contains(currentDay.day)
-        )
-    }
-    return dayStatesList
-}
-
-// Return the string that will be push to database as a selectedDays field
-fun getStringForDbInsert(dayStates: SnapshotStateList<SelectedDay>): String {
-    return dayStates.filter { dayItem ->
-        dayItem.isSelect
-    }.joinToString(", ") { it.day }
+    else -> HabitColor.DefaultColor // fallback
 }

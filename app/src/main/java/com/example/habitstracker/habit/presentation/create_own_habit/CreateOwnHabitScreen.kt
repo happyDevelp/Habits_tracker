@@ -31,6 +31,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -71,40 +72,54 @@ import java.time.LocalDate
 @Composable
 fun CreateOwnHabitRoot(
     viewModel: MainScreenViewModel,
-    name: String?,
-    icon: String?,
-    iconColor: String?
+    isEditMode: Boolean,
+    id: Int?,
+    name: String,
+    icon: String,
+    iconColor: String
 ) {
-    val onAddHabitClick: (habit: HabitEntity) -> Unit = { habit ->
-        viewModel.insertHabit(habit) { habitId ->
-            val currentDate = LocalDate.now().toString()
-            viewModel.insertHabitDate(
-                DateHabitEntity(
-                    habitId = habitId.toInt(),
-                    currentDate = currentDate,
+    val onActionButtonClick: (habit: HabitEntity) -> Unit = { habit ->
+        if (isEditMode) {
+            viewModel.updateHabit(habit)
+        } else {
+            viewModel.insertHabit(habit) { habitId ->
+                val currentDate = LocalDate.now().toString()
+
+                viewModel.insertHabitDate(
+                    DateHabitEntity(
+                        habitId = habitId.toInt(),
+                        currentDate = currentDate,
+                    )
                 )
-            )
+            }
         }
     }
     CreateOwnHabitScreen(
-        onAddHabitClick = onAddHabitClick,
+        isEditMode = isEditMode,
+        id = id,
         name = name,
         icon = icon,
-        iconColor = iconColor
+        iconColor = iconColor,
+        onActionButtonClick = onActionButtonClick,
     )
 }
 
 @Composable
 fun CreateOwnHabitScreen(
     modifier: Modifier = Modifier,
-    onAddHabitClick: (habit: HabitEntity) -> Unit,
-    name: String?,
-    icon: String?,
-    iconColor: String?
+    isEditMode: Boolean,
+    id: Int?,
+    name: String,
+    icon: String,
+    iconColor: String,
+    onActionButtonClick: (habit: HabitEntity) -> Unit,
 ) {
+
     val navController = LocalNavController.current
     Scaffold(
-        topBar = { CustomTopBar(navController) },
+        topBar = {
+            CustomTopBar(navController, title = if (isEditMode) "Edit" else "Create")
+        },
         containerColor = screenBackgroundDark,
     ) { paddingValues ->
         Box(
@@ -114,23 +129,13 @@ fun CreateOwnHabitScreen(
                 .padding(horizontal = 16.dp)
         ) {
             var habitName by remember {
-                mutableStateOf(
-                    if (name != null) name
-                    else ""
-                )
+                mutableStateOf(name)
             }
             var habitIconName by remember {
-                mutableStateOf(
-                    if (icon != null) icon // androidx.compose.ui.graphics.vector.ImageVector@8fd356ba
-                    else getIconName(Icons.Filled.SentimentVerySatisfied) // SentimentVerySatisfied
-                )
+                mutableStateOf(icon)
             }
             var habitColor by remember {
-                mutableStateOf(
-                    if (iconColor != null)
-                        iconColor.getColorFromHex()
-                    else HabitColor.Orange.light
-                )
+                mutableStateOf(iconColor.getColorFromHex())
             }
             var selectedDays by remember { mutableStateOf<List<String>>(emptyList()) }
             var executionTime by remember { mutableStateOf("Anytime") }
@@ -140,20 +145,6 @@ fun CreateOwnHabitScreen(
             }
             Column(modifier = modifier.fillMaxSize()) {
                 Spacer(Modifier.height(16.dp))
-
-                Column(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
-                    horizontalAlignment = Alignment.Start,
-                    verticalArrangement = Arrangement.Top
-                ) {
-                    HabitNameTextField(name = habitName) { text ->
-                        habitName = text
-                    }
-                    Spacer(modifier = modifier.height(16.dp))
-                }
-
                 Column(
                     modifier = modifier
                         .fillMaxWidth()
@@ -161,6 +152,18 @@ fun CreateOwnHabitScreen(
                     horizontalAlignment = Alignment.Start,
                     verticalArrangement = Arrangement.Top
                 ) {
+                    Column(
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
+                        horizontalAlignment = Alignment.Start,
+                        verticalArrangement = Arrangement.Top
+                    ) {
+                        HabitNameTextField(name = habitName, color = habitColor) { text ->
+                            habitName = text
+                        }
+                        Spacer(modifier = modifier.height(16.dp))
+                    }
                     IconAndColorPicker(
                         icon = iconByName(habitIconName),
                         color = habitColor,
@@ -198,15 +201,16 @@ fun CreateOwnHabitScreen(
                     AdvancedSettings()
                 }
             }
+            val coroutineScope = rememberCoroutineScope()
 
             val habit = HabitEntity(
+                id = id ?: 0,
                 name = habitName,
                 iconName = habitIconName,
                 colorHex = habitColor.toHex(),
                 days = selectedDays.joinToString(","),
                 executionTime = executionTime,
             )
-            val coroutineScope = rememberCoroutineScope()
 
             Button(
                 modifier = modifier
@@ -222,7 +226,7 @@ fun CreateOwnHabitScreen(
                 enabled = habit.name.length >= 4,
                 onClick = {
                     coroutineScope.launch {
-                        onAddHabitClick(habit)
+                        onActionButtonClick(habit)
                         navController.popBackStack(Route.Today(), false)
                     }
                 },
@@ -240,7 +244,8 @@ fun CreateOwnHabitScreen(
                 )
             ) {
                 Text(
-                    text = stringResource(R.string.add_habit),
+                    text = if (isEditMode) stringResource(R.string.edit_habit)
+                    else stringResource(R.string.add_habit),
                     fontSize = 20.sp,
                 )
             }
@@ -250,9 +255,16 @@ fun CreateOwnHabitScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun CustomTopBar(navController: NavController) {
+private fun CustomTopBar(navController: NavController, title: String) {
     TopAppBar(
-        title = { },
+        title = {
+            Text(
+                text = title,
+                color = Color.White,
+                fontFamily = PoppinsFontFamily,
+                fontSize = 20.sp
+            )
+        },
         navigationIcon = {
             IconButton(
                 onClick = { navController.navigateUp() }
@@ -282,6 +294,8 @@ private fun DaysOfWeekPicker(
 
     // by default all selected
     var selectedDays by remember { mutableStateOf(days.toSet()) }
+    onDaysChanged(selectedDays.toList())
+
 
     Column(modifier = modifier) {
         Row(
@@ -347,10 +361,12 @@ private fun Preview() {
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
         AppTheme(darkTheme = true) {
             CreateOwnHabitScreen(
-                onAddHabitClick = { },
-                name = null,
-                icon = null,
-                iconColor = null
+                onActionButtonClick = { },
+                name = "",
+                icon = getIconName(Icons.Filled.SentimentVerySatisfied),
+                iconColor = HabitColor.Orange.light.toHex(),
+                isEditMode = false,
+                id = null
             )
         }
     }

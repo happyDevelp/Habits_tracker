@@ -1,4 +1,4 @@
-package com.example.habitstracker.profile.presentation.profile.component
+package com.example.habitstracker.profile.presentation.profile.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

@@ -16,12 +16,12 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.SentimentVerySatisfied
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
@@ -43,10 +43,14 @@ import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.theme.AppTheme
-import com.example.habitstracker.core.presentation.theme.MyPalette
+import com.example.habitstracker.core.presentation.theme.ColorGradient
+import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.core.presentation.utils.TestTags
+import com.example.habitstracker.core.presentation.utils.getColorFromHex
+import com.example.habitstracker.core.presentation.utils.getIconName
+import com.example.habitstracker.core.presentation.utils.toHex
 import com.example.habitstracker.habit.presentation.add_habit.components.DefaultHabitGroupItem
 import com.example.habitstracker.habit.presentation.add_habit.components.defaultsHabitsGroupList
 
@@ -86,7 +90,13 @@ fun AddHabitScreen(modifier: Modifier = Modifier) {
                         ),
 
                     onClick = {
-                        navController.navigate(Route.CreateHabit(name = null, icon = null, iconColor = null))
+                        navController.navigate(
+                            Route.CreateHabit(
+                                name = "",
+                                icon = getIconName(Icons.Filled.SentimentVerySatisfied),
+                                iconColor = HabitColor.Orange.light.toHex()
+                            )
+                        )
                     },
 
                     colors = ButtonDefaults.buttonColors(

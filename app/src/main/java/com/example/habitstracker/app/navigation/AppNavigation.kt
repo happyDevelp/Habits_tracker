@@ -31,13 +31,11 @@ import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.habit.presentation.add_habit.AddHabitScreen
 import com.example.habitstracker.habit.presentation.create_own_habit.CreateOwnHabitRoot
 import com.example.habitstracker.habit.presentation.detail_habit.DetailHabitScreen
-import com.example.habitstracker.habit.presentation.edit_habit.EditHabitRoot
-import com.example.habitstracker.habit.presentation.edit_habit.components.EditRepeatPickerRoot
 import com.example.habitstracker.habit.presentation.today_main.MainScreenViewModel
 import com.example.habitstracker.habit.presentation.today_main.TodayScreenRoot
 import com.example.habitstracker.history.presentation.HistoryScreenRoot
 import com.example.habitstracker.history.presentation.HistoryViewModel
-import com.example.habitstracker.profile.presentation.profile.ProfileScreen
+import com.example.habitstracker.profile.presentation.ProfileScreen
 
 @Composable
 fun AppNavigation() {
@@ -111,7 +109,7 @@ fun AppNavigation() {
                 }
 
                 composable<Route.Profile> {
-                    ProfileScreen()
+                    ProfileScreen(streakList = emptyList())
                 }
             }
 
@@ -130,23 +128,9 @@ fun AppNavigation() {
                     name = args.name,
                     icon = args.icon,
                     iconColor = args.iconColor,
-                    viewModel = mainScreenViewModel
-                )
-            }
-
-            composable<Route.EditHabit> { backStackEntry ->
-                val args = backStackEntry.toRoute<Route.EditHabit>()
-                EditHabitRoot(
-                    paramId = args.id,
-                    viewModel = mainScreenViewModel
-                )
-            }
-
-            composable<Route.EditRepeatPicker> { backStackEntry ->
-                val args = backStackEntry.toRoute<Route.EditRepeatPicker>()
-                EditRepeatPickerRoot(
-                    paramId = args.id,
-                    viewModel = mainScreenViewModel
+                    viewModel = mainScreenViewModel,
+                    isEditMode = args.isEditMode,
+                    id = args.id
                 )
             }
         }

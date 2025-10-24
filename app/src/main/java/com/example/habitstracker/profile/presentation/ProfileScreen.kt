@@ -1,4 +1,4 @@
-package com.example.habitstracker.profile.presentation.profile
+package com.example.habitstracker.profile.presentation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,28 +26,35 @@ import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.core.presentation.utils.APP_VERSION
-import com.example.habitstracker.profile.presentation.profile.component.ButtonItem
-import com.example.habitstracker.profile.presentation.profile.component.CustomContainer
-import com.example.habitstracker.profile.presentation.profile.component.SettingsButtonItem
-import com.example.habitstracker.profile.presentation.profile.component.scaffold.TopBarProfileScreen
+import com.example.habitstracker.habit.domain.DateHabitEntity
+import com.example.habitstracker.profile.presentation.profile.components.StatisticSection
+import com.example.habitstracker.profile.presentation.profile.components.ButtonItem
+import com.example.habitstracker.profile.presentation.profile.components.CustomContainer
+import com.example.habitstracker.profile.presentation.profile.components.SettingsButtonItem
+import com.example.habitstracker.profile.presentation.profile.components.scaffold.TopBarProfileScreen
+import java.time.DayOfWeek
+import java.time.LocalDate
+import java.time.temporal.TemporalAdjusters
 
 @Composable
 @Preview(showSystemUi = false)
 private fun ProfileScreenPreview() {
-    AppTheme(darkTheme = true) { ProfileScreen() }
+    AppTheme(darkTheme = true) { ProfileScreen(streakList = emptyList()) }
 }
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier) {
+fun ProfileScreen(modifier: Modifier = Modifier, streakList: List<DateHabitEntity>) {
     Scaffold(
         topBar = { TopBarProfileScreen() },
         containerColor = screenBackgroundDark
     ) { paddingValues ->
-
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
+
+            StatisticSection(streakList = streakList)
+
 
             CustomContainer(
                 modifier = modifier

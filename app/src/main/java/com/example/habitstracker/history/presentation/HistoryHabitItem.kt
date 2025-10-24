@@ -1,6 +1,5 @@
-package com.example.habitstracker.habit.presentation.today_main.components
+package com.example.habitstracker.history.presentation
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,20 +7,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
@@ -55,24 +52,20 @@ import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
-import com.example.habitstracker.core.presentation.CustomCheckbox
 import com.example.habitstracker.core.presentation.theme.AppTheme
-import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.core.presentation.utils.getColorFromHex
 import com.example.habitstracker.core.presentation.utils.getGradientByLightColor
 import com.example.habitstracker.core.presentation.utils.iconByName
 import com.example.habitstracker.core.presentation.utils.shownHabitExample1
 import com.example.habitstracker.habit.domain.ShownHabit
-import java.time.LocalDate
+
 
 @Composable
-fun HabitItem(
+fun HistoryHabitItem(
     modifier: Modifier = Modifier,
     shownHabit: ShownHabit,
-    currentDate: LocalDate,
-    onSelectClick: (id: Int, isDone: Boolean, selectDate: String) -> Unit,
-    onDeleteClick: (id: Int) -> Unit,
+    onDeleteClick: (id: Int) -> Unit
 ) {
     val navController = LocalNavController.current
     val itemHeight: Dp = 85.dp
@@ -82,11 +75,8 @@ fun HabitItem(
 
     var isMenuExpanded by remember { mutableStateOf(false) }
 
-    val targetGradient = if (shownHabit.isSelected) {
-        HabitColor.DefaultColor
-    } else {
-        color
-    }
+    val targetGradient = color
+
 
     // Animation of both colors separately
     val animatedLight by animateColorAsState(
@@ -101,12 +91,11 @@ fun HabitItem(
 
     Box(modifier = modifier.wrapContentSize()) {
         Row(
-            modifier = modifier
-                .fillMaxWidth(0.97f)
-                .padding(end = 12.dp),
+            modifier = modifier.padding(end = 24.dp),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
+
             Row(
                 modifier = modifier
                     .height(itemHeight)
@@ -136,13 +125,15 @@ fun HabitItem(
                             trailingIcon = { Icons.Default.Edit },
                             onClick = {
                                 isMenuExpanded = false
-                                navController.navigate(Route.CreateHabit(
-                                    id = shownHabit.id,
-                                    name = shownHabit.name,
-                                    icon = shownHabit.iconName,
-                                    iconColor = shownHabit.colorHex,
-                                    isEditMode = true
-                                ))
+                                navController.navigate(
+                                    Route.CreateHabit(
+                                        id = shownHabit.id,
+                                        name = shownHabit.name,
+                                        icon = shownHabit.iconName,
+                                        iconColor = shownHabit.colorHex,
+                                        isEditMode = true
+                                    )
+                                )
                             }
                         )
 
@@ -157,7 +148,6 @@ fun HabitItem(
                     }
                 }
             }
-
 
             Card(
                 modifier = modifier
@@ -216,7 +206,7 @@ fun HabitItem(
                             horizontalAlignment = Alignment.CenterHorizontally
                         ) {
                             Text(
-                                modifier = modifier.padding(bottom = if (!shownHabit.isSelected) 0.dp else 10.dp),
+                                modifier = modifier.padding(0.dp),
                                 text = shownHabit.name,
                                 fontSize = 20.sp,
                                 color = if (!shownHabit.isSelected) Color.White else Color.White.copy(
@@ -225,47 +215,21 @@ fun HabitItem(
                                 fontWeight = FontWeight.Bold,
                                 style = MaterialTheme.typography.titleSmall,
                             )
-                            // Hide the second text when selected
-                            AnimatedVisibility(visible = shownHabit.isSelected) {
-                                Row(
-                                    horizontalArrangement = Arrangement.Center,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Icon(
-                                        modifier = modifier.size(18.dp),
-                                        tint = Color.White.copy(selectedAlpha),
-                                        imageVector = Icons.Default.Done,
-                                        contentDescription = null
-                                    )
-                                    Spacer(modifier = modifier.width(4.dp))
-                                    Text(
-                                        text = stringResource(R.string.finished),
-                                        fontSize = 14.sp,
-                                        color = Color.White.copy(selectedAlpha)
-                                    )
-                                }
-                            }
                         }
-
 
                         Row(
                             modifier = modifier
-                                .height(itemHeight)
-                                //.weight(1f)
+                                .wrapContentHeight()
                                 .testTag(TestTags.HABIT_ITEM),
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center
                         ) {
-                            CustomCheckbox(
-                                shownHabit = shownHabit,
-                                onClick = {
-                                    onSelectClick(
-                                        shownHabit.id,
-                                        !shownHabit.isSelected,
-                                        currentDate.toString()
-                                    )
-
-                                }
+                            Text(
+                                modifier = modifier.padding(end = 4.dp),
+                                text = "3%",
+                                fontSize = 22.sp,
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold,
                             )
                         }
                     }
@@ -282,12 +246,11 @@ private fun HabitItemPreview() {
         LocalNavController provides rememberNavController()
     ) {
         AppTheme(darkTheme = true) {
-            HabitItem(
+            HistoryHabitItem(
                 shownHabit = shownHabitExample1,
                 modifier = Modifier,
-                currentDate = LocalDate.now(),
-                onSelectClick = { _, _, _ -> },
-            ) { }
+                onDeleteClick = {}
+            )
         }
     }
 }

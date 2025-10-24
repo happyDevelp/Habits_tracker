@@ -24,6 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
+import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.utils.TestTags
@@ -32,6 +33,7 @@ import com.example.habitstracker.core.presentation.utils.TestTags
 fun HabitNameTextField(
     modifier: Modifier = Modifier,
     name: String,
+    color: Color,
     onTextChange: (text: String) -> Unit = { },
 ) {
     Card(
@@ -73,7 +75,7 @@ fun HabitNameTextField(
                         .padding(end = 0.dp)
                         .size(20.dp),
                     imageVector = Icons.Default.Edit,
-                    contentDescription = null, tint = Color.White.copy(0.8f)
+                    contentDescription = null, tint = color
                 )
             },
             colors = TextFieldDefaults.colors(
@@ -91,5 +93,5 @@ fun HabitNameTextField(
 @Composable
 private fun Previeww() {
 
-    HabitNameTextField(name = "Fake name", onTextChange = { })
+    HabitNameTextField(name = "Fake name", color = HabitColor.Orange.light, onTextChange = { })
 }

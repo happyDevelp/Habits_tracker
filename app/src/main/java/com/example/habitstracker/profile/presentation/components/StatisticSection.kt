@@ -1,5 +1,6 @@
-package com.example.habitstracker.history.presentation.components
+package com.example.habitstracker.profile.presentation.profile.components
 
+import android.graphics.Paint
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -40,6 +41,8 @@ import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
+import com.example.habitstracker.habit.domain.DateHabitEntity
+import com.example.habitstracker.history.presentation.tab_screens.DrawStatisticContainers
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -48,7 +51,19 @@ import java.time.temporal.TemporalAdjusters
 import java.util.Locale
 
 @Composable
-fun StatisticSection(modifier: Modifier = Modifier, completedPercentageList: List<Float>) {
+fun StatisticSection(
+    modifier: Modifier = Modifier,
+    streakList: List<DateHabitEntity>
+) {
+    val monday = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+    val week = (0..6).map { monday.plusDays(it.toLong()) }
+
+    val completedPercentageList = week.map { date ->
+        val habits = streakList.filter { LocalDate.parse(it.currentDate) == date }
+        if (habits.isEmpty()) 0f
+        else habits.count { it.isCompleted }.toFloat() / habits.size.toFloat()
+    }
+
     Spacer(modifier = modifier.height(24.dp))
 
     MyText(
@@ -73,11 +88,14 @@ fun StatisticSection(modifier: Modifier = Modifier, completedPercentageList: Lis
     // percentage list of completed habits
     //val completedHabitsList = listOf(0.66f, 0.33f, 1f, 0f, 0f, 0f, 0f)
 
+    DrawStatisticContainers(streakList = streakList)
+
     CustomStatisticContainer(
         height = 300.dp,
         percentageList = completedPercentageList
     )
 }
+
 @Composable
 fun CustomStatisticContainer(
     modifier: Modifier = Modifier, height: Dp,
@@ -175,7 +193,7 @@ private fun WeeklyBars(
         Canvas(modifier = Modifier.matchParentSize()) {
             val stroke = 1.dp.toPx()
             val chartHeight = barMaxHeight.toPx()
-            val textPaint = android.graphics.Paint().apply {
+            val textPaint = Paint().apply {
                 color = android.graphics.Color.WHITE
                 textSize = 28f
                 alpha = 180

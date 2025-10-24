@@ -1,4 +1,4 @@
-package com.example.habitstracker.profile.presentation.profile.component.scaffold
+package com.example.habitstracker.profile.presentation.profile.components.scaffold
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBar
@@ -15,7 +15,7 @@ import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 @Composable
 fun TopBarProfileScreen(modifier: Modifier = Modifier) {
     TopAppBar(
-        title = { MyText(text = stringResource(id = R.string.profile), textSize = 26.sp) },
+        title = { MyText(text = stringResource(R.string.statistics), textSize = 26.sp) },
 
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = screenBackgroundDark

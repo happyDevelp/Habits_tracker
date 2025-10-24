@@ -3,7 +3,7 @@ package com.example.habitstracker.habit.domain
 import kotlinx.coroutines.flow.Flow
 
 interface HabitRepository {
-    suspend fun addHabit(habit: HabitEntity): Long
+    suspend fun insertHabit(habit: HabitEntity): Long
 
     suspend fun updateDateSelectState(id: Int, isDone: Boolean, selectDate: String)
 

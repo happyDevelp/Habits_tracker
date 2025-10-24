@@ -45,8 +45,9 @@ import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
+import com.example.habitstracker.core.presentation.utils.shownHabitExample1
 import com.example.habitstracker.habit.domain.DateHabitEntity
-import com.example.habitstracker.history.presentation.components.StatisticSection
+import com.example.habitstracker.history.presentation.HistoryHabitItem
 import com.example.habitstracker.history.presentation.components.calendar.HistoryCalendarDay
 import com.example.habitstracker.history.presentation.components.calendar.TopPanel
 import com.example.habitstracker.history.presentation.components.statistic_containers.CustomBlank
@@ -63,14 +64,7 @@ fun HistoryCalendarScreen(
     changeSelectedItemState: (index: Int) -> Unit,
     mapDateToHabits: Map<LocalDate, List<DateHabitEntity>>
 ) {
-    val monday = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-    val week = (0..6).map { monday.plusDays(it.toLong()) }
 
-    val completedPercentage = week.map { date ->
-        val habits = streakList.filter { LocalDate.parse(it.currentDate) == date }
-        if (habits.isEmpty()) 0f
-        else habits.count { it.isCompleted }.toFloat() / habits.size.toFloat()
-    }
 
     val coroutineScope = rememberCoroutineScope()
 
@@ -86,9 +80,19 @@ fun HistoryCalendarScreen(
 
     LazyColumnContainer {
         /** Statistic containers **/
-        DrawStatisticContainers(streakList = streakList)
-        Spacer(modifier = modifier.height(12.dp))
+        Spacer(modifier = modifier.height(18.dp))
 
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()) {
+            MyText(
+                modifier = modifier.align(Alignment.Center),
+                text = "My Calendar",
+                textSize = 18.sp
+            )
+        }
+
+        Spacer(modifier = modifier.height(12.dp))
         /** Calendar **/
         Card(
             modifier = modifier
@@ -137,12 +141,38 @@ fun HistoryCalendarScreen(
             }
         }
 
-        StatisticSection(completedPercentageList = completedPercentage)
+        Spacer(Modifier.height(24.dp))
+
+        Box(modifier = Modifier
+            .fillMaxWidth()
+            .wrapContentHeight()) {
+            MyText(
+                modifier = modifier.padding(start = 12.dp),
+                text = "My Habits",
+                textSize = 18.sp
+            )
+
+            MyText(
+                modifier = modifier
+                    .padding(top = 15.dp, end = 28.dp, bottom = 4.dp)
+                    .align(Alignment.CenterEnd),
+                text = "Strength",
+                textSize = 13.sp,
+                color = Color.White.copy(0.7f)
+            )
+        }
+
+        //Spacer(Modifier.height(18.dp))
+
+        HistoryHabitItem(
+            shownHabit = shownHabitExample1,
+            onDeleteClick = {}
+        )
     }
 }
 
 @Composable
-private fun DrawStatisticContainers(streakList: List<DateHabitEntity>) {
+fun DrawStatisticContainers(streakList: List<DateHabitEntity>) {
     val context = LocalContext.current
 
     /** current streak and the best streak*/
