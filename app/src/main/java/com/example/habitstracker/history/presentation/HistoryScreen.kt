@@ -89,7 +89,6 @@ fun HistoryScreen(
                 initialPage = startTab,
                 pageCount = { tabs.size }
             )
-
             Column(
                 modifier = modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
