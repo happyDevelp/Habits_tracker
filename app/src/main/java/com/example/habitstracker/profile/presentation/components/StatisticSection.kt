@@ -50,7 +50,7 @@ import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
 import java.util.Locale
 
-@Composable
+/*@Composable
 fun StatisticSection(
     modifier: Modifier = Modifier,
     streakList: List<DateHabitEntity>
@@ -94,7 +94,7 @@ fun StatisticSection(
         height = 300.dp,
         percentageList = completedPercentageList
     )
-}
+}*/
 
 @Composable
 fun CustomStatisticContainer(
