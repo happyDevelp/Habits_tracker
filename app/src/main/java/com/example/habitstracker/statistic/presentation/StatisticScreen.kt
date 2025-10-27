@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Feedback
 import androidx.compose.material.icons.filled.Language
@@ -38,6 +40,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -53,44 +56,67 @@ import com.example.habitstracker.core.presentation.utils.APP_VERSION
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.history.presentation.components.statistic_containers.CustomBlank
 import com.example.habitstracker.history.presentation.components.statistic_containers.getFilledBlankList
+import com.example.habitstracker.statistic.presentation.components.CustomStatisticContainer
 import com.example.habitstracker.statistic.presentation.profile.components.ButtonItem
 import com.example.habitstracker.statistic.presentation.profile.components.CustomContainer
-import com.example.habitstracker.statistic.presentation.components.CustomStatisticContainer
 import com.example.habitstracker.statistic.presentation.profile.components.SettingsButtonItem
 import com.example.habitstracker.statistic.presentation.profile.components.scaffold.TopBarProfileScreen
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.time.temporal.TemporalAdjusters
-import java.util.Locale
 
 @Composable
 fun StatisticScreenRoot(viewModel: StatisticViewModel) {
     val dateHabitList by viewModel.dateHabitList.collectAsStateWithLifecycle()
-    
-    StatisticScreen(streakList = emptyList())
+
+    val monday = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+    val week = (0..6).map { monday.plusDays(it.toLong()) }
+
+    // calculate data for StatisticContainers section
+    val completedPercentageList = week.map { date ->
+        val habits = dateHabitList.filter { LocalDate.parse(it.currentDate) == date }
+        if (habits.isEmpty()) 0f
+        else habits.count { it.isCompleted }.toFloat() / habits.size.toFloat()
+    }
+
+    // calculate data for strength section
+    val today = LocalDate.now()
+    val monthAgo = today.minusMonths(1)
+
+    val lastMonthHabits = dateHabitList.filter { dateHabit ->
+        val date = LocalDate.parse(dateHabit.currentDate)
+        date.isAfter(monthAgo.minusDays(1))
+                && date.isBefore(today.plusDays(1))
+    }
+
+    val totalHabits = lastMonthHabits.size
+    val completedHabits = lastMonthHabits.count { it.isCompleted }
+    val strengthPercentage = (completedHabits.toFloat() / totalHabits.toFloat() * 100f).toInt()
+
+
+    StatisticScreen(
+        dateHabitList = dateHabitList,
+        completedPercentageList = completedPercentageList,
+        strengthPercentage = strengthPercentage
+    )
 }
 
 @Composable
-fun StatisticScreen(streakList: List<DateHabitEntity>) {
+fun StatisticScreen(
+    dateHabitList: List<DateHabitEntity>,
+    completedPercentageList: List<Float>,
+    strengthPercentage: Int
+) {
     Scaffold(
         topBar = { TopBarProfileScreen() },
         containerColor = screenBackgroundDark
     ) { paddingValues ->
+        val scrollState = rememberScrollState()
         Column(
+            modifier = Modifier.verticalScroll(scrollState),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-
-            val monday = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-            val week = (0..6).map { monday.plusDays(it.toLong()) }
-
-            val completedPercentageList = week.map { date ->
-                val habits = streakList.filter { LocalDate.parse(it.currentDate) == date }
-                if (habits.isEmpty()) 0f
-                else habits.count { it.isCompleted }.toFloat() / habits.size.toFloat()
-            }
-
             Spacer(modifier = Modifier.height(24.dp))
 
             MyText(
@@ -99,18 +125,7 @@ fun StatisticScreen(streakList: List<DateHabitEntity>) {
                 textSize = 18.sp
             )
 
-            val formatter = DateTimeFormatter.ofPattern(
-                stringResource(id = R.string.month_and_year_pattern),
-                Locale.getDefault()
-            )
-
-            val formattedCurrentDate = LocalDate.now().format(formatter)
-
-            // percentage list of completed habits
-            //val completedHabitsList = listOf(0.66f, 0.33f, 1f, 0f, 0f, 0f, 0f)
-
-            DrawStatisticContainers(streakList = streakList)
-
+            DrawStatisticContainers(dateHabitList = dateHabitList)
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -125,7 +140,7 @@ fun StatisticScreen(streakList: List<DateHabitEntity>) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .wrapContentHeight()
-                        .padding(top = 16.dp, bottom = 32.dp),
+                        .padding(top = 16.dp, bottom = 24.dp),
                     contentAlignment = Alignment.TopCenter
                 ) {
                     Column(
@@ -134,16 +149,15 @@ fun StatisticScreen(streakList: List<DateHabitEntity>) {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Text(
-                            text = "Strength",
+                            text = "Consistency"/*"Monthly Consistency"*/,
                             fontSize = 20.sp,
                             fontWeight = FontWeight.Bold,
                             color = Color.White,
                             fontFamily = PoppinsFontFamily
                         )
-
                         Spacer(Modifier.height(32.dp))
 
-                        val progress = 0.03f
+                        val progress = strengthPercentage / 100.toFloat()
                         val strokeWidth = 14.dp
                         val diameter = 220.dp
 
@@ -156,8 +170,7 @@ fun StatisticScreen(streakList: List<DateHabitEntity>) {
                                 width = strokeWidth.toPx(),
                                 cap = StrokeCap.Round
                             )
-                            val topOffset =  0f/*-size.width / 2f*/
-
+                            val topOffset = 0f/*-size.width / 2f*/
                             val stretchingDegree = 20
 
                             // grayBase
@@ -183,21 +196,27 @@ fun StatisticScreen(streakList: List<DateHabitEntity>) {
                             )
                         }
                     }
-
                     Text(
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
                             .padding(bottom = 4.dp),
-                        text = "3%",
+                        text = "$strengthPercentage%",
                         fontSize = 32.sp,
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
                         fontFamily = PoppinsFontFamily
                     )
                 }
+                Text(
+                    modifier = Modifier
+                        .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
+                    text = "Perform your habits daily to increase your consistency percentage.",
+                    fontSize = 12.sp,
+                    color = Color.White.copy(0.88f),
+                    fontFamily = PoppinsFontFamily,
+                    textAlign = TextAlign.Center
+                )
             }
-
-
 
             CustomStatisticContainer(
                 height = 300.dp,
@@ -286,15 +305,15 @@ fun getBottomButtonsList() =
     )
 
 @Composable
-fun DrawStatisticContainers(streakList: List<DateHabitEntity>) {
+fun DrawStatisticContainers(dateHabitList: List<DateHabitEntity>) {
     val context = LocalContext.current
 
     /** current streak and the best streak*/
-    val currentStreak = getCurrentStreak(streakList)
-    val bestStreak = getBestStreak(streakList)
+    val currentStreak = getCurrentStreak(dateHabitList)
+    val bestStreak = getBestStreak(dateHabitList)
 
     /** total completed habits  */
-    val totalCompletedHabits = streakList.count { it.isCompleted }
+    val totalCompletedHabits = dateHabitList.count { it.isCompleted }
 
 
     /** total completed habits this week */
@@ -303,19 +322,19 @@ fun DrawStatisticContainers(streakList: List<DateHabitEntity>) {
         remember(currentDate) {
             currentDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
         }
-    val thisWeekSelectedHabits = streakList
+    val thisWeekSelectedHabits = dateHabitList
         .filter { it.currentDate >= lastMonday.toString() }
         .count { it.isCompleted }
 
 
     /** Percentage of completed habits */
-    val totalHabits = streakList.size
+    val totalHabits = dateHabitList.size
     val percentage = totalCompletedHabits / totalHabits.toFloat() * 100
 
     /** Perfect days */
     val perfectDaysCounter by remember {
         mutableIntStateOf(
-            streakList
+            dateHabitList
                 .groupBy { it.currentDate }
                 .count { (_, habits) -> habits.all { it.isCompleted } }
         )
@@ -323,7 +342,7 @@ fun DrawStatisticContainers(streakList: List<DateHabitEntity>) {
 
     val thisWeekPerfectedDays by remember {
         mutableIntStateOf(
-            streakList
+            dateHabitList
                 .filter { it.currentDate >= lastMonday.toString() }
                 .groupBy { it.currentDate }
                 .count { (_, habits) -> habits.all { it.isCompleted } }
@@ -354,7 +373,7 @@ fun DrawStatisticContainers(streakList: List<DateHabitEntity>) {
         statsList.forEach { blankItem ->
             item {
                 CustomBlank(
-                    color = blankItem.color,
+                    gradientColor = blankItem.gradientColor,
                     topText = blankItem.topText,
                     middleText = blankItem.middleText,
                     bottomText = blankItem.bottomText,
@@ -422,5 +441,11 @@ fun getBestStreak(streakList: List<DateHabitEntity>): Int {
 @Composable
 @Preview(showSystemUi = false)
 private fun ProfileScreenPreview() {
-    AppTheme(darkTheme = true) { StatisticScreen(streakList = emptyList()) }
+    AppTheme(darkTheme = true) {
+        StatisticScreen(
+            dateHabitList = emptyList(),
+            completedPercentageList = emptyList(),
+            strengthPercentage = 25
+        )
+    }
 }

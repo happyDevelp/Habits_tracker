@@ -41,8 +41,6 @@ fun AchievementsScreen(
     val bestStreaks =
         allAchievements.filter { it.section == stringResource(R.string.achiev_best_streak) }
 
-    println("AAAA " + habitsFinished.map { it.target.toString() })
-
     val sections = listOf(
         AchievementSection(
             title = "Habits Finished",
