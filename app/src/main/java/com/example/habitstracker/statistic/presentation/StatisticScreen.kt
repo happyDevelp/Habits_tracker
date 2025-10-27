@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -37,6 +39,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -128,9 +131,6 @@ fun StatisticScreen(
 
             DrawStatisticContainers(dateHabitList = dateHabitList)
 
-            // test animation
-            BirdAnimations.HappyBird()
-
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -148,10 +148,6 @@ fun StatisticScreen(
                         .padding(top = 16.dp, bottom = 24.dp),
                     contentAlignment = Alignment.TopCenter
                 ) {
-
-
-
-
                     Column(
                         modifier = Modifier
                             .wrapContentWidth(),
@@ -219,11 +215,20 @@ fun StatisticScreen(
                 Text(
                     modifier = Modifier
                         .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
-                    text = "Perform your habits daily to increase your consistency percentage.",
+                    text = "Complete your habits every day to keep your bird cheerful!"
+                    /*"Perform your habits daily to increase your consistency percentage."*/,
                     fontSize = 12.sp,
                     color = Color.White.copy(0.88f),
                     fontFamily = PoppinsFontFamily,
                     textAlign = TextAlign.Center
+                )
+
+                // test animation
+                BirdAnimations.HappyBird(
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .size(250.dp)
+                        .offset(y = (-70).dp),
                 )
             }
 
