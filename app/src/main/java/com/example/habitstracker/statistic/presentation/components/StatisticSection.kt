@@ -1,4 +1,4 @@
-package com.example.habitstracker.profile.presentation.profile.components
+package com.example.habitstracker.statistic.presentation.components
 
 import android.graphics.Paint
 import androidx.compose.foundation.Canvas
@@ -41,14 +41,10 @@ import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
-import com.example.habitstracker.habit.domain.DateHabitEntity
-import com.example.habitstracker.history.presentation.tab_screens.DrawStatisticContainers
 import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalAdjusters
-import java.util.Locale
 
 /*@Composable
 fun StatisticSection(

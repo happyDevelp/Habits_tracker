@@ -8,6 +8,7 @@ import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.history.data.db.HistoryDAO
 import com.example.habitstracker.history.domain.AchievementEntity
+import com.example.habitstracker.statistic.data.db.StatisticDao
 
 @Database(
     entities = [HabitEntity::class, DateHabitEntity::class, AchievementEntity::class, /*StatisticEntity::class*/],
@@ -17,6 +18,7 @@ import com.example.habitstracker.history.domain.AchievementEntity
 abstract class HabitDatabase : RoomDatabase() {
     abstract val habitDao: HabitDao
     abstract val historyDao: HistoryDAO
+    abstract val statisticDao: StatisticDao
 
     /** Moved to [com.example.habitstracker.di.AppModule] using DI */
     /* companion object {

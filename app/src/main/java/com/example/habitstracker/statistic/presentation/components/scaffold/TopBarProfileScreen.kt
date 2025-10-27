@@ -1,4 +1,4 @@
-package com.example.habitstracker.profile.presentation.profile.components.scaffold
+package com.example.habitstracker.statistic.presentation.profile.components.scaffold
 
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.TopAppBar

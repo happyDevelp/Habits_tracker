@@ -1,4 +1,4 @@
-package com.example.habitstracker.profile.presentation
+package com.example.habitstracker.statistic.presentation
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Arrangement
@@ -41,6 +41,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.AppTheme
@@ -52,11 +53,11 @@ import com.example.habitstracker.core.presentation.utils.APP_VERSION
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.history.presentation.components.statistic_containers.CustomBlank
 import com.example.habitstracker.history.presentation.components.statistic_containers.getFilledBlankList
-import com.example.habitstracker.profile.presentation.profile.components.ButtonItem
-import com.example.habitstracker.profile.presentation.profile.components.CustomContainer
-import com.example.habitstracker.profile.presentation.profile.components.CustomStatisticContainer
-import com.example.habitstracker.profile.presentation.profile.components.SettingsButtonItem
-import com.example.habitstracker.profile.presentation.profile.components.scaffold.TopBarProfileScreen
+import com.example.habitstracker.statistic.presentation.profile.components.ButtonItem
+import com.example.habitstracker.statistic.presentation.profile.components.CustomContainer
+import com.example.habitstracker.statistic.presentation.components.CustomStatisticContainer
+import com.example.habitstracker.statistic.presentation.profile.components.SettingsButtonItem
+import com.example.habitstracker.statistic.presentation.profile.components.scaffold.TopBarProfileScreen
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -64,7 +65,14 @@ import java.time.temporal.TemporalAdjusters
 import java.util.Locale
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier, streakList: List<DateHabitEntity>) {
+fun StatisticScreenRoot(viewModel: StatisticViewModel) {
+    val dateHabitList by viewModel.dateHabitList.collectAsStateWithLifecycle()
+    
+    StatisticScreen(streakList = emptyList())
+}
+
+@Composable
+fun StatisticScreen(streakList: List<DateHabitEntity>) {
     Scaffold(
         topBar = { TopBarProfileScreen() },
         containerColor = screenBackgroundDark
@@ -83,10 +91,10 @@ fun ProfileScreen(modifier: Modifier = Modifier, streakList: List<DateHabitEntit
                 else habits.count { it.isCompleted }.toFloat() / habits.size.toFloat()
             }
 
-            Spacer(modifier = modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(24.dp))
 
             MyText(
-                modifier = modifier.padding(start = 16.dp),
+                modifier = Modifier.padding(start = 16.dp),
                 text = "STATISTICS",
                 textSize = 18.sp
             )
@@ -197,7 +205,7 @@ fun ProfileScreen(modifier: Modifier = Modifier, streakList: List<DateHabitEntit
             )
 
             CustomContainer(
-                modifier = modifier
+                modifier = Modifier
                     .padding(top = 20.dp, start = 12.dp, end = 12.dp)
                     .padding(paddingValues)
                     .height(180.dp),
@@ -207,7 +215,7 @@ fun ProfileScreen(modifier: Modifier = Modifier, streakList: List<DateHabitEntit
             }
 
             CustomContainer(
-                modifier = modifier
+                modifier = Modifier
                     .padding(top = 30.dp, start = 12.dp, end = 12.dp)
                     .height(180.dp),
             ) {
@@ -216,7 +224,7 @@ fun ProfileScreen(modifier: Modifier = Modifier, streakList: List<DateHabitEntit
             }
 
             MyText(
-                modifier = modifier.padding(top = 12.dp),
+                modifier = Modifier.padding(top = 12.dp),
                 text = "Version $APP_VERSION",
                 textSize = 15.sp,
                 color = Color.White.copy(0.6f)
@@ -414,5 +422,5 @@ fun getBestStreak(streakList: List<DateHabitEntity>): Int {
 @Composable
 @Preview(showSystemUi = false)
 private fun ProfileScreenPreview() {
-    AppTheme(darkTheme = true) { ProfileScreen(streakList = emptyList()) }
+    AppTheme(darkTheme = true) { StatisticScreen(streakList = emptyList()) }
 }

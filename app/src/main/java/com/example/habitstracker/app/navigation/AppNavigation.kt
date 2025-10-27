@@ -35,7 +35,8 @@ import com.example.habitstracker.habit.presentation.today_main.MainScreenViewMod
 import com.example.habitstracker.habit.presentation.today_main.TodayScreenRoot
 import com.example.habitstracker.history.presentation.HistoryScreenRoot
 import com.example.habitstracker.history.presentation.HistoryViewModel
-import com.example.habitstracker.profile.presentation.ProfileScreen
+import com.example.habitstracker.statistic.presentation.StatisticScreenRoot
+import com.example.habitstracker.statistic.presentation.StatisticViewModel
 
 @Composable
 fun AppNavigation() {
@@ -43,6 +44,8 @@ fun AppNavigation() {
 
     val mainScreenViewModel = hiltViewModel<MainScreenViewModel>()
     val historyViewModel = hiltViewModel<HistoryViewModel>()
+    val statisticViewModel = hiltViewModel<StatisticViewModel>()
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val showBottomBar = getBottomBarState(navBackStackEntry)
 
@@ -108,8 +111,8 @@ fun AppNavigation() {
                     )
                 }
 
-                composable<Route.Profile> {
-                    ProfileScreen(streakList = emptyList())
+                composable<Route.Statistic> {
+                    StatisticScreenRoot(viewModel = statisticViewModel)
                 }
             }
 
@@ -146,7 +149,7 @@ fun getBottomBarState(navBackStackEntry: NavBackStackEntry?): Boolean {
     return when (cleanRoute) {
         baseRouteName + "Today" -> true
         baseRouteName + "History" -> true
-        baseRouteName + "Profile" -> true
+        baseRouteName + "Statistic" -> true
         else -> false
     }
    /* return when (currentRoute) {

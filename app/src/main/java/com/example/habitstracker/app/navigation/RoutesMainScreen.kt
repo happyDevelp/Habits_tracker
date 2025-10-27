@@ -17,7 +17,7 @@ sealed interface Route {
     data class History(val startTab: Int = 0) : Route
 
     @Serializable
-    data object Profile : Route
+    data object Statistic : Route
 
     @Serializable
     data object AddHabit : Route
