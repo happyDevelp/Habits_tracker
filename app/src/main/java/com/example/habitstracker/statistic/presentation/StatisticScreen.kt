@@ -53,6 +53,7 @@ import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.core.presentation.utils.APP_VERSION
+import com.example.habitstracker.core.presentation.utils.BirdAnimations
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.history.presentation.components.statistic_containers.CustomBlank
 import com.example.habitstracker.history.presentation.components.statistic_containers.getFilledBlankList
@@ -126,6 +127,10 @@ fun StatisticScreen(
             )
 
             DrawStatisticContainers(dateHabitList = dateHabitList)
+
+            // test animation
+            BirdAnimations.HappyBird()
+
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -143,6 +148,10 @@ fun StatisticScreen(
                         .padding(top = 16.dp, bottom = 24.dp),
                     contentAlignment = Alignment.TopCenter
                 ) {
+
+
+
+
                     Column(
                         modifier = Modifier
                             .wrapContentWidth(),
@@ -436,7 +445,6 @@ fun getBestStreak(streakList: List<DateHabitEntity>): Int {
 
     return bestStreak
 }
-
 
 @Composable
 @Preview(showSystemUi = false)

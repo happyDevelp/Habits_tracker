@@ -115,4 +115,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
     testImplementation(libs.junit)
     androidTestImplementation(libs.hilt.android.testing)
+
+    implementation(libs.lottie.compose)
 }
