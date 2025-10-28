@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -39,7 +37,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -56,11 +53,10 @@ import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.core.presentation.utils.APP_VERSION
-import com.example.habitstracker.core.presentation.utils.BirdAnimations
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.history.presentation.components.statistic_containers.CustomBlank
 import com.example.habitstracker.history.presentation.components.statistic_containers.getFilledBlankList
-import com.example.habitstracker.statistic.presentation.components.CustomStatisticContainer
+import com.example.habitstracker.statistic.presentation.components.WeekAvgCompletion
 import com.example.habitstracker.statistic.presentation.profile.components.ButtonItem
 import com.example.habitstracker.statistic.presentation.profile.components.CustomContainer
 import com.example.habitstracker.statistic.presentation.profile.components.SettingsButtonItem
@@ -72,16 +68,6 @@ import java.time.temporal.TemporalAdjusters
 @Composable
 fun StatisticScreenRoot(viewModel: StatisticViewModel) {
     val dateHabitList by viewModel.dateHabitList.collectAsStateWithLifecycle()
-
-    val monday = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-    val week = (0..6).map { monday.plusDays(it.toLong()) }
-
-    // calculate data for StatisticContainers section
-    val completedPercentageList = week.map { date ->
-        val habits = dateHabitList.filter { LocalDate.parse(it.currentDate) == date }
-        if (habits.isEmpty()) 0f
-        else habits.count { it.isCompleted }.toFloat() / habits.size.toFloat()
-    }
 
     // calculate data for strength section
     val today = LocalDate.now()
@@ -97,19 +83,25 @@ fun StatisticScreenRoot(viewModel: StatisticViewModel) {
     val completedHabits = lastMonthHabits.count { it.isCompleted }
     val strengthPercentage = (completedHabits.toFloat() / totalHabits.toFloat() * 100f).toInt()
 
+    // data for AVG diagram
+    val weeklyMap = remember(dateHabitList) {
+        groupHabitsByWeek(dateHabitList)
+            .toSortedMap(compareByDescending { it.first }) // sort that the new weeks are the first
+    }
+
 
     StatisticScreen(
         dateHabitList = dateHabitList,
-        completedPercentageList = completedPercentageList,
-        strengthPercentage = strengthPercentage
+        strengthPercentage = strengthPercentage,
+        weeklyMap = weeklyMap
     )
 }
 
 @Composable
 fun StatisticScreen(
     dateHabitList: List<DateHabitEntity>,
-    completedPercentageList: List<Float>,
-    strengthPercentage: Int
+    strengthPercentage: Int,
+    weeklyMap: Map<Pair<LocalDate, LocalDate>, List<DateHabitEntity>>
 ) {
     Scaffold(
         topBar = { TopBarProfileScreen() },
@@ -215,27 +207,41 @@ fun StatisticScreen(
                 Text(
                     modifier = Modifier
                         .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
-                    text = "Complete your habits every day to keep your bird cheerful!"
-                    /*"Perform your habits daily to increase your consistency percentage."*/,
+                    text = /*"Complete your habits every day to keep your bird cheerful!"*/
+                        "Perform your habits daily to increase your consistency percentage.",
                     fontSize = 12.sp,
                     color = Color.White.copy(0.88f),
                     fontFamily = PoppinsFontFamily,
                     textAlign = TextAlign.Center
                 )
 
-                // test animation
-                BirdAnimations.HappyBird(
+                // test animation #TODO
+                /*BirdAnimations.HappyBird(
                     modifier = Modifier
                         .align(Alignment.CenterHorizontally)
                         .size(250.dp)
                         .offset(y = (-70).dp),
-                )
+                )*/
             }
 
-            CustomStatisticContainer(
-                height = 300.dp,
-                percentageList = completedPercentageList
-            )
+            weeklyMap.forEach { (weekRange, habits) ->
+                val (monday, sunday) = weekRange
+
+                // Form 7 values by day (Mon..Sun)
+                val percentageList = (0..6).map { dayOffset ->
+                    val currentDay = monday.plusDays(dayOffset.toLong())
+                    val dayHabits = habits.filter { LocalDate.parse(it.currentDate) == currentDay }
+                    if (dayHabits.isEmpty()) 0f
+                    else dayHabits.count { it.isCompleted }.toFloat() / dayHabits.size.toFloat()
+                }
+
+                 WeekAvgCompletion(
+                    height = 300.dp,
+                    percentageList = percentageList,
+                    monday = monday,
+                    sunday = sunday
+                )
+            }
 
             CustomContainer(
                 modifier = Modifier
@@ -266,6 +272,15 @@ fun StatisticScreen(
         }
     }
 }
+
+fun groupHabitsByWeek(dateHabitList: List<DateHabitEntity>)
+        : Map<Pair<LocalDate, LocalDate>, List<DateHabitEntity>> =
+    dateHabitList.groupBy { habit ->
+        val date = LocalDate.parse(habit.currentDate)
+        val monday = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
+        val sunday = date.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
+        monday to sunday
+    }
 
 @Composable
 private fun DrawTopButtons(buttonList: List<ButtonItem>) {
@@ -457,8 +472,13 @@ private fun ProfileScreenPreview() {
     AppTheme(darkTheme = true) {
         StatisticScreen(
             dateHabitList = emptyList(),
-            completedPercentageList = emptyList(),
-            strengthPercentage = 25
+            strengthPercentage = 25,
+            weeklyMap = mapOf(
+                Pair(
+                    Pair(LocalDate.now().minusDays(7), LocalDate.now()),
+                    emptyList()
+                )
+            )
         )
     }
 }

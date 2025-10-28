@@ -41,63 +41,18 @@ import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
-import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.temporal.ChronoUnit
-import java.time.temporal.TemporalAdjusters
-
-/*@Composable
-fun StatisticSection(
-    modifier: Modifier = Modifier,
-    streakList: List<DateHabitEntity>
-) {
-    val monday = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-    val week = (0..6).map { monday.plusDays(it.toLong()) }
-
-    val completedPercentageList = week.map { date ->
-        val habits = streakList.filter { LocalDate.parse(it.currentDate) == date }
-        if (habits.isEmpty()) 0f
-        else habits.count { it.isCompleted }.toFloat() / habits.size.toFloat()
-    }
-
-    Spacer(modifier = modifier.height(24.dp))
-
-    MyText(
-        modifier = modifier.padding(start = 16.dp),
-        text = "STATISTICS",
-        textSize = 18.sp
-    )
-
-    val formatter = DateTimeFormatter.ofPattern(
-        stringResource(id = R.string.month_and_year_pattern),
-        Locale.getDefault()
-    )
-
-    val formattedCurrentDate = LocalDate.now().format(formatter)
-    MyText(
-        modifier = modifier.padding(start = 12.5.dp, top = 6.dp),
-        text = formattedCurrentDate,
-        textSize = 14.sp,
-        color = Color.White.copy(0.7f)
-    )
-
-    // percentage list of completed habits
-    //val completedHabitsList = listOf(0.66f, 0.33f, 1f, 0f, 0f, 0f, 0f)
-
-    DrawStatisticContainers(streakList = streakList)
-
-    CustomStatisticContainer(
-        height = 300.dp,
-        percentageList = completedPercentageList
-    )
-}*/
 
 @Composable
-fun CustomStatisticContainer(
-    modifier: Modifier = Modifier, height: Dp,
-    percentageList: List<Float>
+fun WeekAvgCompletion(
+    modifier: Modifier = Modifier,
+    height: Dp,
+    percentageList: List<Float>,
+    monday: LocalDate,
+    sunday: LocalDate
 ) {
     val horizontalPadding = 12.dp
+
     Card(
         modifier = modifier
             .height(height)
@@ -113,10 +68,6 @@ fun CustomStatisticContainer(
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            val today = LocalDate.now()
-            val monday = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-            val sunday = today.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
-
             Column(horizontalAlignment = Alignment.Start) {
                 MyText(
                     text = "${monday.dayOfMonth} ${
@@ -129,7 +80,7 @@ fun CustomStatisticContainer(
                     textSize = 17.sp
                 )
                 Text(
-                    text = today.year.toString(),
+                    text = monday.year.toString(),
                     fontSize = 12.5.sp,
                     color = Color.White.copy(0.6f),
                     fontFamily = PoppinsFontFamily,
@@ -137,15 +88,9 @@ fun CustomStatisticContainer(
             }
 
             Column(horizontalAlignment = Alignment.End) {
-                val today = LocalDate.now()
-                val monday = today.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-                val todayIndex = ChronoUnit.DAYS.between(monday, today).toInt()
-                val pastDays = percentageList.take(todayIndex + 1)
 
-                val avgCompleted = if (pastDays.isNotEmpty()) {
-                    (pastDays.average() * 100).toInt().toString() + "%"
-                } else "0%"
-                MyText(text = avgCompleted, textSize = 17.sp)
+                val avg = (percentageList.average() * 100).toInt().toString() + "%"
+                MyText(text = avg, textSize = 17.sp)
                 Text(
                     text = stringResource(R.string.statistic_avg_completion_rate),
                     fontSize = 12.5.sp,
@@ -154,7 +99,6 @@ fun CustomStatisticContainer(
                 )
             }
         }
-
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -162,9 +106,7 @@ fun CustomStatisticContainer(
                 .padding(horizontal = horizontalPadding),
             contentAlignment = Alignment.BottomStart
         ) {
-            WeeklyBars(
-                percentageList = percentageList
-            )
+            WeeklyBars(percentageList = percentageList)
         }
     }
 }
