@@ -1,9 +1,17 @@
 package com.example.habitstracker.statistic.presentation
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,6 +30,8 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
@@ -29,9 +39,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
@@ -48,11 +61,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.AppTheme
+import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.core.presentation.utils.APP_VERSION
+import com.example.habitstracker.core.presentation.utils.gradientColor
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.history.presentation.components.statistic_containers.CustomBlank
 import com.example.habitstracker.history.presentation.components.statistic_containers.getFilledBlankList
@@ -223,25 +238,95 @@ fun StatisticScreen(
                         .offset(y = (-70).dp),
                 )*/
             }
+            Spacer(Modifier.height(18.dp))
 
-            weeklyMap.forEach { (weekRange, habits) ->
-                val (monday, sunday) = weekRange
+            WeeklyStatsScreen(_weeklyMap = weeklyMap)
 
-                // Form 7 values by day (Mon..Sun)
-                val percentageList = (0..6).map { dayOffset ->
-                    val currentDay = monday.plusDays(dayOffset.toLong())
-                    val dayHabits = habits.filter { LocalDate.parse(it.currentDate) == currentDay }
-                    if (dayHabits.isEmpty()) 0f
-                    else dayHabits.count { it.isCompleted }.toFloat() / dayHabits.size.toFloat()
+
+            /*
+                        var previousWeeksShown = false
+                        weeklyMap.forEach { (weekRange, habits) ->
+                            val (monday, sunday) = weekRange
+
+                            // Form 7 values by day (Mon..Sun)
+                            val percentageList = (0..6).map { dayOffset ->
+                                val currentDay = monday.plusDays(dayOffset.toLong())
+                                val dayHabits = habits.filter { LocalDate.parse(it.currentDate) == currentDay }
+                                if (dayHabits.isEmpty()) 0f
+                                else dayHabits.count { it.isCompleted }.toFloat() / dayHabits.size.toFloat()
+                            }
+
+                            val isCurrentWeek = LocalDate.now() in monday..sunday
+                            Row(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 12.dp),
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                if (!isCurrentWeek && !previousWeeksShown) {
+                                    Text(
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically)
+                                            .padding(horizontal = 12.dp)
+                                            .padding(top = 8.dp),
+                                        text = "Previous Weeks",
+                                        fontSize = 17.sp,
+                                        color = Color.White.copy(0.88f),
+                                        fontFamily = PoppinsFontFamily
+                                    )
+                                    previousWeeksShown = true
+                                } else if (isCurrentWeek) {
+                                    Text(
+                                        modifier = Modifier
+                                            .align(Alignment.CenterVertically),
+                                        text = "Current Week",
+                                        fontSize = 17.sp,
+                                        color = Color.White.copy(0.88f),
+                                        fontFamily = PoppinsFontFamily
+                                    )
+                                }
+                            }
+
+                            WeekAvgCompletion(
+                                height = 300.dp,
+                                percentageList = percentageList,
+                                monday = monday,
+                                sunday = sunday
+                            )
+                        }
+
+                        Spacer(Modifier.height(12.dp))
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(
+                                    brush = gradientColor(
+                                        HabitColor.DeepBlue.light.copy(0.85f),
+                                        HabitColor.DeepBlue.dark.copy(0.85f)
+                                    )
+                                )
+                        ) {
+                            Button(
+                                modifier = Modifier
+                                    .align(Alignment.CenterEnd)
+                                    .width(200.dp)
+                                    .height(40.dp),
+                                onClick = { *//*TODO*//* },
+                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Transparent
+                    ),
+                    shape = RoundedCornerShape(12.dp)
+
+                ) {
+                    Text(
+                        text = "Show more",
+                        *//*fontSize = 17.sp,*//*
+                        color = Color.White.copy(0.88f),
+                        fontFamily = PoppinsFontFamily
+                    )
                 }
-
-                 WeekAvgCompletion(
-                    height = 300.dp,
-                    percentageList = percentageList,
-                    monday = monday,
-                    sunday = sunday
-                )
-            }
+            }*/
 
             CustomContainer(
                 modifier = Modifier
@@ -465,6 +550,159 @@ fun getBestStreak(streakList: List<DateHabitEntity>): Int {
 
     return bestStreak
 }
+
+@Composable
+fun WeeklyStatsScreen(_weeklyMap: Map<Pair<LocalDate, LocalDate>, List<DateHabitEntity>>) {
+    var showAllPreviousWeeks by remember { mutableStateOf(false) }
+
+    // --- filter only those weeks where at least something was done ---
+    val weeklyMap = _weeklyMap.filter { (weekRange, habits) ->
+        val (monday, _) = weekRange
+        val percentageList = buildPercentages(monday, habits)
+        percentageList.average() > 0.0
+    }
+
+    val today = LocalDate.now()
+
+    // --- divide the weeks ---
+    val currentWeek = weeklyMap.filter { (range, _) ->
+        val (monday, sunday) = range
+        today in monday..sunday
+    }
+
+    val previousWeeks = weeklyMap.filterNot { (range, _) ->
+        val (monday, sunday) = range
+        today in monday..sunday
+    }
+
+    // --- sort so that the newer ones go first ---
+    val sortedPreviousWeeks =
+        previousWeeks.toSortedMap(compareByDescending { it.first })
+
+    // --- limit the number of weeks before the show ---
+    val visiblePreviousWeeks = if (showAllPreviousWeeks)
+        sortedPreviousWeeks
+    else
+        sortedPreviousWeeks.entries.take(2).associate { it.key to it.value }
+
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .animateContentSize()
+    ) {
+        // --- current week ---
+        currentWeek.forEach { (weekRange, habits) ->
+            val (monday, sunday) = weekRange
+            val percentageList = buildPercentages(monday, habits)
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+            ) {
+                Text(
+                    text = "Current Week",
+                    fontSize = 17.sp,
+                    color = Color.White.copy(0.88f),
+                    fontFamily = PoppinsFontFamily,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+                )
+            }
+            WeekAvgCompletion(
+                height = 300.dp,
+                percentageList = percentageList,
+                monday = monday,
+                sunday = sunday
+            )
+        }
+
+        // --- previous weeks ---
+        if (previousWeeks.isNotEmpty()) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+            ) {
+                Text(
+                    text = "Previous Weeks",
+                    fontSize = 17.sp,
+                    color = Color.White.copy(0.88f),
+                    fontFamily = PoppinsFontFamily,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
+                )
+            }
+
+            visiblePreviousWeeks.forEach { (weekRange, habits) ->
+                val (monday, sunday) = weekRange
+                val percentageList = buildPercentages(monday, habits)
+
+                AnimatedVisibility(
+                    visible = showAllPreviousWeeks ||
+                            visiblePreviousWeeks.entries.indexOfFirst { it.key == weekRange } < 2,
+                    enter = fadeIn() + expandVertically(),
+                    exit = fadeOut() + shrinkVertically()
+                ) {
+                    WeekAvgCompletion(
+                        height = 300.dp,
+                        percentageList = percentageList,
+                        monday = monday,
+                        sunday = sunday
+                    )
+                }
+            }
+        }
+
+        // --- Button "Show more" ---
+        if (previousWeeks.size > 2) {
+            Spacer(Modifier.height(12.dp))
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(
+                        brush = gradientColor(
+                            HabitColor.DeepBlue.light.copy(0.85f),
+                            HabitColor.DeepBlue.dark.copy(0.85f)
+                        )
+                    )
+            ) {
+                Button(
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .width(200.dp)
+                        .height(40.dp),
+                    onClick = { showAllPreviousWeeks = !showAllPreviousWeeks },
+                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(
+                        text = if (showAllPreviousWeeks) "Hide" else "Show more",
+                        color = Color.White.copy(0.88f),
+                        fontFamily = PoppinsFontFamily
+                    )
+                }
+            }
+        }
+    }
+}
+
+private fun buildPercentages(monday: LocalDate, habits: List<DateHabitEntity>): List<Float> {
+    val today = LocalDate.now()
+
+    return (0..6).mapNotNull { dayOffset ->
+        val currentDay = monday.plusDays(dayOffset.toLong())
+
+        // Якщо день ще не настав → повертаємо null
+        if (currentDay.isAfter(today)) null
+        else {
+            val dayHabits = habits.filter { LocalDate.parse(it.currentDate) == currentDay }
+            if (dayHabits.isEmpty()) 0f
+            else dayHabits.count { it.isCompleted }.toFloat() / dayHabits.size.toFloat()
+        }
+    }
+}
+
 
 @Composable
 @Preview(showSystemUi = false)

@@ -1,13 +1,12 @@
 package com.example.habitstracker.history.presentation.components.statistic_containers
 
 import android.content.Context
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.theme.HabitColor
+import com.example.habitstracker.core.presentation.utils.gradientColor
 
 data class BlankItem(
     val width: Dp,
@@ -60,9 +59,3 @@ fun getFilledBlankList(
     )
     return listOf
 }
-
-private fun gradientColor(lightColor: Color, darkColor: Color): Brush = Brush.radialGradient(
-    listOf(lightColor, darkColor),
-    center = Offset(50f, 20f),
-    radius = 600f // Distribution radius
-)

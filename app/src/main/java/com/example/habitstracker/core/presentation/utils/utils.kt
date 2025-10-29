@@ -8,6 +8,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -85,3 +87,9 @@ fun getGradientByLightColor(lightColor: Color) = when (lightColor) {
 
     else -> HabitColor.DefaultColor // fallback
 }
+
+fun gradientColor(lightColor: Color, darkColor: Color, radius: Float = 600f): Brush = Brush.radialGradient(
+    listOf(lightColor, darkColor),
+    center = Offset(50f, 20f),
+    radius = radius // Distribution radius
+)

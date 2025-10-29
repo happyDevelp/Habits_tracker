@@ -45,26 +45,23 @@ import java.time.LocalDate
 
 @Composable
 fun WeekAvgCompletion(
-    modifier: Modifier = Modifier,
     height: Dp,
     percentageList: List<Float>,
     monday: LocalDate,
     sunday: LocalDate
 ) {
-    val horizontalPadding = 12.dp
-
     Card(
-        modifier = modifier
+        modifier = Modifier
             .height(height)
             .fillMaxWidth()
-            .padding(12.dp),
+            .padding(horizontal = 12.dp, vertical = 8.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(containerColor = containerBackgroundDark),
     ) {
         Row(
-            modifier = modifier
+            modifier = Modifier
                 .padding(top = 16.dp)
-                .padding(horizontal = horizontalPadding)
+                .padding(horizontal = 12.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
@@ -89,8 +86,14 @@ fun WeekAvgCompletion(
 
             Column(horizontalAlignment = Alignment.End) {
 
-                val avg = (percentageList.average() * 100).toInt().toString() + "%"
-                MyText(text = avg, textSize = 17.sp)
+                val avg = (percentageList.average() * 100).toInt()
+                MyText(
+                    text = "$avg%", textSize = 17.sp, color = when {
+                        avg >= 80 -> Color(0xFF1FE344)
+                        avg <= 20 -> Color(0xFFE30909)
+                        else -> Color.White
+                    }
+                )
                 Text(
                     text = stringResource(R.string.statistic_avg_completion_rate),
                     fontSize = 12.5.sp,
@@ -103,7 +106,7 @@ fun WeekAvgCompletion(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(200.dp)
-                .padding(horizontal = horizontalPadding),
+                .padding(horizontal = 12.dp),
             contentAlignment = Alignment.BottomStart
         ) {
             WeeklyBars(percentageList = percentageList)
