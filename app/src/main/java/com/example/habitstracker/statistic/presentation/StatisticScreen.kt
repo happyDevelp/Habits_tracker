@@ -79,24 +79,13 @@ import com.example.habitstracker.statistic.presentation.profile.components.scaff
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.temporal.TemporalAdjusters
+import kotlin.math.roundToInt
 
 @Composable
 fun StatisticScreenRoot(viewModel: StatisticViewModel) {
     val dateHabitList by viewModel.dateHabitList.collectAsStateWithLifecycle()
 
-    // calculate data for strength section
-    val today = LocalDate.now()
-    val monthAgo = today.minusMonths(1)
-
-    val lastMonthHabits = dateHabitList.filter { dateHabit ->
-        val date = LocalDate.parse(dateHabit.currentDate)
-        date.isAfter(monthAgo.minusDays(1))
-                && date.isBefore(today.plusDays(1))
-    }
-
-    val totalHabits = lastMonthHabits.size
-    val completedHabits = lastMonthHabits.count { it.isCompleted }
-    val strengthPercentage = (completedHabits.toFloat() / totalHabits.toFloat() * 100f).toInt()
+    val consistency = rolling30DayConsistency(dateHabitList)
 
     // data for AVG diagram
     val weeklyMap = remember(dateHabitList) {
@@ -107,7 +96,7 @@ fun StatisticScreenRoot(viewModel: StatisticViewModel) {
 
     StatisticScreen(
         dateHabitList = dateHabitList,
-        strengthPercentage = strengthPercentage,
+        consistency = consistency,
         weeklyMap = weeklyMap
     )
 }
@@ -115,7 +104,7 @@ fun StatisticScreenRoot(viewModel: StatisticViewModel) {
 @Composable
 fun StatisticScreen(
     dateHabitList: List<DateHabitEntity>,
-    strengthPercentage: Int,
+    consistency: Int,
     weeklyMap: Map<Pair<LocalDate, LocalDate>, List<DateHabitEntity>>
 ) {
     Scaffold(
@@ -169,7 +158,6 @@ fun StatisticScreen(
                         )
                         Spacer(Modifier.height(32.dp))
 
-                        val progress = strengthPercentage / 100.toFloat()
                         val strokeWidth = 14.dp
                         val diameter = 220.dp
 
@@ -184,23 +172,24 @@ fun StatisticScreen(
                             )
                             val topOffset = 0f/*-size.width / 2f*/
                             val stretchingDegree = 20
-
+                            val angle = 180f
                             // grayBase
                             drawArc(
                                 color = Color.LightGray.copy(alpha = 0.3f),
-                                startAngle = 180f,
-                                sweepAngle = 180f,
+                                startAngle = angle,
+                                sweepAngle = angle,
                                 useCenter = false,
                                 topLeft = Offset(-stretchingDegree / 2f, topOffset),
                                 size = Size(size.width + stretchingDegree, size.width),
                                 style = stroke
                             )
 
+                            val consistencyArc = angle * consistency / 100
                             // The yellow filled part
                             drawArc(
                                 color = Color(0xFFFFC107),
-                                startAngle = 180f,
-                                sweepAngle = 180f * progress,
+                                startAngle = angle,
+                                sweepAngle = consistencyArc,
                                 useCenter = false,
                                 topLeft = Offset(-stretchingDegree / 2f, topOffset),
                                 size = Size(size.width + stretchingDegree, size.width),
@@ -212,7 +201,7 @@ fun StatisticScreen(
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
                             .padding(bottom = 4.dp),
-                        text = "$strengthPercentage%",
+                        text = "$consistency%",
                         fontSize = 32.sp,
                         color = Color.White,
                         fontWeight = FontWeight.Bold,
@@ -242,92 +231,6 @@ fun StatisticScreen(
 
             WeeklyStatsScreen(_weeklyMap = weeklyMap)
 
-
-            /*
-                        var previousWeeksShown = false
-                        weeklyMap.forEach { (weekRange, habits) ->
-                            val (monday, sunday) = weekRange
-
-                            // Form 7 values by day (Mon..Sun)
-                            val percentageList = (0..6).map { dayOffset ->
-                                val currentDay = monday.plusDays(dayOffset.toLong())
-                                val dayHabits = habits.filter { LocalDate.parse(it.currentDate) == currentDay }
-                                if (dayHabits.isEmpty()) 0f
-                                else dayHabits.count { it.isCompleted }.toFloat() / dayHabits.size.toFloat()
-                            }
-
-                            val isCurrentWeek = LocalDate.now() in monday..sunday
-                            Row(
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 12.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                if (!isCurrentWeek && !previousWeeksShown) {
-                                    Text(
-                                        modifier = Modifier
-                                            .align(Alignment.CenterVertically)
-                                            .padding(horizontal = 12.dp)
-                                            .padding(top = 8.dp),
-                                        text = "Previous Weeks",
-                                        fontSize = 17.sp,
-                                        color = Color.White.copy(0.88f),
-                                        fontFamily = PoppinsFontFamily
-                                    )
-                                    previousWeeksShown = true
-                                } else if (isCurrentWeek) {
-                                    Text(
-                                        modifier = Modifier
-                                            .align(Alignment.CenterVertically),
-                                        text = "Current Week",
-                                        fontSize = 17.sp,
-                                        color = Color.White.copy(0.88f),
-                                        fontFamily = PoppinsFontFamily
-                                    )
-                                }
-                            }
-
-                            WeekAvgCompletion(
-                                height = 300.dp,
-                                percentageList = percentageList,
-                                monday = monday,
-                                sunday = sunday
-                            )
-                        }
-
-                        Spacer(Modifier.height(12.dp))
-                        Box(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(12.dp))
-                                .background(
-                                    brush = gradientColor(
-                                        HabitColor.DeepBlue.light.copy(0.85f),
-                                        HabitColor.DeepBlue.dark.copy(0.85f)
-                                    )
-                                )
-                        ) {
-                            Button(
-                                modifier = Modifier
-                                    .align(Alignment.CenterEnd)
-                                    .width(200.dp)
-                                    .height(40.dp),
-                                onClick = { *//*TODO*//* },
-                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color.Transparent
-                    ),
-                    shape = RoundedCornerShape(12.dp)
-
-                ) {
-                    Text(
-                        text = "Show more",
-                        *//*fontSize = 17.sp,*//*
-                        color = Color.White.copy(0.88f),
-                        fontFamily = PoppinsFontFamily
-                    )
-                }
-            }*/
-
             CustomContainer(
                 modifier = Modifier
                     .padding(top = 20.dp, start = 12.dp, end = 12.dp)
@@ -356,6 +259,38 @@ fun StatisticScreen(
 
         }
     }
+}
+
+private fun rolling30DayConsistency(allHabits: List<DateHabitEntity>): Int {
+    if (allHabits.isEmpty()) return 0
+
+    val today = LocalDate.now()
+    val startDate = today.minusDays(29)
+
+    // group by date
+    val habitsByDate = allHabits.groupBy { LocalDate.parse(it.currentDate) }
+
+    var totalRatio = 0.0
+    var current = startDate
+
+    // go through 30 days
+    while (!current.isAfter(today)) {
+        val habitsForDay = habitsByDate[current].orEmpty()
+        val totalForDay = habitsForDay.size
+        val completedForDay = habitsForDay.count { it.isCompleted }
+
+        val ratio = if (totalForDay > 0) {
+            completedForDay.toDouble() / totalForDay
+        } else 0.0 // if there were no habits on this day, count as 0
+
+
+        totalRatio += ratio
+        current = current.plusDays(1)
+    }
+
+    // average performance for 30 days as a percentage
+    val consistency = (totalRatio / 30.0) * 100.0
+    return consistency.roundToInt()
 }
 
 fun groupHabitsByWeek(dateHabitList: List<DateHabitEntity>)
@@ -693,7 +628,7 @@ private fun buildPercentages(monday: LocalDate, habits: List<DateHabitEntity>): 
     return (0..6).mapNotNull { dayOffset ->
         val currentDay = monday.plusDays(dayOffset.toLong())
 
-        // Якщо день ще не настав → повертаємо null
+        // If the day has not yet arrived → return null
         if (currentDay.isAfter(today)) null
         else {
             val dayHabits = habits.filter { LocalDate.parse(it.currentDate) == currentDay }
@@ -710,7 +645,7 @@ private fun ProfileScreenPreview() {
     AppTheme(darkTheme = true) {
         StatisticScreen(
             dateHabitList = emptyList(),
-            strengthPercentage = 25,
+            consistency = 25,
             weeklyMap = mapOf(
                 Pair(
                     Pair(LocalDate.now().minusDays(7), LocalDate.now()),
