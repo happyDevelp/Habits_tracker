@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 
 @Composable
-fun CustomContainer(
+fun SettingsContainer(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit = { },
 ) {

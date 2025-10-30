@@ -1,27 +1,11 @@
 package com.example.habitstracker.statistic.presentation
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.animation.animateContentSize
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.shrinkVertically
-import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Feedback
@@ -30,30 +14,14 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -61,19 +29,14 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.AppTheme
-import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.MyPalette
-import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
-import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.core.presentation.utils.APP_VERSION
-import com.example.habitstracker.core.presentation.utils.gradientColor
 import com.example.habitstracker.habit.domain.DateHabitEntity
-import com.example.habitstracker.history.presentation.components.statistic_containers.CustomBlank
-import com.example.habitstracker.history.presentation.components.statistic_containers.getFilledBlankList
-import com.example.habitstracker.statistic.presentation.components.WeekAvgCompletion
+import com.example.habitstracker.statistic.presentation.components.DrawConsistencyContainer
+import com.example.habitstracker.statistic.presentation.components.DrawStatisticContainers
+import com.example.habitstracker.statistic.presentation.components.WeekDiagramContainer
 import com.example.habitstracker.statistic.presentation.profile.components.ButtonItem
-import com.example.habitstracker.statistic.presentation.profile.components.CustomContainer
 import com.example.habitstracker.statistic.presentation.profile.components.SettingsButtonItem
 import com.example.habitstracker.statistic.presentation.profile.components.scaffold.TopBarProfileScreen
 import java.time.DayOfWeek
@@ -113,7 +76,9 @@ fun StatisticScreen(
     ) { paddingValues ->
         val scrollState = rememberScrollState()
         Column(
-            modifier = Modifier.verticalScroll(scrollState),
+            modifier = Modifier
+                .verticalScroll(scrollState)
+                .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
@@ -127,128 +92,29 @@ fun StatisticScreen(
 
             DrawStatisticContainers(dateHabitList = dateHabitList)
 
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(horizontal = 12.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = containerBackgroundDark,
-                ),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .padding(top = 16.dp, bottom = 24.dp),
-                    contentAlignment = Alignment.TopCenter
-                ) {
-                    Column(
-                        modifier = Modifier
-                            .wrapContentWidth(),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "Consistency"/*"Monthly Consistency"*/,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White,
-                            fontFamily = PoppinsFontFamily
-                        )
-                        Spacer(Modifier.height(32.dp))
-
-                        val strokeWidth = 14.dp
-                        val diameter = 220.dp
-
-                        Canvas(
-                            modifier = Modifier
-                                .width(diameter)
-                                .height(diameter / 2)
-                        ) {
-                            val stroke = Stroke(
-                                width = strokeWidth.toPx(),
-                                cap = StrokeCap.Round
-                            )
-                            val topOffset = 0f/*-size.width / 2f*/
-                            val stretchingDegree = 20
-                            val angle = 180f
-                            // grayBase
-                            drawArc(
-                                color = Color.LightGray.copy(alpha = 0.3f),
-                                startAngle = angle,
-                                sweepAngle = angle,
-                                useCenter = false,
-                                topLeft = Offset(-stretchingDegree / 2f, topOffset),
-                                size = Size(size.width + stretchingDegree, size.width),
-                                style = stroke
-                            )
-
-                            val consistencyArc = angle * consistency / 100
-                            // The yellow filled part
-                            drawArc(
-                                color = Color(0xFFFFC107),
-                                startAngle = angle,
-                                sweepAngle = consistencyArc,
-                                useCenter = false,
-                                topLeft = Offset(-stretchingDegree / 2f, topOffset),
-                                size = Size(size.width + stretchingDegree, size.width),
-                                style = stroke
-                            )
-                        }
-                    }
-                    Text(
-                        modifier = Modifier
-                            .align(Alignment.BottomCenter)
-                            .padding(bottom = 4.dp),
-                        text = "$consistency%",
-                        fontSize = 32.sp,
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = PoppinsFontFamily
-                    )
-                }
-                Text(
-                    modifier = Modifier
-                        .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
-                    text = /*"Complete your habits every day to keep your bird cheerful!"*/
-                        "Perform your habits daily to increase your consistency percentage.",
-                    fontSize = 12.sp,
-                    color = Color.White.copy(0.88f),
-                    fontFamily = PoppinsFontFamily,
-                    textAlign = TextAlign.Center
-                )
-
-                // test animation #TODO
-                /*BirdAnimations.HappyBird(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .size(250.dp)
-                        .offset(y = (-70).dp),
-                )*/
-            }
+            DrawConsistencyContainer(consistency)
             Spacer(Modifier.height(18.dp))
 
-            WeeklyStatsScreen(_weeklyMap = weeklyMap)
+            WeekDiagramContainer(_weeklyMap = weeklyMap)
 
-            CustomContainer(
-                modifier = Modifier
-                    .padding(top = 20.dp, start = 12.dp, end = 12.dp)
-                    .padding(paddingValues)
-                    .height(180.dp),
-            ) {
-                val topButtonList = getTopButtonsList()
-                DrawTopButtons(topButtonList)
-            }
+            /*            SettingsContainer(
+                            modifier = Modifier
+                                .padding(top = 20.dp, start = 12.dp, end = 12.dp)
+                                .padding(paddingValues)
+                                .height(180.dp),
+                        ) {
+                            val topButtonList = getTopButtonsList()
+                            DrawTopButtons(topButtonList)
+                        }
 
-            CustomContainer(
-                modifier = Modifier
-                    .padding(top = 30.dp, start = 12.dp, end = 12.dp)
-                    .height(180.dp),
-            ) {
-                val bottomButtonList = getBottomButtonsList()
-                DrawTopButtons(bottomButtonList)
-            }
+                        SettingsContainer(
+                            modifier = Modifier
+                                .padding(top = 30.dp, start = 12.dp, end = 12.dp)
+                                .height(180.dp),
+                        ) {
+                            val bottomButtonList = getBottomButtonsList()
+                            DrawTopButtons(bottomButtonList)
+                        }*/
 
             MyText(
                 modifier = Modifier.padding(top = 12.dp),
@@ -256,7 +122,6 @@ fun StatisticScreen(
                 textSize = 15.sp,
                 color = Color.White.copy(0.6f)
             )
-
         }
     }
 }
@@ -293,7 +158,7 @@ private fun rolling30DayConsistency(allHabits: List<DateHabitEntity>): Int {
     return consistency.roundToInt()
 }
 
-fun groupHabitsByWeek(dateHabitList: List<DateHabitEntity>)
+private fun groupHabitsByWeek(dateHabitList: List<DateHabitEntity>)
         : Map<Pair<LocalDate, LocalDate>, List<DateHabitEntity>> =
     dateHabitList.groupBy { habit ->
         val date = LocalDate.parse(habit.currentDate)
@@ -354,292 +219,6 @@ fun getBottomButtonsList() =
     )
 
 @Composable
-fun DrawStatisticContainers(dateHabitList: List<DateHabitEntity>) {
-    val context = LocalContext.current
-
-    /** current streak and the best streak*/
-    val currentStreak = getCurrentStreak(dateHabitList)
-    val bestStreak = getBestStreak(dateHabitList)
-
-    /** total completed habits  */
-    val totalCompletedHabits = dateHabitList.count { it.isCompleted }
-
-
-    /** total completed habits this week */
-    val currentDate = LocalDate.now()
-    val lastMonday =
-        remember(currentDate) {
-            currentDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-        }
-    val thisWeekSelectedHabits = dateHabitList
-        .filter { it.currentDate >= lastMonday.toString() }
-        .count { it.isCompleted }
-
-
-    /** Percentage of completed habits */
-    val totalHabits = dateHabitList.size
-    val percentage = totalCompletedHabits / totalHabits.toFloat() * 100
-
-    /** Perfect days */
-    val perfectDaysCounter by remember {
-        mutableIntStateOf(
-            dateHabitList
-                .groupBy { it.currentDate }
-                .count { (_, habits) -> habits.all { it.isCompleted } }
-        )
-    }
-
-    val thisWeekPerfectedDays by remember {
-        mutableIntStateOf(
-            dateHabitList
-                .filter { it.currentDate >= lastMonday.toString() }
-                .groupBy { it.currentDate }
-                .count { (_, habits) -> habits.all { it.isCompleted } }
-        )
-    }
-
-    LazyRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 16.dp)
-            .wrapContentHeight(),
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.Top
-    ) {
-        val statsList =
-            getFilledBlankList(
-                context = context,
-                currentStreak = currentStreak,
-                bestStreak = bestStreak,
-                totalCompletedHabits = totalCompletedHabits,
-                thisWeekSelectedHabits = thisWeekSelectedHabits,
-                totalHabits = totalHabits,
-                percentage = percentage,
-                perfectDaysCounter = perfectDaysCounter,
-                thisWeekPerfectedDays = thisWeekPerfectedDays
-            )
-
-        statsList.forEach { blankItem ->
-            item {
-                CustomBlank(
-                    gradientColor = blankItem.gradientColor,
-                    topText = blankItem.topText,
-                    middleText = blankItem.middleText,
-                    bottomText = blankItem.bottomText,
-                )
-            }
-        }
-    }
-}
-
-private fun getCurrentStreak(streakList: List<DateHabitEntity>): Int {
-    if (streakList.isEmpty()) return 0
-
-    var streak = 0
-    val groupedStreakList = streakList.groupBy { it.currentDate }
-
-    groupedStreakList.forEach { mapDateAndHabits ->
-        val habitsCount = mapDateAndHabits.value.count()
-        val isCompletedCount = mapDateAndHabits.value.count { it.isCompleted }
-        if (habitsCount == isCompletedCount)
-            streak++
-        else return streak
-    }
-
-    return streak
-}
-
-fun getBestStreak(streakList: List<DateHabitEntity>): Int {
-    if (streakList.isEmpty()) return 0
-
-    // Group all habit entries by their date
-    val mapDateToHabits = streakList.groupBy { it.currentDate }
-
-    // Sort dates descending (newest first)
-    val sortedDates = mapDateToHabits.keys.sorted()
-
-    var bestStreak = 0
-    var currentStreak = 0
-    var previousDate: LocalDate? = null
-
-    for (date in sortedDates) {
-        val habitsForDate = mapDateToHabits[date].orEmpty()
-        val total = habitsForDate.size
-        val completed = habitsForDate.count { it.isCompleted }
-
-        val allCompleted = (total == completed)
-
-        if (allCompleted) {
-            if (previousDate == null || previousDate.plusDays(1) == LocalDate.parse(date)) {
-                currentStreak++
-            } else {
-                currentStreak = 1
-            }
-            bestStreak = maxOf(bestStreak, currentStreak)
-        } else {
-            currentStreak = 0
-        }
-
-        previousDate = LocalDate.parse(date)
-    }
-
-    return bestStreak
-}
-
-@Composable
-fun WeeklyStatsScreen(_weeklyMap: Map<Pair<LocalDate, LocalDate>, List<DateHabitEntity>>) {
-    var showAllPreviousWeeks by remember { mutableStateOf(false) }
-
-    // --- filter only those weeks where at least something was done ---
-    val weeklyMap = _weeklyMap.filter { (weekRange, habits) ->
-        val (monday, _) = weekRange
-        val percentageList = buildPercentages(monday, habits)
-        percentageList.average() > 0.0
-    }
-
-    val today = LocalDate.now()
-
-    // --- divide the weeks ---
-    val currentWeek = weeklyMap.filter { (range, _) ->
-        val (monday, sunday) = range
-        today in monday..sunday
-    }
-
-    val previousWeeks = weeklyMap.filterNot { (range, _) ->
-        val (monday, sunday) = range
-        today in monday..sunday
-    }
-
-    // --- sort so that the newer ones go first ---
-    val sortedPreviousWeeks =
-        previousWeeks.toSortedMap(compareByDescending { it.first })
-
-    // --- limit the number of weeks before the show ---
-    val visiblePreviousWeeks = if (showAllPreviousWeeks)
-        sortedPreviousWeeks
-    else
-        sortedPreviousWeeks.entries.take(2).associate { it.key to it.value }
-
-    Column(
-        Modifier
-            .fillMaxWidth()
-            .animateContentSize()
-    ) {
-        // --- current week ---
-        currentWeek.forEach { (weekRange, habits) ->
-            val (monday, sunday) = weekRange
-            val percentageList = buildPercentages(monday, habits)
-
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-            ) {
-                Text(
-                    text = "Current Week",
-                    fontSize = 17.sp,
-                    color = Color.White.copy(0.88f),
-                    fontFamily = PoppinsFontFamily,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
-                )
-            }
-            WeekAvgCompletion(
-                height = 300.dp,
-                percentageList = percentageList,
-                monday = monday,
-                sunday = sunday
-            )
-        }
-
-        // --- previous weeks ---
-        if (previousWeeks.isNotEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-            ) {
-                Text(
-                    text = "Previous Weeks",
-                    fontSize = 17.sp,
-                    color = Color.White.copy(0.88f),
-                    fontFamily = PoppinsFontFamily,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 4.dp)
-                )
-            }
-
-            visiblePreviousWeeks.forEach { (weekRange, habits) ->
-                val (monday, sunday) = weekRange
-                val percentageList = buildPercentages(monday, habits)
-
-                AnimatedVisibility(
-                    visible = showAllPreviousWeeks ||
-                            visiblePreviousWeeks.entries.indexOfFirst { it.key == weekRange } < 2,
-                    enter = fadeIn() + expandVertically(),
-                    exit = fadeOut() + shrinkVertically()
-                ) {
-                    WeekAvgCompletion(
-                        height = 300.dp,
-                        percentageList = percentageList,
-                        monday = monday,
-                        sunday = sunday
-                    )
-                }
-            }
-        }
-
-        // --- Button "Show more" ---
-        if (previousWeeks.size > 2) {
-            Spacer(Modifier.height(12.dp))
-            Box(
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(
-                        brush = gradientColor(
-                            HabitColor.DeepBlue.light.copy(0.85f),
-                            HabitColor.DeepBlue.dark.copy(0.85f)
-                        )
-                    )
-            ) {
-                Button(
-                    modifier = Modifier
-                        .align(Alignment.CenterEnd)
-                        .width(200.dp)
-                        .height(40.dp),
-                    onClick = { showAllPreviousWeeks = !showAllPreviousWeeks },
-                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 2.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color.Transparent),
-                    shape = RoundedCornerShape(12.dp)
-                ) {
-                    Text(
-                        text = if (showAllPreviousWeeks) "Hide" else "Show more",
-                        color = Color.White.copy(0.88f),
-                        fontFamily = PoppinsFontFamily
-                    )
-                }
-            }
-        }
-    }
-}
-
-private fun buildPercentages(monday: LocalDate, habits: List<DateHabitEntity>): List<Float> {
-    val today = LocalDate.now()
-
-    return (0..6).mapNotNull { dayOffset ->
-        val currentDay = monday.plusDays(dayOffset.toLong())
-
-        // If the day has not yet arrived → return null
-        if (currentDay.isAfter(today)) null
-        else {
-            val dayHabits = habits.filter { LocalDate.parse(it.currentDate) == currentDay }
-            if (dayHabits.isEmpty()) 0f
-            else dayHabits.count { it.isCompleted }.toFloat() / dayHabits.size.toFloat()
-        }
-    }
-}
-
-
-@Composable
 @Preview(showSystemUi = false)
 private fun ProfileScreenPreview() {
     AppTheme(darkTheme = true) {
@@ -649,7 +228,20 @@ private fun ProfileScreenPreview() {
             weeklyMap = mapOf(
                 Pair(
                     Pair(LocalDate.now().minusDays(7), LocalDate.now()),
-                    emptyList()
+                    listOf(
+                        DateHabitEntity(
+                            id = 1,
+                            habitId = 1,
+                            currentDate = "2025-10-30",
+                            isCompleted = true
+                        ),
+                        DateHabitEntity(
+                            id = 2,
+                            habitId = 2,
+                            currentDate = "2025-10-30",
+                            isCompleted = false
+                        )
+                    )
                 )
             )
         )
