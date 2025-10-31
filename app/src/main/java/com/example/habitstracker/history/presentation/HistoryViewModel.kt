@@ -3,6 +3,7 @@ package com.example.habitstracker.history.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habitstracker.habit.domain.DateHabitEntity
+import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.presentation.today_main.components.UnlockedAchievement
 import com.example.habitstracker.history.domain.AchievementEntity
 import com.example.habitstracker.history.domain.HistoryRepository
@@ -19,10 +20,22 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
-    private val historyRepository: HistoryRepository
+    private val repository: HistoryRepository
 ) : ViewModel() {
     private val _dateHabitsList = MutableStateFlow<List<DateHabitEntity>>(emptyList())
     val dateHabitList: StateFlow<List<DateHabitEntity>> = _dateHabitsList.asStateFlow()
+
+    private val _myHabits = getAllMyHabits()
+
+    val myHabits = _myHabits.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Lazily,
+        initialValue = emptyList()
+    )
+
+    private fun getAllMyHabits(): Flow<List<HabitEntity>> {
+        return repository.getAllMyHabits()
+    }
 
     // private cold stream from repository
     private val _allAchievementsFlow = getAllAchievements()
@@ -65,22 +78,22 @@ class HistoryViewModel @Inject constructor(
     }
 
     suspend fun updateUnlockedDate(unlockedAt: String, isNotified: Boolean, id: Int) {
-        historyRepository.updateUnlockedDate(unlockedAt, isNotified, id)
+        repository.updateUnlockedDate(unlockedAt, isNotified, id)
     }
 
     private fun getAllAchievements(): Flow<List<AchievementEntity>> {
-        return historyRepository.getAllAchievements()
+        return repository.getAllAchievements()
     }
 
     private fun getAllDatesForStreak(): Flow<List<DateHabitEntity>> {
-        return historyRepository.getAllDatesForStreak()
+        return repository.getAllDatesForStreak()
     }
 
     private fun firstEntryDbFilling() {
         viewModelScope.launch {
-            val achievements = historyRepository.getAchievementOnce()
+            val achievements = repository.getAchievementOnce()
             if (achievements == null) {
-                historyRepository.insertAchievements(achievementsList)
+                repository.insertAchievements(achievementsList)
             }
         }
     }

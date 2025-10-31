@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.habitstracker.habit.domain.DateHabitEntity
+import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.history.domain.AchievementEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -12,6 +13,9 @@ sealed interface HistoryDAO {
 
     @Insert
     suspend fun insertAchievements(achievementEntityList: List<AchievementEntity>)
+
+    @Query("select * from habit_table")
+    fun getALlMyHabits(): Flow<List<HabitEntity>>
 
     @Query("select * from achievement_table LIMIT 1")
     suspend fun getAchievementOnce(): AchievementEntity?

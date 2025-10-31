@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -26,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -36,36 +34,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.MyText
+import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
-import com.example.habitstracker.core.presentation.utils.shownHabitExample1
+import com.example.habitstracker.core.presentation.utils.toHex
 import com.example.habitstracker.habit.domain.DateHabitEntity
+import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.history.presentation.HistoryHabitItem
 import com.example.habitstracker.history.presentation.components.calendar.HistoryCalendarDay
 import com.example.habitstracker.history.presentation.components.calendar.TopPanel
-import com.example.habitstracker.history.presentation.components.statistic_containers.CustomBlank
-import com.example.habitstracker.history.presentation.components.statistic_containers.getFilledBlankList
 import kotlinx.coroutines.launch
-import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.temporal.TemporalAdjusters
 
 @Composable
 fun HistoryCalendarScreen(
     modifier: Modifier = Modifier,
-    streakList: List<DateHabitEntity>,
+    allDateHabits: List<DateHabitEntity>,
+    myHabits: List<HabitEntity>,
     changeSelectedItemState: (index: Int) -> Unit,
     mapDateToHabits: Map<LocalDate, List<DateHabitEntity>>
 ) {
-
-
     val coroutineScope = rememberCoroutineScope()
 
     var currentDate by remember {
@@ -82,9 +76,11 @@ fun HistoryCalendarScreen(
         /** Statistic containers **/
         Spacer(modifier = modifier.height(18.dp))
 
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+        ) {
             MyText(
                 modifier = modifier.align(Alignment.Center),
                 text = "My Calendar",
@@ -143,9 +139,11 @@ fun HistoryCalendarScreen(
 
         Spacer(Modifier.height(24.dp))
 
-        Box(modifier = Modifier
-            .fillMaxWidth()
-            .wrapContentHeight()) {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+        ) {
             MyText(
                 modifier = modifier.padding(start = 12.dp),
                 text = "My Habits",
@@ -164,14 +162,15 @@ fun HistoryCalendarScreen(
 
         //Spacer(Modifier.height(18.dp))
 
-        HistoryHabitItem(
-            shownHabit = shownHabitExample1,
-            onDeleteClick = {}
-        )
+        myHabits.forEach { habit ->
+            HistoryHabitItem(
+                shownHabit = habit,
+                onDeleteClick = {}
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+        }
     }
 }
-
-
 
 private fun buildMonthGrid(yearMonth: LocalDate): List<LocalDate?> {
     val firstOfMonth = yearMonth.withDayOfMonth(1)
@@ -360,8 +359,13 @@ fun HistoryCalendarScreenPreview() {
         {
             HistoryCalendarScreen(
                 changeSelectedItemState = {},
-                streakList = listOf(),
-                mapDateToHabits = emptyMap()
+                allDateHabits = listOf(),
+                mapDateToHabits = emptyMap(),
+                myHabits = listOf(
+                    HabitEntity(0, "Make the bed", iconName = "aaa",
+                        colorHex = HabitColor.DeepBlue.light.toHex(), "",
+                        "", false)
+                )
             )
         }
     }

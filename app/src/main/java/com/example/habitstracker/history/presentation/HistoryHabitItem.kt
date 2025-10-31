@@ -58,13 +58,14 @@ import com.example.habitstracker.core.presentation.utils.getColorFromHex
 import com.example.habitstracker.core.presentation.utils.getGradientByLightColor
 import com.example.habitstracker.core.presentation.utils.iconByName
 import com.example.habitstracker.core.presentation.utils.shownHabitExample1
+import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.domain.ShownHabit
 
 
 @Composable
 fun HistoryHabitItem(
     modifier: Modifier = Modifier,
-    shownHabit: ShownHabit,
+    shownHabit: HabitEntity,
     onDeleteClick: (id: Int) -> Unit
 ) {
     val navController = LocalNavController.current
@@ -209,9 +210,7 @@ fun HistoryHabitItem(
                                 modifier = modifier.padding(0.dp),
                                 text = shownHabit.name,
                                 fontSize = 20.sp,
-                                color = if (!shownHabit.isSelected) Color.White else Color.White.copy(
-                                    selectedAlpha
-                                ),
+                                color =  Color.White,
                                 fontWeight = FontWeight.Bold,
                                 style = MaterialTheme.typography.titleSmall,
                             )
@@ -247,7 +246,7 @@ private fun HabitItemPreview() {
     ) {
         AppTheme(darkTheme = true) {
             HistoryHabitItem(
-                shownHabit = shownHabitExample1,
+                shownHabit = HabitEntity(),
                 modifier = Modifier,
                 onDeleteClick = {}
             )
