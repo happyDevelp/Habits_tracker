@@ -38,4 +38,10 @@ class DefaultHistoryRepository(private val dao: HistoryDAO) : HistoryRepository 
     override fun getAllDatesForStreak(): Flow<List<DateHabitEntity>> {
         return dao.getAllDatesForStreak()
     }
+
+    override suspend fun deleteHabit(habit: HabitEntity) {
+        return withContext(Dispatchers.IO) {
+            dao.deleteHabit(habit)
+        }
+    }
 }

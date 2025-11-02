@@ -44,18 +44,18 @@ fun getFilledBlankList(
         ),
         BlankItem(
             width = 130.dp,
-            gradientColor = gradientColor(HabitColor.LeafGreen.light, HabitColor.LeafGreen.dark),
-            topText = context.getString(R.string.perfect_days),
-            middleText = "$perfectDaysCounter",
-            bottomText = "This week: $thisWeekPerfectedDays",
-        ),
-        BlankItem(
-            width = 130.dp,
             gradientColor = gradientColor(HabitColor.Orange.light, HabitColor.Orange.dark),
             topText = context.getString(R.string.percentage_of_completed_habits),
             middleText = "${percentage.toInt()}%",
             bottomText = "Habits: $totalCompletedHabits/$totalHabits",
         ),
+        BlankItem(
+            width = 130.dp,
+            gradientColor = gradientColor(HabitColor.LeafGreen.light, HabitColor.LeafGreen.dark),
+            topText = context.getString(R.string.perfect_days),
+            middleText = "$perfectDaysCounter",
+            bottomText = "This week: $thisWeekPerfectedDays",
+        )
     )
     return listOf
 }

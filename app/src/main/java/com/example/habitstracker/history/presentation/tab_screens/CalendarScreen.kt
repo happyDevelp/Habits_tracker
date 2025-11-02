@@ -58,7 +58,8 @@ fun HistoryCalendarScreen(
     allDateHabits: List<DateHabitEntity>,
     myHabits: List<HabitEntity>,
     changeSelectedItemState: (index: Int) -> Unit,
-    mapDateToHabits: Map<LocalDate, List<DateHabitEntity>>
+    mapDateToHabits: Map<LocalDate, List<DateHabitEntity>>,
+    onDeleteClick:(habit: HabitEntity)-> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
 
@@ -154,20 +155,22 @@ fun HistoryCalendarScreen(
                 modifier = modifier
                     .padding(top = 15.dp, end = 28.dp, bottom = 4.dp)
                     .align(Alignment.CenterEnd),
-                text = "Strength",
+                text = "Consistency",
                 textSize = 13.sp,
                 color = Color.White.copy(0.7f)
             )
         }
 
-        //Spacer(Modifier.height(18.dp))
+        Spacer(Modifier.height(4.dp))
 
         myHabits.forEach { habit ->
             HistoryHabitItem(
-                shownHabit = habit,
-                onDeleteClick = {}
+                allDateHabits = allDateHabits,
+                modifier = modifier,
+                habit = habit,
+                onDeleteClick = onDeleteClick
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(18.dp))
         }
     }
 }
@@ -362,10 +365,14 @@ fun HistoryCalendarScreenPreview() {
                 allDateHabits = listOf(),
                 mapDateToHabits = emptyMap(),
                 myHabits = listOf(
-                    HabitEntity(0, "Make the bed", iconName = "aaa",
-                        colorHex = HabitColor.DeepBlue.light.toHex(), "",
-                        "", false)
-                )
+                    HabitEntity(
+                        iconName = "SentimentSatisfied",
+                        colorHex = HabitColor.DeepBlue.light.toHex(),
+                        name = "Wake up"
+                    ),
+                    HabitEntity(iconName = "SentimentSatisfied", name = "Make the bad")
+                ),
+                onDeleteClick = {}
             )
         }
     }

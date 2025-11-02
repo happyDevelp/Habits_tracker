@@ -126,7 +126,7 @@ fun StatisticScreen(
     }
 }
 
-private fun rolling30DayConsistency(allHabits: List<DateHabitEntity>): Int {
+fun rolling30DayConsistency(allHabits: List<DateHabitEntity>): Int {
     if (allHabits.isEmpty()) return 0
 
     val today = LocalDate.now()

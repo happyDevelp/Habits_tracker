@@ -1,6 +1,7 @@
 package com.example.habitstracker.history.data.db
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.example.habitstracker.habit.domain.DateHabitEntity
@@ -29,4 +30,7 @@ sealed interface HistoryDAO {
 
     @Query("select * from date_table order by currentDate desc")
     fun getAllDatesForStreak(): Flow<List<DateHabitEntity>>
+
+    @Delete
+    suspend fun deleteHabit(habit: HabitEntity)
 }

@@ -17,4 +17,6 @@ interface HistoryRepository {
     suspend fun updateUnlockedDate(unlockedAt: String, isNotified: Boolean, id: Int)
 
     fun getAllDatesForStreak(): Flow<List<DateHabitEntity>>
+
+    suspend fun deleteHabit(habit: HabitEntity)
 }

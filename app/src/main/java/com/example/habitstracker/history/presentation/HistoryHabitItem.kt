@@ -57,26 +57,32 @@ import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.core.presentation.utils.getColorFromHex
 import com.example.habitstracker.core.presentation.utils.getGradientByLightColor
 import com.example.habitstracker.core.presentation.utils.iconByName
-import com.example.habitstracker.core.presentation.utils.shownHabitExample1
+import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
-import com.example.habitstracker.habit.domain.ShownHabit
+import com.example.habitstracker.statistic.presentation.rolling30DayConsistency
 
 
 @Composable
 fun HistoryHabitItem(
     modifier: Modifier = Modifier,
-    shownHabit: HabitEntity,
-    onDeleteClick: (id: Int) -> Unit
+    habit: HabitEntity,
+    allDateHabits: List<DateHabitEntity>,
+    onDeleteClick: (habit: HabitEntity) -> Unit
 ) {
     val navController = LocalNavController.current
     val itemHeight: Dp = 85.dp
     val selectedAlpha = 0.75f
 
-    val color = getGradientByLightColor(shownHabit.colorHex.getColorFromHex())
+    val color = getGradientByLightColor(habit.colorHex.getColorFromHex())
 
     var isMenuExpanded by remember { mutableStateOf(false) }
 
     val targetGradient = color
+
+
+    val specificHabitConsistency = rolling30DayConsistency(
+        allDateHabits.filter { it.habitId == habit.id }
+    )
 
 
     // Animation of both colors separately
@@ -128,10 +134,10 @@ fun HistoryHabitItem(
                                 isMenuExpanded = false
                                 navController.navigate(
                                     Route.CreateHabit(
-                                        id = shownHabit.id,
-                                        name = shownHabit.name,
-                                        icon = shownHabit.iconName,
-                                        iconColor = shownHabit.colorHex,
+                                        id = habit.id,
+                                        name = habit.name,
+                                        icon = habit.iconName,
+                                        iconColor = habit.colorHex,
                                         isEditMode = true
                                     )
                                 )
@@ -143,7 +149,7 @@ fun HistoryHabitItem(
                             trailingIcon = { Icons.Default.Delete },
                             onClick = {
                                 isMenuExpanded = false
-                                onDeleteClick.invoke(shownHabit.id)
+                                onDeleteClick.invoke(habit)
                             }
                         )
                     }
@@ -195,7 +201,7 @@ fun HistoryHabitItem(
                             Icon(
                                 modifier = Modifier.size(30.dp),
                                 tint = Color.White.copy(alpha = 0.90f),
-                                imageVector = iconByName(shownHabit.iconName),
+                                imageVector = iconByName(habit.iconName),
                                 contentDescription = stringResource(R.string.icon_of_habit_description),
                             )
                         }
@@ -208,13 +214,14 @@ fun HistoryHabitItem(
                         ) {
                             Text(
                                 modifier = modifier.padding(0.dp),
-                                text = shownHabit.name,
+                                text = habit.name,
                                 fontSize = 20.sp,
-                                color =  Color.White,
+                                color = Color.White,
                                 fontWeight = FontWeight.Bold,
                                 style = MaterialTheme.typography.titleSmall,
                             )
                         }
+
 
                         Row(
                             modifier = modifier
@@ -225,7 +232,7 @@ fun HistoryHabitItem(
                         ) {
                             Text(
                                 modifier = modifier.padding(end = 4.dp),
-                                text = "3%",
+                                text = "$specificHabitConsistency%",
                                 fontSize = 22.sp,
                                 color = Color.White,
                                 fontWeight = FontWeight.Bold,
@@ -246,9 +253,10 @@ private fun HabitItemPreview() {
     ) {
         AppTheme(darkTheme = true) {
             HistoryHabitItem(
-                shownHabit = HabitEntity(),
+                habit = HabitEntity(),
                 modifier = Modifier,
-                onDeleteClick = {}
+                onDeleteClick = {},
+                allDateHabits = listOf()
             )
         }
     }

@@ -37,9 +37,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.theme.AppTheme
+import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
-import com.example.habitstracker.core.presentation.utils.shownHabitExample1
+import com.example.habitstracker.core.presentation.utils.toHex
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.history.domain.AchievementEntity
@@ -56,16 +57,25 @@ fun HistoryScreenRoot(
     startTab: Int,
     changeSelectedItemState: (index: Int) -> Unit
 ) {
+    val coroutineScope = rememberCoroutineScope()
+
     val allDateHabits by historyViewModel.dateHabitList.collectAsStateWithLifecycle()
     val allAchievements by historyViewModel.allAchievements.collectAsStateWithLifecycle()
     val myHabits by historyViewModel.myHabits.collectAsStateWithLifecycle()
+
+    val onDeleteClick: (habit: HabitEntity) -> Unit = { habit ->
+        coroutineScope.launch {
+            historyViewModel.deleteHabit(habit)
+        }
+    }
 
     HistoryScreen(
         changeSelectedItemState = changeSelectedItemState,
         allDateHabits = allDateHabits,
         myHabits = myHabits,
         allAchievements = allAchievements,
-        startTab = startTab
+        startTab = startTab,
+        onDeleteClick = onDeleteClick
     )
 }
 
@@ -77,6 +87,7 @@ fun HistoryScreen(
     startTab: Int,
     myHabits: List<HabitEntity>,
     changeSelectedItemState: (index: Int) -> Unit,
+    onDeleteClick: (habit: HabitEntity) -> Unit
 ) {
     Scaffold(
         topBar = { TopBarHistoryScreen() },
@@ -148,7 +159,8 @@ fun HistoryScreen(
                             changeSelectedItemState = changeSelectedItemState,
                             allDateHabits = allDateHabits,
                             mapDateToHabits = mapHabitsToDate,
-                            myHabits = myHabits
+                            myHabits = myHabits,
+                            onDeleteClick = onDeleteClick
                         )
 
                         1 -> AllHabitScreen()
@@ -203,7 +215,15 @@ private fun HistoryScreenPreview() {
                 allAchievements = emptyList(),
                 allDateHabits = emptyList(),
                 startTab = 0,
-                myHabits = listOf()
+                myHabits = listOf(
+                    HabitEntity(
+                        iconName = "SentimentSatisfied",
+                        colorHex = HabitColor.DeepBlue.light.toHex(),
+                        name = "Wake up"
+                    ),
+                    HabitEntity(iconName = "SentimentSatisfied", name = "Make the bad")
+                ),
+                onDeleteClick = {}
             )
         }
     }
