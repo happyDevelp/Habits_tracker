@@ -7,13 +7,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Feedback
-import androidx.compose.material.icons.filled.Language
-import androidx.compose.material.icons.filled.Notifications
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Share
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -21,16 +14,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.AppTheme
-import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.core.presentation.utils.APP_VERSION
 import com.example.habitstracker.habit.domain.DateHabitEntity
@@ -95,36 +84,6 @@ fun StatisticScreen(
             Spacer(Modifier.height(18.dp))
 
             WeekDiagramContainer(_weeklyMap = weeklyMap)
-
-            /*            SettingsContainer(
-                            modifier = Modifier
-                                .padding(top = 20.dp, start = 12.dp, end = 12.dp)
-                                .padding(paddingValues)
-                                .height(180.dp),
-                        ) {
-                            val topButtonList = getTopButtonsList()
-                            DrawTopButtons(topButtonList)
-                        }
-
-                        SettingsContainer(
-                            modifier = Modifier
-                                .padding(top = 30.dp, start = 12.dp, end = 12.dp)
-                                .height(180.dp),
-                        ) {
-                            val bottomButtonList = getBottomButtonsList()
-
-
-
-                        }*/
-
-            /*buttonList.forEach { button ->
-                SettingsButtonItem(
-                    icon = button.icon,
-                    iconBackground = button.iconBackground,
-                    text = button.text
-                )
-            }*/
-
             MyText(
                 modifier = Modifier.padding(top = 12.dp),
                 text = "Version $APP_VERSION",
@@ -175,52 +134,6 @@ private fun groupHabitsByWeek(dateHabitList: List<DateHabitEntity>)
         val sunday = date.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY))
         monday to sunday
     }
-
-@Composable
-fun getTopButtonsList() =
-    listOf(
-        ButtonItem(
-            icon = Icons.Default.Notifications,
-            iconBackground = MyPalette.blueColor,
-            text = stringResource(id = R.string.notification)
-        ),
-        ButtonItem(
-            icon = Icons.Default.Settings,
-            iconBackground = MyPalette.orangeColor,
-            text = stringResource(R.string.general_settings)
-        ),
-        ButtonItem(
-            icon = Icons.Default.Language,
-            iconBackground = MyPalette.redColor,
-            text = stringResource(R.string.language_options)
-        ),
-    )
-
-@Composable
-fun getBottomButtonsList() =
-    listOf(
-        ButtonItem(
-            icon = Icons.Default.Share,
-            iconBackground = MyPalette.blueColor,
-            text = stringResource(R.string.share_with_friends)
-        ),
-        ButtonItem(
-            icon = Icons.Default.Star,
-            iconBackground = Color(0xFF14AD8E),
-            text = stringResource(R.string.rate_us)
-        ),
-        ButtonItem(
-            icon = Icons.Default.Feedback,
-            iconBackground = Color(0xFF4788D6),
-            text = stringResource(R.string.feedback)
-        ),
-    )
-
-data class ButtonItem(
-    val icon: ImageVector,
-    val iconBackground: Color,
-    val text: String,
-)
 
 @Composable
 @Preview(showSystemUi = false)

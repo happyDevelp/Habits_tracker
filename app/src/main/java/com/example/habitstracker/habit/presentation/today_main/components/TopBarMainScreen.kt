@@ -19,9 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
 import com.example.habitstracker.R
-import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import java.time.LocalDate

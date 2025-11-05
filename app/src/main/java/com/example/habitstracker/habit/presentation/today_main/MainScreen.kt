@@ -3,6 +3,7 @@ package com.example.habitstracker.habit.presentation.today_main
 import android.content.Context
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,15 +19,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.Language
-import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material.icons.outlined.StarRate
-import androidx.compose.material.icons.outlined.Support
-import androidx.compose.material.icons.outlined.SupportAgent
-import androidx.compose.material.icons.outlined.Tune
+import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -34,7 +28,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -50,9 +43,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -67,24 +58,24 @@ import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.UiText
 import com.example.habitstracker.core.presentation.theme.AppTheme
-import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.QuickSandFontFamily
-import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
+import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.core.presentation.utils.shownHabitExample1
 import com.example.habitstracker.core.presentation.utils.shownHabitExample2
 import com.example.habitstracker.core.presentation.utils.shownHabitExample3
 import com.example.habitstracker.habit.domain.ShownHabit
+import com.example.habitstracker.habit.presentation.today_main.components.AchievementMetadata
 import com.example.habitstracker.habit.presentation.today_main.components.HabitItem
 import com.example.habitstracker.habit.presentation.today_main.components.NotificationDialog
 import com.example.habitstracker.habit.presentation.today_main.components.TopBarMainScreen
 import com.example.habitstracker.habit.presentation.today_main.components.UnlockedAchievement
 import com.example.habitstracker.habit.presentation.today_main.components.calendar.CalendarRowList
-import com.example.habitstracker.history.presentation.HistoryViewModel
-import com.example.habitstracker.habit.presentation.today_main.components.AchievementMetadata
 import com.example.habitstracker.habit.presentation.today_main.utility.getBestStreak
+import com.example.habitstracker.history.presentation.HistoryViewModel
+import com.example.habitstracker.statistic.presentation.components.SettingsButtons
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -238,12 +229,12 @@ fun TodayScreen(
                     ModalBottomSheet(
                         onDismissRequest = { openBottomSheet = false },
                         sheetState = sheetState,
-
-                        ) {
+                        dragHandle = null
+                    ) {
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .padding(16.dp)
+                                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 12.dp)
                         ) {
                             Row(
                                 modifier = Modifier.fillMaxWidth(0.615f),
@@ -263,43 +254,14 @@ fun TodayScreen(
                                     fontFamily = PoppinsFontFamily
                                 )
                             }
+                            Spacer(Modifier.height(8.dp))
 
-                            val buttonsList = listOf(
-                                SettingsButtonItem(
-                                    text = "Account",
-                                    icon = Icons.Outlined.AccountCircle,
-                                    iconBackground = HabitColor.LeafGreen.light,
-                                ),
-                                SettingsButtonItem(
-                                    text = "Notifications",
-                                    icon = Icons.Outlined.Notifications,
-                                    iconBackground = HabitColor.DeepBlue.light,
-                                ),
-                                SettingsButtonItem(
-                                    text = "Language",
-                                    icon = Icons.Outlined.Language,
-                                    iconBackground = HabitColor.Orange.light,
-                                ),
-                                SettingsButtonItem(
-                                    text = "Preferences",
-                                    icon = Icons.Outlined.Tune,
-                                    iconBackground = HabitColor.Rose.light,
-                                ),
-                                SettingsButtonItem(
-                                    text = "Support",
-                                    icon = Icons.Outlined.SupportAgent,
-                                    iconBackground = HabitColor.Teal.light,
-                                ),
-                                SettingsButtonItem(
-                                    text = "Rate Us",
-                                    icon = Icons.Outlined.StarRate,
-                                    iconBackground = HabitColor.Golden.light,
-                                ),
-                            )
-
+                            val buttonsList = SettingsButtons.list
                             buttonsList.forEach { button ->
                                 Box(
-                                    modifier = Modifier.fillMaxWidth(),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .clickable { },
                                     contentAlignment = Alignment.Center
                                 ) {
                                     Row(
@@ -307,23 +269,22 @@ fun TodayScreen(
                                             .fillMaxWidth(1f)
                                             .clip(RoundedCornerShape(16.dp))
                                             .background(color = containerBackgroundDark)
-                                            .padding(horizontal = 12.dp, vertical = 7.dp),
-                                        verticalAlignment = Alignment.CenterVertically
+                                            .padding(horizontal = 10.dp, vertical = 10.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
                                     ) {
                                         Box(
                                             modifier = Modifier
-                                                .size(38.dp)
+                                                .size(35.dp)
                                                 .clip(RoundedCornerShape(12.dp))
                                                 .background(color = button.iconBackground),
                                             contentAlignment = Alignment.Center,
-                                            ) {
+                                        ) {
                                             Icon(
                                                 imageVector = button.icon,
                                                 contentDescription = button.text,
                                                 tint = Color.White
                                             )
                                         }
-
                                         Text(
                                             modifier = Modifier.padding(start = 20.dp),
                                             text = button.text,
@@ -332,6 +293,14 @@ fun TodayScreen(
                                             fontFamily = PoppinsFontFamily
                                         )
                                     }
+                                    Icon(
+                                        modifier = Modifier
+                                            .align(Alignment.CenterEnd)
+                                            .padding(end = 14.dp)
+                                            .size(30.dp),
+                                        imageVector = Icons.Outlined.ChevronRight,
+                                        contentDescription = null
+                                    )
                                 }
                                 Spacer(modifier = Modifier.height(8.dp))
                             }
@@ -532,9 +501,3 @@ private fun Preview() {
         }
     }
 }
-
-private data class SettingsButtonItem(
-    val text: String,
-    val icon: ImageVector,
-    val iconBackground: Color,
-)
