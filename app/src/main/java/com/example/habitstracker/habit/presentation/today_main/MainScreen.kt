@@ -70,9 +70,11 @@ import com.example.habitstracker.habit.domain.ShownHabit
 import com.example.habitstracker.habit.presentation.today_main.components.AchievementMetadata
 import com.example.habitstracker.habit.presentation.today_main.components.HabitItem
 import com.example.habitstracker.habit.presentation.today_main.components.NotificationDialog
+import com.example.habitstracker.habit.presentation.today_main.components.SettingsBottomSheet
 import com.example.habitstracker.habit.presentation.today_main.components.TopBarMainScreen
 import com.example.habitstracker.habit.presentation.today_main.components.UnlockedAchievement
 import com.example.habitstracker.habit.presentation.today_main.components.calendar.CalendarRowList
+import com.example.habitstracker.habit.presentation.today_main.utility.AchievementSection
 import com.example.habitstracker.habit.presentation.today_main.utility.getBestStreak
 import com.example.habitstracker.history.presentation.HistoryViewModel
 import com.example.habitstracker.statistic.presentation.components.SettingsButtons
@@ -86,11 +88,10 @@ fun TodayScreenRoot(
     historyDate: String?,
     changeSelectedItemState: (index: Int) -> Unit
 ) {
-    var isHistoryHandled = false
+    val isHistoryHandled = false
     LaunchedEffect(historyDate) {
         if (historyDate != null && !isHistoryHandled) {
             viewModel.updateSelectedDate(LocalDate.parse(historyDate))
-            isHistoryHandled = true
         }
     }
 
@@ -210,7 +211,7 @@ fun TodayScreen(
     val navController = LocalNavController.current
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var openBottomSheet by remember { mutableStateOf(true) }
+    var openBottomSheet by remember { mutableStateOf(false) }
 
     Box(modifier = modifier.fillMaxSize()) {
         Scaffold(topBar = { TopBarMainScreen(modifier) { openBottomSheet = true } }
@@ -226,97 +227,10 @@ fun TodayScreen(
             )
             {
                 if (openBottomSheet)
-                    ModalBottomSheet(
-                        onDismissRequest = { openBottomSheet = false },
+                    SettingsBottomSheet(
                         sheetState = sheetState,
-                        dragHandle = null
-                    ) {
-                        Column(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 16.dp, end = 16.dp, bottom = 16.dp, top = 12.dp)
-                        ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(0.615f),
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                IconButton(onClick = { openBottomSheet = false }) {
-                                    Icon(
-                                        imageVector = Icons.Default.Close,
-                                        contentDescription = "Close Settings"
-                                    )
-                                }
-                                Text(
-                                    text = stringResource(R.string.settings),
-                                    fontSize = 18.sp,
-                                    color = Color.White,
-                                    fontFamily = PoppinsFontFamily
-                                )
-                            }
-                            Spacer(Modifier.height(8.dp))
-
-                            val buttonsList = SettingsButtons.list
-                            buttonsList.forEach { button ->
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .clickable { },
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth(1f)
-                                            .clip(RoundedCornerShape(16.dp))
-                                            .background(color = containerBackgroundDark)
-                                            .padding(horizontal = 10.dp, vertical = 10.dp),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                    ) {
-                                        Box(
-                                            modifier = Modifier
-                                                .size(35.dp)
-                                                .clip(RoundedCornerShape(12.dp))
-                                                .background(color = button.iconBackground),
-                                            contentAlignment = Alignment.Center,
-                                        ) {
-                                            Icon(
-                                                imageVector = button.icon,
-                                                contentDescription = button.text,
-                                                tint = Color.White
-                                            )
-                                        }
-                                        Text(
-                                            modifier = Modifier.padding(start = 20.dp),
-                                            text = button.text,
-                                            fontSize = 17.sp,
-                                            color = Color.White,
-                                            fontFamily = PoppinsFontFamily
-                                        )
-                                    }
-                                    Icon(
-                                        modifier = Modifier
-                                            .align(Alignment.CenterEnd)
-                                            .padding(end = 14.dp)
-                                            .size(30.dp),
-                                        imageVector = Icons.Outlined.ChevronRight,
-                                        contentDescription = null
-                                    )
-                                }
-                                Spacer(modifier = Modifier.height(8.dp))
-                            }
-                        }
-                    }
-
-
-
-
-
-
-
-
-
-
-
+                        closeSheet = { openBottomSheet = false }
+                    )
 
                 Box(
                     modifier = modifier
@@ -456,20 +370,6 @@ fun TodayScreen(
     }
 }
 
-enum class AchievementSection() {
-    HABITS_FINISHED, BEST_STREAK, PERFECT_DAYS;
-
-    companion object {
-        fun fromString(section: String, context: Context) = when (section) {
-            UiText.StringResources(R.string.achiev_habits_finished)
-                .asString(context) -> HABITS_FINISHED
-
-            UiText.StringResources(R.string.achiev_best_streak).asString(context) -> BEST_STREAK
-            UiText.StringResources(R.string.achiev_perfect_days).asString(context) -> PERFECT_DAYS
-            else -> throw IllegalArgumentException("Invalid section: $section")
-        }
-    }
-}
 
 @Composable
 @Preview(showSystemUi = false)
@@ -493,10 +393,6 @@ private fun Preview() {
                 onDismiss = {},
                 changeSelectedItemState = { },
                 unlockedAchievement = null,
-                /*UnlockedAchievement(
-                                   R.drawable.streak_achiev, 100, "Finish 100 Habits",
-                                   textPadding = 0.dp
-                               )*/
             )
         }
     }

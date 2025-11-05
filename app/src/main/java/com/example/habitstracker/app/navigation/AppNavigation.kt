@@ -27,6 +27,12 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.bottombar.NavigationBottomBar
+import com.example.habitstracker.core.presentation.settingsScreens.AccountScreen
+import com.example.habitstracker.core.presentation.settingsScreens.LanguageScreen
+import com.example.habitstracker.core.presentation.settingsScreens.NotificationScreen
+import com.example.habitstracker.core.presentation.settingsScreens.PreferencesScreen
+import com.example.habitstracker.core.presentation.settingsScreens.RateUsScreen
+import com.example.habitstracker.core.presentation.settingsScreens.SupportScreen
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.habit.presentation.add_habit.AddHabitScreen
 import com.example.habitstracker.habit.presentation.create_own_habit.CreateOwnHabitRoot
@@ -135,6 +141,31 @@ fun AppNavigation() {
                     isEditMode = args.isEditMode,
                     id = args.id
                 )
+            }
+
+            /* SETTINGS */
+            composable<Route.Settings.Account> {
+                AccountScreen()
+            }
+
+            composable<Route.Settings.Notifications> {
+                NotificationScreen()
+            }
+
+            composable<Route.Settings.Language> {
+                LanguageScreen()
+            }
+
+            composable<Route.Settings.Preferences> {
+                PreferencesScreen()
+            }
+
+            composable<Route.Settings.Support> {
+                SupportScreen()
+            }
+
+            composable<Route.Settings.RateUs> {
+                RateUsScreen()
             }
         }
     }

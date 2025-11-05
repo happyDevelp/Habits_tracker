@@ -19,6 +19,27 @@ sealed interface Route {
     @Serializable
     data object Statistic : Route
 
+    object Settings {
+        @Serializable
+        data object Account : Route
+
+        @Serializable
+        data object Notifications : Route
+
+        @Serializable
+        data object Language : Route
+
+        @Serializable
+        data object Preferences : Route
+
+        @Serializable
+        data object Support : Route
+
+        @Serializable
+        data object RateUs : Route
+    }
+
+
     @Serializable
     data object AddHabit : Route
 
@@ -33,7 +54,4 @@ sealed interface Route {
         val iconColor: String,
         val isEditMode: Boolean = false
     ) : Route
-
-    @Serializable
-    data class EditRepeatPicker(val id: Int) : Route
 }
