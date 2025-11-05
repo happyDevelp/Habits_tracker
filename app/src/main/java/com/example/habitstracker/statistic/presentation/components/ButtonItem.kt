@@ -62,8 +62,3 @@ fun SettingsButtonItem(
     HorizontalDivider(thickness = 0.2.dp, color = Color.White)
 }
 
-data class ButtonItem(
-    val icon: ImageVector,
-    val iconBackground: Color,
-    val text: String,
-)

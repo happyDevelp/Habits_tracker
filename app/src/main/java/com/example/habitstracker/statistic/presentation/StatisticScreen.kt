@@ -21,6 +21,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,8 +37,6 @@ import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.statistic.presentation.components.DrawConsistencyContainer
 import com.example.habitstracker.statistic.presentation.components.DrawStatisticContainers
 import com.example.habitstracker.statistic.presentation.components.WeekDiagramContainer
-import com.example.habitstracker.statistic.presentation.profile.components.ButtonItem
-import com.example.habitstracker.statistic.presentation.profile.components.SettingsButtonItem
 import com.example.habitstracker.statistic.presentation.profile.components.scaffold.TopBarProfileScreen
 import java.time.DayOfWeek
 import java.time.LocalDate
@@ -113,8 +112,18 @@ fun StatisticScreen(
                                 .height(180.dp),
                         ) {
                             val bottomButtonList = getBottomButtonsList()
-                            DrawTopButtons(bottomButtonList)
+
+
+
                         }*/
+
+            /*buttonList.forEach { button ->
+                SettingsButtonItem(
+                    icon = button.icon,
+                    iconBackground = button.iconBackground,
+                    text = button.text
+                )
+            }*/
 
             MyText(
                 modifier = Modifier.padding(top = 12.dp),
@@ -168,17 +177,6 @@ private fun groupHabitsByWeek(dateHabitList: List<DateHabitEntity>)
     }
 
 @Composable
-private fun DrawTopButtons(buttonList: List<ButtonItem>) {
-    buttonList.forEach { button ->
-        SettingsButtonItem(
-            icon = button.icon,
-            iconBackground = button.iconBackground,
-            text = button.text
-        )
-    }
-}
-
-@Composable
 fun getTopButtonsList() =
     listOf(
         ButtonItem(
@@ -217,6 +215,12 @@ fun getBottomButtonsList() =
             text = stringResource(R.string.feedback)
         ),
     )
+
+data class ButtonItem(
+    val icon: ImageVector,
+    val iconBackground: Color,
+    val text: String,
+)
 
 @Composable
 @Preview(showSystemUi = false)

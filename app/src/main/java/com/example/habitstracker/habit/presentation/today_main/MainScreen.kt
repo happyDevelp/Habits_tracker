@@ -2,6 +2,7 @@ package com.example.habitstracker.habit.presentation.today_main
 
 import android.content.Context
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,23 +13,46 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.AccountCircle
+import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.StarRate
+import androidx.compose.material.icons.outlined.Support
+import androidx.compose.material.icons.outlined.SupportAgent
+import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
@@ -43,6 +67,7 @@ import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.UiText
 import com.example.habitstracker.core.presentation.theme.AppTheme
+import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.QuickSandFontFamily
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
@@ -177,6 +202,7 @@ fun TodayScreenRoot(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodayScreen(
     modifier: Modifier = Modifier,
@@ -192,8 +218,12 @@ fun TodayScreen(
 ) {
     val navController = LocalNavController.current
 
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var openBottomSheet by remember { mutableStateOf(true) }
+
     Box(modifier = modifier.fillMaxSize()) {
-        Scaffold(topBar = { TopBarMainScreen(modifier, navController) }) { paddingValues ->
+        Scaffold(topBar = { TopBarMainScreen(modifier) { openBottomSheet = true } }
+        ) { paddingValues ->
             Card(
                 modifier = modifier
                     .fillMaxSize()
@@ -204,6 +234,121 @@ fun TodayScreen(
                 shape = RoundedCornerShape(topStart = 27.dp, topEnd = 27.dp)
             )
             {
+                if (openBottomSheet)
+                    ModalBottomSheet(
+                        onDismissRequest = { openBottomSheet = false },
+                        sheetState = sheetState,
+
+                        ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp)
+                        ) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(0.615f),
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                IconButton(onClick = { openBottomSheet = false }) {
+                                    Icon(
+                                        imageVector = Icons.Default.Close,
+                                        contentDescription = "Close Settings"
+                                    )
+                                }
+                                Text(
+                                    text = stringResource(R.string.settings),
+                                    fontSize = 18.sp,
+                                    color = Color.White,
+                                    fontFamily = PoppinsFontFamily
+                                )
+                            }
+
+                            val buttonsList = listOf(
+                                SettingsButtonItem(
+                                    text = "Account",
+                                    icon = Icons.Outlined.AccountCircle,
+                                    iconBackground = HabitColor.LeafGreen.light,
+                                ),
+                                SettingsButtonItem(
+                                    text = "Notifications",
+                                    icon = Icons.Outlined.Notifications,
+                                    iconBackground = HabitColor.DeepBlue.light,
+                                ),
+                                SettingsButtonItem(
+                                    text = "Language",
+                                    icon = Icons.Outlined.Language,
+                                    iconBackground = HabitColor.Orange.light,
+                                ),
+                                SettingsButtonItem(
+                                    text = "Preferences",
+                                    icon = Icons.Outlined.Tune,
+                                    iconBackground = HabitColor.Rose.light,
+                                ),
+                                SettingsButtonItem(
+                                    text = "Support",
+                                    icon = Icons.Outlined.SupportAgent,
+                                    iconBackground = HabitColor.Teal.light,
+                                ),
+                                SettingsButtonItem(
+                                    text = "Rate Us",
+                                    icon = Icons.Outlined.StarRate,
+                                    iconBackground = HabitColor.Golden.light,
+                                ),
+                            )
+
+                            buttonsList.forEach { button ->
+                                Box(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth(1f)
+                                            .clip(RoundedCornerShape(16.dp))
+                                            .background(color = containerBackgroundDark)
+                                            .padding(horizontal = 12.dp, vertical = 7.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .size(38.dp)
+                                                .clip(RoundedCornerShape(12.dp))
+                                                .background(color = button.iconBackground),
+                                            contentAlignment = Alignment.Center,
+                                            ) {
+                                            Icon(
+                                                imageVector = button.icon,
+                                                contentDescription = button.text,
+                                                tint = Color.White
+                                            )
+                                        }
+
+                                        Text(
+                                            modifier = Modifier.padding(start = 20.dp),
+                                            text = button.text,
+                                            fontSize = 17.sp,
+                                            color = Color.White,
+                                            fontFamily = PoppinsFontFamily
+                                        )
+                                    }
+                                }
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
+                        }
+                    }
+
+
+
+
+
+
+
+
+
+
+
+
                 Box(
                     modifier = modifier
                         .padding(top = 20.dp)
@@ -347,7 +492,9 @@ enum class AchievementSection() {
 
     companion object {
         fun fromString(section: String, context: Context) = when (section) {
-            UiText.StringResources(R.string.achiev_habits_finished).asString(context) -> HABITS_FINISHED
+            UiText.StringResources(R.string.achiev_habits_finished)
+                .asString(context) -> HABITS_FINISHED
+
             UiText.StringResources(R.string.achiev_best_streak).asString(context) -> BEST_STREAK
             UiText.StringResources(R.string.achiev_perfect_days).asString(context) -> PERFECT_DAYS
             else -> throw IllegalArgumentException("Invalid section: $section")
@@ -376,11 +523,18 @@ private fun Preview() {
                 mapDateToHabits = emptyMap(),
                 onDismiss = {},
                 changeSelectedItemState = { },
-                unlockedAchievement = null /*UnlockedAchievement(
-                    R.drawable.streak_achiev, 100, "Finish 100 Habits",
-                    textPadding = 0.dp
-                )*/,
+                unlockedAchievement = null,
+                /*UnlockedAchievement(
+                                   R.drawable.streak_achiev, 100, "Finish 100 Habits",
+                                   textPadding = 0.dp
+                               )*/
             )
         }
     }
 }
+
+private data class SettingsButtonItem(
+    val text: String,
+    val icon: ImageVector,
+    val iconBackground: Color,
+)

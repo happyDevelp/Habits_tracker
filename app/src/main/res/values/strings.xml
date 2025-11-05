@@ -74,6 +74,7 @@
     <string name="achDescription_daysStreak">%1$d Days Streak</string>
     <string name="statistics">Statistics</string>
     <string name="edit_habit">Edit Habit</string>
+    <string name="settings">Settings</string>
 
 
 </resources>

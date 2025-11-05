@@ -5,12 +5,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
@@ -32,7 +31,7 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 fun TopBarMainScreen(
     modifier: Modifier,
-    navController: NavController,
+    onSettingsClick: () -> Unit
 ) {
     TopAppBar(
         modifier = modifier.padding(vertical = 8.dp),
@@ -49,7 +48,6 @@ fun TopBarMainScreen(
                         .padding(top = 10.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-
                     MyText(
                         text = "Today",
                         textSize = 26.sp,
@@ -72,17 +70,17 @@ fun TopBarMainScreen(
         actions = {
             IconButton(
                 onClick = {
-                    navController.navigate(Route.AddHabit)
+                    onSettingsClick()
                 },
 
                 colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    containerColor = Color.Transparent,
                     contentColor = Color.White
                 ),
             ) {
                 Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = stringResource(R.string.add_habit),
+                    imageVector = Icons.Default.Settings,
+                    contentDescription = stringResource(R.string.settings),
                 )
             }
         },
