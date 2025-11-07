@@ -41,6 +41,7 @@ import com.example.habitstracker.habit.presentation.today_main.MainScreenViewMod
 import com.example.habitstracker.habit.presentation.today_main.TodayScreenRoot
 import com.example.habitstracker.history.presentation.HistoryScreenRoot
 import com.example.habitstracker.history.presentation.HistoryViewModel
+import com.example.habitstracker.me.presentation.MeScreen
 import com.example.habitstracker.statistic.presentation.StatisticScreenRoot
 import com.example.habitstracker.statistic.presentation.StatisticViewModel
 
@@ -120,6 +121,10 @@ fun AppNavigation() {
                 composable<Route.Statistic> {
                     StatisticScreenRoot(viewModel = statisticViewModel)
                 }
+
+                composable<Route.Me> {
+                    MeScreen()
+                }
             }
 
             composable<Route.AddHabit> {
@@ -181,6 +186,7 @@ fun getBottomBarState(navBackStackEntry: NavBackStackEntry?): Boolean {
         baseRouteName + "Today" -> true
         baseRouteName + "History" -> true
         baseRouteName + "Statistic" -> true
+        baseRouteName + "Me" -> true
         else -> false
     }
    /* return when (currentRoute) {
