@@ -1,4 +1,4 @@
-package com.example.habitstracker.profile.presentation.profile.component
+package com.example.habitstracker.statistic.presentation.profile.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,17 +11,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
+import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 
 @Composable
-fun CustomContainer(
+fun SettingsContainer(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit = { },
 ) {
     Card(
         modifier = modifier,
         shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = screenContainerBackgroundDark)
+        colors = CardDefaults.cardColors(containerColor = containerBackgroundDark)
     ) {
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.TopCenter)
         {

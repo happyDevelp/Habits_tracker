@@ -27,17 +27,22 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.bottombar.NavigationBottomBar
+import com.example.habitstracker.core.presentation.settingsScreens.AccountScreen
+import com.example.habitstracker.core.presentation.settingsScreens.LanguageScreen
+import com.example.habitstracker.core.presentation.settingsScreens.NotificationScreen
+import com.example.habitstracker.core.presentation.settingsScreens.PreferencesScreen
+import com.example.habitstracker.core.presentation.settingsScreens.RateUsScreen
+import com.example.habitstracker.core.presentation.settingsScreens.SupportScreen
+import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.habit.presentation.add_habit.AddHabitScreen
 import com.example.habitstracker.habit.presentation.create_own_habit.CreateOwnHabitRoot
-import com.example.habitstracker.habit.presentation.create_own_habit.components.RepeatPicker
 import com.example.habitstracker.habit.presentation.detail_habit.DetailHabitScreen
-import com.example.habitstracker.habit.presentation.edit_habit.EditHabitRoot
-import com.example.habitstracker.habit.presentation.edit_habit.components.EditRepeatPickerRoot
 import com.example.habitstracker.habit.presentation.today_main.MainScreenViewModel
 import com.example.habitstracker.habit.presentation.today_main.TodayScreenRoot
 import com.example.habitstracker.history.presentation.HistoryScreenRoot
 import com.example.habitstracker.history.presentation.HistoryViewModel
-import com.example.habitstracker.profile.presentation.profile.ProfileScreen
+import com.example.habitstracker.statistic.presentation.StatisticScreenRoot
+import com.example.habitstracker.statistic.presentation.StatisticViewModel
 
 @Composable
 fun AppNavigation() {
@@ -45,6 +50,8 @@ fun AppNavigation() {
 
     val mainScreenViewModel = hiltViewModel<MainScreenViewModel>()
     val historyViewModel = hiltViewModel<HistoryViewModel>()
+    val statisticViewModel = hiltViewModel<StatisticViewModel>()
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val showBottomBar = getBottomBarState(navBackStackEntry)
 
@@ -58,6 +65,7 @@ fun AppNavigation() {
     }
 
     Scaffold(
+        containerColor = screenBackgroundDark,
         bottomBar = {
             AnimatedVisibility(
                 visible = showBottomBar,
@@ -109,8 +117,8 @@ fun AppNavigation() {
                     )
                 }
 
-                composable<Route.Profile> {
-                    ProfileScreen()
+                composable<Route.Statistic> {
+                    StatisticScreenRoot(viewModel = statisticViewModel)
                 }
             }
 
@@ -129,28 +137,35 @@ fun AppNavigation() {
                     name = args.name,
                     icon = args.icon,
                     iconColor = args.iconColor,
-                    viewModel = mainScreenViewModel
+                    viewModel = mainScreenViewModel,
+                    isEditMode = args.isEditMode,
+                    id = args.id
                 )
             }
 
-            composable<Route.RepeatPicker> {
-                RepeatPicker()
+            /* SETTINGS */
+            composable<Route.Settings.Account> {
+                AccountScreen()
             }
 
-            composable<Route.EditHabit> { backStackEntry ->
-                val args = backStackEntry.toRoute<Route.EditHabit>()
-                EditHabitRoot(
-                    paramId = args.id,
-                    viewModel = mainScreenViewModel
-                )
+            composable<Route.Settings.Notifications> {
+                NotificationScreen()
             }
 
-            composable<Route.EditRepeatPicker> { backStackEntry ->
-                val args = backStackEntry.toRoute<Route.EditRepeatPicker>()
-                EditRepeatPickerRoot(
-                    paramId = args.id,
-                    viewModel = mainScreenViewModel
-                )
+            composable<Route.Settings.Language> {
+                LanguageScreen()
+            }
+
+            composable<Route.Settings.Preferences> {
+                PreferencesScreen()
+            }
+
+            composable<Route.Settings.Support> {
+                SupportScreen()
+            }
+
+            composable<Route.Settings.RateUs> {
+                RateUsScreen()
             }
         }
     }
@@ -165,7 +180,7 @@ fun getBottomBarState(navBackStackEntry: NavBackStackEntry?): Boolean {
     return when (cleanRoute) {
         baseRouteName + "Today" -> true
         baseRouteName + "History" -> true
-        baseRouteName + "Profile" -> true
+        baseRouteName + "Statistic" -> true
         else -> false
     }
    /* return when (currentRoute) {

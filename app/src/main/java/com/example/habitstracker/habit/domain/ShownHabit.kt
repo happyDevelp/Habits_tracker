@@ -1,7 +1,7 @@
 package com.example.habitstracker.habit.domain
 
 import androidx.room.PrimaryKey
-import com.example.habitstracker.core.presentation.theme.blueColor
+import com.example.habitstracker.core.presentation.theme.MyPalette.blueColor
 import com.example.habitstracker.core.presentation.utils.toHex
 
 data class ShownHabit (

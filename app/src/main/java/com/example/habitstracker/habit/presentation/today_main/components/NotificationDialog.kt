@@ -1,7 +1,5 @@
 package com.example.habitstracker.habit.presentation.today_main.components
 
-import android.content.Context
-import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -39,13 +37,11 @@ import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
-import com.example.habitstracker.core.presentation.UiText
 import com.example.habitstracker.core.presentation.theme.BoldFontFamily
+import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
-import com.example.habitstracker.core.presentation.theme.blueColor
-import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
+import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.utils.clickWithRipple
-import com.example.habitstracker.history.domain.AchievementEntity
 
 @Composable
 fun NotificationDialog(
@@ -72,7 +68,7 @@ fun NotificationDialog(
                 .fillMaxWidth(0.85f)
                 .clickable(enabled = false) {}, //Empty clickable blocks clicks
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = screenContainerBackgroundDark)
+            colors = CardDefaults.cardColors(containerColor = containerBackgroundDark)
         ) {
             Box(
                 modifier = Modifier
@@ -119,7 +115,7 @@ fun NotificationDialog(
                         fontSize = 20.sp,
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Bold,
-                        color = blueColor,
+                        color = MyPalette.blueColor,
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
                             .padding(bottom = unlockedAchievement.textPadding)
@@ -150,7 +146,7 @@ fun NotificationDialog(
                         .fillMaxWidth(0.7f)
                         .height(55.dp),
                     onClick = { onDismiss() },
-                    colors = ButtonDefaults.buttonColors(containerColor = blueColor),
+                    colors = ButtonDefaults.buttonColors(containerColor = MyPalette.blueColor),
                     shape = RoundedCornerShape(50)
                 ) {
                     Text(

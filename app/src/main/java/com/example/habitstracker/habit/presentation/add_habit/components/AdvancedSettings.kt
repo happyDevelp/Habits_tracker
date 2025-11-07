@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
-import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
+import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.utils.clickWithRipple
 
 @Composable
@@ -87,7 +87,7 @@ fun AdvancedSettings(modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .height(55.dp)
                 .clip(RoundedCornerShape(18.dp))
-                .background(color = screenContainerBackgroundDark)
+                .background(color = containerBackgroundDark)
                 .clickWithRipple(
                     color = Color.White
                 ) { /*TODO*/ },

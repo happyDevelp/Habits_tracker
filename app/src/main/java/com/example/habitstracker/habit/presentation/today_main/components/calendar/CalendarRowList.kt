@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import com.example.habitstracker.core.presentation.theme.blueColor
+import com.example.habitstracker.core.presentation.theme.MyPalette.blueColor
 import com.example.habitstracker.habit.domain.ShownHabit
 import java.time.DayOfWeek
 import java.time.LocalDate

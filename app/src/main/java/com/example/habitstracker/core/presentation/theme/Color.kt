@@ -219,15 +219,104 @@ val surfaceContainerHighestDarkHighContrast = Color(0xFF313539)
 
 
 /** Custom colors **/
-val screenBackgroundDark = Color(0xFF21242B) //background
-val screenContainerBackgroundDark = Color(0xFF313747) //background
+val screenBackgroundDark = Color(0xFF21212B)/*Color(0xFF21242B)*/ //background
+val containerBackgroundDark = Color(0xFF313747)
 
 
 /** Colors for interface elements **/
-val notSelectedColor = Color(0xFF313747)
-val blueColor = Color(0xFF3176FF)
-val orangeColor = Color(0xFFf56936)
-val redColor = Color(0xFFc43a3a)
-val greenColor = Color(0xFF3c843a)
+object MyPalette{
+    val notSelectedColor = Color(0xFF313747)
+    val blueColor = Color(0xFF3176FF)
+    val orangeColor = Color(0xFFf56936)
+    val redColor = Color(0xFFc43a3a)
+    val greenColor = Color(0xFF50B05B)
+}
 
+data class ColorGradient( val light: Color, val dark: Color)
 
+object HabitColor {
+    val DefaultColor = ColorGradient(
+        light = Color(0xFF313747),
+        dark = Color(0xFF262936)
+    )
+
+    val SkyBlue = ColorGradient(
+        light = Color(0xFF6CD1F5),
+        dark = Color(0xFF24A6C5)
+    )
+
+    val LeafGreen = ColorGradient(
+        light = Color(0xFF81D742),
+        dark = Color(0xFF3CA55C)
+    )
+
+    val Amber = ColorGradient(
+        light = Color(0xFFFFE259),
+        dark = Color(0xFFFFA751)
+    )
+
+    val DeepBlue = ColorGradient(
+        light = Color(0xFF56CCF2),
+        dark = Color(0xFF2F80ED)
+    )
+
+    val BrickRed = ColorGradient(
+        light = Color(0xFFFF6E7F),
+        dark = Color(0xFFB13423)
+    )
+
+    val Cyan = ColorGradient(
+        light = Color(0xFF43C6AC),
+        dark = Color(0xFF191654)
+    )
+
+    val Orange = ColorGradient(
+        light = Color(0xFFE88629),
+        dark = Color(0xFFf56936)
+    )
+
+    val Teal = ColorGradient(
+        light = Color(0xFF00C9A7),
+        dark = Color(0xFF005F73)
+    )
+
+    val Golden = ColorGradient(
+        light = Color(0xFFFFE259),
+        dark = Color(0xFFFFA751)
+    )
+
+    val Lime = ColorGradient(
+        light = Color(0xFFA8E063),
+        dark = Color(0xFF56AB2F)
+    )
+
+    val Aqua = ColorGradient(
+        light = Color(0xFF4AC29A),
+        dark = Color(0xFFBDFFF3)
+    )
+
+    val Purple = ColorGradient(
+        light = Color(0xFF8E2DE2),
+        dark = Color(0xFF4A00E0)
+    )
+
+    val Terracotta = ColorGradient(
+        light = Color(0xFFFFA17F),
+        dark = Color(0xFF00223E)
+    )
+
+    val Rose = ColorGradient(
+        light = Color(0xFFF45C43),
+        dark = Color(0xFFEB3349)
+    )
+
+    val DarkGreen = ColorGradient(
+        light = Color(0xFF56AB2F),
+        dark = Color(0xFFA8E063)
+    )
+
+    val Sand = ColorGradient(
+        light = Color(0xFFEEBA6D),
+        dark = Color(0xFFD1913C)
+    )
+}

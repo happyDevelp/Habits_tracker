@@ -16,7 +16,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
@@ -26,7 +25,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -36,42 +34,33 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.MyText
-import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
+import com.example.habitstracker.core.presentation.theme.HabitColor
+import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
+import com.example.habitstracker.core.presentation.utils.toHex
 import com.example.habitstracker.habit.domain.DateHabitEntity
-import com.example.habitstracker.history.presentation.components.StatisticSection
+import com.example.habitstracker.habit.domain.HabitEntity
+import com.example.habitstracker.history.presentation.HistoryHabitItem
 import com.example.habitstracker.history.presentation.components.calendar.HistoryCalendarDay
 import com.example.habitstracker.history.presentation.components.calendar.TopPanel
-import com.example.habitstracker.history.presentation.components.statistic_containers.CustomBlank
-import com.example.habitstracker.history.presentation.components.statistic_containers.getFilledBlankList
 import kotlinx.coroutines.launch
-import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.temporal.TemporalAdjusters
 
 @Composable
 fun HistoryCalendarScreen(
     modifier: Modifier = Modifier,
-    streakList: List<DateHabitEntity>,
+    allDateHabits: List<DateHabitEntity>,
+    myHabits: List<HabitEntity>,
     changeSelectedItemState: (index: Int) -> Unit,
-    mapDateToHabits: Map<LocalDate, List<DateHabitEntity>>
+    mapDateToHabits: Map<LocalDate, List<DateHabitEntity>>,
+    onDeleteClick:(habit: HabitEntity)-> Unit
 ) {
-    val monday = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-    val week = (0..6).map { monday.plusDays(it.toLong()) }
-
-    val completedPercentage = week.map { date ->
-        val habits = streakList.filter { LocalDate.parse(it.currentDate) == date }
-        if (habits.isEmpty()) 0f
-        else habits.count { it.isCompleted }.toFloat() / habits.size.toFloat()
-    }
-
     val coroutineScope = rememberCoroutineScope()
 
     var currentDate by remember {
@@ -86,16 +75,28 @@ fun HistoryCalendarScreen(
 
     LazyColumnContainer {
         /** Statistic containers **/
-        DrawStatisticContainers(streakList = streakList)
-        Spacer(modifier = modifier.height(12.dp))
+        Spacer(modifier = modifier.height(18.dp))
 
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+        ) {
+            MyText(
+                modifier = modifier.align(Alignment.Center),
+                text = "My Calendar",
+                textSize = 18.sp
+            )
+        }
+
+        Spacer(modifier = modifier.height(12.dp))
         /** Calendar **/
         Card(
             modifier = modifier
                 .fillMaxWidth()
                 .padding(horizontal = 12.dp)
                 .height(355.dp),
-            colors = CardDefaults.cardColors(containerColor = screenContainerBackgroundDark),
+            colors = CardDefaults.cardColors(containerColor = containerBackgroundDark),
         ) {
             Column(
                 modifier
@@ -137,85 +138,39 @@ fun HistoryCalendarScreen(
             }
         }
 
-        StatisticSection(completedPercentageList = completedPercentage)
-    }
-}
+        Spacer(Modifier.height(24.dp))
 
-@Composable
-private fun DrawStatisticContainers(streakList: List<DateHabitEntity>) {
-    val context = LocalContext.current
-
-    /** current streak and the best streak*/
-    val currentStreak = getCurrentStreak(streakList)
-    val bestStreak = getBestStreak(streakList)
-
-    /** total completed habits  */
-    val totalCompletedHabits = streakList.count { it.isCompleted }
-
-
-    /** total completed habits this week */
-    val currentDate = LocalDate.now()
-    val lastMonday =
-        remember(currentDate) {
-            currentDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY))
-        }
-    val thisWeekSelectedHabits = streakList
-        .filter { it.currentDate >= lastMonday.toString() }
-        .count { it.isCompleted }
-
-
-    /** Percentage of completed habits */
-    val totalHabits = streakList.size
-    val percentage = totalCompletedHabits / totalHabits.toFloat() * 100
-
-    /** Perfect days */
-    val perfectDaysCounter by remember {
-        mutableIntStateOf(
-            streakList
-                .groupBy { it.currentDate }
-                .count { (_, habits) -> habits.all { it.isCompleted } }
-        )
-    }
-
-    val thisWeekPerfectedDays by remember {
-        mutableIntStateOf(
-            streakList
-                .filter { it.currentDate >= lastMonday.toString() }
-                .groupBy { it.currentDate }
-                .count { (_, habits) -> habits.all { it.isCompleted } }
-        )
-    }
-
-    LazyRow(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 16.dp)
-            .wrapContentHeight(),
-        horizontalArrangement = Arrangement.Start,
-        verticalAlignment = Alignment.Top
-    ) {
-        val statsList =
-            getFilledBlankList(
-                context = context,
-                currentStreak = currentStreak,
-                bestStreak = bestStreak,
-                totalCompletedHabits = totalCompletedHabits,
-                thisWeekSelectedHabits = thisWeekSelectedHabits,
-                totalHabits = totalHabits,
-                percentage = percentage,
-                perfectDaysCounter = perfectDaysCounter,
-                thisWeekPerfectedDays = thisWeekPerfectedDays
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+        ) {
+            MyText(
+                modifier = modifier.padding(start = 12.dp),
+                text = "My Habits",
+                textSize = 18.sp
             )
 
-        statsList.forEach { blankItem ->
-            item {
-                CustomBlank(
-                    color = blankItem.color,
-                    topText = blankItem.topText,
-                    middleText = blankItem.middleText,
-                    bottomText = blankItem.bottomText,
-                )
-            }
+            MyText(
+                modifier = modifier
+                    .padding(top = 15.dp, end = 28.dp, bottom = 4.dp)
+                    .align(Alignment.CenterEnd),
+                text = "Consistency",
+                textSize = 13.sp,
+                color = Color.White.copy(0.7f)
+            )
+        }
+
+        Spacer(Modifier.height(4.dp))
+
+        myHabits.forEach { habit ->
+            HistoryHabitItem(
+                allDateHabits = allDateHabits,
+                modifier = modifier,
+                habit = habit,
+                onDeleteClick = onDeleteClick
+            )
+            Spacer(modifier = Modifier.height(18.dp))
         }
     }
 }
@@ -342,59 +297,6 @@ private fun WeekdayHeader() {
     }
 }
 
-private fun getCurrentStreak(streakList: List<DateHabitEntity>): Int {
-    if (streakList.isEmpty()) return 0
-
-    var streak = 0
-    val groupedStreakList = streakList.groupBy { it.currentDate }
-
-    groupedStreakList.forEach { mapDateAndHabits ->
-        val habitsCount = mapDateAndHabits.value.count()
-        val isCompletedCount = mapDateAndHabits.value.count { it.isCompleted }
-        if (habitsCount == isCompletedCount)
-            streak++
-        else return streak
-    }
-
-    return streak
-}
-
-fun getBestStreak(streakList: List<DateHabitEntity>): Int {
-    if (streakList.isEmpty()) return 0
-
-    // Group all habit entries by their date
-    val mapDateToHabits = streakList.groupBy { it.currentDate }
-
-    // Sort dates descending (newest first)
-    val sortedDates = mapDateToHabits.keys.sorted()
-
-    var bestStreak = 0
-    var currentStreak = 0
-    var previousDate: LocalDate? = null
-
-    for (date in sortedDates) {
-        val habitsForDate = mapDateToHabits[date].orEmpty()
-        val total = habitsForDate.size
-        val completed = habitsForDate.count { it.isCompleted }
-
-        val allCompleted = (total == completed)
-
-        if (allCompleted) {
-            if (previousDate == null || previousDate.plusDays(1) == LocalDate.parse(date)) {
-                currentStreak++
-            } else {
-                currentStreak = 1
-            }
-            bestStreak = maxOf(bestStreak, currentStreak)
-        } else {
-            currentStreak = 0
-        }
-
-        previousDate = LocalDate.parse(date)
-    }
-
-    return bestStreak
-}
 
 @Composable
 private fun CalendarHorizontalPager(
@@ -460,8 +362,17 @@ fun HistoryCalendarScreenPreview() {
         {
             HistoryCalendarScreen(
                 changeSelectedItemState = {},
-                streakList = listOf(),
-                mapDateToHabits = emptyMap()
+                allDateHabits = listOf(),
+                mapDateToHabits = emptyMap(),
+                myHabits = listOf(
+                    HabitEntity(
+                        iconName = "SentimentSatisfied",
+                        colorHex = HabitColor.DeepBlue.light.toHex(),
+                        name = "Wake up"
+                    ),
+                    HabitEntity(iconName = "SentimentSatisfied", name = "Make the bad")
+                ),
+                onDeleteClick = {}
             )
         }
     }

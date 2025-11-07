@@ -32,9 +32,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.habitstracker.R
+import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
-import com.example.habitstracker.core.presentation.theme.blueColor
-import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
+import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.history.presentation.tab_screens.AchievementSection
 import java.time.LocalDate
 
@@ -51,7 +51,7 @@ fun AchievementDialog(
         Card(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(16.dp),
-            colors = CardDefaults.cardColors(containerColor = screenContainerBackgroundDark)
+            colors = CardDefaults.cardColors(containerColor = containerBackgroundDark)
         ) {
             Box(
                 modifier = Modifier
@@ -62,7 +62,7 @@ fun AchievementDialog(
                             colors = if (isAchieved)
                                 listOf(Color(0xFF2196F3), Color(0xFF0D47A1))
                             else
-                                listOf(Color(0x28D0D0D0), screenContainerBackgroundDark),
+                                listOf(Color(0x28D0D0D0), containerBackgroundDark),
                             start = Offset(0f, 0f),
                             end = Offset(0f, Float.POSITIVE_INFINITY)
                         ),
@@ -121,7 +121,7 @@ fun AchievementDialog(
                         fontSize = 18.sp,
                         fontFamily = PoppinsFontFamily,
                         fontWeight = FontWeight.Bold,
-                        color = if (isAchieved) blueColor else Color.Black.copy(0.8f),
+                        color = if (isAchieved) MyPalette.blueColor else Color.Black.copy(0.8f),
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
                             .offset(
@@ -164,7 +164,7 @@ fun AchievementDialog(
                         .fillMaxWidth(0.7f)
                         .height(50.dp),
                     onClick = { onDismiss() },
-                    colors = ButtonDefaults.buttonColors(containerColor = blueColor),
+                    colors = ButtonDefaults.buttonColors(containerColor = MyPalette.blueColor),
                     shape = RoundedCornerShape(50)
                 ) {
                     Text(

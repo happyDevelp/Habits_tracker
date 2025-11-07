@@ -11,7 +11,7 @@ import com.example.habitstracker.app.MainActivity
 import com.example.habitstracker.habit.data.db.DAO
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.di.AppModule
-import com.example.habitstracker.core.presentation.theme.blueColor
+import com.example.habitstracker.core.presentation.theme.MyPalette.blueColor
 import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.core.presentation.utils.toHex
 import dagger.hilt.android.testing.HiltAndroidRule
@@ -46,7 +46,7 @@ class DatabaseTest {
         dao.insertHabit(
             HabitEntity(
                 5, "DefaultHabit", "SentimentVerySatisfied",
-                blueColor.toHex(), "Everyday", "Anytime", false
+                MyPalette.blueColor.toHex(), "Everyday", "Anytime", false
             )
         )
     }
@@ -102,7 +102,7 @@ class DatabaseTest {
         val newHabitName = "updated_habit"
         val newHabit = HabitEntity(
             0, newHabitName, "SentimentVerySatisfied", false,
-            blueColor.toHex(), "Everyday", "Anytime", false,
+            MyPalette.blueColor.toHex(), "Everyday", "Anytime", false,
         )
 
         if (habit != null)

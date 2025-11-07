@@ -105,7 +105,7 @@ class MainScreenViewModel @Inject constructor(
 
     fun insertHabit(habit: HabitEntity, onHabitAdded: (habitId: Long) -> Unit) {
         viewModelScope.launch {
-            val id = habitRepository.addHabit(habit)
+            val id = habitRepository.insertHabit(habit)
             onHabitAdded(id)
         }
     }
@@ -116,8 +116,10 @@ class MainScreenViewModel @Inject constructor(
         }
     }
 
-    suspend fun updateHabit(habit: HabitEntity) {
-        return habitRepository.updateHabit(habit)
+    fun updateHabit(habit: HabitEntity) {
+        viewModelScope.launch {
+            habitRepository.updateHabit(habit)
+        }
     }
 
     fun insertHabitDate(dateHabit: DateHabitEntity) {
@@ -159,12 +161,12 @@ class MainScreenViewModel @Inject constructor(
                 habitRepository.getAllDateHabits()
             ) { allHabitEntities, allDateHabits ->
                 allDateHabits.groupBy { it.currentDate }
-                .mapValues { entry ->
-                    val date = entry.key
-                    val habitsForDate = entry.value
-                    mapToShownHabits(allHabitEntities, habitsForDate, date)
-                }
-                .mapKeys { (dateStr, _) -> LocalDate.parse(dateStr) }
+                    .mapValues { entry ->
+                        val date = entry.key
+                        val habitsForDate = entry.value
+                        mapToShownHabits(allHabitEntities, habitsForDate, date)
+                    }
+                    .mapKeys { (dateStr, _) -> LocalDate.parse(dateStr) }
             }.collectLatest { resultMap ->
                 _dateHabitsMap.value = resultMap
             }

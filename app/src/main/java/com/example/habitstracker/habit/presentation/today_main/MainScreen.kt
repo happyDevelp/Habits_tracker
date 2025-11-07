@@ -1,6 +1,9 @@
 package com.example.habitstracker.habit.presentation.today_main
 
+import android.content.Context
 import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,22 +14,35 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -40,24 +56,28 @@ import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
+import com.example.habitstracker.core.presentation.UiText
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.QuickSandFontFamily
+import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
-import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.core.presentation.utils.TestTags
 import com.example.habitstracker.core.presentation.utils.shownHabitExample1
 import com.example.habitstracker.core.presentation.utils.shownHabitExample2
 import com.example.habitstracker.core.presentation.utils.shownHabitExample3
 import com.example.habitstracker.habit.domain.ShownHabit
+import com.example.habitstracker.habit.presentation.today_main.components.AchievementMetadata
 import com.example.habitstracker.habit.presentation.today_main.components.HabitItem
 import com.example.habitstracker.habit.presentation.today_main.components.NotificationDialog
+import com.example.habitstracker.habit.presentation.today_main.components.SettingsBottomSheet
 import com.example.habitstracker.habit.presentation.today_main.components.TopBarMainScreen
 import com.example.habitstracker.habit.presentation.today_main.components.UnlockedAchievement
 import com.example.habitstracker.habit.presentation.today_main.components.calendar.CalendarRowList
-import com.example.habitstracker.history.presentation.HistoryViewModel
-import com.example.habitstracker.habit.presentation.today_main.components.AchievementMetadata
+import com.example.habitstracker.habit.presentation.today_main.utility.AchievementSection
 import com.example.habitstracker.habit.presentation.today_main.utility.getBestStreak
+import com.example.habitstracker.history.presentation.HistoryViewModel
+import com.example.habitstracker.statistic.presentation.components.SettingsButtons
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -68,11 +88,10 @@ fun TodayScreenRoot(
     historyDate: String?,
     changeSelectedItemState: (index: Int) -> Unit
 ) {
-    var isHistoryHandled = false
+    val isHistoryHandled = false
     LaunchedEffect(historyDate) {
         if (historyDate != null && !isHistoryHandled) {
             viewModel.updateSelectedDate(LocalDate.parse(historyDate))
-            isHistoryHandled = true
         }
     }
 
@@ -117,7 +136,7 @@ fun TodayScreenRoot(
 
                 // 3. Find all the achievements that are now done but not notified yet
                 val newlyUnlocked = allAchievements.filter { ach ->
-                    val section = AchievementSection.fromString(ach.section)
+                    val section = AchievementSection.fromString(ach.section, context)
                     !ach.isNotified && (metrics[section] ?: 0) >= ach.target
                 }
 
@@ -175,6 +194,7 @@ fun TodayScreenRoot(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TodayScreen(
     modifier: Modifier = Modifier,
@@ -190,8 +210,12 @@ fun TodayScreen(
 ) {
     val navController = LocalNavController.current
 
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var openBottomSheet by remember { mutableStateOf(false) }
+
     Box(modifier = modifier.fillMaxSize()) {
-        Scaffold(topBar = { TopBarMainScreen(modifier, navController) }) { paddingValues ->
+        Scaffold(topBar = { TopBarMainScreen(modifier) { openBottomSheet = true } }
+        ) { paddingValues ->
             Card(
                 modifier = modifier
                     .fillMaxSize()
@@ -202,6 +226,12 @@ fun TodayScreen(
                 shape = RoundedCornerShape(topStart = 27.dp, topEnd = 27.dp)
             )
             {
+                if (openBottomSheet)
+                    SettingsBottomSheet(
+                        sheetState = sheetState,
+                        closeSheet = { openBottomSheet = false }
+                    )
+
                 Box(
                     modifier = modifier
                         .padding(top = 20.dp)
@@ -301,7 +331,7 @@ fun TodayScreen(
                                             },
 
                                             colors = ButtonDefaults.buttonColors(
-                                                containerColor = screenContainerBackgroundDark,
+                                                containerColor = containerBackgroundDark,
                                                 contentColor = Color.White.copy(alpha = 0.75f)
                                             ),
 
@@ -340,18 +370,6 @@ fun TodayScreen(
     }
 }
 
-enum class AchievementSection {
-    HABITS_FINISHED, BEST_STREAK, PERFECT_DAYS;
-
-    companion object {
-        fun fromString(section: String) = when (section) {
-            "Habits Finished" -> HABITS_FINISHED
-            "Best Streak" -> BEST_STREAK
-            "Perfect Days" -> PERFECT_DAYS
-            else -> throw IllegalArgumentException("Invalid section: $section")
-        }
-    }
-}
 
 @Composable
 @Preview(showSystemUi = false)
@@ -374,10 +392,7 @@ private fun Preview() {
                 mapDateToHabits = emptyMap(),
                 onDismiss = {},
                 changeSelectedItemState = { },
-                unlockedAchievement = UnlockedAchievement(
-                    R.drawable.streak_achiev, 100, "Finish 100 Habits",
-                    textPadding = 0.dp
-                ),
+                unlockedAchievement = null,
             )
         }
     }

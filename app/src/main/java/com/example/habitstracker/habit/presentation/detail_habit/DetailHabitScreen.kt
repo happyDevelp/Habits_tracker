@@ -1,6 +1,7 @@
 package com.example.habitstracker.habit.presentation.detail_habit
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,8 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -33,11 +35,13 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.app.LocalNavController
+import com.example.habitstracker.core.presentation.UiText
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
-import com.example.habitstracker.core.presentation.theme.screenContainerBackgroundDark
 import com.example.habitstracker.habit.presentation.detail_habit.components.DefaultHabitDetailItem
 import com.example.habitstracker.habit.presentation.detail_habit.components.getGroupDetails
+import com.example.habitstracker.R
+import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 
 @Composable
 fun DetailHabitScreen(
@@ -52,7 +56,8 @@ fun DetailHabitScreen(
         Box(
             modifier = modifier
                 .padding(paddingValues)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .background(screenBackgroundDark),
             contentAlignment = Alignment.TopCenter
         ) {
             Column(
@@ -79,7 +84,7 @@ fun DetailHabitScreen(
                     )
                 }
                 Spacer(modifier.height(4.dp))
-                LazyColumn(
+                LazyVerticalGrid(
                     modifier = modifier
                         .fillMaxSize()
                         .clip(
@@ -88,7 +93,11 @@ fun DetailHabitScreen(
                                 topEnd = 12.dp
                             )
                         )
-                        .background(screenContainerBackgroundDark)
+                        .padding(horizontal = 8.dp)
+                        .background(screenBackgroundDark),
+                    columns = GridCells.Fixed(2),
+                    horizontalArrangement = Arrangement.spacedBy(6.dp),
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     items(groupItems) { detailedItem ->
                         DefaultHabitDetailItem(detailedItem)
@@ -103,8 +112,16 @@ fun DetailHabitScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 private fun CustomTopBar(navController: NavController) {
     TopAppBar(
-        title = {},
+        title = {
+            Text(
+                text = "Choose a habit",
+                fontSize = 20.sp,
+                color = Color.White.copy(0.85f),
+                fontFamily = PoppinsFontFamily
+            )
+        },
         colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = screenBackgroundDark
         ),
         navigationIcon = {
             IconButton(
@@ -126,7 +143,7 @@ private fun Preview() {
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
         AppTheme(darkTheme = true) {
             DetailHabitScreen(
-                groupName = "Keep active & get fit",
+                groupName = UiText.StringResources(R.string.get_fit).asString(LocalContext.current),
                 groupDescribe = "Sweat never lies"
             )
         }

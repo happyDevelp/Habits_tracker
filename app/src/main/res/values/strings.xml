@@ -52,13 +52,13 @@
     <string name="here_you_can_create_a_new_habit">Here you can create a new habit</string>
 
     <!--HabitGroup names-->
-    <string name="keep_active_get_fit"><![CDATA[Keep active & get fit]]></string>
+    <string name="get_fit">Get fit</string>
     <string name="eat_drink_healthily"><![CDATA[Eat & drink healthily]]></string>
-    <string name="ease_stress">Ease stress</string>
-    <string name="gain_self_discipline">Gain self-discipline</string>
+    <string name="entertainment">Entertainment</string>
+    <string name="self_discipline">Self-discipline</string>
     <string name="leisure_moments">Leisure moments</string>
-    <string name="before_sleep_routine">Before sleep routine</string>
-    <string name="master_productivity">Master Productivity</string>
+    <string name="before_sleep">Before sleep</string>
+    <string name="productivity">Productivity</string>
     <string name="stronger_mind">Stronger mind</string>
     <string name="good_morning">Good morning</string>
     <string name="enter_habit_name">Enter habit name...</string>
@@ -72,6 +72,9 @@
     <string name="achDescription_finishHabitTimes">Finish Habit %1$d Times</string>
     <string name="achDescription_perfectDays">%1$d Perfect Days</string>
     <string name="achDescription_daysStreak">%1$d Days Streak</string>
+    <string name="statistics">Statistics</string>
+    <string name="edit_habit">Edit Habit</string>
+    <string name="settings">Settings</string>
 
 
 </resources>

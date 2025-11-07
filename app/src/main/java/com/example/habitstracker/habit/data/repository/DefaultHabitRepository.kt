@@ -12,7 +12,7 @@ import kotlinx.coroutines.withContext
 // The Domain layer is independent of data sources.
 
 class DefaultHabitRepository(private val habitDao: HabitDao) : HabitRepository {
-    override suspend fun addHabit(habit: HabitEntity): Long {
+    override suspend fun insertHabit(habit: HabitEntity): Long {
         return withContext(Dispatchers.IO) {
             habitDao.insertHabit(habit)
         }

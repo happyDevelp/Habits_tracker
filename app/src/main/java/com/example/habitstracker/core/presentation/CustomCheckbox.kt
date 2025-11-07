@@ -38,7 +38,7 @@ fun CustomCheckbox(
 ) {
     Card(
         modifier = modifier
-            .size(21.dp)
+            .size(22.dp)
             //.scale(checkboxIconSize)
             .bounceClickable(
                 onAnimationFinished = {
@@ -49,7 +49,7 @@ fun CustomCheckbox(
 
         colors = CardDefaults.cardColors(
             containerColor = if (!shownHabit.isSelected) Color.Transparent
-            else selectedBackgroundColor
+            else Color(0xFF3dbe57)
         ),
 
         border = if (!shownHabit.isSelected)

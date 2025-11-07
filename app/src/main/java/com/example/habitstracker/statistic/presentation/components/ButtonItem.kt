@@ -1,4 +1,4 @@
-package com.example.habitstracker.profile.presentation.profile.component
+package com.example.habitstracker.statistic.presentation.profile.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -62,8 +62,3 @@ fun SettingsButtonItem(
     HorizontalDivider(thickness = 0.2.dp, color = Color.White)
 }
 
-data class ButtonItem(
-    val icon: ImageVector,
-    val iconBackground: Color,
-    val text: String,
-)
