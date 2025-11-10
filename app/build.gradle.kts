@@ -117,4 +117,6 @@ dependencies {
     androidTestImplementation(libs.hilt.android.testing)
 
     implementation(libs.lottie.compose)
+    implementation("androidx.compose.ui:ui-text-google-fonts:1.6.0")
+
 }
