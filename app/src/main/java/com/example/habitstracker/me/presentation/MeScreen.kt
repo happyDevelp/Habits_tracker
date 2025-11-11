@@ -3,11 +3,14 @@ package com.example.habitstracker.me.presentation
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,7 +21,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.PeopleOutline
@@ -44,6 +49,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -181,10 +188,10 @@ fun MeScreen(
                     Spacer(modifier.height(8.dp))
 
                     val friendsList: List<FriendEntity> = listOf(
-  /*                      FriendEntity("Friend 1", R.drawable.avataaar),
-                        FriendEntity("Friend 2", R.drawable.avataaar),
-                        FriendEntity("Friend 3", R.drawable.avataaar),
-                        FriendEntity("Friend 4", R.drawable.avataaar),*/
+                        /*                      FriendEntity("Friend 1", R.drawable.avataaar),
+                                              FriendEntity("Friend 2", R.drawable.avataaar),
+                                              FriendEntity("Friend 3", R.drawable.avataaar),
+                                              FriendEntity("Friend 4", R.drawable.avataaar),*/
 
 
                     )
@@ -252,11 +259,7 @@ fun MeScreen(
                                 }
                             }
                         }
-                    }
-
-
-
-                    else {
+                    } else {
 
                         if (friendsList.isEmpty()) {
 
@@ -281,57 +284,132 @@ fun MeScreen(
                                 )
                             }
 
-
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp),
-                                horizontalArrangement = Arrangement.Center,
-                                verticalAlignment = Alignment.CenterVertically
+                            Column(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                TextField(
-                                    value = text,
-                                    onValueChange = { text = it },
-                                    placeholder = { Text("Enter friend's ID", color = Color.Gray) },
-                                    singleLine = true,
-                                    shape = RoundedCornerShape(8.dp),
-                                    colors = TextFieldDefaults.colors(
-                                        focusedIndicatorColor = Color.Transparent,
-                                        unfocusedIndicatorColor = Color.Transparent,
-                                        disabledIndicatorColor = Color.Transparent,
-                                        errorIndicatorColor = Color.Transparent,
-                                        focusedContainerColor = Color(0xFF1E1F22),
-                                        unfocusedContainerColor = Color(0xFF1E1F22),
-                                        cursorColor = Color.White,
-                                        focusedTextColor = Color.White,
-                                        unfocusedTextColor = Color.White
-                                    ),
-                                    textStyle = LocalTextStyle.current.copy(color = Color.White),
+
+
+                                Box(
                                     modifier = Modifier
-                                        .weight(1f)
+                                        .fillMaxWidth(0.6f)
                                         .height(48.dp)
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(
+                                            Brush.linearGradient(
+                                                listOf(
+                                                    Color(0xFF5865F2),
+                                                    Color(0xFF4752C4)
+                                                )
+                                            )
+                                        )
+                                        .clickable { /* handle click */ },
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Text(
+                                        "Share link",
+                                        color = Color.White,
+                                        fontSize = 14.sp,
+                                        fontWeight = FontWeight.SemiBold
+                                    )
+                                }
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                Text(
+                                    text = "or",
+                                    color = Color.White.copy(alpha = 0.75f),
                                 )
 
-                                Spacer(modifier = Modifier.width(8.dp))
+                                Spacer(modifier = Modifier.height(8.dp))
 
-                                Button(
-                                    onClick = { /* handle click */ },
-                                    shape = RoundedCornerShape(8.dp),
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(0xFF2B2D31),
-                                        contentColor = Color.White
-                                    ),
-                                    modifier = Modifier.height(48.dp)
+
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
                                 ) {
-                                    Text("ADD", fontSize = 13.sp)
+                                    TextField(
+                                        value = text,
+                                        onValueChange = { text = it },
+                                        placeholder = {
+                                            Text(
+                                                "Enter friend's ID",
+                                                color = Color.Gray
+                                            )
+                                        },
+                                        singleLine = true,
+                                        shape = RoundedCornerShape(8.dp),
+                                        colors = TextFieldDefaults.colors(
+                                            focusedIndicatorColor = Color.Transparent,
+                                            unfocusedIndicatorColor = Color.Transparent,
+                                            disabledIndicatorColor = Color.Transparent,
+                                            errorIndicatorColor = Color.Transparent,
+                                            focusedContainerColor = Color(0xFF1E1F22),
+                                            unfocusedContainerColor = Color(0xFF1E1F22),
+                                            cursorColor = Color.White,
+                                            focusedTextColor = Color.White,
+                                            unfocusedTextColor = Color.White
+                                        ),
+                                        textStyle = LocalTextStyle.current.copy(color = Color.White),
+                                        modifier = Modifier
+                                            .weight(1f)
+                                            .height(48.dp)
+                                    )
+
+                                    Spacer(modifier = Modifier.width(8.dp))
+
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(48.dp)
+                                            .clip(RoundedCornerShape(8.dp))
+                                            .background(Color(0xFF1E1F22))
+                                    ) {
+                                        BasicTextField(
+                                            value = text,
+                                            onValueChange = { text = it },
+                                            modifier = Modifier
+                                                .weight(1f)
+                                                .padding(
+                                                    start = 12.dp,
+                                                    top = 12.dp,
+                                                    bottom = 12.dp
+                                                ),
+                                            singleLine = true,
+                                            textStyle = LocalTextStyle.current.copy(color = Color.White),
+                                            decorationBox = { innerTextField ->
+                                                if (text.isEmpty()) Text(
+                                                    "Enter friend's ID",
+                                                    color = Color.Gray
+                                                )
+                                                innerTextField()
+                                            }
+                                        )
+
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxHeight()
+                                                .background(Color(0xD75865F2))
+                                                .clickable { /* add click */ }
+                                                .padding(horizontal = 16.dp),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            Text(
+                                                text = "ADD",
+                                                color = Color.White,
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 14.sp
+                                            )
+                                        }
+                                    }
                                 }
                             }
 
-                        }
 
-
-
-                        else {
+                        } else {
                             friendsList.forEach { friend ->
                                 Row(
                                     modifier = Modifier
@@ -388,12 +466,13 @@ fun MeScreen(
                     }
 
 
-
                 }
             }
         }
     }
 }
+
+fun Brush.toColor(): Color = Color.Unspecified // костиль, щоб компілювалося
 
 data class FriendEntity(
     val name: String,
