@@ -30,6 +30,7 @@ uiTextGoogleFonts = "1.9.4"
 firebaseBom = "33.3.0"
 composeCompiler = "2.0.0"
 material3 = "1.4.0"
+runtime = "1.9.4"
 
 
 [libraries]
@@ -78,6 +79,7 @@ firebase-common-ktx = { module = "com.google.firebase:firebase-common-ktx" }
 
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
+androidx-compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "runtime" }
 
 
 

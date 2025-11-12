@@ -40,9 +40,11 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -50,12 +52,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
+import coil.request.CachePolicy
+import coil.request.ImageRequest
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.theme.AppTheme
@@ -65,14 +71,66 @@ import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.me.presentation.component.MeTopBar
+import com.example.habitstracker.me.presentation.sign_in.GoogleAuthUiClient
+import com.example.habitstracker.me.presentation.sign_in.SignedInUser
+import kotlinx.coroutines.launch
+
+@Composable
+fun MeScreenRoot() {
+    val context = LocalContext.current
+    val client = remember { GoogleAuthUiClient(context) }
+    val scope = rememberCoroutineScope()
+
+    var message by remember { mutableStateOf("") }
+    var user by remember { mutableStateOf<SignedInUser?>(null) }
+
+    LaunchedEffect(Unit) {
+        user = client.getSignedInUser()
+        if (user != null) {
+            message = "Welcome back, ${user!!.displayName ?: user!!.email}"
+        }
+    }
+
+    val onSignInClick: () -> Unit = {
+        scope.launch {
+            val ok = client.signIn()
+            val signedUser = client.getSignedInUser()
+            if (ok && signedUser != null) {
+                user = signedUser
+                message = "Welcome, ${signedUser.displayName ?: signedUser.email}"
+            } else {
+                message = "Login failed"
+            }
+        }
+    }
+
+    val onSignOutClick: () -> Unit = {
+        scope.launch {
+            client.signOut()
+            user = null
+            message = "Signed out"
+        }
+    }
+
+    MeScreen(
+        user = user,
+        message = message,
+        onSignInClick = onSignInClick,
+        onSignOutClick = onSignOutClick
+    )
+
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MeScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    user: SignedInUser?,
+    message: String,
+    onSignInClick: () -> Unit,
+    onSignOutClick: () -> Unit
 ) {
-    val navController = LocalNavController.current
-    var isUserSignedIn by remember { mutableStateOf(true) }
+    var signedIn by remember { mutableStateOf(user != null) }
     var text by remember { mutableStateOf("") }
 
     Scaffold(
@@ -104,9 +162,21 @@ fun MeScreen(
                             .background(HabitColor.Teal.light)
                             .border(2.dp, Color.Gray, CircleShape)
                     ) {
-                        Image(
-                            painter = painterResource(R.drawable.avataaar),
-                            contentDescription = "Avatar"
+                        // userAvatar
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(user?.photoUrl)
+                                .diskCachePolicy(CachePolicy.ENABLED)
+                                .memoryCachePolicy(CachePolicy.ENABLED)
+                                .build(),
+                            contentDescription = "User avatar",
+                            modifier = Modifier
+                                .size(70.dp)
+                                .clip(CircleShape)
+                                .border(2.dp, Color.Gray, CircleShape),
+                            contentScale = ContentScale.Crop,
+                            placeholder = painterResource(R.drawable.avataaar), // is shown when downloading
+                            error = painterResource(R.drawable.avataaar)
                         )
                     }
                     Column(
@@ -115,28 +185,42 @@ fun MeScreen(
                             .padding(start = 12.dp)
                     ) {
                         Text(
-                            text = "Backup & Restore",
+                            text = if (!signedIn)"Backup & Restore"  else "Welcome back, ${user?.displayName}",
                             color = Color.White.copy(alpha = 0.95f),
                             fontSize = 21.sp,
                             fontFamily = PoppinsFontFamily,
                         )
                         Spacer(modifier.height(4.dp))
-                        Text(
-                            text = "Connect your Google account to back up your progress and find your friends",
-                            color = Color.White.copy(alpha = 0.80f),
-                            lineHeight = 14.sp,
-                            fontSize = 10.sp,
-                            fontFamily = PoppinsFontFamily,
-                        )
+
+                        if (!signedIn) {
+                            Text(
+                                text = "Connect your Google account to back up your progress and find your friends",
+                                color = Color.White.copy(alpha = 0.80f),
+                                lineHeight = 14.sp,
+                                fontSize = 10.sp,
+                                fontFamily = PoppinsFontFamily,
+                            )
+                        }
                     }
                 }
                 Spacer(modifier.height(16.dp))
+
+                // Sign in with Google
                 Button(
                     modifier = Modifier
                         .fillMaxWidth(0.6f)
                         .height(48.dp)
                         .align(Alignment.CenterHorizontally),
-                    onClick = { },
+                    onClick = {
+                        if (!signedIn) {
+                            onSignInClick()
+                            signedIn = true
+                        } else {
+                            onSignOutClick()
+                            signedIn = false
+                        }
+
+                    },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = Color(0xFF3F5162),
                         contentColor = Color.White
@@ -154,7 +238,7 @@ fun MeScreen(
                         )
                         Spacer(modifier = Modifier.width(12.dp))
                         Text(
-                            text = "Sign in with Google",
+                            text = if (!signedIn) "Sign in with Google" else "Sign out",
                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
                         )
                     }
@@ -194,7 +278,7 @@ fun MeScreen(
                     )
 
                     // user is not signed in
-                    if (!isUserSignedIn) {
+                    if (!signedIn) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -478,7 +562,12 @@ private fun Preview() {
     val mockNavController = rememberNavController()
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
         AppTheme(darkTheme = true) {
-            MeScreen()
+            MeScreen(
+                user = null,
+                message = "Signed in",
+                onSignInClick = { },
+                onSignOutClick = { }
+            )
         }
     }
 }
