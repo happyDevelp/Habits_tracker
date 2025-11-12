@@ -79,7 +79,8 @@ fun MeScreen(
     var isUserSignedIn by remember { mutableStateOf(true) }
     var text by remember { mutableStateOf("") }
 
-    Scaffold(topBar = { MeTopBar() }) { paddingValues ->
+    Scaffold(
+        topBar = { MeTopBar() }) { paddingValues ->
         Column(
             modifier = modifier
                 .fillMaxSize()

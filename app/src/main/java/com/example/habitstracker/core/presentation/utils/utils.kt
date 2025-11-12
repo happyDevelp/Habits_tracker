@@ -3,8 +3,7 @@ package com.example.habitstracker.core.presentation.utils
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.ripple.rememberRipple
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
@@ -16,8 +15,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.habit.domain.ShownHabit
 import java.time.LocalDate
+import androidx.core.graphics.toColorInt
 
-val APP_VERSION = "0.0.6 (alpha)"
+const val APP_VERSION = "0.8.0.alpha"
 fun List<LocalDate>.chunked(size: Int): List<List<LocalDate>> {
     return this.withIndex().groupBy { it.index / size }.values.map { it.map { it.value } }
 }
@@ -26,18 +26,19 @@ fun generateDateSequence(startDate: LocalDate, daysCount: Int): List<LocalDate> 
     return List(daysCount) { startDate.plusDays(it.toLong()) }
 }
 
-@Composable
 fun Modifier.clickWithRipple(
     color: Color = Color.White,
     onClick: () -> Unit,
-): Modifier {
-    return composed {
-        this.clickable(
-            interactionSource = remember { MutableInteractionSource() },
-            indication = rememberRipple(color = color),
-            onClick = onClick
-        )
-    }
+): Modifier = composed {
+    val interactionSource = remember { MutableInteractionSource() }
+
+    this
+        .clickable(
+            interactionSource = interactionSource,
+            indication = ripple()
+        ) {
+            onClick()
+        }
 }
 
 fun Color.toHex(): String {
@@ -46,7 +47,7 @@ fun Color.toHex(): String {
 }
 
 fun String.getColorFromHex(): Color =
-    Color(android.graphics.Color.parseColor(this))
+    Color(this.toColorInt())
 
 fun getIconName(icon: ImageVector): String {
     return icon.name.split(".")[1]

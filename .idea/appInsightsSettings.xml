@@ -9,10 +9,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.example.habitstracker" />
+                  <option name="mobileSdkAppId" value="1:320317569531:android:26efacf70479b1e9de335e" />
+                  <option name="projectId" value="habit-tracker-5b475" />
+                  <option name="projectNumber" value="320317569531" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

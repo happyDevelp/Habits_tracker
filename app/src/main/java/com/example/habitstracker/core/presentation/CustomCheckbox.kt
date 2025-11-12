@@ -13,6 +13,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -74,6 +75,8 @@ fun Modifier.bounceClickable(
     onAnimationFinished: (() -> Unit)? = null,
     onClick: (() -> Unit)? = null,
 ) = composed {
+    val interactionSource = remember { MutableInteractionSource() }
+
     var isPressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(
         targetValue = if (isPressed) minScale else 1f,
@@ -91,8 +94,8 @@ fun Modifier.bounceClickable(
             scaleY = scale
         }
         .clickable(
-            indication = null, // Removes the ripple effect
-            interactionSource = remember { MutableInteractionSource() }
+            interactionSource = interactionSource,
+            indication = ripple()
         ) {
             isPressed = true
             onClick?.invoke()

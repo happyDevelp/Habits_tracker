@@ -18,6 +18,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -50,14 +51,15 @@ fun NotificationDialog(
     changeSelectedItemState: (index: Int) -> Unit
 ) {
     val navController = LocalNavController.current
+    val interactionSource = remember { MutableInteractionSource() }
     // this Box creates a translucent background, which darkens the main content.
     Box(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black.copy(alpha = 0.65f))
             .clickable( // add Clickable to close the dialogue by click on the background.
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null, // Without the effect of “waves”
+                interactionSource = interactionSource,
+                indication = ripple(), // Without the effect of “waves”
                 onClick = onDismiss
             ),
         contentAlignment = Alignment.Center

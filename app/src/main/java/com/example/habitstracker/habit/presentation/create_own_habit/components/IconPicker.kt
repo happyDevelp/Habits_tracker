@@ -20,7 +20,6 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,6 +29,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
@@ -100,7 +100,7 @@ fun IconPicker(
         )
 
         val selectedItems = remember {
-            mutableStateMapOf<Int, IconItem?>() // Ключ - індекс вкладки, значення - обрана іконка
+            mutableStateMapOf<Int, IconItem?>() // Key - tab index, value - selected icon
         }
 
         ModalBottomSheet(
@@ -137,12 +137,9 @@ fun IconPicker(
                                 )
                                 .selectable(
                                     selected = isSelected,
-                                    onClick = { },
+                                    onClick = { /* handle tab click */ },
                                     interactionSource = interactionSource,
-                                    indication = rememberRipple(
-                                        bounded = false,
-                                        color = Color.White.copy(alpha = 0.3f)
-                                    )
+                                    indication = ripple()
                                 ),
                             selectedContentColor = Color(0xFF3B04BD),
                             unselectedContentColor = Color.Transparent,
