@@ -27,16 +27,23 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun TopBarMainScreen(onSettingsClick: () -> Unit) {
+fun TopBarMainScreen(
+    modifier: Modifier,
+    onSettingsClick: () -> Unit
+) {
     TopAppBar(
+        modifier = modifier.padding(vertical = 8.dp),
+
         title = {
             Box(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = modifier.fillMaxWidth(),
                 contentAlignment = Alignment.CenterStart
             ) {
 
                 Column(
-                    modifier = Modifier.align(Alignment.CenterStart),
+                    modifier = modifier
+                        .align(Alignment.CenterStart)
+                        .padding(top = 10.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     MyText(
