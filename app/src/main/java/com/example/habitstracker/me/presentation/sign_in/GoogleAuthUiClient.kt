@@ -63,22 +63,22 @@ class GoogleAuthUiClient(
         auth.signOut()
     }
 
-    fun getSignedInUser(): SignedInUser? {
+    fun getSignedInUser(): UserData? {
         val u = auth.currentUser ?: return null
-        return SignedInUser(
-            uid = u.uid,
+        return UserData(
+            userId = u.uid,
             email = u.email,
-            displayName = u.displayName,
-            photoUrl = u.photoUrl?.toString()
+            userName = u.displayName,
+            profilePictureUrl = u.photoUrl?.toString()
         )
     }
 }
 
-data class SignedInUser(
-    val uid: String,
+data class UserData(
+    val userId: String,
     val email: String?,
-    val displayName: String?,
-    val photoUrl: String?
+    val userName: String?,
+    val profilePictureUrl: String?
 )
 
 

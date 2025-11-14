@@ -22,6 +22,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.PeopleOutline
@@ -40,11 +41,9 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,16 +51,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
-import coil.request.CachePolicy
-import coil.request.ImageRequest
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.theme.AppTheme
@@ -71,68 +68,33 @@ import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.me.presentation.component.MeTopBar
-import com.example.habitstracker.me.presentation.sign_in.GoogleAuthUiClient
-import com.example.habitstracker.me.presentation.sign_in.SignedInUser
-import kotlinx.coroutines.launch
+import com.example.habitstracker.me.presentation.sign_in.SignInViewModel
+import com.example.habitstracker.me.presentation.sign_in.UserData
 
 @Composable
-fun MeScreenRoot() {
-    val context = LocalContext.current
-    val client = remember { GoogleAuthUiClient(context) }
-    val scope = rememberCoroutineScope()
-
-    var message by remember { mutableStateOf("") }
-    var user by remember { mutableStateOf<SignedInUser?>(null) }
-
-    LaunchedEffect(Unit) {
-        user = client.getSignedInUser()
-        if (user != null) {
-            message = "Welcome back, ${user!!.displayName ?: user!!.email}"
-        }
-    }
-
-    val onSignInClick: () -> Unit = {
-        scope.launch {
-            val ok = client.signIn()
-            val signedUser = client.getSignedInUser()
-            if (ok && signedUser != null) {
-                user = signedUser
-                message = "Welcome, ${signedUser.displayName ?: signedUser.email}"
-            } else {
-                message = "Login failed"
-            }
-        }
-    }
-
-    val onSignOutClick: () -> Unit = {
-        scope.launch {
-            client.signOut()
-            user = null
-            message = "Signed out"
-        }
-    }
+fun MeScreenRoot(viewModel: SignInViewModel) {
+    val state by viewModel.state.collectAsStateWithLifecycle()
 
     MeScreen(
-        user = user,
-        message = message,
-        onSignInClick = onSignInClick,
-        onSignOutClick = onSignOutClick
+        user = state.userData,
+        isSignedIn = state.isSignInSuccessful,
+        message = state.signInError,
+        onSignInClick = { viewModel.signIn() },
+        onSignOutClick = { viewModel.signOut() }
     )
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MeScreen(
     modifier: Modifier = Modifier,
-    user: SignedInUser?,
-    message: String,
+    user: UserData?,
+    isSignedIn: Boolean,
+    message: String?,
     onSignInClick: () -> Unit,
     onSignOutClick: () -> Unit
 ) {
-    var signedIn by remember { mutableStateOf(user != null) }
-    var text by remember { mutableStateOf("") }
-
+    var typedText by remember { mutableStateOf("") }
     Scaffold(
         topBar = { MeTopBar() }) { paddingValues ->
         Column(
@@ -164,11 +126,11 @@ fun MeScreen(
                     ) {
                         // userAvatar
                         AsyncImage(
-                            model = ImageRequest.Builder(LocalContext.current)
-                                .data(user?.photoUrl)
+                            model = user?.profilePictureUrl/*ImageRequest.Builder(LocalContext.current)
+                                .data(user?.profilePictureUrl)
                                 .diskCachePolicy(CachePolicy.ENABLED)
                                 .memoryCachePolicy(CachePolicy.ENABLED)
-                                .build(),
+                                .build()*/,
                             contentDescription = "User avatar",
                             modifier = Modifier
                                 .size(70.dp)
@@ -176,23 +138,23 @@ fun MeScreen(
                                 .border(2.dp, Color.Gray, CircleShape),
                             contentScale = ContentScale.Crop,
                             placeholder = painterResource(R.drawable.avataaar), // is shown when downloading
-                            error = painterResource(R.drawable.avataaar)
+                            error = painterResource(R.drawable.avataaars)
                         )
                     }
                     Column(
                         modifier = modifier
                             .fillMaxWidth()
-                            .padding(start = 12.dp)
+                            .padding(start = 12.dp),
+                        verticalArrangement = Arrangement.Center,
                     ) {
-                        Text(
-                            text = if (!signedIn)"Backup & Restore"  else "Welcome back, ${user?.displayName}",
-                            color = Color.White.copy(alpha = 0.95f),
-                            fontSize = 21.sp,
-                            fontFamily = PoppinsFontFamily,
-                        )
-                        Spacer(modifier.height(4.dp))
+                        if (!isSignedIn) {
+                            Text(
+                                text = "Backup & Restore",
+                                color = Color.White.copy(alpha = 0.95f),
+                                fontSize = 21.sp,
+                                fontFamily = PoppinsFontFamily,
+                            )
 
-                        if (!signedIn) {
                             Text(
                                 text = "Connect your Google account to back up your progress and find your friends",
                                 color = Color.White.copy(alpha = 0.80f),
@@ -200,52 +162,73 @@ fun MeScreen(
                                 fontSize = 10.sp,
                                 fontFamily = PoppinsFontFamily,
                             )
+                        } else {
+                            Text(
+                                text = "Welcome Back,",
+                                color = Color.White.copy(alpha = 0.93f),
+                                fontSize = 16.sp,
+                                fontFamily = PoppinsFontFamily,
+                            )
+                            Spacer(modifier.height(10.dp))
+                            Row(
+                                modifier = Modifier
+                                    .clickable { },
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Text(
+                                    text = "${user?.userName}",
+                                    color = Color.White.copy(alpha = 0.95f),
+                                    fontSize = 21.sp,
+                                    fontFamily = PoppinsFontFamily,
+                                )
+                                Icon(
+                                    modifier = Modifier.padding(),
+                                    imageVector = Icons.Default.ArrowDropDown,
+                                    contentDescription = "Account Settings Menu",
+                                    tint = Color.White.copy(alpha = 0.9f)
+                                )
+                            }
+                            Spacer(modifier.height(4.dp))
+
                         }
                     }
                 }
-                Spacer(modifier.height(16.dp))
 
                 // Sign in with Google
-                Button(
-                    modifier = Modifier
-                        .fillMaxWidth(0.6f)
-                        .height(48.dp)
-                        .align(Alignment.CenterHorizontally),
-                    onClick = {
-                        if (!signedIn) {
-                            onSignInClick()
-                            signedIn = true
-                        } else {
-                            onSignOutClick()
-                            signedIn = false
-                        }
-
-                    },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF3F5162),
-                        contentColor = Color.White
-                    ),
-                    shape = RoundedCornerShape(12.dp),
-                ) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
+                if (!isSignedIn) {
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth(0.6f)
+                            .height(48.dp)
+                            .align(Alignment.CenterHorizontally),
+                        onClick = { onSignInClick() },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color(0xFF3F5162),
+                            contentColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(12.dp),
                     ) {
-                        Image(
-                            painter = painterResource(id = R.drawable.google_icon_logo),
-                            contentDescription = "Google logo",
-                            modifier = Modifier.size(20.dp)
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(
-                            text = if (!signedIn) "Sign in with Google" else "Sign out",
-                            style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
-                        )
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
+                        ) {
+                            Image(
+                                painter = painterResource(id = R.drawable.google_icon_logo),
+                                contentDescription = "Google logo",
+                                modifier = Modifier.size(20.dp)
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Text(
+                                text = "Sign in with Google",
+                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
+                            )
+                        }
                     }
                 }
-                Spacer(modifier.height(16.dp))
+                Spacer(modifier.height(12.dp))
             }
 
+            // friends section
             Card(
                 modifier = modifier
                     .fillMaxWidth()
@@ -269,7 +252,8 @@ fun MeScreen(
                     Spacer(modifier.height(8.dp))
 
                     val friendsList: List<FriendEntity> = listOf(
-                        /*                      FriendEntity("Friend 1", R.drawable.avataaar),
+                        /*
+                        FriendEntity("Friend 1", R.drawable.avataaar),
                                               FriendEntity("Friend 2", R.drawable.avataaar),
                                               FriendEntity("Friend 3", R.drawable.avataaar),
                                               FriendEntity("Friend 4", R.drawable.avataaar),*/
@@ -278,7 +262,7 @@ fun MeScreen(
                     )
 
                     // user is not signed in
-                    if (!signedIn) {
+                    if (!isSignedIn) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -413,8 +397,8 @@ fun MeScreen(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     TextField(
-                                        value = text,
-                                        onValueChange = { text = it },
+                                        value = typedText,
+                                        onValueChange = { typedText = it },
                                         placeholder = {
                                             Text(
                                                 "Enter friend's ID",
@@ -450,8 +434,8 @@ fun MeScreen(
                                             .background(Color(0xFF1E1F22))
                                     ) {
                                         BasicTextField(
-                                            value = text,
-                                            onValueChange = { text = it },
+                                            value = typedText,
+                                            onValueChange = { typedText = it },
                                             modifier = Modifier
                                                 .weight(1f)
                                                 .padding(
@@ -462,7 +446,7 @@ fun MeScreen(
                                             singleLine = true,
                                             textStyle = LocalTextStyle.current.copy(color = Color.White),
                                             decorationBox = { innerTextField ->
-                                                if (text.isEmpty()) Text(
+                                                if (typedText.isEmpty()) Text(
                                                     "Enter friend's ID",
                                                     color = Color.Gray
                                                 )
@@ -551,6 +535,38 @@ fun MeScreen(
     }
 }
 
+
+@Composable
+fun UserNameDropdown(
+    userName: String,
+    onSignOutClick: () -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Row(
+        modifier = Modifier
+            .clickable { expanded = true }
+            .padding(4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+
+        Text(
+            text = userName,
+            color = Color.White.copy(alpha = 0.95f),
+            fontSize = 22.sp,
+            fontFamily = PoppinsFontFamily
+        )
+
+        Spacer(modifier = Modifier.width(6.dp))
+
+        Icon(
+            imageVector = Icons.Default.ArrowDropDown,
+            contentDescription = "Menu",
+            tint = Color.White.copy(alpha = 0.9f)
+        )
+    }
+}
+
+
 data class FriendEntity(
     val name: String,
     val image: Int
@@ -564,7 +580,8 @@ private fun Preview() {
         AppTheme(darkTheme = true) {
             MeScreen(
                 user = null,
-                message = "Signed in",
+                isSignedIn = true,
+                message = null,
                 onSignInClick = { },
                 onSignOutClick = { }
             )

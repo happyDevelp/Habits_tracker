@@ -10,6 +10,7 @@ import com.example.habitstracker.habit.domain.HabitRepository
 import com.example.habitstracker.history.data.db.HistoryDAO
 import com.example.habitstracker.history.data.repository.DefaultHistoryRepository
 import com.example.habitstracker.history.domain.HistoryRepository
+import com.example.habitstracker.me.presentation.sign_in.GoogleAuthUiClient
 import com.example.habitstracker.statistic.data.db.StatisticDao
 import com.example.habitstracker.statistic.data.repository.DefaultStatisticRepository
 import com.example.habitstracker.statistic.domain.StatisticRepository
@@ -59,6 +60,12 @@ object AppModule {
     fun provideStatisticDao(database: HabitDatabase): StatisticDao {
         return database.statisticDao
     }
+
+    @Provides
+    @Singleton
+    fun provideGoogleAuthUiClient(
+        @ApplicationContext context: Context
+    ): GoogleAuthUiClient = GoogleAuthUiClient(context)
 
     @Singleton
     @Provides

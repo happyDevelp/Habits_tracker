@@ -15,7 +15,7 @@ fun MeTopBar(modifier: Modifier = Modifier) {
     TopAppBar(
         title = {
             MyText(
-                text = "Today",
+                text = "Me",
                 textSize = 26.sp,
             )
         },

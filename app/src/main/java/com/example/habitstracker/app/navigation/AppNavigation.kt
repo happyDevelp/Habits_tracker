@@ -43,6 +43,7 @@ import com.example.habitstracker.habit.presentation.today_main.TodayScreenRoot
 import com.example.habitstracker.history.presentation.HistoryScreenRoot
 import com.example.habitstracker.history.presentation.HistoryViewModel
 import com.example.habitstracker.me.presentation.MeScreenRoot
+import com.example.habitstracker.me.presentation.sign_in.SignInViewModel
 import com.example.habitstracker.statistic.presentation.StatisticScreenRoot
 import com.example.habitstracker.statistic.presentation.StatisticViewModel
 
@@ -53,6 +54,8 @@ fun AppNavigation() {
     val mainScreenViewModel = hiltViewModel<MainScreenViewModel>()
     val historyViewModel = hiltViewModel<HistoryViewModel>()
     val statisticViewModel = hiltViewModel<StatisticViewModel>()
+    val signInViewModel = hiltViewModel<SignInViewModel>()
+
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val showBottomBar = getBottomBarState(navBackStackEntry)
@@ -126,7 +129,7 @@ fun AppNavigation() {
                 }
 
                 composable<Route.Me> {
-                    MeScreenRoot()
+                    MeScreenRoot(viewModel = signInViewModel)
                 }
             }
 
