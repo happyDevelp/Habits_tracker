@@ -32,7 +32,7 @@ class SignInViewModel @Inject constructor(
 
     fun signIn() {
         viewModelScope.launch {
-            _state.update { it.copy(signInError = null) }
+            _state.update { it.copy(signInError = null, isLoading = true) }
 
             val isSuccess = googleAuthUiClient.signIn()
 
@@ -40,18 +40,28 @@ class SignInViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         isSignInSuccessful = true,
-                        userData = googleAuthUiClient.getSignedInUser()
+                        userData = googleAuthUiClient.getSignedInUser(),
+                        isLoading = false
                     )
                 }
             } else {
-                _state.update { it.copy(signInError = "Sign-in failed") }
+                _state.update { it.copy(signInError = "Sign-in failed", isLoading = false) }
             }
         }
     }
 
     fun signOut() {
+        _state.update { it.copy(isLoading = true) }
         googleAuthUiClient.signOut()
         _state.update { SignInState() }
+    }
+
+    fun deleteAccount() {
+        viewModelScope.launch {
+            _state.update { it.copy(isLoading = true) }
+            googleAuthUiClient.deleteAccount()
+            _state.update { SignInState() }
+        }
     }
 
     fun resetState() {

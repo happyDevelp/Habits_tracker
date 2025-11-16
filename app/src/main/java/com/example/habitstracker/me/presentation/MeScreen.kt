@@ -1,5 +1,6 @@
 package com.example.habitstracker.me.presentation
 
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,6 +24,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.ArrowDropUp
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.PeopleOutline
@@ -30,15 +33,19 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -50,6 +57,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -67,6 +75,9 @@ import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
+import com.example.habitstracker.me.presentation.component.AccountManagementButtons
+import com.example.habitstracker.me.presentation.component.AccountSettingsBottomSheet
+import com.example.habitstracker.me.presentation.component.LoadingOverlay
 import com.example.habitstracker.me.presentation.component.MeTopBar
 import com.example.habitstracker.me.presentation.sign_in.SignInViewModel
 import com.example.habitstracker.me.presentation.sign_in.UserData
@@ -79,8 +90,10 @@ fun MeScreenRoot(viewModel: SignInViewModel) {
         user = state.userData,
         isSignedIn = state.isSignInSuccessful,
         message = state.signInError,
+        isLoading = state.isLoading,
         onSignInClick = { viewModel.signIn() },
-        onSignOutClick = { viewModel.signOut() }
+        onSignOutClick = { viewModel.signOut() },
+        onAccountDeleteClick = { viewModel.deleteAccount() }
     )
 }
 
@@ -90,13 +103,21 @@ fun MeScreen(
     modifier: Modifier = Modifier,
     user: UserData?,
     isSignedIn: Boolean,
+    isLoading: Boolean,
     message: String?,
     onSignInClick: () -> Unit,
-    onSignOutClick: () -> Unit
+    onSignOutClick: () -> Unit,
+    onAccountDeleteClick: () -> Unit
 ) {
     var typedText by remember { mutableStateOf("") }
-    Scaffold(
-        topBar = { MeTopBar() }) { paddingValues ->
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var openBottomSheet by remember { mutableStateOf(false) }
+    val rotation by animateFloatAsState(
+        targetValue = if (openBottomSheet) 180f else 0f,
+        label = "arrowRotation"
+    )
+
+    Scaffold(topBar = { MeTopBar() }) { paddingValues ->
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -126,11 +147,7 @@ fun MeScreen(
                     ) {
                         // userAvatar
                         AsyncImage(
-                            model = user?.profilePictureUrl/*ImageRequest.Builder(LocalContext.current)
-                                .data(user?.profilePictureUrl)
-                                .diskCachePolicy(CachePolicy.ENABLED)
-                                .memoryCachePolicy(CachePolicy.ENABLED)
-                                .build()*/,
+                            model = user?.profilePictureUrl,
                             contentDescription = "User avatar",
                             modifier = Modifier
                                 .size(70.dp)
@@ -172,7 +189,7 @@ fun MeScreen(
                             Spacer(modifier.height(10.dp))
                             Row(
                                 modifier = Modifier
-                                    .clickable { },
+                                    .clickable { openBottomSheet = true },
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
@@ -182,10 +199,14 @@ fun MeScreen(
                                     fontFamily = PoppinsFontFamily,
                                 )
                                 Icon(
-                                    modifier = Modifier.padding(),
+                                    modifier = Modifier
+                                        .padding()
+                                        .graphicsLayer {
+                                            rotationZ = rotation
+                                        },
                                     imageVector = Icons.Default.ArrowDropDown,
                                     contentDescription = "Account Settings Menu",
-                                    tint = Color.White.copy(alpha = 0.9f)
+                                    tint = Color.White.copy(alpha = 0.9f),
                                 )
                             }
                             Spacer(modifier.height(4.dp))
@@ -531,41 +552,22 @@ fun MeScreen(
                     }
                 }
             }
+
+            if (openBottomSheet) {
+                AccountSettingsBottomSheet(
+                    sheetState,
+                    modifier,
+                    onSignOutClick,
+                    onAccountDeleteClick,
+                    closeBottomSheet = { openBottomSheet = false }
+                )
+            }
         }
     }
-}
-
-
-@Composable
-fun UserNameDropdown(
-    userName: String,
-    onSignOutClick: () -> Unit
-) {
-    var expanded by remember { mutableStateOf(false) }
-    Row(
-        modifier = Modifier
-            .clickable { expanded = true }
-            .padding(4.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-
-        Text(
-            text = userName,
-            color = Color.White.copy(alpha = 0.95f),
-            fontSize = 22.sp,
-            fontFamily = PoppinsFontFamily
-        )
-
-        Spacer(modifier = Modifier.width(6.dp))
-
-        Icon(
-            imageVector = Icons.Default.ArrowDropDown,
-            contentDescription = "Menu",
-            tint = Color.White.copy(alpha = 0.9f)
-        )
+    if (isLoading) {
+        LoadingOverlay()
     }
 }
-
 
 data class FriendEntity(
     val name: String,
@@ -583,7 +585,9 @@ private fun Preview() {
                 isSignedIn = true,
                 message = null,
                 onSignInClick = { },
-                onSignOutClick = { }
+                onSignOutClick = { },
+                onAccountDeleteClick = {},
+                isLoading = false
             )
         }
     }

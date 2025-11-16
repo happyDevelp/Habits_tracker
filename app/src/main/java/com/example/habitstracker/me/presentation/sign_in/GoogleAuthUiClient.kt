@@ -10,6 +10,7 @@ import com.example.habitstracker.R
 import com.google.android.libraries.identity.googleid.GetGoogleIdOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.GoogleAuthProvider
 import kotlinx.coroutines.tasks.await
 
@@ -63,6 +64,22 @@ class GoogleAuthUiClient(
         auth.signOut()
     }
 
+    suspend fun deleteAccount(): Boolean {
+        val user = auth.currentUser ?: return false
+
+        return try {
+            user.delete().await()
+            true
+        } catch (e: FirebaseAuthRecentLoginRequiredException) {
+            // Firebase requires "fresh" authorization before deleting the account
+            Log.e("GoogleAuth", "Recent login required before deleting account", e)
+            false
+        } catch (e: Exception) {
+            Log.e("GoogleAuth", "Error deleting account", e)
+            false
+        }
+    }
+
     fun getSignedInUser(): UserData? {
         val u = auth.currentUser ?: return null
         return UserData(
@@ -80,42 +97,3 @@ data class UserData(
     val userName: String?,
     val profilePictureUrl: String?
 )
-
-
-/*class GoogleAuthUiClass(
-    private val context: Context,
-    private val oneTapClient: SignInClient
-) {
-    private val auth = Firebase.auth
-
-    suspend fun signIn(): IntentSender? {
-        val result = try {
-            oneTapClient.beginSignIn(
-
-            )
-        } catch (e: Exception) {
-
-        }
-    }
-
-    private fun buildSignInRequest(): BeginSignInRequest {
-        return BeginSignInRequest.builder()
-            .setGoogleIdTokenRequestOptions(
-                BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
-                    .setSupported(true)
-                    .setFilterByAuthorizedAccounts(false)
-                    .setServerClientId("320317569531-pjhcn24vdjomh7hne23v4lkdeqsq7rgj.apps.googleusercontent.com")
-                    .build()
-            )
-            .setAutoSelectEnabled(true)
-            .build()
-    }
-}*/
-
-
-
-
-
-
-
-
