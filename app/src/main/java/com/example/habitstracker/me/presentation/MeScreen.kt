@@ -24,8 +24,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.ArrowDropUp
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.PeopleOutline
@@ -33,15 +31,12 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -59,6 +54,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -75,23 +71,26 @@ import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
-import com.example.habitstracker.me.presentation.component.AccountManagementButtons
 import com.example.habitstracker.me.presentation.component.AccountSettingsBottomSheet
 import com.example.habitstracker.me.presentation.component.LoadingOverlay
 import com.example.habitstracker.me.presentation.component.MeTopBar
+import com.example.habitstracker.me.presentation.component.TopBanner
+import com.example.habitstracker.me.presentation.sign_in.SignInBannerStatus
 import com.example.habitstracker.me.presentation.sign_in.SignInViewModel
 import com.example.habitstracker.me.presentation.sign_in.UserData
 
 @Composable
 fun MeScreenRoot(viewModel: SignInViewModel) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
 
     MeScreen(
         user = state.userData,
-        isSignedIn = state.isSignInSuccessful,
         message = state.signInError,
         isLoading = state.isLoading,
-        onSignInClick = { viewModel.signIn() },
+        bannerStatus = state.banner,
+        onSignInClick = { viewModel.signIn(context) },
         onSignOutClick = { viewModel.signOut() },
         onAccountDeleteClick = { viewModel.deleteAccount() }
     )
@@ -102,8 +101,8 @@ fun MeScreenRoot(viewModel: SignInViewModel) {
 fun MeScreen(
     modifier: Modifier = Modifier,
     user: UserData?,
-    isSignedIn: Boolean,
     isLoading: Boolean,
+    bannerStatus: SignInBannerStatus,
     message: String?,
     onSignInClick: () -> Unit,
     onSignOutClick: () -> Unit,
@@ -164,7 +163,7 @@ fun MeScreen(
                             .padding(start = 12.dp),
                         verticalArrangement = Arrangement.Center,
                     ) {
-                        if (!isSignedIn) {
+                        if (user == null) {
                             Text(
                                 text = "Backup & Restore",
                                 color = Color.White.copy(alpha = 0.95f),
@@ -193,7 +192,7 @@ fun MeScreen(
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Text(
-                                    text = "${user?.userName}",
+                                    text = "${user.userName}",
                                     color = Color.White.copy(alpha = 0.95f),
                                     fontSize = 21.sp,
                                     fontFamily = PoppinsFontFamily,
@@ -216,7 +215,7 @@ fun MeScreen(
                 }
 
                 // Sign in with Google
-                if (!isSignedIn) {
+                if (user == null) {
                     Button(
                         modifier = Modifier
                             .fillMaxWidth(0.6f)
@@ -283,7 +282,7 @@ fun MeScreen(
                     )
 
                     // user is not signed in
-                    if (!isSignedIn) {
+                    if (user == null) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -567,6 +566,10 @@ fun MeScreen(
     if (isLoading) {
         LoadingOverlay()
     }
+
+    TopBanner(
+        status = bannerStatus,
+    )
 }
 
 data class FriendEntity(
@@ -582,12 +585,12 @@ private fun Preview() {
         AppTheme(darkTheme = true) {
             MeScreen(
                 user = null,
-                isSignedIn = true,
                 message = null,
                 onSignInClick = { },
                 onSignOutClick = { },
                 onAccountDeleteClick = {},
-                isLoading = false
+                isLoading = false,
+                bannerStatus = SignInBannerStatus.NONE
             )
         }
     }

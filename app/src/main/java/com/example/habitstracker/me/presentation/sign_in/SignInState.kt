@@ -1,8 +1,18 @@
 package com.example.habitstracker.me.presentation.sign_in
 
 data class SignInState(
-    val isSignInSuccessful: Boolean = false,
+    val banner: SignInBannerStatus = SignInBannerStatus.NONE,
+    val isLoading: Boolean = false,
     val signInError: String? = null,
-    val userData: UserData? = null,
-    val isLoading: Boolean = false
+    val userData: UserData? = null
 )
+
+enum class SignInBannerStatus {
+    NONE,
+    LOGIN_SUCCESS,
+    LOGOUT_SUCCESS,
+    LOGIN_FAILED,
+    ACCOUNT_DELETED,
+    DELETE_FAILED,
+    NO_INTERNET
+}
