@@ -19,11 +19,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.PeopleOutline
@@ -43,6 +45,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -74,25 +77,37 @@ import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.me.presentation.component.AccountSettingsBottomSheet
 import com.example.habitstracker.me.presentation.component.LoadingOverlay
 import com.example.habitstracker.me.presentation.component.MeTopBar
+import com.example.habitstracker.me.presentation.component.SyncIcon
 import com.example.habitstracker.me.presentation.component.TopBanner
+import com.example.habitstracker.me.presentation.sign_in.BannerStatus
 import com.example.habitstracker.me.presentation.sign_in.SignInBannerStatus
 import com.example.habitstracker.me.presentation.sign_in.SignInViewModel
 import com.example.habitstracker.me.presentation.sign_in.UserData
+import com.example.habitstracker.me.presentation.sync.SyncButtonState
+import com.example.habitstracker.me.presentation.sync.SyncViewModel
 
 @Composable
-fun MeScreenRoot(viewModel: SignInViewModel) {
-    val state by viewModel.state.collectAsStateWithLifecycle()
-    val context = LocalContext.current
+fun MeScreenRoot(signInViewModel: SignInViewModel, syncViewModel: SyncViewModel) {
+    val signInState by signInViewModel.state.collectAsStateWithLifecycle()
+    val syncState by syncViewModel.state.collectAsStateWithLifecycle()
 
+/*    if (signInState.loginSuccessful) {
+        LaunchedEffect(Unit) {
+            syncViewModel.syncFromCloud()
+        }
+    }*/
 
     MeScreen(
-        user = state.userData,
-        message = state.signInError,
-        isLoading = state.isLoading,
-        bannerStatus = state.banner,
-        onSignInClick = { viewModel.signIn(context) },
-        onSignOutClick = { viewModel.signOut() },
-        onAccountDeleteClick = { viewModel.deleteAccount() }
+        user = signInState.userData,
+        message = signInState.signInError,
+        isLoading = signInState.isLoading,
+        bannerStatus = signInState.banner,
+        buttonState = syncState.buttonState,
+        onSignInClick = { signInViewModel.signIn() },
+        onSignOutClick = { signInViewModel.signOut() },
+        onAccountDeleteClick = { signInViewModel.deleteAccount() },
+        syncToCloud = { syncViewModel.syncToCloud() },
+        syncFromCloud = { syncViewModel.syncFromCloud() }
     )
 }
 
@@ -102,11 +117,14 @@ fun MeScreen(
     modifier: Modifier = Modifier,
     user: UserData?,
     isLoading: Boolean,
-    bannerStatus: SignInBannerStatus,
+    bannerStatus: BannerStatus,
+    buttonState: SyncButtonState,
     message: String?,
     onSignInClick: () -> Unit,
     onSignOutClick: () -> Unit,
-    onAccountDeleteClick: () -> Unit
+    onAccountDeleteClick: () -> Unit,
+    syncToCloud: () -> Unit,
+    syncFromCloud: () -> Unit,
 ) {
     var typedText by remember { mutableStateOf("") }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -123,11 +141,16 @@ fun MeScreen(
                 .padding(paddingValues)
                 .background(screenBackgroundDark)
         ) {
+            Button(onClick = {syncFromCloud()}) {
+                Text(text = "Test Sync From Cloud")
+            }
             Card(
                 modifier = modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .padding(horizontal = 16.dp, vertical = 16.dp),
+                    .padding(horizontal = 16.dp, vertical = 16.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .clickable { syncToCloud() },
                 colors = CardDefaults.cardColors(containerColor = containerBackgroundDark),
             ) {
                 Row(
@@ -157,60 +180,72 @@ fun MeScreen(
                             error = painterResource(R.drawable.avataaars)
                         )
                     }
-                    Column(
-                        modifier = modifier
-                            .fillMaxWidth()
-                            .padding(start = 12.dp),
-                        verticalArrangement = Arrangement.Center,
-                    ) {
-                        if (user == null) {
-                            Text(
-                                text = "Backup & Restore",
-                                color = Color.White.copy(alpha = 0.95f),
-                                fontSize = 21.sp,
-                                fontFamily = PoppinsFontFamily,
-                            )
 
-                            Text(
-                                text = "Connect your Google account to back up your progress and find your friends",
-                                color = Color.White.copy(alpha = 0.80f),
-                                lineHeight = 14.sp,
-                                fontSize = 10.sp,
-                                fontFamily = PoppinsFontFamily,
-                            )
-                        } else {
-                            Text(
-                                text = "Welcome Back,",
-                                color = Color.White.copy(alpha = 0.93f),
-                                fontSize = 16.sp,
-                                fontFamily = PoppinsFontFamily,
-                            )
-                            Spacer(modifier.height(10.dp))
-                            Row(
-                                modifier = Modifier
-                                    .clickable { openBottomSheet = true },
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(end = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+
+                        Column(
+                            modifier = modifier
+                                .wrapContentWidth()
+                                .padding(start = 12.dp),
+                            verticalArrangement = Arrangement.Center,
+                        ) {
+
+                            if (user == null) {
                                 Text(
-                                    text = "${user.userName}",
+                                    text = "Backup & Restore",
                                     color = Color.White.copy(alpha = 0.95f),
                                     fontSize = 21.sp,
                                     fontFamily = PoppinsFontFamily,
                                 )
-                                Icon(
-                                    modifier = Modifier
-                                        .padding()
-                                        .graphicsLayer {
-                                            rotationZ = rotation
-                                        },
-                                    imageVector = Icons.Default.ArrowDropDown,
-                                    contentDescription = "Account Settings Menu",
-                                    tint = Color.White.copy(alpha = 0.9f),
-                                )
-                            }
-                            Spacer(modifier.height(4.dp))
 
+                                Text(
+                                    text = "Connect your Google account to back up your progress and find your friends",
+                                    color = Color.White.copy(alpha = 0.80f),
+                                    lineHeight = 14.sp,
+                                    fontSize = 10.sp,
+                                    fontFamily = PoppinsFontFamily,
+                                )
+                            } else {
+                                Text(
+                                    text = "Welcome Back,",
+                                    color = Color.White.copy(alpha = 0.90f),
+                                    fontSize = 14.sp,
+                                    fontFamily = PoppinsFontFamily,
+                                )
+                                Spacer(modifier.height(10.dp))
+                                Row(
+                                    modifier = Modifier
+                                        .clickable { openBottomSheet = true },
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = "${user.userName}",
+                                        color = Color.White.copy(alpha = 0.95f),
+                                        fontSize = 21.sp,
+                                        fontFamily = PoppinsFontFamily,
+                                    )
+                                    Icon(
+                                        modifier = Modifier
+                                            .padding()
+                                            .graphicsLayer {
+                                                rotationZ = rotation
+                                            },
+                                        imageVector = Icons.Default.ArrowDropDown,
+                                        contentDescription = "Account Settings Menu",
+                                        tint = Color.White.copy(alpha = 0.9f),
+                                    )
+                                }
+                                Spacer(modifier.height(4.dp))
+                            }
                         }
+
+                        SyncIcon(buttonState)
                     }
                 }
 
@@ -584,13 +619,21 @@ private fun Preview() {
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
         AppTheme(darkTheme = true) {
             MeScreen(
-                user = null,
+                user = UserData(
+                    "1",
+                    email = "fhkdshfas",
+                    userName = "test name",
+                    profilePictureUrl = null
+                ),
                 message = null,
                 onSignInClick = { },
                 onSignOutClick = { },
                 onAccountDeleteClick = {},
                 isLoading = false,
-                bannerStatus = SignInBannerStatus.NONE
+                bannerStatus = SignInBannerStatus.NONE,
+                syncToCloud = {},
+                syncFromCloud = {},
+                buttonState = SyncButtonState.IDLE
             )
         }
     }

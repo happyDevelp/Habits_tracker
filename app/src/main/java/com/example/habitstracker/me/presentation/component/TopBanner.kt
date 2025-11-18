@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
+import com.example.habitstracker.me.presentation.sign_in.BannerStatus
 import com.example.habitstracker.me.presentation.sign_in.SignInBannerStatus
 
 data class BannerData(
@@ -42,7 +43,7 @@ data class BannerData(
 
 @Composable
 fun TopBanner(
-    status: SignInBannerStatus,
+    status: BannerStatus,
     modifier: Modifier = Modifier
 ) {
     val success = Color(0xFF1F6F43)
@@ -80,6 +81,7 @@ fun TopBanner(
         )
 
         SignInBannerStatus.NONE -> null
+        else -> null
     }
 
     // Holding the last non-null banner

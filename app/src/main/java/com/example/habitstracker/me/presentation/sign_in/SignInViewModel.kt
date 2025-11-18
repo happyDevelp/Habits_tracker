@@ -3,6 +3,7 @@ package com.example.habitstracker.me.presentation.sign_in
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.habitstracker.me.domain.SyncRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
@@ -15,7 +16,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SignInViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
-    private val googleAuthUiClient: GoogleAuthUiClient
+    private val googleAuthUiClient: GoogleAuthUiClient,
+    private val syncRepository: SyncRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SignInState())
@@ -33,7 +35,7 @@ class SignInViewModel @Inject constructor(
         }
     }
 
-    fun signIn(context: Context) {
+    fun signIn() {
         viewModelScope.launch {
 
             if (context.isInternetAvailable() == false) {
@@ -55,7 +57,8 @@ class SignInViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         userData = googleAuthUiClient.getSignedInUser(),
-                        isLoading = false
+                        isLoading = false,
+                        loginSuccessful = true
                     )
                 }
                 showBanner(status = SignInBannerStatus.LOGIN_SUCCESS)

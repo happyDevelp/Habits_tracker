@@ -29,7 +29,7 @@ sealed interface HabitDao {
     suspend fun updateHabit(habit: HabitEntity)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertHabitDate(habitDate: DateHabitEntity)
+    suspend fun insertHabitDate(habitDate: DateHabitEntity)
 
     @Query(
         """
@@ -62,4 +62,12 @@ sealed interface HabitDao {
 
     @Query("select * from date_table")
     fun getAllDateHabits(): Flow<List<DateHabitEntity>>
+
+
+
+    @Query("DELETE FROM habit_table")
+    suspend fun clearHabitTable()
+
+    @Query("DELETE FROM date_table")
+    suspend fun clearDateTable()
 }

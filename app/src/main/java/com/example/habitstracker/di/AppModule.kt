@@ -10,10 +10,16 @@ import com.example.habitstracker.habit.domain.HabitRepository
 import com.example.habitstracker.history.data.db.HistoryDAO
 import com.example.habitstracker.history.data.repository.DefaultHistoryRepository
 import com.example.habitstracker.history.domain.HistoryRepository
+import com.example.habitstracker.me.data.DefaultSyncRepository
+import com.example.habitstracker.me.data.local.LocalSyncRepository
+import com.example.habitstracker.me.data.remote.CloudSyncRepository
+import com.example.habitstracker.me.domain.SyncRepository
 import com.example.habitstracker.me.presentation.sign_in.GoogleAuthUiClient
 import com.example.habitstracker.statistic.data.db.StatisticDao
 import com.example.habitstracker.statistic.data.repository.DefaultStatisticRepository
 import com.example.habitstracker.statistic.domain.StatisticRepository
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -24,6 +30,41 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Provides
+    @Singleton
+    fun provideFirestore(): FirebaseFirestore {
+        return FirebaseFirestore.getInstance()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth  {
+        return FirebaseAuth.getInstance()
+    }
+
+    @Provides
+    @Singleton
+    fun providerLocalSyncRepository(habitDao: HabitDao) : LocalSyncRepository {
+        return LocalSyncRepository(habitDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCloudSyncRepository(
+        firestore: FirebaseFirestore
+    ): CloudSyncRepository {
+        return CloudSyncRepository(firestore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSyncRepository(
+        cloud: CloudSyncRepository,
+        local: LocalSyncRepository
+    ): SyncRepository {
+        return DefaultSyncRepository(cloud, local)
+    }
 
     @Singleton
     @Provides
