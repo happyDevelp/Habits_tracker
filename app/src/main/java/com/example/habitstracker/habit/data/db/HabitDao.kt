@@ -42,7 +42,7 @@ sealed interface HabitDao {
     fun getHabitsByDate(date: String): Flow<List<ShownHabit>>
 
     @Query("SELECT * FROM date_table WHERE habitId=:id")
-    fun getAllDatesByHabitId(id: Int): List<DateHabitEntity>
+    suspend fun getAllDatesByHabitId(id: Int): List<DateHabitEntity>
 
     @Query(
         """

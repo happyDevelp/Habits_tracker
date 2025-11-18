@@ -69,4 +69,9 @@ class SyncViewModel @Inject constructor(
         _state.update { it.copy(banner = SyncBannerStatus.NONE) }
     }
 
+    fun deleteLocalData() {
+        viewModelScope.launch {
+            syncRepo.testDeleteLocalData()
+        }
+    }
 }

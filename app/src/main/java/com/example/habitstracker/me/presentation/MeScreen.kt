@@ -91,6 +91,7 @@ fun MeScreenRoot(signInViewModel: SignInViewModel, syncViewModel: SyncViewModel)
     val signInState by signInViewModel.state.collectAsStateWithLifecycle()
     val syncState by syncViewModel.state.collectAsStateWithLifecycle()
 
+
 /*    if (signInState.loginSuccessful) {
         LaunchedEffect(Unit) {
             syncViewModel.syncFromCloud()
@@ -107,7 +108,8 @@ fun MeScreenRoot(signInViewModel: SignInViewModel, syncViewModel: SyncViewModel)
         onSignOutClick = { signInViewModel.signOut() },
         onAccountDeleteClick = { signInViewModel.deleteAccount() },
         syncToCloud = { syncViewModel.syncToCloud() },
-        syncFromCloud = { syncViewModel.syncFromCloud() }
+        syncFromCloud = { syncViewModel.syncFromCloud() },
+        testClearDB = { syncViewModel.deleteLocalData() }
     )
 }
 
@@ -125,6 +127,7 @@ fun MeScreen(
     onAccountDeleteClick: () -> Unit,
     syncToCloud: () -> Unit,
     syncFromCloud: () -> Unit,
+    testClearDB: () -> Unit
 ) {
     var typedText by remember { mutableStateOf("") }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -141,9 +144,17 @@ fun MeScreen(
                 .padding(paddingValues)
                 .background(screenBackgroundDark)
         ) {
-            Button(onClick = {syncFromCloud()}) {
-                Text(text = "Test Sync From Cloud")
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween) {
+                Button(onClick = syncFromCloud) {
+                    Text(text = "Test Sync From Cloud")
+                }
+                Button(onClick = testClearDB) {
+                    Text(text = "Delete local data")
+                }
             }
+
             Card(
                 modifier = modifier
                     .fillMaxWidth()
@@ -633,7 +644,8 @@ private fun Preview() {
                 bannerStatus = SignInBannerStatus.NONE,
                 syncToCloud = {},
                 syncFromCloud = {},
-                buttonState = SyncButtonState.IDLE
+                buttonState = SyncButtonState.IDLE,
+                testClearDB = {}
             )
         }
     }
