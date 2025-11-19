@@ -80,12 +80,15 @@ import com.example.habitstracker.me.presentation.component.AccountSettingsBottom
 import com.example.habitstracker.me.presentation.component.BannerStatus
 import com.example.habitstracker.me.presentation.component.LoadingOverlay
 import com.example.habitstracker.me.presentation.component.MeTopBar
+import com.example.habitstracker.me.presentation.component.SyncIcon
 import com.example.habitstracker.me.presentation.component.TopBanner
 import com.example.habitstracker.me.presentation.sign_in.SignInBannerStatus
 import com.example.habitstracker.me.presentation.sign_in.SignInViewModel
 import com.example.habitstracker.me.presentation.sign_in.UserData
 import com.example.habitstracker.me.presentation.sync.SyncBannerStatus
 import com.example.habitstracker.me.presentation.sync.SyncViewModel
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun MeScreenRoot(
@@ -101,12 +104,13 @@ fun MeScreenRoot(
         isLoading = signInState.isLoading || syncState.isLoading,
         bannerStatus = signInState.banner,
         syncBannerState = syncState.banner,
+        lastSync = syncState.lastSync,
+        syncInProgress = syncState.syncInProgress,
         onSignInClick = { signInViewModel.signIn() },
         onSignOutClick = { signInViewModel.signOut() },
         clearCloudData = { syncViewModel.clearCloudData() },
         syncToCloud = { syncViewModel.syncToCloud() },
         syncFromCloud = { syncViewModel.syncFromCloud() },
-        testClearDB = { syncViewModel.deleteLocalData() }
     )
 }
 
@@ -118,12 +122,13 @@ fun MeScreen(
     isLoading: Boolean,
     bannerStatus: BannerStatus,
     syncBannerState: BannerStatus,
+    lastSync: String?,
+    syncInProgress: Boolean,
     onSignInClick: () -> Unit,
     onSignOutClick: () -> Unit,
     clearCloudData: () -> Unit,
     syncToCloud: () -> Unit,
     syncFromCloud: () -> Unit,
-    testClearDB: () -> Unit
 ) {
     var typedText by remember { mutableStateOf("") }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -189,7 +194,7 @@ fun MeScreen(
                         Column(
                             modifier = modifier
                                 .wrapContentWidth()
-                                .padding(start = 12.dp, bottom = 14.dp),
+                                .padding(start = 12.dp),
                             verticalArrangement = Arrangement.Center,
                         ) {
 
@@ -239,17 +244,26 @@ fun MeScreen(
                                     )
                                 }
 
-                                Text(
-                                    text = "last synchronized:",
-                                    color = Color.White.copy(alpha = 0.8f),
-                                    fontSize = 12.sp
-                                )
+                                Spacer(modifier.height(2.dp))
 
-                                Spacer(modifier.height(4.dp))
+                                Row(
+                                    verticalAlignment = Alignment.CenterVertically,
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    Text(
+                                        text = lastSync?.let {
+                                            "last synchronized: $it"
+                                        } ?: "Sync failed",
+                                        fontFamily = PoppinsFontFamily,
+                                        color = Color.White.copy(alpha = 0.8f),
+                                        fontSize = 12.sp
+                                    )
+                                    Spacer(modifier.width(4.dp))
+
+                                    SyncIcon(syncInProcess = syncInProgress)
+                                }
                             }
                         }
-
-                        //SyncIcon(buttonState)
                     }
                 }
 
@@ -590,9 +604,6 @@ fun MeScreen(
                     }
                 }
             }
-            Button(onClick = testClearDB) {
-                Text(text = "Delete local data")
-            }
 
             val buttons by remember {
                 mutableStateOf(
@@ -671,8 +682,9 @@ private fun Preview() {
                 bannerStatus = SignInBannerStatus.NONE,
                 syncToCloud = {},
                 syncFromCloud = {},
-                testClearDB = {},
-                syncBannerState = SyncBannerStatus.NONE
+                syncBannerState = SyncBannerStatus.NONE,
+                lastSync = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")),
+                syncInProgress = true
             )
         }
     }

@@ -7,7 +7,4 @@ interface SyncRepository {
     suspend fun syncToCloud(userId: String): Boolean
     suspend fun clearCloud(userId: String): Boolean
     suspend fun downloadOnlyHabits(userId: String): List<HabitEntity>
-
-    suspend fun testDeleteLocalData()
-
 }

@@ -79,22 +79,22 @@ fun TopBanner(status: BannerStatus) {
             warning
         )
         SyncBannerStatus.SYNC_TO_CLOUD_SUCCESS -> BannerData(
-            "Sync data to cloud successful",
+            "Sync successful",
             Icons.Default.CheckCircle,
             success
         )
         SyncBannerStatus.SYNC_TO_CLOUD_FAIL -> BannerData(
-            "Sync data to cloud failed",
+            "Sync failed",
             Icons.Default.Error,
             fail
         )
         SyncBannerStatus.SYNC_FROM_CLOUD_SUCCESS -> BannerData(
-            "Sync data from cloud successful",
+            "Download data from cloud successful",
             Icons.Default.CheckCircle,
             success
         )
         SyncBannerStatus.SYNC_FROM_CLOUD_FAIL -> BannerData(
-            "Sync data from cloud failed",
+            "Download data from cloud failed",
             Icons.Default.Error,
             fail
         )

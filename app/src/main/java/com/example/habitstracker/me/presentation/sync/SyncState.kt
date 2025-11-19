@@ -6,6 +6,8 @@ import com.example.habitstracker.me.presentation.component.BannerStatus
 data class SyncState(
     val banner: BannerStatus = SyncBannerStatus.NONE,
     val isLoading: Boolean = false,
+    val lastSync: String? = null,
+    val syncInProgress: Boolean = false
 )
 
 enum class SyncBannerStatus: BannerStatus {

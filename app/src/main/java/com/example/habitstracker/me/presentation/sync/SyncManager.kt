@@ -29,8 +29,4 @@ class SyncManager@Inject constructor(
         val user = googleAuthUiClient.getSignedInUser() ?: return false
         return syncRepo.clearCloud(user.userId)
     }
-
-    suspend fun testDeleteLocalData() {
-        syncRepo.testDeleteLocalData()
-    }
 }

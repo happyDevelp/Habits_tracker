@@ -12,6 +12,7 @@ import com.example.habitstracker.history.data.repository.DefaultHistoryRepositor
 import com.example.habitstracker.history.domain.HistoryRepository
 import com.example.habitstracker.me.data.DefaultSyncRepository
 import com.example.habitstracker.me.data.local.LocalSyncRepository
+import com.example.habitstracker.me.data.local.SyncPreferences
 import com.example.habitstracker.me.data.remote.CloudSyncRepository
 import com.example.habitstracker.me.domain.SyncRepository
 import com.example.habitstracker.me.presentation.sign_in.GoogleAuthUiClient
@@ -76,6 +77,12 @@ object AppModule {
     ): SyncManager {
         return SyncManager(syncRepository, googleAuthUiClient, context)
     }
+
+    @Provides
+    @Singleton
+    fun provideSyncPreferences(
+        @ApplicationContext context: Context
+    ): SyncPreferences = SyncPreferences(context)
 
     @Singleton
     @Provides

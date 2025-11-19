@@ -2,19 +2,33 @@ package com.example.habitstracker.me.presentation.sync
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.habitstracker.me.data.local.SyncPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
-class SyncViewModel @Inject constructor(private val syncManager: SyncManager) : ViewModel() {
+class SyncViewModel @Inject constructor(
+    private val syncManager: SyncManager,
+    private val preferences: SyncPreferences
+) : ViewModel() {
 
     private val _state = MutableStateFlow(SyncState())
     val state = _state.asStateFlow()
+
+    init {
+        viewModelScope.launch {
+            preferences.lastSync.collect { lastSync ->
+                _state.update { it.copy(lastSync = lastSync) }
+            }
+        }
+    }
 
     fun syncFromCloud() {
         viewModelScope.launch {
@@ -27,7 +41,6 @@ class SyncViewModel @Inject constructor(private val syncManager: SyncManager) : 
             _state.update { it.copy(isLoading = false) }
             if (success) showBanner(SyncBannerStatus.SYNC_FROM_CLOUD_SUCCESS)
             else showBanner(SyncBannerStatus.SYNC_FROM_CLOUD_FAIL)
-            resetBanner()
         }
     }
 
@@ -35,21 +48,16 @@ class SyncViewModel @Inject constructor(private val syncManager: SyncManager) : 
         viewModelScope.launch {
             if (internetAvailable() == false) return@launch
 
-            _state.update { it.copy(isLoading = true) }
-
+            _state.update { it.copy(syncInProgress = true) }
             val success = syncManager.syncToCloud()
 
-            _state.update { it.copy(isLoading = false) }
-            if (success) showBanner(SyncBannerStatus.SYNC_TO_CLOUD_SUCCESS)
+            if (success) {
+                val time = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
+                preferences.saveLastSync(time)
+                _state.update { it.copy(lastSync = time, syncInProgress = false) }
+                showBanner(SyncBannerStatus.SYNC_TO_CLOUD_SUCCESS)
+            }
             else showBanner(SyncBannerStatus.SYNC_TO_CLOUD_FAIL)
-            resetBanner()
-
-        }
-    }
-
-    fun deleteLocalData() {
-        viewModelScope.launch {
-            syncManager.testDeleteLocalData()
         }
     }
 
@@ -59,9 +67,7 @@ class SyncViewModel @Inject constructor(private val syncManager: SyncManager) : 
 
             _state.update { it.copy(isLoading = true) }
             syncManager.clearCloud()
-            _state.update { it.copy(isLoading = false) }
             showBanner(status = SyncBannerStatus.CLOUD_DATA_DELETED)
-            resetBanner()
         }
     }
 
@@ -78,6 +84,7 @@ class SyncViewModel @Inject constructor(private val syncManager: SyncManager) : 
     }
 
     private suspend fun resetBanner() {
+        _state.update { it.copy(isLoading = false) }
         delay(3000)
         _state.update { it.copy(banner = SyncBannerStatus.NONE) }
     }

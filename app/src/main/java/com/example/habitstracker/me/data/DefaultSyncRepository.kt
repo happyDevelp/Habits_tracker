@@ -16,19 +16,13 @@ class DefaultSyncRepository @Inject constructor(
             val habits = cloud.downloadHabits(userId)
             val dates = cloud.downloadDates(userId)
 
-            //Log.d("SYNC", "Downloading: habits=${habits.size}, dates=${dates.size}")
-
-
-            local.clearAllLocalData()
             local.insertHabits(habits)
             local.insertDates(dates)
-            //Log.d("SYNC", "Download OK")
-
             local.fillMissingDatesForAllHabits()
 
             true
         } catch (e: Exception) {
-            //Log.e("SYNC", "syncToCloud failed", e)
+            Log.e("SYNC", "syncToCloud failed", e)
             false
         }
     }
@@ -38,15 +32,12 @@ class DefaultSyncRepository @Inject constructor(
             val habits = local.getAllHabitsOnce()
             val dates = local.getAllDateHabitsOnce()
 
-            //Log.d("SYNC", "Uploading: habits=${habits.size}, dates=${dates.size}")
-
             cloud.uploadHabits(userId, habits)
             cloud.uploadDates(userId, dates)
 
-            //Log.d("SYNC", "Upload OK")
             true
         } catch (e: Exception) {
-            //Log.e("SYNC", "syncToCloud failed", e)
+            Log.e("SYNC", "syncToCloud failed", e)
             false
         }
     }
@@ -63,11 +54,5 @@ class DefaultSyncRepository @Inject constructor(
 
     override suspend fun downloadOnlyHabits(userId: String): List<HabitEntity> {
         return cloud.downloadHabits(userId)
-    }
-
-
-
-    override suspend fun testDeleteLocalData() {
-        local.clearAllLocalData()
     }
 }
