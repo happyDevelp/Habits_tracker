@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
-import com.example.habitstracker.me.presentation.sync.SyncButtonState
 
+/*
 @Composable
 fun SyncIcon(state: SyncButtonState) {
     val rotation = remember { Animatable(0f) }
@@ -53,4 +53,4 @@ fun SyncIcon(state: SyncButtonState) {
         contentDescription = "Sync",
         tint = color
     )
-}
+}*/

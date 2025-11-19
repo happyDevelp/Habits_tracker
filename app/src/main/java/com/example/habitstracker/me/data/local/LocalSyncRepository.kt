@@ -75,4 +75,9 @@ class LocalSyncRepository @Inject constructor(private val dao: HabitDao) {
             }
         }
     }
+
+    suspend fun testDeleteLocalData() {
+        dao.clearDateTable()
+        dao.clearHabitTable()
+    }
 }

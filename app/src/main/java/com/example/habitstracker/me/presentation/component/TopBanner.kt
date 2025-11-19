@@ -32,8 +32,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
-import com.example.habitstracker.me.presentation.sign_in.BannerStatus
 import com.example.habitstracker.me.presentation.sign_in.SignInBannerStatus
+import com.example.habitstracker.me.presentation.sync.SyncBannerStatus
 
 data class BannerData(
     val message: String,
@@ -42,15 +42,14 @@ data class BannerData(
 )
 
 @Composable
-fun TopBanner(
-    status: BannerStatus,
-    modifier: Modifier = Modifier
-) {
+fun TopBanner(status: BannerStatus) {
     val success = Color(0xFF1F6F43)
     val fail = Color(0xFF8E1E1E)
     val warning = Color(0xFF9C6B00)
 
     val newData = when (status) {
+
+        // SIGN IN BANNER
         SignInBannerStatus.LOGIN_SUCCESS -> BannerData(
             "Logged in successfully",
             Icons.Default.CheckCircle,
@@ -65,22 +64,52 @@ fun TopBanner(
             Icons.Default.Error,
             fail
         )
-        SignInBannerStatus.ACCOUNT_DELETED -> BannerData(
-            "Account deleted",
-            Icons.Default.CheckCircle,success
-        )
-        SignInBannerStatus.DELETE_FAILED -> BannerData(
-            "Delete failed",
-            Icons.Default.Error,
-            fail
-        )
         SignInBannerStatus.NO_INTERNET -> BannerData(
             "No internet connection",
             Icons.Default.WifiOff,
             warning
         )
-
         SignInBannerStatus.NONE -> null
+
+
+        // SYNC BANNER
+        SyncBannerStatus.NO_INTERNET -> BannerData(
+            "No internet connection",
+            Icons.Default.WifiOff,
+            warning
+        )
+        SyncBannerStatus.SYNC_TO_CLOUD_SUCCESS -> BannerData(
+            "Sync data to cloud successful",
+            Icons.Default.CheckCircle,
+            success
+        )
+        SyncBannerStatus.SYNC_TO_CLOUD_FAIL -> BannerData(
+            "Sync data to cloud failed",
+            Icons.Default.Error,
+            fail
+        )
+        SyncBannerStatus.SYNC_FROM_CLOUD_SUCCESS -> BannerData(
+            "Sync data from cloud successful",
+            Icons.Default.CheckCircle,
+            success
+        )
+        SyncBannerStatus.SYNC_FROM_CLOUD_FAIL -> BannerData(
+            "Sync data from cloud failed",
+            Icons.Default.Error,
+            fail
+        )
+        SyncBannerStatus.CLOUD_DATA_DELETED -> BannerData(
+            "Cloud data successful deleted",
+            Icons.Default.CheckCircle,
+            success
+        )
+        SyncBannerStatus.CLOUD_DATA_DELETED_FAILED -> BannerData(
+            "Cloud data deletion failed",
+            Icons.Default.Error,
+            fail
+        )
+        SyncBannerStatus.NONE -> null
+
         else -> null
     }
 
@@ -98,7 +127,6 @@ fun TopBanner(
         exit = slideOutVertically(
             targetOffsetY = { -it }
         ) + fadeOut(),
-        modifier = modifier
     ) {
 
         // Important: the banner does not disappear from the declaration instantly

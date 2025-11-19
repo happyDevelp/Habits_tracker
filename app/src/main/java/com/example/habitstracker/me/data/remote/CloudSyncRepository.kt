@@ -1,5 +1,6 @@
 package com.example.habitstracker.me.data.remote
 
+import android.util.Log
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.google.firebase.firestore.CollectionReference
@@ -52,4 +53,32 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
         return snapshot.toObjects(DateHabitEntity::class.java)
     }
 
+
+    // ---------- OTHER METHODS ----------
+    suspend fun downloadOnlyHabits(userId: String): List<HabitEntity> {
+        val snapshot = habitsCollection(userId).get().await()
+        return snapshot.toObjects(HabitEntity::class.java)
+    }
+
+    suspend fun clearCloud(userId: String): Boolean {
+        return try {
+            // delete all habitsEntity
+            val habitsCol = habitsCollection(userId)
+            val habitsSnapshot = habitsCol.get().await()
+            habitsSnapshot.documents.forEach { doc ->
+                habitsCol.document(doc.id).delete().await()
+            }
+
+            // delete all DateHabits
+            val datesCol = datesCollection(userId)
+            val datesSnapshot = datesCol.get().await()
+            datesSnapshot.documents.forEach { doc ->
+                datesCol.document(doc.id).delete().await()
+            }
+            true
+        } catch (e: Exception) {
+            Log.e("SYNC", "clearCloud failed", e)
+            false
+        }
+    }
 }

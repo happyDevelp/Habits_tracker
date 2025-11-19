@@ -3,6 +3,7 @@ package com.example.habitstracker.me.presentation.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,7 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.DeleteForever
+import androidx.compose.material.icons.outlined.CloudUpload
 import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
@@ -26,91 +27,72 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.habitstracker.R
+import com.example.habitstracker.core.presentation.UiText
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 
 @Composable
-fun AccountManagementButtons(onLogoutClick: () -> Unit, onDeleteAccountClick: () -> Unit) {
+fun AccountManagementButtons(
+    buttonsList: List<AccountButton>,
+    onCloudDataClear: () -> Unit
+) {
+    val context = LocalContext.current
     val iconBackgroundColor = Color(0xFF606060)
-
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    // Button 1
-    Row(
-        modifier = Modifier
-            .clickable { onLogoutClick() }
-            .fillMaxWidth(1f)
-            .clip(RoundedCornerShape(16.dp))
-            .background(color = containerBackgroundDark)
-            .padding(horizontal = 10.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Box(
+    buttonsList.forEach { button ->
+        Row(
             modifier = Modifier
-                .size(35.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(color = iconBackgroundColor),
-            //.border(2.dp, Color.Gray, RoundedCornerShape(12.dp)),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(
-                imageVector = Icons.Outlined.Logout,
-                contentDescription = null,
-                tint = Color.White
-            )
-        }
-        Text(
-            modifier = Modifier.padding(start = 20.dp),
-            text = "Log Out",
-            fontSize = 17.sp,
-            color = Color.White,
-            fontFamily = PoppinsFontFamily
-        )
-    }
-    Spacer(modifier = Modifier.height(10.dp))
+                .clickable {
+                    when (button.name) {
+                        UiText.StringResources(R.string.clear_cloud_data).asString(context)
+                            -> showDeleteDialog = true
 
-    // Button 2
-    Row(
-        modifier = Modifier
-            .clickable { /*onDeleteAccountClick()*/
-                showDeleteDialog = true
-            }
-            .fillMaxWidth(1f)
-            .clip(RoundedCornerShape(16.dp))
-            .background(color = containerBackgroundDark)
-            .padding(horizontal = 10.dp, vertical = 10.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Box(
-            modifier = Modifier
-                .size(35.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(color = iconBackgroundColor),
-            /*.border(2.dp, Color.Gray, RoundedCornerShape(12.dp))*/
-            contentAlignment = Alignment.Center,
+                        else -> button.onClick()
+                    }
+                }
+                .fillMaxWidth(1f)
+                .clip(RoundedCornerShape(16.dp))
+                .background(color = containerBackgroundDark)
+                .padding(horizontal = 10.dp, vertical = 10.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
-            Icon(
-                imageVector = Icons.Outlined.DeleteForever,
-                contentDescription = null,
-                tint = Color(0xFFFF1000)
+            Box(
+                modifier = Modifier
+                    .size(35.dp)
+                    .clip(RoundedCornerShape(12.dp))
+                    .background(color = iconBackgroundColor),
+                //.border(2.dp, Color.Gray, RoundedCornerShape(12.dp)),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = button.image,
+                    contentDescription = null,
+                    tint = button.color
+                )
+            }
+            Text(
+                modifier = Modifier.padding(start = 20.dp),
+                text = button.name,
+                fontSize = 17.sp,
+                color = button.color,
+                fontFamily = PoppinsFontFamily
             )
         }
-        Text(
-            modifier = Modifier.padding(start = 20.dp),
-            text = "Delete Account",
-            fontSize = 17.sp,
-            color = Color(0xFFFF1000),
-            fontFamily = PoppinsFontFamily
-        )
+        Spacer(modifier = Modifier.height(10.dp))
+
     }
 
     if (showDeleteDialog) {
         DeleteAccountDialog(
             onConfirm = {
                 showDeleteDialog = false
-                onDeleteAccountClick()
+                onCloudDataClear()
             },
             onDismiss = { showDeleteDialog = false }
         )
@@ -125,13 +107,14 @@ fun DeleteAccountDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
         onDismissRequest = { onDismiss() },
         title = {
             Text(
-                text = "Confirm Account Deletion",
+                text = "Confirm Clear Data From Cloud",
                 fontFamily = PoppinsFontFamily
             )
         },
         text = {
             Text(
-                text = "Are you sure you want to permanently delete your account?\nThis action cannot be undone.",
+                text = "Are you sure you want to permanently delete all your cloud-stored habit data?" +
+                        "\n\nThis action cannot be undone.",
                 fontFamily = PoppinsFontFamily
             )
         },
@@ -155,4 +138,23 @@ fun DeleteAccountDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
         },
         containerColor = containerBackgroundDark
     )
+}
+
+
+@Preview
+@Composable
+private fun Preview() {
+    Column {
+        AccountManagementButtons(
+            listOf(
+                AccountButton(
+                    "Upload Data From Cloud", Icons.Outlined.CloudUpload, onClick = {}
+                ),
+                AccountButton(
+                    "Log Out", Icons.Outlined.Logout, onClick = {}
+                ),
+            ),
+            onCloudDataClear = {}
+        )
+    }
 }

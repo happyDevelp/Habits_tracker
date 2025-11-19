@@ -33,6 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.unit.times
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.app.LocalNavController
@@ -53,7 +54,7 @@ import java.time.LocalDate
 
 @Composable
 fun HistoryScreenRoot(
-    historyViewModel: HistoryViewModel,
+    historyViewModel: HistoryViewModel = hiltViewModel<HistoryViewModel>(),
     startTab: Int,
     changeSelectedItemState: (index: Int) -> Unit
 ) {

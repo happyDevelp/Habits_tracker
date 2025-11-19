@@ -52,14 +52,6 @@ import com.example.habitstracker.statistic.presentation.StatisticViewModel
 fun AppNavigation() {
     val navController = LocalNavController.current
 
-    val mainScreenViewModel = hiltViewModel<MainScreenViewModel>()
-    val historyViewModel = hiltViewModel<HistoryViewModel>()
-    val statisticViewModel = hiltViewModel<StatisticViewModel>()
-    val signInViewModel = hiltViewModel<SignInViewModel>()
-    val syncViewModel = hiltViewModel<SyncViewModel>()
-
-
-
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val showBottomBar = getBottomBarState(navBackStackEntry)
 
@@ -111,8 +103,6 @@ fun AppNavigation() {
                     val args = backStackEntry.toRoute<Route.Today>()
                     val date = backStackEntry.savedStateHandle.get<String>("current_date")
                     TodayScreenRoot(
-                        viewModel = mainScreenViewModel,
-                        historyViewModel = historyViewModel,
                         historyDate = if (date == null) args.historyDate else date,
                         changeSelectedItemState = changeSelectedItemState
                     )
@@ -121,18 +111,17 @@ fun AppNavigation() {
                 composable<Route.History> { backStackEntry ->
                     val args = backStackEntry.toRoute<Route.History>()
                     HistoryScreenRoot(
-                        historyViewModel = historyViewModel,
                         startTab = args.startTab,
                         changeSelectedItemState = changeSelectedItemState,
                     )
                 }
 
                 composable<Route.Statistic> {
-                    StatisticScreenRoot(viewModel = statisticViewModel)
+                    StatisticScreenRoot()
                 }
 
                 composable<Route.Me> {
-                    MeScreenRoot(signInViewModel = signInViewModel, syncViewModel = syncViewModel)
+                    MeScreenRoot()
                 }
             }
 
@@ -151,7 +140,6 @@ fun AppNavigation() {
                     name = args.name,
                     icon = args.icon,
                     iconColor = args.iconColor,
-                    viewModel = mainScreenViewModel,
                     isEditMode = args.isEditMode,
                     id = args.id
                 )

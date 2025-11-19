@@ -15,6 +15,7 @@ import com.example.habitstracker.me.data.local.LocalSyncRepository
 import com.example.habitstracker.me.data.remote.CloudSyncRepository
 import com.example.habitstracker.me.domain.SyncRepository
 import com.example.habitstracker.me.presentation.sign_in.GoogleAuthUiClient
+import com.example.habitstracker.me.presentation.sync.SyncManager
 import com.example.habitstracker.statistic.data.db.StatisticDao
 import com.example.habitstracker.statistic.data.repository.DefaultStatisticRepository
 import com.example.habitstracker.statistic.domain.StatisticRepository
@@ -39,13 +40,13 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideFirebaseAuth(): FirebaseAuth  {
+    fun provideFirebaseAuth(): FirebaseAuth {
         return FirebaseAuth.getInstance()
     }
 
     @Provides
     @Singleton
-    fun providerLocalSyncRepository(habitDao: HabitDao) : LocalSyncRepository {
+    fun providerLocalSyncRepository(habitDao: HabitDao): LocalSyncRepository {
         return LocalSyncRepository(habitDao)
     }
 
@@ -60,10 +61,20 @@ object AppModule {
     @Provides
     @Singleton
     fun provideSyncRepository(
-        cloud: CloudSyncRepository,
-        local: LocalSyncRepository
+        local: LocalSyncRepository,
+        cloud: CloudSyncRepository
     ): SyncRepository {
-        return DefaultSyncRepository(cloud, local)
+        return DefaultSyncRepository(local = local, cloud = cloud)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSyncManager(
+        syncRepository: SyncRepository,
+        googleAuthUiClient: GoogleAuthUiClient,
+        @ApplicationContext context: Context
+    ): SyncManager {
+        return SyncManager(syncRepository, googleAuthUiClient, context)
     }
 
     @Singleton

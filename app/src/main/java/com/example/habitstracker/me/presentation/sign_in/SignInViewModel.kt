@@ -17,7 +17,6 @@ import javax.inject.Inject
 class SignInViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val googleAuthUiClient: GoogleAuthUiClient,
-    private val syncRepository: SyncRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SignInState())
@@ -84,26 +83,6 @@ class SignInViewModel @Inject constructor(
         googleAuthUiClient.signOut()
         _state.update { SignInState() }
         showBanner(status = SignInBannerStatus.LOGOUT_SUCCESS)
-    }
-
-    fun deleteAccount() {
-        viewModelScope.launch {
-            if (context.isInternetAvailable() == false) {
-                _state.update {
-                    it.copy(
-                        signInError = "No internet connection",
-                        isLoading = false,
-                    )
-                }
-                showBanner(status = SignInBannerStatus.NO_INTERNET)
-                return@launch // exit from coroutine
-            }
-
-            _state.update { it.copy(isLoading = true) }
-            googleAuthUiClient.deleteAccount()
-            _state.update { SignInState() }
-            showBanner(status = SignInBannerStatus.ACCOUNT_DELETED)
-        }
     }
 
     fun resetState() {

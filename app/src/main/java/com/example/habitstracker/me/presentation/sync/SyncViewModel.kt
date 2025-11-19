@@ -2,8 +2,6 @@ package com.example.habitstracker.me.presentation.sync
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.habitstracker.me.domain.SyncRepository
-import com.google.firebase.auth.FirebaseAuth
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,65 +11,74 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SyncViewModel @Inject constructor(
-    private val syncRepo: SyncRepository,
-    private val auth: FirebaseAuth,
-) : ViewModel() {
+class SyncViewModel @Inject constructor(private val syncManager: SyncManager) : ViewModel() {
 
     private val _state = MutableStateFlow(SyncState())
     val state = _state.asStateFlow()
 
-    private val userId: String?
-        get() = auth.currentUser?.uid
-
-
     fun syncFromCloud() {
-        val uid = userId ?: return
-
         viewModelScope.launch {
+            if (internetAvailable() == false) return@launch
+
             _state.update { it.copy(isLoading = true) }
 
-            val success = syncRepo.syncFromCloud(uid)
+            val success = syncManager.syncFromCloud()
 
-            _state.update {
-                it.copy(
-                    isLoading = false, banner = if (success) SyncBannerStatus.SYNC_SUCCESS
-                    else SyncBannerStatus.SYNC_FAILED
-                )
-            }
+            _state.update { it.copy(isLoading = false) }
+            if (success) showBanner(SyncBannerStatus.SYNC_FROM_CLOUD_SUCCESS)
+            else showBanner(SyncBannerStatus.SYNC_FROM_CLOUD_FAIL)
+            resetBanner()
         }
     }
 
     fun syncToCloud() {
-        val uid = userId ?: return
-
         viewModelScope.launch {
+            if (internetAvailable() == false) return@launch
+
             _state.update { it.copy(isLoading = true) }
 
-            val success = syncRepo.syncToCloud(uid)
+            val success = syncManager.syncToCloud()
 
-            _state.update {
-                it.copy(
-                    isLoading = false,
-                    banner = if (success) SyncBannerStatus.SYNC_SUCCESS
-                    else SyncBannerStatus.SYNC_FAILED,
-                    buttonState = if (success) SyncButtonState.SUCCESS
-                    else SyncButtonState.ERROR
-                )
+            _state.update { it.copy(isLoading = false) }
+            if (success) showBanner(SyncBannerStatus.SYNC_TO_CLOUD_SUCCESS)
+            else showBanner(SyncBannerStatus.SYNC_TO_CLOUD_FAIL)
+            resetBanner()
 
-            }
-            delay(3000)
-            _state.update { it.copy(buttonState = SyncButtonState.IDLE) }
         }
-    }
-
-    fun resetBanner() {
-        _state.update { it.copy(banner = SyncBannerStatus.NONE) }
     }
 
     fun deleteLocalData() {
         viewModelScope.launch {
-            syncRepo.testDeleteLocalData()
+            syncManager.testDeleteLocalData()
         }
+    }
+
+    fun clearCloudData() {
+        viewModelScope.launch {
+            if (internetAvailable() == false) return@launch
+
+            _state.update { it.copy(isLoading = true) }
+            syncManager.clearCloud()
+            _state.update { it.copy(isLoading = false) }
+            showBanner(status = SyncBannerStatus.CLOUD_DATA_DELETED)
+            resetBanner()
+        }
+    }
+
+    private suspend fun internetAvailable(): Boolean {
+        return if (syncManager.hasInternet() == false) {
+            showBanner(SyncBannerStatus.NO_INTERNET)
+            false
+        } else true
+    }
+
+    private suspend fun showBanner(status: SyncBannerStatus) {
+        _state.update { it.copy(banner = status) }
+        resetBanner()
+    }
+
+    private suspend fun resetBanner() {
+        delay(3000)
+        _state.update { it.copy(banner = SyncBannerStatus.NONE) }
     }
 }

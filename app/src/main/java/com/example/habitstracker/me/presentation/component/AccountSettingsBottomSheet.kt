@@ -10,6 +10,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.outlined.CloudUpload
+import androidx.compose.material.icons.outlined.DeleteForever
+import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -20,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
@@ -28,11 +32,9 @@ import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 @OptIn(ExperimentalMaterial3Api::class)
 fun AccountSettingsBottomSheet(
     sheetState: SheetState,
-    modifier: Modifier,
-    onSignOutClick: () -> Unit,
-    onAccountDeleteClick: () -> Unit,
+    buttons: List<AccountButton>,
+    onCloudDataClear: () -> Unit,
     closeBottomSheet: () -> Unit,
-
     ) {
     ModalBottomSheet(
         onDismissRequest = closeBottomSheet,
@@ -51,7 +53,7 @@ fun AccountSettingsBottomSheet(
                     .fillMaxWidth()
             ) {
                 IconButton(
-                    modifier = modifier.align(Alignment.TopStart),
+                    modifier = Modifier.align(Alignment.TopStart),
                     onClick = closeBottomSheet
                 ) {
                     Icon(
@@ -70,13 +72,11 @@ fun AccountSettingsBottomSheet(
                 )
             }
             Spacer(modifier = Modifier.height(10.dp))
+
             AccountManagementButtons(
-                onLogoutClick = {
-                    onSignOutClick()
-                    closeBottomSheet()
-                },
-                onDeleteAccountClick = {
-                    onAccountDeleteClick()
+                buttonsList = buttons,
+                onCloudDataClear = {
+                    onCloudDataClear()
                     closeBottomSheet()
                 }
             )
@@ -84,3 +84,10 @@ fun AccountSettingsBottomSheet(
     }
     Spacer(Modifier.height(10.dp))
 }
+
+data class AccountButton(
+    val name: String,
+    val image: ImageVector,
+    val color: Color = Color.White,
+    val onClick: () -> Unit
+)

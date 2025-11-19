@@ -25,9 +25,11 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.CloudUpload
+import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material.icons.outlined.PeopleOutline
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -45,7 +47,6 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -57,12 +58,12 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
@@ -74,40 +75,35 @@ import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
+import com.example.habitstracker.me.presentation.component.AccountButton
 import com.example.habitstracker.me.presentation.component.AccountSettingsBottomSheet
+import com.example.habitstracker.me.presentation.component.BannerStatus
 import com.example.habitstracker.me.presentation.component.LoadingOverlay
 import com.example.habitstracker.me.presentation.component.MeTopBar
-import com.example.habitstracker.me.presentation.component.SyncIcon
 import com.example.habitstracker.me.presentation.component.TopBanner
-import com.example.habitstracker.me.presentation.sign_in.BannerStatus
 import com.example.habitstracker.me.presentation.sign_in.SignInBannerStatus
 import com.example.habitstracker.me.presentation.sign_in.SignInViewModel
 import com.example.habitstracker.me.presentation.sign_in.UserData
-import com.example.habitstracker.me.presentation.sync.SyncButtonState
+import com.example.habitstracker.me.presentation.sync.SyncBannerStatus
 import com.example.habitstracker.me.presentation.sync.SyncViewModel
 
 @Composable
-fun MeScreenRoot(signInViewModel: SignInViewModel, syncViewModel: SyncViewModel) {
+fun MeScreenRoot(
+    signInViewModel: SignInViewModel = hiltViewModel<SignInViewModel>(),
+    syncViewModel: SyncViewModel = hiltViewModel<SyncViewModel>()
+) {
     val signInState by signInViewModel.state.collectAsStateWithLifecycle()
     val syncState by syncViewModel.state.collectAsStateWithLifecycle()
 
 
-/*    if (signInState.loginSuccessful) {
-        LaunchedEffect(Unit) {
-            syncViewModel.syncFromCloud()
-        }
-    }*/
-
-
     MeScreen(
         user = signInState.userData,
-        message = signInState.signInError,
-        isLoading = signInState.isLoading,
+        isLoading = signInState.isLoading || syncState.isLoading,
         bannerStatus = signInState.banner,
-        buttonState = syncState.buttonState,
+        syncBannerState = syncState.banner,
         onSignInClick = { signInViewModel.signIn() },
         onSignOutClick = { signInViewModel.signOut() },
-        onAccountDeleteClick = { signInViewModel.deleteAccount() },
+        clearCloudData = { syncViewModel.clearCloudData() },
         syncToCloud = { syncViewModel.syncToCloud() },
         syncFromCloud = { syncViewModel.syncFromCloud() },
         testClearDB = { syncViewModel.deleteLocalData() }
@@ -121,11 +117,10 @@ fun MeScreen(
     user: UserData?,
     isLoading: Boolean,
     bannerStatus: BannerStatus,
-    buttonState: SyncButtonState,
-    message: String?,
+    syncBannerState: BannerStatus,
     onSignInClick: () -> Unit,
     onSignOutClick: () -> Unit,
-    onAccountDeleteClick: () -> Unit,
+    clearCloudData: () -> Unit,
     syncToCloud: () -> Unit,
     syncFromCloud: () -> Unit,
     testClearDB: () -> Unit
@@ -145,17 +140,6 @@ fun MeScreen(
                 .padding(paddingValues)
                 .background(screenBackgroundDark)
         ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween) {
-                Button(onClick = syncFromCloud) {
-                    Text(text = "Test Sync From Cloud")
-                }
-                Button(onClick = testClearDB) {
-                    Text(text = "Delete local data")
-                }
-            }
-
             Card(
                 modifier = modifier
                     .fillMaxWidth()
@@ -178,6 +162,7 @@ fun MeScreen(
                             .size(70.dp)
                             .background(HabitColor.Teal.light)
                             .border(2.dp, Color.Gray, CircleShape)
+                            .padding()
                     ) {
                         // userAvatar
                         AsyncImage(
@@ -197,14 +182,14 @@ fun MeScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(end = 8.dp),
-                        verticalAlignment = Alignment.CenterVertically,
+                        verticalAlignment = Alignment.Top,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
 
                         Column(
                             modifier = modifier
                                 .wrapContentWidth()
-                                .padding(start = 12.dp),
+                                .padding(start = 12.dp, bottom = 14.dp),
                             verticalArrangement = Arrangement.Center,
                         ) {
 
@@ -230,7 +215,7 @@ fun MeScreen(
                                     fontSize = 14.sp,
                                     fontFamily = PoppinsFontFamily,
                                 )
-                                Spacer(modifier.height(10.dp))
+                                Spacer(modifier.height(0.dp))
                                 Row(
                                     modifier = Modifier
                                         .clickable { openBottomSheet = true },
@@ -253,11 +238,18 @@ fun MeScreen(
                                         tint = Color.White.copy(alpha = 0.9f),
                                     )
                                 }
+
+                                Text(
+                                    text = "last synchronized:",
+                                    color = Color.White.copy(alpha = 0.8f),
+                                    fontSize = 12.sp
+                                )
+
                                 Spacer(modifier.height(4.dp))
                             }
                         }
 
-                        SyncIcon(buttonState)
+                        //SyncIcon(buttonState)
                     }
                 }
 
@@ -598,13 +590,43 @@ fun MeScreen(
                     }
                 }
             }
+            Button(onClick = testClearDB) {
+                Text(text = "Delete local data")
+            }
 
+            val buttons by remember {
+                mutableStateOf(
+                    listOf(
+                        AccountButton(
+                            "Upload Data From Cloud",
+                            Icons.Outlined.CloudUpload,
+                            onClick = {
+                                openBottomSheet = false
+                                syncFromCloud()
+                            }
+                        ),
+                        AccountButton(
+                            "Log Out",
+                            Icons.Outlined.Logout,
+                            onClick = {
+                                openBottomSheet = false
+                                onSignOutClick()
+                            }
+                        ),
+                        AccountButton(
+                            "Clear Cloud Data",
+                            Icons.Outlined.DeleteForever,
+                            color = Color(0xFFFF1000),
+                            onClick = { }
+                        )
+                    )
+                )
+            }
             if (openBottomSheet) {
                 AccountSettingsBottomSheet(
-                    sheetState,
-                    modifier,
-                    onSignOutClick,
-                    onAccountDeleteClick,
+                    sheetState = sheetState,
+                    buttons = buttons,
+                    onCloudDataClear = clearCloudData,
                     closeBottomSheet = { openBottomSheet = false }
                 )
             }
@@ -617,6 +639,11 @@ fun MeScreen(
     TopBanner(
         status = bannerStatus,
     )
+
+    TopBanner(
+        status = syncBannerState,
+    )
+
 }
 
 data class FriendEntity(
@@ -633,20 +660,19 @@ private fun Preview() {
             MeScreen(
                 user = UserData(
                     "1",
-                    email = "fhkdshfas",
+                    email = "12345@gmail.com",
                     userName = "test name",
                     profilePictureUrl = null
                 ),
-                message = null,
                 onSignInClick = { },
                 onSignOutClick = { },
-                onAccountDeleteClick = {},
+                clearCloudData = {},
                 isLoading = false,
                 bannerStatus = SignInBannerStatus.NONE,
                 syncToCloud = {},
                 syncFromCloud = {},
-                buttonState = SyncButtonState.IDLE,
-                testClearDB = {}
+                testClearDB = {},
+                syncBannerState = SyncBannerStatus.NONE
             )
         }
     }

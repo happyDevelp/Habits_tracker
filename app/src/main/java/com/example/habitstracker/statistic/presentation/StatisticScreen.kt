@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.AppTheme
@@ -33,7 +34,7 @@ import java.time.temporal.TemporalAdjusters
 import kotlin.math.roundToInt
 
 @Composable
-fun StatisticScreenRoot(viewModel: StatisticViewModel) {
+fun StatisticScreenRoot(viewModel: StatisticViewModel = hiltViewModel<StatisticViewModel>()) {
     val dateHabitList by viewModel.dateHabitList.collectAsStateWithLifecycle()
 
     val consistency = rolling30DayConsistency(dateHabitList)

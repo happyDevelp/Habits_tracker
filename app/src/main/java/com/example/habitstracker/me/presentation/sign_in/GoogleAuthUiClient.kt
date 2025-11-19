@@ -64,7 +64,7 @@ class GoogleAuthUiClient(
         auth.signOut()
     }
 
-    suspend fun deleteAccount(): Boolean {
+/*    suspend fun deleteAccount(): Boolean {
         val user = auth.currentUser ?: return false
 
         return try {
@@ -78,7 +78,7 @@ class GoogleAuthUiClient(
             Log.e("GoogleAuth", "Error deleting account", e)
             false
         }
-    }
+    }*/
 
     fun getSignedInUser(): UserData? {
         val u = auth.currentUser ?: return null

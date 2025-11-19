@@ -45,6 +45,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
@@ -71,7 +72,7 @@ import java.time.LocalDate
 
 @Composable
 fun CreateOwnHabitRoot(
-    viewModel: MainScreenViewModel,
+    viewModel: MainScreenViewModel = hiltViewModel<MainScreenViewModel>(),
     isEditMode: Boolean,
     id: Int?,
     name: String,

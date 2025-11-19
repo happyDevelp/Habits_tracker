@@ -40,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
@@ -70,8 +71,8 @@ import java.time.LocalDate
 
 @Composable
 fun TodayScreenRoot(
-    viewModel: MainScreenViewModel,
-    historyViewModel: HistoryViewModel,
+    viewModel: MainScreenViewModel = hiltViewModel<MainScreenViewModel>(),
+    historyViewModel: HistoryViewModel = hiltViewModel<HistoryViewModel>(),
     historyDate: String?,
     changeSelectedItemState: (index: Int) -> Unit
 ) {

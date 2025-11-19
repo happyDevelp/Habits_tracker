@@ -76,6 +76,8 @@
     <string name="edit_habit">Edit Habit</string>
     <string name="settings">Settings</string>
     <string name="web_client_id">320317569531-pjhcn24vdjomh7hne23v4lkdeqsq7rgj.apps.googleusercontent.com</string>
+    <string name="log_out">Log Out</string>
+    <string name="clear_cloud_data">Clear Cloud Data</string>
 
 
 </resources>
