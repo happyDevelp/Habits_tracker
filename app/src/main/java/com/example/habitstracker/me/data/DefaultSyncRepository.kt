@@ -1,6 +1,7 @@
 package com.example.habitstracker.me.data
 
 import android.util.Log
+import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.me.data.local.LocalSyncRepository
 import com.example.habitstracker.me.data.remote.CloudSyncRepository
@@ -22,7 +23,7 @@ class DefaultSyncRepository @Inject constructor(
 
             true
         } catch (e: Exception) {
-            Log.e("SYNC", "syncToCloud failed", e)
+            Log.e("SYNC_DEBUG", "syncToCloud failed", e)
             false
         }
     }
@@ -37,7 +38,50 @@ class DefaultSyncRepository @Inject constructor(
 
             true
         } catch (e: Exception) {
-            Log.e("SYNC", "syncToCloud failed", e)
+            Log.e("SYNC_DEBUG", "syncToCloud failed", e)
+            false
+        }
+    }
+
+    override suspend fun pushHabitToCloud(userId: String, habit: HabitEntity, dateHabit: DateHabitEntity): Boolean {
+        return try {
+            cloud.uploadHabit(userId, habit, dateHabit)
+            true
+        } catch (e: Exception) {
+            Log.e("SYNC_DEBUG", "pushHabitToCloud failed", e)
+            false
+        }
+    }
+
+    override suspend fun updateHabitOnCloud(userId: String, habit: HabitEntity): Boolean {
+        return try {
+            cloud.updateHabit(userId, habit)
+            true
+        } catch (e: Exception) {
+            Log.e("SYNC_DEBUG", "updateHabitInCloud failed", e)
+            false
+        }
+    }
+
+    override suspend fun updateDateHabitOnCloud(userId: String, dateHabitId: String, date: String, isDone: Boolean): Boolean {
+        return try {
+            cloud.updateDateHabit(userId = userId, dateHabitId = dateHabitId, date = date, isDone = isDone)
+            true
+        } catch (e: Exception) {
+            Log.e("SYNC_DEBUG", "updateDateHabitInCloud failed", e)
+            false
+        }
+    }
+
+    override suspend fun deleteHabitOnCloud(
+        userId: String,
+        habitId: String
+    ): Boolean {
+        return try {
+            cloud.deleteHabit(userId, habitId)
+            true
+        } catch (e: Exception) {
+            Log.e("SYNC_DEBUG", "deleteHabitOnCloud failed", e)
             false
         }
     }
@@ -47,7 +91,7 @@ class DefaultSyncRepository @Inject constructor(
             cloud.clearCloud(userId)
             true
         } catch (e: Exception) {
-            Log.e("SYNC", "clearCloud failed", e)
+            Log.e("SYNC_DEBUG", "clearCloud failed", e)
             false
         }
     }

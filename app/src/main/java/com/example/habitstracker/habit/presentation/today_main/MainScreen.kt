@@ -66,29 +66,34 @@ import com.example.habitstracker.habit.presentation.today_main.components.calend
 import com.example.habitstracker.habit.presentation.today_main.utility.AchievementSection
 import com.example.habitstracker.habit.presentation.today_main.utility.getBestStreak
 import com.example.habitstracker.history.presentation.HistoryViewModel
+import com.example.habitstracker.me.presentation.sync.SyncViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable
 fun TodayScreenRoot(
-    viewModel: MainScreenViewModel = hiltViewModel<MainScreenViewModel>(),
+    todayViewModel: MainScreenViewModel = hiltViewModel<MainScreenViewModel>(),
     historyViewModel: HistoryViewModel = hiltViewModel<HistoryViewModel>(),
+    syncViewModel: SyncViewModel = hiltViewModel<SyncViewModel>(),
     historyDate: String?,
     changeSelectedItemState: (index: Int) -> Unit
 ) {
     val isHistoryHandled = false
     LaunchedEffect(historyDate) {
         if (historyDate != null && !isHistoryHandled) {
-            viewModel.updateSelectedDate(LocalDate.parse(historyDate))
+            todayViewModel.updateSelectedDate(LocalDate.parse(historyDate))
         }
     }
+
+    // sync methods
+
 
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    val habitListState by viewModel.habitsListState.collectAsStateWithLifecycle()
-    val dateState by viewModel.selectedDate.collectAsStateWithLifecycle()
-    val mapDateToHabits by viewModel.dateHabitsMap.collectAsStateWithLifecycle()
+    val habitListState by todayViewModel.habitsListState.collectAsStateWithLifecycle()
+    val dateState by todayViewModel.selectedDate.collectAsStateWithLifecycle()
+    val mapDateToHabits by todayViewModel.dateHabitsMap.collectAsStateWithLifecycle()
 
     val allAchievements = historyViewModel.allAchievements.collectAsStateWithLifecycle().value
     val unlockedAchievement by historyViewModel.unlockedAchievement.collectAsStateWithLifecycle()
@@ -98,9 +103,9 @@ fun TodayScreenRoot(
     val onSelectClick: (id: Int, isDone: Boolean, selectDate: String) -> Unit =
         { id, isDone, selectDate ->
             coroutineScope.launch {
-                viewModel.updateDateSelectState(id, isDone, selectDate)
+                todayViewModel.updateDateSelectState(id, isDone, selectDate)
 
-                val map = viewModel.dateHabitsMap.value
+                val map = todayViewModel.dateHabitsMap.value
                     .toMutableMap().apply {
                         val habitsForDate = getOrDefault(LocalDate.parse(selectDate), emptyList())
                         val updatedHabits = habitsForDate.map {
@@ -156,18 +161,13 @@ fun TodayScreenRoot(
                         )
                     )
                 }
+                syncViewModel.updateDateHabitOnCloud(
+                    dateHabitId = id.toString(),
+                    date = selectDate,
+                    isDone = isDone
+                )
             }
         }
-
-    val onDeleteClick: (id: Int) -> Unit = { habitId ->
-        coroutineScope.launch {
-            viewModel.deleteHabit(habitId)
-        }
-    }
-
-    val onDateChangeClick: (newDate: LocalDate) -> Unit = { newDate ->
-        viewModel.updateSelectedDate(newDate)
-    }
 
     TodayScreen(
         habitListState = habitListState,
@@ -175,8 +175,11 @@ fun TodayScreenRoot(
         mapDateToHabits = mapDateToHabits,
         unlockedAchievement = unlockedAchievement,
         onSelectClick = onSelectClick,
-        onDeleteClick = onDeleteClick,
-        onDateChangeClick = onDateChangeClick,
+        onDeleteClick = {
+            todayViewModel.deleteHabit(it)
+            syncViewModel.deleteHabitOnCloud(it.toString())
+        },
+        onDateChangeClick = { todayViewModel.updateSelectedDate(it) },
         changeSelectedItemState = changeSelectedItemState,
         onDismiss = onDismiss,
     )
@@ -194,7 +197,7 @@ fun TodayScreen(
     onSelectClick: (id: Int, isDone: Boolean, selectDate: String) -> Unit,
     onDeleteClick: (id: Int) -> Unit,
     onDateChangeClick: (newDate: LocalDate) -> Unit,
-    changeSelectedItemState: (index: Int) -> Unit
+    changeSelectedItemState: (index: Int) -> Unit,
 ) {
     val navController = LocalNavController.current
 
@@ -204,7 +207,7 @@ fun TodayScreen(
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             modifier = modifier.fillMaxSize(),
-            topBar = { TopBarMainScreen(modifier =  Modifier) { openBottomSheet = true } }
+            topBar = { TopBarMainScreen(modifier = Modifier) { openBottomSheet = true } }
         ) { paddingValues ->
             Card(
                 modifier = Modifier

@@ -2,6 +2,8 @@ package com.example.habitstracker.me.presentation.sync
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.habitstracker.habit.domain.DateHabitEntity
+import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.me.data.local.SyncPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -58,6 +60,34 @@ class SyncViewModel @Inject constructor(
                 showBanner(SyncBannerStatus.SYNC_TO_CLOUD_SUCCESS)
             }
             else showBanner(SyncBannerStatus.SYNC_TO_CLOUD_FAIL)
+        }
+    }
+
+    fun pushHabitToCloud(habit: HabitEntity, dateHabit: DateHabitEntity) {
+        viewModelScope.launch {
+            if (internetAvailable() == false) return@launch
+            syncManager.uploadHabitToCloud(habit, dateHabit)
+        }
+    }
+
+    fun updateHabitOnCloud(habit: HabitEntity) {
+        viewModelScope.launch {
+            if (internetAvailable() == false) return@launch
+            syncManager.updateHabitOnCloud(habit)
+        }
+    }
+
+    fun updateDateHabitOnCloud(dateHabitId: String, date: String, isDone: Boolean) {
+        viewModelScope.launch {
+            if (internetAvailable() == false) return@launch
+            syncManager.updateDateHabitOnCloud(dateHabitId, date, isDone)
+        }
+    }
+
+    fun deleteHabitOnCloud(habitId: String) {
+        viewModelScope.launch {
+            if (internetAvailable() == false) return@launch
+            syncManager.deleteHabitOnCloud(habitId)
         }
     }
 

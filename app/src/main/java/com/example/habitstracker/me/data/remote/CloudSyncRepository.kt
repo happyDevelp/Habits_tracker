@@ -6,6 +6,7 @@ import com.example.habitstracker.habit.domain.HabitEntity
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -40,6 +41,56 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
         }
     }
 
+    suspend fun uploadHabit(userId: String, habit: HabitEntity, dateHabit: DateHabitEntity) {
+        val habitsCollection = habitsCollection(userId)
+        habitsCollection.document(habit.id.toString())
+            .set(habit)
+            .await()
+
+        val dateHabitsCollection = datesCollection(userId)
+        dateHabitsCollection.document(habit.id.toString())
+            .set(dateHabit)
+            .await()
+
+    }
+
+    suspend fun updateHabit(userId: String, habit: HabitEntity) {
+        val col = habitsCollection(userId)
+        col.document(habit.id.toString())
+            .set(habit, SetOptions.merge())
+            .await()
+    }
+
+    suspend fun updateDateHabit(
+        userId: String,
+        dateHabitId: String,
+        date: String,
+        isDone: Boolean
+    ) {
+        val col = datesCollection(userId)
+        col.document(dateHabitId)
+            .set(
+                mapOf("completed" to isDone),
+                SetOptions.merge()
+            )
+            .await()
+    }
+
+    suspend fun deleteHabit(userId: String, habitId: String) {
+        val habitCollection = habitsCollection(userId)
+        habitCollection.document(habitId)
+            .delete()
+            .await()
+
+        val dateHabitCollection = datesCollection(userId)
+        dateHabitCollection.document(habitId)
+            .delete()
+            .await()
+    }
+
+    suspend fun deleteDateHabit(userId: String, dateHabitId: String) {
+
+    }
 
     // ---------- DOWNLOAD ----------
 
