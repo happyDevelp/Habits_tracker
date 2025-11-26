@@ -1,9 +1,7 @@
 package com.example.habitstracker.me.presentation.sync
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.me.data.local.SyncPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -12,7 +10,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -42,7 +39,7 @@ class SyncViewModel @Inject constructor(
 
             val success = syncManager.syncFromCloud()
 
-            _state.update { it.copy(isLoading = false) }
+            _state.update { it.copy(isLoading = false, lastSync = updateLastSync()) }
             if (success) showBanner(SyncBannerStatus.SYNC_FROM_CLOUD_SUCCESS)
             else showBanner(SyncBannerStatus.SYNC_FROM_CLOUD_FAIL)
         }
@@ -56,18 +53,16 @@ class SyncViewModel @Inject constructor(
             val success = syncManager.syncToCloud()
 
             if (success) {
-                val time = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
-                preferences.saveLastSync(time)
-                _state.update { it.copy(lastSync = time, syncInProgress = false) }
+                _state.update { it.copy(lastSync = updateLastSync(), syncInProgress = false) }
                 showBanner(SyncBannerStatus.SYNC_TO_CLOUD_SUCCESS)
             } else showBanner(SyncBannerStatus.SYNC_TO_CLOUD_FAIL)
         }
     }
 
-    fun pushHabitToCloud(habit: HabitEntity, dateHabit: DateHabitEntity) {
+    fun pushHabitToCloud(habit: HabitEntity) {
         viewModelScope.launch {
             if (internetAvailable() == false) return@launch
-            syncManager.uploadHabitToCloud(habit, dateHabit)
+            syncManager.pushHabitToCloud(habit)
         }
     }
 
@@ -96,7 +91,7 @@ class SyncViewModel @Inject constructor(
         viewModelScope.launch {
             if (internetAvailable() == false) return@launch
 
-            _state.update { it.copy(isLoading = true) }
+            _state.update { it.copy(isLoading = true, lastSync = updateLastSync()) }
             syncManager.clearCloud()
             showBanner(status = SyncBannerStatus.CLOUD_DATA_DELETED)
         }
@@ -107,29 +102,13 @@ class SyncViewModel @Inject constructor(
             val localHabits = syncManager.getAllLocalHabits()
             val localDates = syncManager.getAllLocalDates()
 
-
-            val cloudHabits = syncManager.getAllCloudHabits()
-            val cloudDates = syncManager.getAllCloudDates()
+            /*val cloudHabits = syncManager.getAllCloudHabits()
+            val cloudDates = syncManager.getAllCloudDates()*/
 
             // push missing habits
-            localHabits.forEach { localHabit ->
-                if (cloudHabits.none { it.id == localHabit.id }) {
-                    syncManager.uploadHabitToCloud(
-                        habit = localHabit, dateHabit = DateHabitEntity(
-                            habitId = localHabit.id,
-                            currentDate = LocalDate.now().toString(),
-                            isCompleted = false,
-                        )
-                    )
-                }
-            }
-
-            // push missing dateHabits
-            localDates.forEach { localDate ->
-                if (cloudDates.none { it.id == localDate.id }) {
-                    syncManager.uploadDateHabitToCloud(localDate)
-                }
-            }
+            syncManager.pushHabitToCloud(localHabits)
+            syncManager.pushDateHabitToCloud(localDates)
+            _state.update { it.copy(lastSync = updateLastSync()) }
         }
     }
 
@@ -150,4 +129,11 @@ class SyncViewModel @Inject constructor(
         delay(3000)
         _state.update { it.copy(banner = SyncBannerStatus.NONE) }
     }
+
+    private suspend fun updateLastSync(): String {
+        val time = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"))
+        preferences.saveLastSync(time)
+        return time
+    }
+
 }

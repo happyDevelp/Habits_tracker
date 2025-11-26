@@ -11,11 +11,11 @@ import javax.inject.Inject
 class DefaultSyncRepository @Inject constructor(
     private val local: LocalSyncRepository,
     private val cloud: CloudSyncRepository,
-    ): SyncRepository {
+) : SyncRepository {
     override suspend fun syncFromCloud(userId: String): Boolean {
         return try {
-            val habits = cloud.downloadHabits(userId)
-            val dates = cloud.downloadDates(userId)
+            val habits = cloud.getHabits(userId)
+            val dates = cloud.getDates(userId)
 
             local.insertHabits(habits)
             local.insertDates(dates)
@@ -23,7 +23,7 @@ class DefaultSyncRepository @Inject constructor(
 
             true
         } catch (e: Exception) {
-            Log.e("SYNC_DEBUG", "syncToCloud failed", e)
+            Log.e("SYNC_DEBUG", "syncFromCloud failed", e)
             false
         }
     }
@@ -33,8 +33,8 @@ class DefaultSyncRepository @Inject constructor(
             val habits = local.getAllHabitsOnce()
             val dates = local.getAllDateHabitsOnce()
 
-            cloud.uploadHabits(userId, habits)
-            cloud.uploadDates(userId, dates)
+            cloud.pushHabit(userId, habits)
+            cloud.pushDateHabit(userId, dates)
 
             true
         } catch (e: Exception) {
@@ -46,11 +46,23 @@ class DefaultSyncRepository @Inject constructor(
     override suspend fun pushHabitToCloud(
         userId: String,
         habit: HabitEntity,
-        dateHabit: DateHabitEntity
     ): Boolean {
         return try {
+            cloud.pushHabit(userId, habit)
+            true
+        } catch (e: Exception) {
+            Log.e("SYNC_DEBUG", "pushHabitToCloud failed", e)
+            false
+        }
+    }
 
-            cloud.uploadHabit(userId, habit, dateHabit)
+    // overloaded
+    override suspend fun pushHabitToCloud(
+        userId: String,
+        habitsList: List<HabitEntity>
+    ): Boolean {
+        return try {
+            cloud.pushHabit(userId, habitsList)
             true
         } catch (e: Exception) {
             Log.e("SYNC_DEBUG", "pushHabitToCloud failed", e)
@@ -63,7 +75,20 @@ class DefaultSyncRepository @Inject constructor(
         dateHabit: DateHabitEntity
     ): Boolean {
         return try {
-            cloud.uploadDateHabit(userId, dateHabit)
+            cloud.pushDateHabit(userId, dateHabit)
+            true
+        } catch (e: Exception) {
+            Log.e("SYNC_DEBUG", "pushHabitToCloud failed", e)
+            false
+        }
+    }
+
+    override suspend fun pushDateHabitToCloud(
+        userId: String,
+        dateHabit: List<DateHabitEntity>
+    ): Boolean {
+        return try {
+            cloud.pushDateHabit(userId, dateHabit)
             true
         } catch (e: Exception) {
             Log.e("SYNC_DEBUG", "pushHabitToCloud failed", e)
@@ -144,7 +169,7 @@ class DefaultSyncRepository @Inject constructor(
 
     override suspend fun downloadHabitsFromCloud(userId: String): List<HabitEntity> {
         return try {
-            cloud.downloadHabits(userId)
+            cloud.getHabits(userId)
         } catch (e: Exception) {
             Log.e("SYNC_DEBUG", "downloadHabits failed", e)
             emptyList()
@@ -153,7 +178,7 @@ class DefaultSyncRepository @Inject constructor(
 
     override suspend fun downloadDatesFromCloud(userId: String): List<DateHabitEntity> {
         return try {
-            cloud.downloadDates(userId)
+            cloud.getDates(userId)
         } catch (e: Exception) {
             Log.e("SYNC_DEBUG", "downloadDates failed", e)
             emptyList()

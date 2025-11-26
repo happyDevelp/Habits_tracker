@@ -7,6 +7,8 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -25,35 +27,47 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
     }
 
 
-    // ---------- UPLOAD ----------
+    // ---------- PUSH ----------
 
-    suspend fun uploadHabits(userId: String, habits: List<HabitEntity>) {
-        val col = habitsCollection(userId)
-        habits.forEach { habit ->
-            col.document(habit.id.toString()).set(habit).await()
-        }
-    }
-
-    suspend fun uploadDates(userId: String, dates: List<DateHabitEntity>) {
-        val col = datesCollection(userId)
-        dates.forEach { date ->
-            col.document(date.id.toString()).set(date).await()
-        }
-    }
-
-    suspend fun uploadHabit(userId: String, habit: HabitEntity, dateHabit: DateHabitEntity) {
+    suspend fun pushHabit(userId: String, habit: HabitEntity) {
         val habitsCollection = habitsCollection(userId)
         habitsCollection.document(habit.id.toString())
             .set(habit)
             .await()
     }
 
-    suspend fun uploadDateHabit(userId: String, dateHabit: DateHabitEntity) {
+    // overloaded
+    suspend fun pushHabit(userId: String, habits: List<HabitEntity>) {
+        val db = Firebase.firestore
+        val batch = db.batch()
+
+        val dateHabitsCollection = habitsCollection(userId)
+        habits.forEach { habit ->
+            val docRef = dateHabitsCollection.document(habit.id.toString())
+            // 2. FILLING THE BOX (locally)
+            batch.set(docRef, habit)
+        }
+        batch.commit().await()
+    }
+
+    suspend fun pushDateHabit(userId: String, dateHabit: DateHabitEntity) {
         val dateDatesCollection = datesCollection(userId)
-        // dateDatesCollection.document("${dateHabit.id}_${dateHabit.currentDate}")
         dateDatesCollection.document(dateHabit.id.toString())
             .set(dateHabit)
             .await()
+    }
+
+    // overloaded
+    suspend fun pushDateHabit(userId: String, dateHabits: List<DateHabitEntity>) {
+        val db = Firebase.firestore
+        val batch = db.batch()
+
+        val dateHabitsCollection = datesCollection(userId)
+        dateHabits.forEach { dateHabit ->
+            val docRef = dateHabitsCollection.document(dateHabit.id.toString())
+            batch.set(docRef, dateHabit)
+        }
+        batch.commit().await()
     }
 
     suspend fun updateHabit(userId: String, habit: HabitEntity) {
@@ -94,14 +108,14 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
 
     }
 
-    // ---------- DOWNLOAD ----------
+    // ---------- GET ----------
 
-    suspend fun downloadHabits(userId: String): List<HabitEntity> {
+    suspend fun getHabits(userId: String): List<HabitEntity> {
         val snapshot = habitsCollection(userId).get().await()
         return snapshot.toObjects(HabitEntity::class.java)
     }
 
-    suspend fun downloadDates(userId: String): List<DateHabitEntity> {
+    suspend fun getDates(userId: String): List<DateHabitEntity> {
         val snapshot = datesCollection(userId).get().await()
         return snapshot.toObjects(DateHabitEntity::class.java)
     }

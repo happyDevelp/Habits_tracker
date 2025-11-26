@@ -93,10 +93,7 @@ fun CreateOwnHabitRoot(
                     )
                 )
 
-                syncViewModel.pushHabitToCloud(habit.copy(id = habitId.toInt()), DateHabitEntity(
-                    habitId = habitId.toInt(),
-                    currentDate = currentDate,
-                ))
+                syncViewModel.pushHabitToCloud(habit.copy(id = habitId.toInt()))
             }
         }
     }

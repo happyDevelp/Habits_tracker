@@ -10,11 +10,11 @@ class App: Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val settings = FirebaseFirestoreSettings.Builder()
+       /* val settings = FirebaseFirestoreSettings.Builder()
             .setPersistenceEnabled(true)
             .build()
 
-        FirebaseFirestore.getInstance().firestoreSettings = settings
+        FirebaseFirestore.getInstance().firestoreSettings = settings*/
 
     }
 }

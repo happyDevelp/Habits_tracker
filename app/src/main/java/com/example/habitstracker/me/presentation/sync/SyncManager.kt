@@ -1,7 +1,6 @@
 package com.example.habitstracker.me.presentation.sync
 
 import android.content.Context
-import android.util.Log
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.me.domain.SyncRepository
@@ -28,14 +27,24 @@ class SyncManager@Inject constructor(
         return syncRepo.syncFromCloud(user.userId)
     }
 
-    suspend fun uploadHabitToCloud(habit: HabitEntity, dateHabit: DateHabitEntity): Boolean {
+    suspend fun pushHabitToCloud(habit: HabitEntity): Boolean {
         val user = googleAuthUiClient.getSignedInUser() ?: return false
-        return syncRepo.pushHabitToCloud(user.userId, habit, dateHabit)
+        return syncRepo.pushHabitToCloud(user.userId, habit)
     }
 
-    suspend fun uploadDateHabitToCloud(dateHabit: DateHabitEntity): Boolean {
+    suspend fun pushHabitToCloud(habitsList: List<HabitEntity>): Boolean {
+        val user = googleAuthUiClient.getSignedInUser() ?: return false
+        return syncRepo.pushHabitToCloud(user.userId, habitsList)
+    }
+
+    suspend fun pushDateHabitToCloud(dateHabit: DateHabitEntity): Boolean {
         val user = googleAuthUiClient.getSignedInUser() ?: return false
         return syncRepo.pushDateHabitToCloud(user.userId, dateHabit)
+    }
+
+    suspend fun pushDateHabitToCloud(dateHabitsList: List<DateHabitEntity>): Boolean {
+        val user = googleAuthUiClient.getSignedInUser() ?: return false
+        return syncRepo.pushDateHabitToCloud(user.userId, dateHabitsList)
     }
 
     suspend fun updateHabitOnCloud(habit: HabitEntity): Boolean {
@@ -49,8 +58,8 @@ class SyncManager@Inject constructor(
     }
 
     suspend fun deleteHabitOnCloud(habitId: String): Boolean {
-        val user = googleAuthUiClient.getSignedInUser() ?: return false
-        return syncRepo.deleteHabitOnCloud(user.userId, habitId)
+        val isSignedIn = googleAuthUiClient.getSignedInUser() ?: return false
+        return syncRepo.deleteHabitOnCloud(isSignedIn.userId, habitId)
     }
 
     suspend fun clearCloud(): Boolean {
