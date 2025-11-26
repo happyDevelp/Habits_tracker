@@ -106,17 +106,15 @@ class DefaultSyncRepository @Inject constructor(
         }
     }
 
-    override suspend fun updateDateHabitOnCloud(
+    override suspend fun updateSelectStateOnCloud(
         userId: String,
         dateHabitId: String,
-        date: String,
         isDone: Boolean
     ): Boolean {
         return try {
-            cloud.updateDateHabit(
+            cloud.updateSelectState(
                 userId = userId,
                 dateHabitId = dateHabitId,
-                date = date,
                 isDone = isDone
             )
             true

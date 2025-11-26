@@ -49,26 +49,20 @@ import com.example.habitstracker.history.presentation.components.scaffold.TopBar
 import com.example.habitstracker.history.presentation.tab_screens.AchievementsScreen
 import com.example.habitstracker.history.presentation.tab_screens.AllHabitScreen
 import com.example.habitstracker.history.presentation.tab_screens.HistoryCalendarScreen
+import com.example.habitstracker.me.presentation.sync.SyncViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable
 fun HistoryScreenRoot(
     historyViewModel: HistoryViewModel = hiltViewModel<HistoryViewModel>(),
+    syncViewModel: SyncViewModel = hiltViewModel<SyncViewModel>(),
     startTab: Int,
     changeSelectedItemState: (index: Int) -> Unit
 ) {
-    val coroutineScope = rememberCoroutineScope()
-
     val allDateHabits by historyViewModel.dateHabitList.collectAsStateWithLifecycle()
     val allAchievements by historyViewModel.allAchievements.collectAsStateWithLifecycle()
     val myHabits by historyViewModel.myHabits.collectAsStateWithLifecycle()
-
-    val onDeleteClick: (habit: HabitEntity) -> Unit = { habit ->
-        coroutineScope.launch {
-            historyViewModel.deleteHabit(habit)
-        }
-    }
 
     HistoryScreen(
         changeSelectedItemState = changeSelectedItemState,
@@ -76,7 +70,10 @@ fun HistoryScreenRoot(
         myHabits = myHabits,
         allAchievements = allAchievements,
         startTab = startTab,
-        onDeleteClick = onDeleteClick
+        onDeleteClick = {
+            historyViewModel.deleteHabit(it)
+            syncViewModel.deleteHabitOnCloud(it.id.toString())
+        }
     )
 }
 

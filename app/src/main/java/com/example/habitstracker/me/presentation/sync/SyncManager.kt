@@ -52,9 +52,9 @@ class SyncManager@Inject constructor(
         return syncRepo.updateHabitOnCloud(user.userId, habit)
     }
 
-    suspend fun updateDateHabitOnCloud(dateHabitId: String, date: String, isDone: Boolean): Boolean {
+    suspend fun updateDateHabitOnCloud(dateHabitId: String, isDone: Boolean): Boolean {
         val user = googleAuthUiClient.getSignedInUser() ?: return false
-        return syncRepo.updateDateHabitOnCloud(user.userId, dateHabitId, date, isDone)
+        return syncRepo.updateSelectStateOnCloud(user.userId, dateHabitId, isDone)
     }
 
     suspend fun deleteHabitOnCloud(habitId: String): Boolean {

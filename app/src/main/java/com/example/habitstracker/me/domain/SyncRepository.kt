@@ -18,7 +18,7 @@ interface SyncRepository {
 
 
     suspend fun updateHabitOnCloud(userId: String, habit: HabitEntity): Boolean
-    suspend fun updateDateHabitOnCloud(userId: String, dateHabitId: String, date: String, isDone: Boolean): Boolean
+    suspend fun updateSelectStateOnCloud(userId: String, dateHabitId: String, isDone: Boolean): Boolean
     suspend fun deleteHabitOnCloud(userId: String, habitId: String): Boolean
 
     suspend fun clearCloud(userId: String): Boolean

@@ -166,7 +166,6 @@ fun TodayScreenRoot(
 
                 syncViewModel.updateDateHabitOnCloud(
                     dateHabitId = habitDateId.toString(),
-                    date = selectDate,
                     isDone = isDone
                 )
             }

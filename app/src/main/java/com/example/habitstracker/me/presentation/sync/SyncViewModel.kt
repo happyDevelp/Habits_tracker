@@ -73,10 +73,10 @@ class SyncViewModel @Inject constructor(
         }
     }
 
-    fun updateDateHabitOnCloud(dateHabitId: String, date: String, isDone: Boolean) {
+    fun updateDateHabitOnCloud(dateHabitId: String, isDone: Boolean) {
         viewModelScope.launch {
             if (internetAvailable() == false) return@launch
-            syncManager.updateDateHabitOnCloud(dateHabitId, date, isDone)
+            syncManager.updateDateHabitOnCloud(dateHabitId, isDone)
         }
     }
 

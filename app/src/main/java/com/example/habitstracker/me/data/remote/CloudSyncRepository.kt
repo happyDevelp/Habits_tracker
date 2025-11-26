@@ -26,9 +26,13 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
         return userDoc(userId).collection("dates")
     }
 
+    private fun achievementsCollection(userId: String): CollectionReference {
+        return userDoc(userId).collection("achievements")
+    }
 
     // ---------- PUSH ----------
 
+    /** HabitEntity */
     suspend fun pushHabit(userId: String, habit: HabitEntity) {
         val habitsCollection = habitsCollection(userId)
         habitsCollection.document(habit.id.toString())
@@ -50,6 +54,15 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
         batch.commit().await()
     }
 
+    suspend fun updateHabit(userId: String, habit: HabitEntity) {
+        val col = habitsCollection(userId)
+        col.document(habit.id.toString())
+            .set(habit, SetOptions.merge())
+            .await()
+    }
+
+
+    /** DateHabitEntity */
     suspend fun pushDateHabit(userId: String, dateHabit: DateHabitEntity) {
         val dateDatesCollection = datesCollection(userId)
         dateDatesCollection.document(dateHabit.id.toString())
@@ -70,17 +83,9 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
         batch.commit().await()
     }
 
-    suspend fun updateHabit(userId: String, habit: HabitEntity) {
-        val col = habitsCollection(userId)
-        col.document(habit.id.toString())
-            .set(habit, SetOptions.merge())
-            .await()
-    }
-
-    suspend fun updateDateHabit(
+    suspend fun updateSelectState(
         userId: String,
         dateHabitId: String,
-        date: String,
         isDone: Boolean
     ) {
         val col = datesCollection(userId)
@@ -92,6 +97,8 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
             .await()
     }
 
+
+    // delete (HabitEntity and DateHabitEntity together)
     suspend fun deleteHabit(userId: String, habitId: String) {
         val habitCollection = habitsCollection(userId)
         habitCollection.document(habitId)
@@ -102,10 +109,6 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
         dateHabitCollection.document(habitId)
             .delete()
             .await()
-    }
-
-    suspend fun deleteDateHabit(userId: String, dateHabitId: String) {
-
     }
 
     // ---------- GET ----------
