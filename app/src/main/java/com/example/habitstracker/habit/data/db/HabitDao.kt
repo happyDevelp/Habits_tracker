@@ -33,13 +33,23 @@ sealed interface HabitDao {
 
     @Query(
         """
-    SELECT habit_table.*, date_table.isCompleted as isSelected FROM habit_table
+    SELECT 
+        habit_table.id AS habitId,
+        date_table.id AS dateHabitId,
+        habit_table.name,
+        habit_table.iconName,
+        habit_table.colorHex,
+        habit_table.days,
+        habit_table.executionTime,
+        habit_table.reminder,
+        date_table.isCompleted AS isSelected
+    FROM habit_table
     JOIN date_table
     ON habit_table.id = date_table.habitId
     WHERE date_table.currentDate = :date
-"""
-    ) // YYYY-MM-DD
-    fun getHabitsByDate(date: String): Flow<List<ShownHabit>>
+    """
+    )
+    fun getHabitsByDate(date: String): Flow<List<HabitWithDateDb>>
 
     @Query("SELECT * FROM date_table WHERE habitId=:id")
     suspend fun getAllDatesByHabitId(id: Int): List<DateHabitEntity>

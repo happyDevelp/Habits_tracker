@@ -59,13 +59,13 @@ fun iconByName(name: String): ImageVector {
     return method.invoke(null, Icons.Filled) as ImageVector
 }
 
-val shownHabitExample1 = ShownHabit(0, "habit example 1", "SentimentVerySatisfied",
+val shownHabitExample1 = ShownHabit(0, 0, "habit example 1", "SentimentVerySatisfied",
     HabitColor.SkyBlue.light.toHex(), "Everyday", "Anytime", false, false)
 
-val shownHabitExample2 = ShownHabit(1, "habit example 2", "SentimentVerySatisfied",
+val shownHabitExample2 = ShownHabit(1, 0,"habit example 2", "SentimentVerySatisfied",
     HabitColor.Orange.light.toHex(), "Everyday", "Anytime", false, false)
 
-val shownHabitExample3 = ShownHabit(2, "habit example 3", "SentimentVerySatisfied",
+val shownHabitExample3 = ShownHabit(2, 0,"habit example 3", "SentimentVerySatisfied",
     HabitColor.LeafGreen.light.toHex(), "Everyday", "Evening", false, false)
 
 fun getGradientByLightColor(lightColor: Color) = when (lightColor) {

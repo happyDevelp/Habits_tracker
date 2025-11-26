@@ -5,8 +5,8 @@ import com.example.habitstracker.core.presentation.theme.MyPalette.blueColor
 import com.example.habitstracker.core.presentation.utils.toHex
 
 data class ShownHabit (
-    @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
+    val habitId: Int = 0,
+    val dateHabitId: Int = 0,
     val name: String = "",
     val iconName: String = "",
     //val isCompleted: Boolean = false,
@@ -23,24 +23,32 @@ fun mapToShownHabits(
     selectedDate: String
 ): List<ShownHabit> {
     return habits
+        // we leave only those habits for which there is an appointment for this date
         .filter { habit ->
             dateHabits.any {
                 it.habitId == habit.id && it.currentDate == selectedDate
             }
         }
-        .map { habit ->
-            val isCompleted = dateHabits.any {
-                it.habitId == habit.id && it.currentDate == selectedDate && it.isCompleted
+        // building a ShownHabit already knowing a specific DateHabit
+        .mapNotNull { habit ->
+            val dateHabit = dateHabits.firstOrNull {
+                it.habitId == habit.id && it.currentDate == selectedDate
             }
-            ShownHabit(
-                id = habit.id,
-                name = habit.name,
-                iconName = habit.iconName,
-                colorHex = habit.colorHex,
-                days = habit.days,
-                executionTime = habit.executionTime,
-                reminder = habit.reminder,
-                isSelected = isCompleted
-            )
+
+            if (dateHabit == null) {
+                null // should theoretically not happen, because we have already filtered above
+            } else {
+                ShownHabit(
+                    habitId = habit.id,
+                    dateHabitId = dateHabit.id,
+                    name = habit.name,
+                    iconName = habit.iconName,
+                    colorHex = habit.colorHex,
+                    days = habit.days,
+                    executionTime = habit.executionTime,
+                    reminder = habit.reminder,
+                    isSelected = dateHabit.isCompleted
+                )
+            }
         }
 }

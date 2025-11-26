@@ -122,6 +122,6 @@ fun CalendarItem(
 @Composable
 private fun Preview() {
     AppTheme(darkTheme = true) {
-        CalendarItem(todayHabits = listOf(ShownHabit(0, "preview", "aaa")))
+        CalendarItem(todayHabits = listOf(ShownHabit(0, 0,"preview", "aaa")))
     }
 }

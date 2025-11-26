@@ -1,5 +1,6 @@
 package com.example.habitstracker.habit.domain
 
+import com.example.habitstracker.habit.data.db.HabitWithDateDb
 import kotlinx.coroutines.flow.Flow
 
 interface HabitRepository {
@@ -17,7 +18,7 @@ interface HabitRepository {
 
     suspend fun insertHabitDate(habitDate: DateHabitEntity)
 
-    fun getHabitsByDate(date: String): Flow<List<ShownHabit>> // YYYY-MM-DD
+    fun getHabitsByDate(date: String): Flow<List<HabitWithDateDb>> // YYYY-MM-DD
 
     suspend fun dateExistsForHabit(habitId: Int, date: String): Boolean
 

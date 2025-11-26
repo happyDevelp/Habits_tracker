@@ -43,9 +43,27 @@ class DefaultSyncRepository @Inject constructor(
         }
     }
 
-    override suspend fun pushHabitToCloud(userId: String, habit: HabitEntity, dateHabit: DateHabitEntity): Boolean {
+    override suspend fun pushHabitToCloud(
+        userId: String,
+        habit: HabitEntity,
+        dateHabit: DateHabitEntity
+    ): Boolean {
         return try {
+
             cloud.uploadHabit(userId, habit, dateHabit)
+            true
+        } catch (e: Exception) {
+            Log.e("SYNC_DEBUG", "pushHabitToCloud failed", e)
+            false
+        }
+    }
+
+    override suspend fun pushDateHabitToCloud(
+        userId: String,
+        dateHabit: DateHabitEntity
+    ): Boolean {
+        return try {
+            cloud.uploadDateHabit(userId, dateHabit)
             true
         } catch (e: Exception) {
             Log.e("SYNC_DEBUG", "pushHabitToCloud failed", e)
@@ -63,9 +81,19 @@ class DefaultSyncRepository @Inject constructor(
         }
     }
 
-    override suspend fun updateDateHabitOnCloud(userId: String, dateHabitId: String, date: String, isDone: Boolean): Boolean {
+    override suspend fun updateDateHabitOnCloud(
+        userId: String,
+        dateHabitId: String,
+        date: String,
+        isDone: Boolean
+    ): Boolean {
         return try {
-            cloud.updateDateHabit(userId = userId, dateHabitId = dateHabitId, date = date, isDone = isDone)
+            cloud.updateDateHabit(
+                userId = userId,
+                dateHabitId = dateHabitId,
+                date = date,
+                isDone = isDone
+            )
             true
         } catch (e: Exception) {
             Log.e("SYNC_DEBUG", "updateDateHabitInCloud failed", e)
@@ -96,7 +124,39 @@ class DefaultSyncRepository @Inject constructor(
         }
     }
 
-    override suspend fun downloadOnlyHabits(userId: String): List<HabitEntity> {
-        return cloud.downloadHabits(userId)
+    override suspend fun downloadHabitsFromLocal(userId: String): List<HabitEntity> {
+        return try {
+            local.getAllHabitsOnce()
+        } catch (e: Exception) {
+            Log.e("SYNC_DEBUG", "downloadHabits failed", e)
+            emptyList()
+        }
+    }
+
+    override suspend fun downloadDatesFromLocal(userId: String): List<DateHabitEntity> {
+        return try {
+            local.getAllDateHabitsOnce()
+        } catch (e: Exception) {
+            Log.e("SYNC_DEBUG", "downloadDates failed", e)
+            emptyList()
+        }
+    }
+
+    override suspend fun downloadHabitsFromCloud(userId: String): List<HabitEntity> {
+        return try {
+            cloud.downloadHabits(userId)
+        } catch (e: Exception) {
+            Log.e("SYNC_DEBUG", "downloadHabits failed", e)
+            emptyList()
+        }
+    }
+
+    override suspend fun downloadDatesFromCloud(userId: String): List<DateHabitEntity> {
+        return try {
+            cloud.downloadDates(userId)
+        } catch (e: Exception) {
+            Log.e("SYNC_DEBUG", "downloadDates failed", e)
+            emptyList()
+        }
     }
 }

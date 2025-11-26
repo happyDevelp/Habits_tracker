@@ -71,7 +71,7 @@ fun HabitItem(
     modifier: Modifier = Modifier,
     shownHabit: ShownHabit,
     currentDate: LocalDate,
-    onSelectClick: (id: Int, isDone: Boolean, selectDate: String) -> Unit,
+    onSelectClick: (habitId: Int, habitDateId: Int, isDone: Boolean, selectDate: String) -> Unit,
     onDeleteClick: (id: Int) -> Unit,
 ) {
     val navController = LocalNavController.current
@@ -137,7 +137,7 @@ fun HabitItem(
                             onClick = {
                                 isMenuExpanded = false
                                 navController.navigate(Route.CreateHabit(
-                                    id = shownHabit.id,
+                                    id = shownHabit.habitId,
                                     name = shownHabit.name,
                                     icon = shownHabit.iconName,
                                     iconColor = shownHabit.colorHex,
@@ -151,7 +151,7 @@ fun HabitItem(
                             trailingIcon = { Icons.Default.Delete },
                             onClick = {
                                 isMenuExpanded = false
-                                onDeleteClick.invoke(shownHabit.id)
+                                onDeleteClick.invoke(shownHabit.habitId)
                             }
                         )
                     }
@@ -260,7 +260,8 @@ fun HabitItem(
                                 shownHabit = shownHabit,
                                 onClick = {
                                     onSelectClick(
-                                        shownHabit.id,
+                                        shownHabit.habitId,
+                                        shownHabit.dateHabitId,
                                         !shownHabit.isSelected,
                                         currentDate.toString()
                                     )
@@ -286,7 +287,7 @@ private fun HabitItemPreview() {
                 shownHabit = shownHabitExample1,
                 modifier = Modifier,
                 currentDate = LocalDate.now(),
-                onSelectClick = { _, _, _ -> },
+                onSelectClick = { _, _, _, _ -> },
             ) { }
         }
     }

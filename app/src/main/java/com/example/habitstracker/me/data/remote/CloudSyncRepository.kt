@@ -46,12 +46,14 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
         habitsCollection.document(habit.id.toString())
             .set(habit)
             .await()
+    }
 
-        val dateHabitsCollection = datesCollection(userId)
-        dateHabitsCollection.document(habit.id.toString())
+    suspend fun uploadDateHabit(userId: String, dateHabit: DateHabitEntity) {
+        val dateDatesCollection = datesCollection(userId)
+        // dateDatesCollection.document("${dateHabit.id}_${dateHabit.currentDate}")
+        dateDatesCollection.document(dateHabit.id.toString())
             .set(dateHabit)
             .await()
-
     }
 
     suspend fun updateHabit(userId: String, habit: HabitEntity) {
@@ -106,10 +108,6 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
 
 
     // ---------- OTHER METHODS ----------
-    suspend fun downloadOnlyHabits(userId: String): List<HabitEntity> {
-        val snapshot = habitsCollection(userId).get().await()
-        return snapshot.toObjects(HabitEntity::class.java)
-    }
 
     suspend fun clearCloud(userId: String): Boolean {
         return try {

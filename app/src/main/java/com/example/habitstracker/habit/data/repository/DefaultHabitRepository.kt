@@ -1,6 +1,7 @@
 package com.example.habitstracker.habit.data.repository
 
 import com.example.habitstracker.habit.data.db.HabitDao
+import com.example.habitstracker.habit.data.db.HabitWithDateDb
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.domain.HabitRepository
 import com.example.habitstracker.habit.domain.DateHabitEntity
@@ -54,7 +55,7 @@ class DefaultHabitRepository(private val habitDao: HabitDao) : HabitRepository {
         }
     }
 
-    override fun getHabitsByDate(date: String): Flow<List<ShownHabit>> {
+    override fun getHabitsByDate(date: String): Flow<List<HabitWithDateDb>> {
         return habitDao.getHabitsByDate(date) // YYYY-MM-DD
     }
 

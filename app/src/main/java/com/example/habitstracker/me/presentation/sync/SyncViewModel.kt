@@ -1,5 +1,6 @@
 package com.example.habitstracker.me.presentation.sync
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habitstracker.habit.domain.DateHabitEntity
@@ -11,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import javax.inject.Inject
@@ -58,8 +60,7 @@ class SyncViewModel @Inject constructor(
                 preferences.saveLastSync(time)
                 _state.update { it.copy(lastSync = time, syncInProgress = false) }
                 showBanner(SyncBannerStatus.SYNC_TO_CLOUD_SUCCESS)
-            }
-            else showBanner(SyncBannerStatus.SYNC_TO_CLOUD_FAIL)
+            } else showBanner(SyncBannerStatus.SYNC_TO_CLOUD_FAIL)
         }
     }
 
@@ -98,6 +99,37 @@ class SyncViewModel @Inject constructor(
             _state.update { it.copy(isLoading = true) }
             syncManager.clearCloud()
             showBanner(status = SyncBannerStatus.CLOUD_DATA_DELETED)
+        }
+    }
+
+    fun fullSync() {
+        viewModelScope.launch {
+            val localHabits = syncManager.getAllLocalHabits()
+            val localDates = syncManager.getAllLocalDates()
+
+
+            val cloudHabits = syncManager.getAllCloudHabits()
+            val cloudDates = syncManager.getAllCloudDates()
+
+            // push missing habits
+            localHabits.forEach { localHabit ->
+                if (cloudHabits.none { it.id == localHabit.id }) {
+                    syncManager.uploadHabitToCloud(
+                        habit = localHabit, dateHabit = DateHabitEntity(
+                            habitId = localHabit.id,
+                            currentDate = LocalDate.now().toString(),
+                            isCompleted = false,
+                        )
+                    )
+                }
+            }
+
+            // push missing dateHabits
+            localDates.forEach { localDate ->
+                if (cloudDates.none { it.id == localDate.id }) {
+                    syncManager.uploadDateHabitToCloud(localDate)
+                }
+            }
         }
     }
 

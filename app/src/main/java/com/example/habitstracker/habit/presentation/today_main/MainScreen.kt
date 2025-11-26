@@ -86,7 +86,9 @@ fun TodayScreenRoot(
     }
 
     // sync methods
-
+    LaunchedEffect(Unit) {
+        syncViewModel.fullSync()
+    }
 
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -100,16 +102,16 @@ fun TodayScreenRoot(
 
     val onDismiss = { historyViewModel.clearUnlockedAchievement() }
 
-    val onSelectClick: (id: Int, isDone: Boolean, selectDate: String) -> Unit =
-        { id, isDone, selectDate ->
+    val onSelectClick: (habitId: Int, habitDateId: Int, isDone: Boolean, selectDate: String) -> Unit =
+        { habitId, habitDateId, isDone, selectDate ->
             coroutineScope.launch {
-                todayViewModel.updateDateSelectState(id, isDone, selectDate)
+                todayViewModel.updateDateSelectState(habitId, isDone, selectDate)
 
                 val map = todayViewModel.dateHabitsMap.value
                     .toMutableMap().apply {
                         val habitsForDate = getOrDefault(LocalDate.parse(selectDate), emptyList())
                         val updatedHabits = habitsForDate.map {
-                            if (it.id == id) it.copy(isSelected = isDone) else it
+                            if (it.habitId == habitId) it.copy(isSelected = isDone) else it
                         }
                         this[LocalDate.parse(selectDate)] = updatedHabits
                     }
@@ -161,8 +163,9 @@ fun TodayScreenRoot(
                         )
                     )
                 }
+
                 syncViewModel.updateDateHabitOnCloud(
-                    dateHabitId = id.toString(),
+                    dateHabitId = habitDateId.toString(),
                     date = selectDate,
                     isDone = isDone
                 )
@@ -194,7 +197,7 @@ fun TodayScreen(
     mapDateToHabits: Map<LocalDate, List<ShownHabit>>,
     unlockedAchievement: UnlockedAchievement?,
     onDismiss: () -> Unit,
-    onSelectClick: (id: Int, isDone: Boolean, selectDate: String) -> Unit,
+    onSelectClick: (habitId: Int, habitDateId: Int, isDone: Boolean, selectDate: String) -> Unit,
     onDeleteClick: (id: Int) -> Unit,
     onDateChangeClick: (newDate: LocalDate) -> Unit,
     changeSelectedItemState: (index: Int) -> Unit,
@@ -378,7 +381,7 @@ private fun Preview() {
         AppTheme(darkTheme = true) {
             TodayScreen(
                 habitListState = mockList,
-                onSelectClick = { _, _, _ -> },
+                onSelectClick = { _, _, _, _ -> },
                 onDeleteClick = { _ -> },
                 onDateChangeClick = {},
                 dateState = LocalDate.now(),
