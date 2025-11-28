@@ -3,6 +3,7 @@ package com.example.habitstracker.me.presentation.sync
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habitstracker.habit.domain.HabitEntity
+import com.example.habitstracker.history.domain.AchievementEntity
 import com.example.habitstracker.me.data.local.SyncPreferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -65,6 +66,13 @@ class SyncViewModel @Inject constructor(
         }
     }
 
+    fun pushAchievementToCloud(achievement: AchievementEntity) {
+        viewModelScope.launch {
+            if (internetAvailable() == false) return@launch
+            syncManager.pushAchievementToCloud(achievement)
+        }
+    }
+
     fun updateHabitOnCloud(habit: HabitEntity) {
         viewModelScope.launch {
             if (internetAvailable() == false) return@launch
@@ -100,6 +108,7 @@ class SyncViewModel @Inject constructor(
         viewModelScope.launch {
             val localHabits = syncManager.getAllLocalHabits()
             val localDates = syncManager.getAllLocalDates()
+            val localAchievements = syncManager.getAllLocalAchievements()
 
             /*val cloudHabits = syncManager.getAllCloudHabits()
             val cloudDates = syncManager.getAllCloudDates()*/
@@ -107,6 +116,7 @@ class SyncViewModel @Inject constructor(
             // push missing habits
             syncManager.pushHabitToCloud(localHabits)
             syncManager.pushDateHabitToCloud(localDates)
+            syncManager.pushAchievementsToCloud(localAchievements)
             _state.update { it.copy(lastSync = updateLastSync()) }
         }
     }

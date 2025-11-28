@@ -132,7 +132,7 @@ fun TodayScreenRoot(
                 // 3. Find all the achievements that are now done but not notified yet
                 val newlyUnlocked = allAchievements.filter { ach ->
                     val section = AchievementSection.fromString(ach.section, context)
-                    !ach.isNotified && (metrics[section] ?: 0) >= ach.target
+                    !ach.notified && (metrics[section] ?: 0) >= ach.target
                 }
 
                 // 4.If several are one - choose one (policy: priority by section)
@@ -153,6 +153,7 @@ fun TodayScreenRoot(
                 // If there are new unlocked achievement and they are isNotified then we show a dialogue and update the data
                 if (toShow != null) {
                     val today = LocalDate.now().toString()
+                    val unlockedAchievement = toShow.copy(unlockedAt = today, notified = true)
                     historyViewModel.updateUnlockedDate(today, true, toShow.id)
                     historyViewModel.onAchievementUnlocked(
                         UnlockedAchievement(
@@ -162,6 +163,7 @@ fun TodayScreenRoot(
                             textPadding = AchievementMetadata.textPadding(toShow.section, context)
                         )
                     )
+                    syncViewModel.pushAchievementToCloud(unlockedAchievement)
                 }
 
                 syncViewModel.updateDateHabitOnCloud(

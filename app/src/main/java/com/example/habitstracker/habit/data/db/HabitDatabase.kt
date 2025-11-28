@@ -13,7 +13,7 @@ import com.example.habitstracker.statistic.data.db.StatisticDao
 @Database(
     entities = [HabitEntity::class, DateHabitEntity::class, AchievementEntity::class, /*StatisticEntity::class*/],
     exportSchema = true,
-    version = 17
+    version = 18
 )
 abstract class HabitDatabase : RoomDatabase() {
     abstract val habitDao: HabitDao

@@ -47,8 +47,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providerLocalSyncRepository(habitDao: HabitDao): LocalSyncRepository {
-        return LocalSyncRepository(habitDao)
+    fun providerLocalSyncRepository(
+        habitDao: HabitDao,
+        historyDAO: HistoryDAO
+    ): LocalSyncRepository {
+        return LocalSyncRepository(habitDao, historyDAO)
     }
 
     @Provides

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
+import com.example.habitstracker.history.domain.AchievementEntity
 import com.example.habitstracker.me.domain.SyncRepository
 import com.example.habitstracker.me.presentation.sign_in.GoogleAuthUiClient
 import com.example.habitstracker.me.presentation.sign_in.isInternetAvailable
@@ -48,6 +49,16 @@ class SyncManager@Inject constructor(
         return syncRepo.pushDateHabitToCloud(user.userId, dateHabitsList)
     }
 
+    suspend fun pushAchievementToCloud(achievement: AchievementEntity): Boolean {
+        val user = googleAuthUiClient.getSignedInUser() ?: return false
+        return syncRepo.pushAchievementsToCloud(user.userId, listOf(achievement))
+    }
+
+    suspend fun pushAchievementsToCloud(achievements: List<AchievementEntity>): Boolean {
+        val user = googleAuthUiClient.getSignedInUser() ?: return false
+        return syncRepo.pushAchievementsToCloud(user.userId, achievements)
+    }
+
     suspend fun updateHabitOnCloud(habit: HabitEntity): Boolean {
         val user = googleAuthUiClient.getSignedInUser() ?: return false
         return syncRepo.updateHabitOnCloud(user.userId, habit)
@@ -78,6 +89,11 @@ class SyncManager@Inject constructor(
         return syncRepo.downloadDatesFromLocal(user.userId)
     }
 
+    suspend fun getAllLocalAchievements(): List<AchievementEntity> {
+        val user = googleAuthUiClient.getSignedInUser() ?: return emptyList()
+        return syncRepo.downloadAchievementsFromLocal(user.userId)
+    }
+
     suspend fun getAllCloudHabits(): List<HabitEntity>{
         val user = googleAuthUiClient.getSignedInUser() ?: return emptyList()
         return syncRepo.downloadHabitsFromCloud(user.userId)
@@ -86,5 +102,15 @@ class SyncManager@Inject constructor(
     suspend fun getAllCloudDates(): List<DateHabitEntity> {
         val user = googleAuthUiClient.getSignedInUser() ?: return emptyList()
         return syncRepo.downloadDatesFromCloud(user.userId)
+    }
+
+    suspend fun getAllCloudAchievements(): List<AchievementEntity> {
+        val user = googleAuthUiClient.getSignedInUser() ?: return emptyList()
+        return syncRepo.downloadAchievementsFromCloud(user.userId)
+    }
+
+    suspend fun syncAchievementsFromCloud(): Boolean {
+        val user = googleAuthUiClient.getSignedInUser() ?: return false
+        return syncRepo.syncAchievementsFromCloud(user.userId)
     }
 }

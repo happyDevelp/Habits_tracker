@@ -31,8 +31,21 @@ class DefaultHistoryRepository(private val dao: HistoryDAO) : HistoryRepository 
         }
     }
 
+    override suspend fun getAllAchievementsOnce(): List<AchievementEntity> {
+        return withContext(Dispatchers.IO) {
+            dao.getAllAchievementsOnce()
+        }
+    }
+
     override fun getAllAchievements(): Flow<List<AchievementEntity>> {
         return dao.getAllAchievement()
+    }
+
+    override suspend fun replaceAchievements(achievements: List<AchievementEntity>) {
+        return withContext(Dispatchers.IO) {
+            dao.clearAchievements()
+            dao.insertAchievements(achievements)
+        }
     }
 
     override fun getAllDatesForStreak(): Flow<List<DateHabitEntity>> {
