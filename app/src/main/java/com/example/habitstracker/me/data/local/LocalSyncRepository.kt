@@ -4,25 +4,42 @@ import android.util.Log
 import com.example.habitstracker.habit.data.db.HabitDao
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
+import com.example.habitstracker.history.data.db.HistoryDAO
+import com.example.habitstracker.history.domain.AchievementEntity
 import kotlinx.coroutines.flow.first
 import java.time.LocalDate
 import javax.inject.Inject
 
-class LocalSyncRepository @Inject constructor(private val dao: HabitDao) {
+class LocalSyncRepository @Inject constructor(
+    private val habitDao: HabitDao,
+    private val historyDao: HistoryDAO,
+) {
     suspend fun getAllHabitsOnce(): List<HabitEntity> {
-        return dao.getAllHabits().first()
+        return habitDao.getAllHabits().first()
     }
 
     suspend fun getAllDateHabitsOnce(): List<DateHabitEntity> {
-        return dao.getAllDateHabits().first()
+        return habitDao.getAllDateHabits().first()
+    }
+
+    suspend fun getAllAchievementsOnce(): List<AchievementEntity> {
+        return historyDao.getAllAchievementsOnce()
     }
 
     suspend fun insertHabits(list: List<HabitEntity>) {
-        list.forEach { dao.insertHabit(it) }
+        list.forEach { habitDao.insertHabit(it) }
     }
 
     suspend fun insertDates(list: List<DateHabitEntity>) {
-        list.forEach { dao.insertHabitDate(it) }
+        list.forEach { habitDao.insertHabitDate(it) }
+    }
+
+    /**
+     * Replace all local achievements with the provided list from the cloud.
+     */
+    suspend fun replaceAchievementsFromCloud(achievements: List<AchievementEntity>) {
+        historyDao.clearAchievements()
+        historyDao.insertAchievements(achievements)
     }
 
 /**
@@ -40,23 +57,23 @@ class LocalSyncRepository @Inject constructor(private val dao: HabitDao) {
         val habitIds = habits.map { it.id }.toSet()
         val validDates = dates.filter { it.habitId in habitIds }
 
-        dao.replaceAllFromCloud(habits, validDates)
+        habitDao.replaceAllFromCloud(habits, validDates)
 
         fillMissingDatesForAllHabits()
     }
 
     suspend fun fillMissingDatesForAllHabits() {
         val today = LocalDate.now()
-        val habits = dao.getAllHabits().first()
+        val habits = habitDao.getAllHabits().first()
 
         Log.d("SYNC_DEBUG", "fillMissingDatesForAllHabits")
 
         habits.forEach { habit ->
 
-            val dates = dao.getAllDatesByHabitId(habit.id)
+            val dates = habitDao.getAllDatesByHabitId(habit.id)
 
             if (dates.isEmpty()) {
-                dao.insertHabitDate(
+                habitDao.insertHabitDate(
                     DateHabitEntity(
                         habitId = habit.id,
                         currentDate = today.toString(),
@@ -70,10 +87,10 @@ class LocalSyncRepository @Inject constructor(private val dao: HabitDao) {
             var currentDate = lastDate.plusDays(1)
 
             while (!currentDate.isAfter(today)) {
-                val exists = dao.dateExistsForHabit(habit.id, currentDate.toString())
+                val exists = habitDao.dateExistsForHabit(habit.id, currentDate.toString())
                 if (exists == false) {
 
-                    dao.insertHabitDate(
+                    habitDao.insertHabitDate(
                         DateHabitEntity(
                             habitId = habit.id,
                             currentDate = currentDate.toString(),

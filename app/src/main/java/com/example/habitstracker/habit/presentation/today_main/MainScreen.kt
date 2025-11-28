@@ -153,6 +153,7 @@ fun TodayScreenRoot(
                 // If there are new unlocked achievement and they are isNotified then we show a dialogue and update the data
                 if (toShow != null) {
                     val today = LocalDate.now().toString()
+                    val unlockedAchievement = toShow.copy(unlockedAt = today, isNotified = true)
                     historyViewModel.updateUnlockedDate(today, true, toShow.id)
                     historyViewModel.onAchievementUnlocked(
                         UnlockedAchievement(
@@ -162,6 +163,7 @@ fun TodayScreenRoot(
                             textPadding = AchievementMetadata.textPadding(toShow.section, context)
                         )
                     )
+                    syncViewModel.pushAchievementToCloud(unlockedAchievement)
                 }
 
                 syncViewModel.updateDateHabitOnCloud(

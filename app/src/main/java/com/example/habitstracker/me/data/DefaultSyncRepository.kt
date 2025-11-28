@@ -3,6 +3,7 @@ package com.example.habitstracker.me.data
 import android.util.Log
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
+import com.example.habitstracker.history.domain.AchievementEntity
 import com.example.habitstracker.me.data.local.LocalSyncRepository
 import com.example.habitstracker.me.data.remote.CloudSyncRepository
 import com.example.habitstracker.me.domain.SyncRepository
@@ -16,14 +17,23 @@ class DefaultSyncRepository @Inject constructor(
         return try {
             val habits = cloud.getHabits(userId)
             val dates = cloud.getDates(userId)
+            val achievements = cloud.getAchievements(userId)
 
-            if(habits.isEmpty()) {
+            var isUpdated = false
+
+            if (habits.isNotEmpty()) {
+                local.replaceAllFromCloud(habits, dates)
+                isUpdated = true
+            } else {
                 Log.d("SYNC_DEBUG", "syncFromCloud: cloud is empty, skip replacing local data")
-                return false
             }
 
-            local.replaceAllFromCloud(habits, dates)
-            true
+            if (achievements.isNotEmpty()) {
+                local.replaceAchievementsFromCloud(achievements)
+                isUpdated = true
+            }
+
+            isUpdated
         } catch (e: Exception) {
             Log.e("SYNC_DEBUG", "syncFromCloud failed", e)
             false
@@ -35,9 +45,11 @@ class DefaultSyncRepository @Inject constructor(
         return try {
             val habits = local.getAllHabitsOnce()
             val dates = local.getAllDateHabitsOnce()
+            val achievements = local.getAllAchievementsOnce()
 
             cloud.pushHabit(userId, habits)
             cloud.pushDateHabit(userId, dates)
+            cloud.pushAchievements(userId, achievements)
 
             true
         } catch (e: Exception) {
@@ -95,6 +107,19 @@ class DefaultSyncRepository @Inject constructor(
             true
         } catch (e: Exception) {
             Log.e("SYNC_DEBUG", "pushHabitToCloud failed", e)
+            false
+        }
+    }
+
+    override suspend fun pushAchievementsToCloud(
+        userId: String,
+        achievements: List<AchievementEntity>
+    ): Boolean {
+        return try {
+            cloud.pushAchievements(userId, achievements)
+            true
+        } catch (e: Exception) {
+            Log.e("SYNC_DEBUG", "pushAchievementsToCloud failed", e)
             false
         }
     }
@@ -168,6 +193,15 @@ class DefaultSyncRepository @Inject constructor(
         }
     }
 
+    override suspend fun downloadAchievementsFromLocal(userId: String): List<AchievementEntity> {
+        return try {
+            local.getAllAchievementsOnce()
+        } catch (e: Exception) {
+            Log.e("SYNC_DEBUG", "downloadAchievements failed", e)
+            emptyList()
+        }
+    }
+
     override suspend fun downloadHabitsFromCloud(userId: String): List<HabitEntity> {
         return try {
             cloud.getHabits(userId)
@@ -183,6 +217,30 @@ class DefaultSyncRepository @Inject constructor(
         } catch (e: Exception) {
             Log.e("SYNC_DEBUG", "downloadDates failed", e)
             emptyList()
+        }
+    }
+
+    override suspend fun downloadAchievementsFromCloud(userId: String): List<AchievementEntity> {
+        return try {
+            cloud.getAchievements(userId)
+        } catch (e: Exception) {
+            Log.e("SYNC_DEBUG", "downloadAchievements failed", e)
+            emptyList()
+        }
+    }
+
+    override suspend fun syncAchievementsFromCloud(userId: String): Boolean {
+        return try {
+            val achievements = cloud.getAchievements(userId)
+            if (achievements.isEmpty()) {
+                Log.d("SYNC_DEBUG", "syncAchievementsFromCloud: cloud is empty")
+                return false
+            }
+            local.replaceAchievementsFromCloud(achievements)
+            true
+        } catch (e: Exception) {
+            Log.e("SYNC_DEBUG", "syncAchievementsFromCloud failed", e)
+            false
         }
     }
 }

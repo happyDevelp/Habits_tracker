@@ -12,7 +12,11 @@ interface HistoryRepository {
 
     suspend fun getAchievementOnce(): AchievementEntity?
 
+    suspend fun getAllAchievementsOnce(): List<AchievementEntity>
+
     fun getAllAchievements(): Flow<List<AchievementEntity>>
+
+    suspend fun replaceAchievements(achievements: List<AchievementEntity>)
 
     suspend fun updateUnlockedDate(unlockedAt: String, isNotified: Boolean, id: Int)
 

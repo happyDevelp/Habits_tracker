@@ -3,6 +3,7 @@ package com.example.habitstracker.me.data.remote
 import android.util.Log
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
+import com.example.habitstracker.history.domain.AchievementEntity
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -83,6 +84,26 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
         batch.commit().await()
     }
 
+    /** AchievementEntity */
+    suspend fun pushAchievement(userId: String, achievement: AchievementEntity) {
+        achievementsCollection(userId)
+            .document(achievement.id.toString())
+            .set(achievement)
+            .await()
+    }
+
+    suspend fun pushAchievements(userId: String, achievements: List<AchievementEntity>) {
+        val db = Firebase.firestore
+        val batch = db.batch()
+
+        val achievementsCol = achievementsCollection(userId)
+        achievements.forEach { achievement ->
+            val docRef = achievementsCol.document(achievement.id.toString())
+            batch.set(docRef, achievement)
+        }
+        batch.commit().await()
+    }
+
     suspend fun updateSelectState(
         userId: String,
         dateHabitId: String,
@@ -121,6 +142,11 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
     suspend fun getDates(userId: String): List<DateHabitEntity> {
         val snapshot = datesCollection(userId).get().await()
         return snapshot.toObjects(DateHabitEntity::class.java)
+    }
+
+    suspend fun getAchievements(userId: String): List<AchievementEntity> {
+        val snapshot = achievementsCollection(userId).get().await()
+        return snapshot.toObjects(AchievementEntity::class.java)
     }
 
 
