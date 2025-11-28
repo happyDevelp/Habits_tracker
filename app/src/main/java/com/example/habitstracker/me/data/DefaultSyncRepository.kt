@@ -17,16 +17,19 @@ class DefaultSyncRepository @Inject constructor(
             val habits = cloud.getHabits(userId)
             val dates = cloud.getDates(userId)
 
-            local.insertHabits(habits)
-            local.insertDates(dates)
-            local.fillMissingDatesForAllHabits()
+            if(habits.isEmpty()) {
+                Log.d("SYNC_DEBUG", "syncFromCloud: cloud is empty, skip replacing local data")
+                return false
+            }
 
+            local.replaceAllFromCloud(habits, dates)
             true
         } catch (e: Exception) {
             Log.e("SYNC_DEBUG", "syncFromCloud failed", e)
             false
         }
     }
+
 
     override suspend fun syncToCloud(userId: String): Boolean {
         return try {

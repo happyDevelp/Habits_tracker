@@ -3,7 +3,6 @@ package com.example.habitstracker.me.presentation.sign_in
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.habitstracker.me.domain.SyncRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
@@ -95,5 +94,9 @@ class SignInViewModel @Inject constructor(
             delay(2500)
             _state.update { it.copy(banner = SignInBannerStatus.NONE) }
         }
+    }
+
+    fun resetLoginSuccessful() {
+        _state.update { it.copy(loginSuccessful = false) }
     }
 }

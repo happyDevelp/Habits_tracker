@@ -34,7 +34,6 @@ class SyncViewModel @Inject constructor(
     fun syncFromCloud() {
         viewModelScope.launch {
             if (internetAvailable() == false) return@launch
-
             _state.update { it.copy(isLoading = true) }
 
             val success = syncManager.syncFromCloud()
@@ -135,5 +134,4 @@ class SyncViewModel @Inject constructor(
         preferences.saveLastSync(time)
         return time
     }
-
 }

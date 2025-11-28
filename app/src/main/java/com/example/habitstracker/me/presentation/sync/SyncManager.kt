@@ -1,6 +1,7 @@
 package com.example.habitstracker.me.presentation.sync
 
 import android.content.Context
+import android.util.Log
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.me.domain.SyncRepository

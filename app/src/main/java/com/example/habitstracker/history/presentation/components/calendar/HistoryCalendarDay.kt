@@ -91,6 +91,6 @@ fun HistoryCalendarDay(
 private fun dayProgress(list: List<DateHabitEntity>?): Float {
     val l = list ?: return 0f
     if (l.isEmpty()) return 0f
-    val done = l.count { it.isCompleted }
+    val done = l.count { it.completed }
     return done.toFloat() / l.size.toFloat()          // 0f..1f
 }

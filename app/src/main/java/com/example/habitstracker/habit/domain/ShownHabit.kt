@@ -1,6 +1,5 @@
 package com.example.habitstracker.habit.domain
 
-import androidx.room.PrimaryKey
 import com.example.habitstracker.core.presentation.theme.MyPalette.blueColor
 import com.example.habitstracker.core.presentation.utils.toHex
 
@@ -47,7 +46,7 @@ fun mapToShownHabits(
                     days = habit.days,
                     executionTime = habit.executionTime,
                     reminder = habit.reminder,
-                    isSelected = dateHabit.isCompleted
+                    isSelected = dateHabit.completed
                 )
             }
         }

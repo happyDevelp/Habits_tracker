@@ -185,7 +185,7 @@ private fun buildMonthGrid(yearMonth: LocalDate): List<LocalDate?> {
 }
 
 private fun isPerfectDay(list: List<DateHabitEntity>?): Boolean =
-    list?.isNotEmpty() == true && list.all { it.isCompleted }
+    list?.isNotEmpty() == true && list.all { it.completed }
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable

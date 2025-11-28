@@ -2,7 +2,6 @@ package com.example.habitstracker.habit.presentation.today_main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.habitstracker.habit.data.db.HabitWithDateDb
 import com.example.habitstracker.habit.data.db.toShownHabit
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
@@ -66,7 +65,7 @@ class MainScreenViewModel @Inject constructor(
                     DateHabitEntity(
                         habitId = shownHabit.habitId,
                         currentDate = today.toString(),
-                        isCompleted = false
+                        completed = false
                     )
                 )
                 return@forEach
@@ -82,7 +81,7 @@ class MainScreenViewModel @Inject constructor(
                         DateHabitEntity(
                             habitId = shownHabit.habitId,
                             currentDate = currentDate.toString(),
-                            isCompleted = false
+                            completed = false
                         )
                     )
                 }

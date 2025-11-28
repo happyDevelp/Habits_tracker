@@ -1,5 +1,6 @@
 package com.example.habitstracker.me.data.local
 
+import android.util.Log
 import com.example.habitstracker.habit.data.db.HabitDao
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
@@ -24,9 +25,31 @@ class LocalSyncRepository @Inject constructor(private val dao: HabitDao) {
         list.forEach { dao.insertHabitDate(it) }
     }
 
+/**
+     * Complete replacement of local data with data from the cloud.
+     * 1) clean the tables
+     * 2) insert habits
+     * 3) insert ONLY valid dates (so as not to fall on FOREIGN KEY)
+     * 4) fill in the missed dates
+     */
+    suspend fun replaceAllFromCloud(
+        habits: List<HabitEntity>,
+        dates: List<DateHabitEntity>
+    ) {
+        // 1. filter dates that refer to non-existent habits
+        val habitIds = habits.map { it.id }.toSet()
+        val validDates = dates.filter { it.habitId in habitIds }
+
+        dao.replaceAllFromCloud(habits, validDates)
+
+        fillMissingDatesForAllHabits()
+    }
+
     suspend fun fillMissingDatesForAllHabits() {
         val today = LocalDate.now()
         val habits = dao.getAllHabits().first()
+
+        Log.d("SYNC_DEBUG", "fillMissingDatesForAllHabits")
 
         habits.forEach { habit ->
 
@@ -37,7 +60,7 @@ class LocalSyncRepository @Inject constructor(private val dao: HabitDao) {
                     DateHabitEntity(
                         habitId = habit.id,
                         currentDate = today.toString(),
-                        isCompleted = false
+                        completed = false
                     )
                 )
                 return@forEach
@@ -54,7 +77,7 @@ class LocalSyncRepository @Inject constructor(private val dao: HabitDao) {
                         DateHabitEntity(
                             habitId = habit.id,
                             currentDate = currentDate.toString(),
-                            isCompleted = false
+                            completed = false
                         )
                     )
                 }

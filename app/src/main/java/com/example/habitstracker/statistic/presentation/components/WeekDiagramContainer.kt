@@ -204,7 +204,7 @@ private fun buildPercentages(monday: LocalDate, habits: List<DateHabitEntity>): 
         // all habits of this week for a specific day
         val dayHabits = habits.filter { LocalDate.parse(it.currentDate) == currentDay }
         val total = dayHabits.size
-        val completed = dayHabits.count { it.isCompleted }
+        val completed = dayHabits.count { it.completed }
 
         // if the day after today is 0%
         if (currentDay.isAfter(today)) return@map 0f
@@ -305,7 +305,7 @@ private fun calcWeekAvgPercent(monday: LocalDate, habits: List<DateHabitEntity>)
     while (!d.isAfter(to)) {
         val currentDayHabits = habitsByDate[d].orEmpty()
         total += currentDayHabits.size
-        completed += currentDayHabits.count { it.isCompleted }
+        completed += currentDayHabits.count { it.completed }
         d = d.plusDays(1)
     }
     val ratio = if (total > 0) completed.toFloat() / total else 0f

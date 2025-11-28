@@ -24,12 +24,12 @@ fun AchievementsScreen(
     val totalFinishedHabits = mapHabitsToDate
         .values
         .flatten()
-        .count { it.isCompleted }
+        .count { it.completed }
 
     val totalPerfectDays = mapHabitsToDate
         .values
         .count {
-            it.all { habit -> habit.isCompleted } // if all habits are completed
+            it.all { habit -> habit.completed } // if all habits are completed
         }
 
     val bestStreak = getBestStreak(mapHabitsToDate)
@@ -87,7 +87,7 @@ private fun getBestStreak(mapHabitsToDate: Map<LocalDate, List<DateHabitEntity>>
 
     for (date in dates) {
         val habits = mapHabitsToDate[date].orEmpty()
-        val isPerfect = habits.isNotEmpty() && habits.all { it.isCompleted }
+        val isPerfect = habits.isNotEmpty() && habits.all { it.completed }
 
         if (isPerfect) {
             currentStreak++

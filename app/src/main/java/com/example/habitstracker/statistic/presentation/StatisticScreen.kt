@@ -111,7 +111,7 @@ fun rolling30DayConsistency(allHabits: List<DateHabitEntity>): Int {
     while (!current.isAfter(today)) {
         val habitsForDay = habitsByDate[current].orEmpty()
         val totalForDay = habitsForDay.size
-        val completedForDay = habitsForDay.count { it.isCompleted }
+        val completedForDay = habitsForDay.count { it.completed }
 
         val ratio = if (totalForDay > 0) {
             completedForDay.toDouble() / totalForDay
@@ -151,13 +151,13 @@ private fun ProfileScreenPreview() {
                             id = 1,
                             habitId = 1,
                             currentDate = "2025-10-30",
-                            isCompleted = true
+                            completed = true
                         ),
                         DateHabitEntity(
                             id = 2,
                             habitId = 2,
                             currentDate = "2025-10-30",
-                            isCompleted = false
+                            completed = false
                         )
                     )
                 )

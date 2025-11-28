@@ -47,6 +47,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -97,6 +98,14 @@ fun MeScreenRoot(
 ) {
     val signInState by signInViewModel.state.collectAsStateWithLifecycle()
     val syncState by syncViewModel.state.collectAsStateWithLifecycle()
+
+    // As soon as the login is successful, launch syncFromCloud
+    LaunchedEffect(signInState.loginSuccessful) {
+        if (signInState.loginSuccessful == true) {
+            syncViewModel.syncFromCloud()
+            signInViewModel.resetLoginSuccessful()
+        }
+    }
 
     MeScreen(
         user = signInState.userData,
@@ -273,7 +282,10 @@ fun MeScreen(
                             .fillMaxWidth(0.6f)
                             .height(48.dp)
                             .align(Alignment.CenterHorizontally),
-                        onClick = { onSignInClick() },
+                        onClick = {
+                            onSignInClick()
+                            //syncFromCloud()
+                        },
                         colors = ButtonDefaults.buttonColors(
                             containerColor = Color(0xFF3F5162),
                             contentColor = Color.White
