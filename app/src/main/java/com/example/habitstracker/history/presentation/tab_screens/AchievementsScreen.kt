@@ -50,7 +50,7 @@ fun AchievementsScreen(
             description = { target, index ->
                  "$target Habits Finished"
             },
-            isNotified = habitsFinished.map { it.isNotified },
+            isNotified = habitsFinished.map { it.notified },
             unlockedAt = habitsFinished.map { it.unlockedAt }
         ),
         AchievementSection(
@@ -59,7 +59,7 @@ fun AchievementsScreen(
             targets = perfectDays.map { it.target.toString() },
             progress = totalPerfectDays,
             description = { target, _ -> "$target Perfect Days" },
-            isNotified = habitsFinished.map { it.isNotified },
+            isNotified = habitsFinished.map { it.notified },
             unlockedAt = habitsFinished.map { it.unlockedAt }
         ),
         AchievementSection(
@@ -68,7 +68,7 @@ fun AchievementsScreen(
             targets = bestStreaks.map { it.target.toString() },
             progress = bestStreak,
             description = { target, _ -> "$target Days Streak" },
-            isNotified = habitsFinished.map { it.isNotified },
+            isNotified = habitsFinished.map { it.notified },
             unlockedAt = habitsFinished.map { it.unlockedAt }
         )
     )
@@ -116,28 +116,28 @@ fun AchievementsScreenPreview(modifier: Modifier = Modifier) {
             id = 1,
             section = "Habits Finished",
             target = 1,
-            isNotified = false,
+            notified = false,
             unlockedAt = "2025-01-27"
         ),
         AchievementEntity(
             id = 2,
             section = "Habits Finished",
             target = 10,
-            isNotified = false,
+            notified = false,
             unlockedAt = "2025-01-29"
         ),
         AchievementEntity(
             id = 3,
             section = "Perfect Days",
             target = 3,
-            isNotified = true,
+            notified = true,
             unlockedAt = "2025-01-28"
         ),
         AchievementEntity(
             id = 4,
             section = "Best Streak",
             target = 5,
-            isNotified = false,
+            notified = false,
             unlockedAt = "2025-01-30"
         )
     )

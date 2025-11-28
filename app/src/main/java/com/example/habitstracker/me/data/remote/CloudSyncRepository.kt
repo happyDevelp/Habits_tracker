@@ -85,13 +85,6 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
     }
 
     /** AchievementEntity */
-    suspend fun pushAchievement(userId: String, achievement: AchievementEntity) {
-        achievementsCollection(userId)
-            .document(achievement.id.toString())
-            .set(achievement)
-            .await()
-    }
-
     suspend fun pushAchievements(userId: String, achievements: List<AchievementEntity>) {
         val db = Firebase.firestore
         val batch = db.batch()

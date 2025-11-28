@@ -31,7 +31,7 @@ sealed interface HistoryDAO {
     @Query("select * from achievement_table")
     fun getAllAchievement(): Flow<List<AchievementEntity>>
 
-    @Query("update achievement_table set isNotified =:isNotified, unlockedAt =:unlockedAt where id =:id")
+    @Query("update achievement_table set notified =:isNotified, unlockedAt =:unlockedAt where id =:id")
     suspend fun updateUnlockedDate(unlockedAt: String, isNotified: Boolean, id: Int)
 
 
