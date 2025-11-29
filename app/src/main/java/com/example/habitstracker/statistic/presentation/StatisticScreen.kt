@@ -81,11 +81,7 @@ fun StatisticScreen(
 
             DrawStatisticContainers(dateHabitList = dateHabitList)
 
-            DrawConsistencyContainer(
-                consistency = consistency,
-                strokeWidth = 14.dp,
-                diameter = 220.dp
-            )
+            DrawConsistencyContainer(percentage = consistency)
             Spacer(Modifier.height(18.dp))
 
             WeekDiagramContainer(_weeklyMap = weeklyMap)

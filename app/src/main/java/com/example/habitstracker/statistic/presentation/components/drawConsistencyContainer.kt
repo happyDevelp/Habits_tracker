@@ -1,15 +1,17 @@
 package com.example.habitstracker.statistic.presentation.components
 
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -19,11 +21,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -32,106 +38,138 @@ import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 
 @Composable
 fun DrawConsistencyContainer(
-    consistency: Int,
-    strokeWidth: Dp,
-    diameter: Dp
+    modifier: Modifier = Modifier,
+    percentage: Int,
+    // texts
+    title: String? = "Consistency",
+    subtitle: String? = "Perform your habits daily to increase your consistency percentage.",
+    // sizes
+    strokeWidth: Dp = 18.dp,
+    diameter: Dp = 220.dp,
+    arcAngle: Float = 180f,
+    // colors
+    backgroundColor: Color = containerBackgroundDark,
+    baseArcColor: Color = Color.LightGray.copy(alpha = 0.3f),
+    progressBrush: Brush = Brush.horizontalGradient(
+        listOf(
+            Color(0xFF1FA2FF),
+            Color(0xFF29EAC4)
+        )
+    ),
+    // Card Shape/Indentation
+    cardShape: Shape = RoundedCornerShape(20.dp),
+    cardPadding: PaddingValues = PaddingValues(horizontal = 12.dp),
+    // Text styles
+    titleTextStyle: TextStyle = TextStyle(
+        fontSize = 20.sp,
+        fontWeight = FontWeight.SemiBold,
+        color = Color.White,
+        fontFamily = PoppinsFontFamily
+    ),
+    valueTextStyle: TextStyle = TextStyle(
+        fontSize = 32.sp,
+        fontWeight = FontWeight.Bold,
+        color = Color.White,
+        fontFamily = PoppinsFontFamily
+    ),
+    subtitleTextStyle: TextStyle = TextStyle(
+        fontSize = 12.sp,
+        color = Color.White.copy(alpha = 0.88f),
+        fontFamily = PoppinsFontFamily,
+        textAlign = TextAlign.Center
+    )
 ) {
+    val clamped = percentage.coerceIn(0, 100)
+
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .padding(horizontal = 12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = containerBackgroundDark,
-        ),
-        shape = RoundedCornerShape(12.dp)
+            .padding(cardPadding),
+        colors = CardDefaults.cardColors(containerColor = backgroundColor),
+        shape = cardShape
     ) {
-        Box(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .wrapContentHeight()
-                .padding(top = 16.dp, bottom = 24.dp),
-            contentAlignment = Alignment.TopCenter
+                .padding(vertical = 20.dp, horizontal = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            Column(
-                modifier = Modifier
-                    .wrapContentWidth(),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
+
+            if (title != null) {
                 Text(
-                    text = "Consistency"/*"Monthly Consistency"*/,
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    fontFamily = PoppinsFontFamily
+                    text = title,
+                    style = titleTextStyle
                 )
-                Spacer(Modifier.height(32.dp))
+            }
 
-
+            Spacer(modifier = Modifier.height(6.dp))
+            // arc + % inside
+            Box(
+                modifier = Modifier
+                    .width(diameter)
+                    .height(diameter / 2),
+                contentAlignment = Alignment.Center
+            ) {
                 Canvas(
                     modifier = Modifier
-                        .width(diameter)
-                        .height(diameter / 2)
+                        .matchParentSize()
                 ) {
                     val stroke = Stroke(
                         width = strokeWidth.toPx(),
                         cap = StrokeCap.Round
                     )
-                    val topOffset = 0f/*-size.width / 2f*/
+
                     val stretchingDegree = 20
-                    val angle = 180f
-                    // grayBase
+                    val topOffset = 0f
+
+                    // BASIC GRAY ARC
                     drawArc(
-                        color = Color.LightGray.copy(alpha = 0.3f),
-                        startAngle = angle,
-                        sweepAngle = angle,
+                        color = baseArcColor,
+                        startAngle = arcAngle,
+                        sweepAngle = arcAngle,
                         useCenter = false,
                         topLeft = Offset(-stretchingDegree / 2f, topOffset),
                         size = Size(size.width + stretchingDegree, size.width),
                         style = stroke
                     )
 
-                    val consistencyArc = angle * consistency / 100
-                    // The yellow filled part
+                    // Filled part
+                    val sweep = arcAngle * (clamped / 100f)
                     drawArc(
-                        color = Color(0xFFFFC107),
-                        startAngle = angle,
-                        sweepAngle = consistencyArc,
+                        brush = progressBrush,
+                        startAngle = arcAngle,
+                        sweepAngle = sweep,
                         useCenter = false,
                         topLeft = Offset(-stretchingDegree / 2f, topOffset),
                         size = Size(size.width + stretchingDegree, size.width),
                         style = stroke
                     )
                 }
-            }
-            Text(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(bottom = 4.dp),
-                text = "$consistency%",
-                fontSize = 32.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold,
-                fontFamily = PoppinsFontFamily
-            )
-        }
-        Text(
-            modifier = Modifier
-                .padding(start = 12.dp, end = 12.dp, bottom = 12.dp),
-            text = /*"Complete your habits every day to keep your bird cheerful!"*/
-                "Perform your habits daily to increase your consistency percentage.",
-            fontSize = 12.sp,
-            color = Color.White.copy(0.88f),
-            fontFamily = PoppinsFontFamily,
-            textAlign = TextAlign.Center
-        )
 
-        // test animation #TODO
-        /*BirdAnimations.HappyBird(
-                    modifier = Modifier
-                        .align(Alignment.CenterHorizontally)
-                        .size(250.dp)
-                        .offset(y = (-70).dp),
-                )*/
+                Text(
+                    modifier = Modifier.offset(y = (20).dp),
+                    text = "$clamped%",
+                    style = valueTextStyle
+                )
+            }
+
+            Spacer(modifier = Modifier.height(6.dp))
+
+            if (subtitle != null) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = subtitle,
+                    style = subtitleTextStyle
+                )
+            }
+        }
     }
+}
+
+@Preview
+@Composable
+private fun Preview(modifier: Modifier = Modifier) {
+
 }

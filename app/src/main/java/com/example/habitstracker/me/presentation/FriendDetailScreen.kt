@@ -27,6 +27,7 @@ import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.core.presentation.utils.gradientColor
 import com.example.habitstracker.me.presentation.component.FrDetailTopBar
+import com.example.habitstracker.statistic.presentation.components.DrawConsistencyContainer
 
 @Composable
 fun FriendDetailRoot() {
@@ -47,7 +48,7 @@ fun FriendDetailScreen(
     perfectDaysThisWeek: Int = 3,
     consistency: Int = 86,
 ) {
-    val background = Color(0xFF0A0C13)   // загальний фон
+    val background = Color(0xFF0E101A)   // загальний фон
     val surfaceDark = Color(0xFF11141C)   // фон великих карток
     val surfaceDarker = Color(0xFF0F1228)
 
@@ -152,11 +153,15 @@ fun FriendDetailScreen(
                 }
 
                 // 3) Consistency
-                ConsistencyCard(
+                DrawConsistencyContainer(
+                    percentage = 86,
+                    backgroundColor = Color(0xFF181C28)
+                )
+                /*ConsistencyCard(
                     modifier = Modifier.fillMaxWidth(),
                     value = consistency,
                     background = surfaceDark
-                )
+                )*/
             }
         }
     }
