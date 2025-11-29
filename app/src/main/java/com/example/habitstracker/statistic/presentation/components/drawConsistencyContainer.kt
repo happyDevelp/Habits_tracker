@@ -24,13 +24,18 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 
 @Composable
-fun DrawConsistencyContainer(consistency: Int) {
+fun DrawConsistencyContainer(
+    consistency: Int,
+    strokeWidth: Dp,
+    diameter: Dp
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -62,8 +67,6 @@ fun DrawConsistencyContainer(consistency: Int) {
                 )
                 Spacer(Modifier.height(32.dp))
 
-                val strokeWidth = 14.dp
-                val diameter = 220.dp
 
                 Canvas(
                     modifier = Modifier
