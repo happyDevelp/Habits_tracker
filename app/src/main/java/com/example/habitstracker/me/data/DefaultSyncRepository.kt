@@ -6,6 +6,8 @@ import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.history.domain.AchievementEntity
 import com.example.habitstracker.me.data.local.LocalSyncRepository
 import com.example.habitstracker.me.data.remote.CloudSyncRepository
+import com.example.habitstracker.me.data.remote.model.UserProfile
+import com.example.habitstracker.me.data.remote.model.UserStats
 import com.example.habitstracker.me.domain.SyncRepository
 import javax.inject.Inject
 
@@ -241,6 +243,60 @@ class DefaultSyncRepository @Inject constructor(
         } catch (e: Exception) {
             Log.e("SYNC_DEBUG", "syncAchievementsFromCloud failed", e)
             false
+        }
+    }
+
+    override suspend fun ensureUserProfile(
+        userId: String,
+        displayName: String?,
+        avatarUrl: String?
+    ): Boolean {
+        return try {
+            cloud.ensureUserProfile(userId, displayName, avatarUrl)
+            true
+        } catch (e: Exception) {
+            Log.e("SYNC_DEBUG", "ensureUserProfile failed", e)
+            false
+        }
+    }
+
+    override suspend fun getUserProfile(userId: String): UserProfile? {
+        return try {
+            cloud.getUserProfile(userId)
+        } catch (e: Exception) {
+            Log.e("SYNC_DEBUG", "getUserProfile failed", e)
+            null
+        }
+    }
+
+    override suspend fun findUserIdByFriendCode(friendCode: String): String? {
+        return try {
+            cloud.findUserIdByFriendCode(friendCode)
+        } catch (e: Exception) {
+            Log.e("SYNC_DEBUG", "findUserIdByFriendCode failed", e)
+            null
+        }
+    }
+
+    override suspend fun pushUserStats(
+        userId: String,
+        stats: UserStats
+    ): Boolean {
+        return try {
+            cloud.pushUserStats(userId, stats)
+            true
+        } catch (e: Exception) {
+            Log.e("SYNC_DEBUG", "pushUserStats failed", e)
+            false
+        }
+    }
+
+    override suspend fun getUserStats(userId: String): UserStats? {
+        return try {
+            cloud.getUserStats(userId)
+        } catch (e: Exception) {
+            Log.e("SYNC_DEBUG", "getUserStats failed", e)
+            null
         }
     }
 }

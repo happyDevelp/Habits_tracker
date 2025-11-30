@@ -1,8 +1,10 @@
 package com.example.habitstracker.me.presentation.sign_in
 
 import android.content.Context
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.habitstracker.me.presentation.sync.SyncManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.delay
@@ -16,6 +18,7 @@ import javax.inject.Inject
 class SignInViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val googleAuthUiClient: GoogleAuthUiClient,
+    private val syncManager: SyncManager,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SignInState())
@@ -24,7 +27,7 @@ class SignInViewModel @Inject constructor(
     init {
         val currentUser = googleAuthUiClient.getSignedInUser()
 
-        if(currentUser != null) {
+        if (currentUser != null) {
             _state.update {
                 it.copy(
                     userData = currentUser
@@ -52,6 +55,22 @@ class SignInViewModel @Inject constructor(
             val isSuccess = googleAuthUiClient.signIn()
 
             if (isSuccess) {
+                // 1) take data about the loggedIn user
+                val signedInUser = googleAuthUiClient.getSignedInUser()
+
+                // 2) guarantee a profile in Firestore
+                signedInUser?.let { user ->
+                    try {
+                        syncManager.ensureUserProfile(
+                            displayName = user.userName,
+                            avatarUrl = user.profilePictureUrl
+                        )
+                    } catch (e: Exception) {
+                        Log.e("SIGN_IN", "ensureUserProfile failed", e)
+                    }
+                }
+
+                // 3) update the state after all operations
                 _state.update {
                     it.copy(
                         userData = googleAuthUiClient.getSignedInUser(),

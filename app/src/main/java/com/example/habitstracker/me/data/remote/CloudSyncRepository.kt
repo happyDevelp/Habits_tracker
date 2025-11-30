@@ -4,6 +4,8 @@ import android.util.Log
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.history.domain.AchievementEntity
+import com.example.habitstracker.me.data.remote.model.UserProfile
+import com.example.habitstracker.me.data.remote.model.UserStats
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -30,6 +32,19 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
     private fun achievementsCollection(userId: String): CollectionReference {
         return userDoc(userId).collection("achievements")
     }
+
+    private fun profileDoc(userId: String): DocumentReference =
+        userDoc(userId)
+            .collection("profile")
+            .document("profile")
+
+    private fun statsDoc(userId: String): DocumentReference =
+        userDoc(userId)
+            .collection("stats")
+            .document("stats")
+
+    private fun friendsCollection(userId: String): CollectionReference =
+        userDoc(userId).collection("friends")
 
     // ---------- PUSH ----------
 
@@ -166,4 +181,92 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
             false
         }
     }
+
+    // create a profile at the first login or do nothing if you already have one or update avatar/nickname
+    suspend fun ensureUserProfile(
+        userId: String,
+        displayName: String?,
+        avatarUrl: String?
+    ) {
+        val doc = profileDoc(userId)
+        val snapshot = doc.get().await()
+
+        if (!snapshot.exists()) {
+            // First login — create a profile
+            val profile = UserProfile(
+                displayName = displayName ?: "User",
+                avatarUrl = avatarUrl,
+                friendCode = generateFriendCodeFromUid(userId)
+            )
+            doc.set(profile).await()
+        } else {
+            // The profile is already there — check if the name/avatar has changed
+            val current = snapshot.toObject(UserProfile::class.java) ?: return
+
+            val updates = mutableMapOf<String, Any>()
+
+            if (!displayName.isNullOrBlank() && displayName != current.displayName) {
+                updates["displayName"] = displayName
+            }
+            if (avatarUrl != null && avatarUrl != current.avatarUrl) {
+                updates["avatarUrl"] = avatarUrl
+            }
+
+            // friendCode is NOT touched, even if something has changed
+            if (updates.isNotEmpty()) {
+                doc.update(updates).await()
+            }
+        }
+    }
+
+    // Get a profile (for yourself or a friend)
+    suspend fun getUserProfile(userId: String): UserProfile? {
+        val snapshot = profileDoc(userId).get().await()
+        return snapshot.toObject(UserProfile::class.java)
+    }
+
+    suspend fun findUserIdByFriendCode(friendCode: String): String? {
+        val query = firestore
+            .collectionGroup("profile")       // searches among all users/{uid}/profile
+            .whereEqualTo("friendCode", friendCode.uppercase())
+            .limit(1)
+            .get()
+            .await()
+
+        val doc = query.documents.firstOrNull() ?: return null
+
+        // userDoc = users/{userId}
+        val userDocRef = doc.reference.parent.parent ?: return null
+        return userDocRef.id  // this is the userId (uid)
+    }
+
+    suspend fun pushUserStats(userId: String, stats: UserStats) {
+        val data = stats.copy(
+            updatedAt = com.google.firebase.Timestamp.now()
+        )
+        statsDoc(userId).set(data).await()
+    }
+
+    suspend fun getUserStats(userId: String): UserStats? {
+        val snapshot = statsDoc(userId).get().await()
+        return snapshot.toObject(UserStats::class.java)
+    }
+}
+
+private const val FRIEND_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+
+private fun generateFriendCodeFromUid(uid: String, length: Int = 6): String {
+    var value = uid.hashCode().toUInt().toLong()
+    val base = FRIEND_CODE_ALPHABET.length
+    val sb = StringBuilder()
+
+    repeat(length) {
+        val index = (value % base).toInt().coerceIn(0, base - 1)
+        sb.append(FRIEND_CODE_ALPHABET[index])
+        value /= base
+    }
+
+    return sb.toString()
+        .chunked(3)
+        .joinToString("-")
 }

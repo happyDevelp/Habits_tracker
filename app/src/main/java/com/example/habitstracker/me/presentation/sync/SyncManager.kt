@@ -5,6 +5,8 @@ import android.util.Log
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.history.domain.AchievementEntity
+import com.example.habitstracker.me.data.remote.model.UserProfile
+import com.example.habitstracker.me.data.remote.model.UserStats
 import com.example.habitstracker.me.domain.SyncRepository
 import com.example.habitstracker.me.presentation.sign_in.GoogleAuthUiClient
 import com.example.habitstracker.me.presentation.sign_in.isInternetAvailable
@@ -112,5 +114,29 @@ class SyncManager@Inject constructor(
     suspend fun syncAchievementsFromCloud(): Boolean {
         val user = googleAuthUiClient.getSignedInUser() ?: return false
         return syncRepo.syncAchievementsFromCloud(user.userId)
+    }
+
+    suspend fun ensureUserProfile(displayName: String?, avatarUrl: String?): Boolean {
+        val user = googleAuthUiClient.getSignedInUser() ?: return false
+        return syncRepo.ensureUserProfile(user.userId, displayName, avatarUrl)
+    }
+
+    suspend fun getUserProfile(): UserProfile? {
+        val user = googleAuthUiClient.getSignedInUser() ?: return null
+        return syncRepo.getUserProfile(user.userId)
+    }
+
+    suspend fun findUserIdByFriendCode(friendCode: String): String? {
+        return syncRepo.findUserIdByFriendCode(friendCode)
+    }
+
+    suspend fun pushUserStats(stats: UserStats): Boolean {
+        val user = googleAuthUiClient.getSignedInUser() ?: return false
+        return syncRepo.pushUserStats(user.userId, stats)
+    }
+
+    suspend fun getUserStats(): UserStats? {
+        val user = googleAuthUiClient.getSignedInUser() ?: return null
+        return syncRepo.getUserStats(user.userId)
     }
 }

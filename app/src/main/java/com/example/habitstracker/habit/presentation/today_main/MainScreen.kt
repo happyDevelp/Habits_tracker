@@ -62,9 +62,9 @@ import com.example.habitstracker.habit.presentation.today_main.components.Notifi
 import com.example.habitstracker.habit.presentation.today_main.components.SettingsBottomSheet
 import com.example.habitstracker.habit.presentation.today_main.components.TopBarMainScreen
 import com.example.habitstracker.habit.presentation.today_main.components.UnlockedAchievement
+import com.example.habitstracker.habit.presentation.today_main.components.calculateUserStats
 import com.example.habitstracker.habit.presentation.today_main.components.calendar.CalendarRowList
 import com.example.habitstracker.habit.presentation.today_main.utility.AchievementSection
-import com.example.habitstracker.habit.presentation.today_main.utility.getBestStreak
 import com.example.habitstracker.history.presentation.HistoryViewModel
 import com.example.habitstracker.me.presentation.sync.SyncViewModel
 import kotlinx.coroutines.launch
@@ -107,36 +107,32 @@ fun TodayScreenRoot(
             coroutineScope.launch {
                 todayViewModel.updateDateSelectState(habitId, isDone, selectDate)
 
+                val date = LocalDate.parse(selectDate)
+
                 val map = todayViewModel.dateHabitsMap.value
                     .toMutableMap().apply {
-                        val habitsForDate = getOrDefault(LocalDate.parse(selectDate), emptyList())
+                        val habitsForDate = getOrDefault(date, emptyList())
                         val updatedHabits = habitsForDate.map {
                             if (it.habitId == habitId) it.copy(isSelected = isDone) else it
                         }
-                        this[LocalDate.parse(selectDate)] = updatedHabits
+                        this[date] = updatedHabits
                     }
 
-                // 1. count
-                val completedHabits = map.values.flatten().count { it.isSelected }
-                val bestStreak = getBestStreak(map)
-                val perfectDays =
-                    map.values.count { habits -> habits.isNotEmpty() && habits.all { it.isSelected } }
+                // ---- 1. count all stats once ----
+                val stats = calculateUserStats(map)
 
-                // 2.Metric dictionary by sections
+                // 2. For achievements, we take part from stats
                 val metrics = mapOf(
-                    AchievementSection.HABITS_FINISHED to completedHabits,
-                    AchievementSection.BEST_STREAK to bestStreak,
-                    AchievementSection.PERFECT_DAYS to perfectDays,
+                    AchievementSection.HABITS_FINISHED to stats.totalCompletedHabits,
+                    AchievementSection.BEST_STREAK to stats.bestStreak,
+                    AchievementSection.PERFECT_DAYS to stats.perfectDaysTotal,
                 )
 
-                // 3. Find all the achievements that are now done but not notified yet
                 val newlyUnlocked = allAchievements.filter { ach ->
                     val section = AchievementSection.fromString(ach.section, context)
                     !ach.notified && (metrics[section] ?: 0) >= ach.target
                 }
 
-                // 4.If several are one - choose one (policy: priority by section)
-                // Example -Priority: Best Streak -> Perfect Days -> Habits Finished
                 fun sectionPriority(section: String) = when (section) {
                     "Best Streak" -> 0
                     "Perfect Days" -> 1
@@ -146,11 +142,11 @@ fun TodayScreenRoot(
 
                 val toShow = newlyUnlocked.sortedWith(
                     compareBy(
-                        { sectionPriority(it.section) }, { it.target }
+                        { sectionPriority(it.section) },
+                        { it.target }
                     )
                 ).firstOrNull()
 
-                // If there are new unlocked achievement and they are isNotified then we show a dialogue and update the data
                 if (toShow != null) {
                     val today = LocalDate.now().toString()
                     val unlockedAchievement = toShow.copy(unlockedAt = today, notified = true)
@@ -166,10 +162,14 @@ fun TodayScreenRoot(
                     syncViewModel.pushAchievementToCloud(unlockedAchievement)
                 }
 
+                // update a specific DateHabit in the cloud
                 syncViewModel.updateDateHabitOnCloud(
                     dateHabitId = habitDateId.toString(),
                     isDone = isDone
                 )
+
+                // ---- 3. Sync stats into the cloud ----
+                syncViewModel.updateMyStatsOnCloud(stats)
             }
         }
 

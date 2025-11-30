@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.history.domain.AchievementEntity
 import com.example.habitstracker.me.data.local.SyncPreferences
+import com.example.habitstracker.me.data.remote.model.UserStats
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -119,6 +120,10 @@ class SyncViewModel @Inject constructor(
             syncManager.pushAchievementsToCloud(localAchievements)
             _state.update { it.copy(lastSync = updateLastSync()) }
         }
+    }
+
+    suspend fun updateMyStatsOnCloud(stats: UserStats) {
+        syncManager.pushUserStats(stats)
     }
 
     private suspend fun internetAvailable(): Boolean {
