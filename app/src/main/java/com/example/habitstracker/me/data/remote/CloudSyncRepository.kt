@@ -255,7 +255,7 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
 
 private const val FRIEND_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 
-private fun generateFriendCodeFromUid(uid: String, length: Int = 6): String {
+private fun generateFriendCodeFromUid(uid: String, length: Int = 8): String {
     var value = uid.hashCode().toUInt().toLong()
     val base = FRIEND_CODE_ALPHABET.length
     val sb = StringBuilder()
@@ -267,6 +267,6 @@ private fun generateFriendCodeFromUid(uid: String, length: Int = 6): String {
     }
 
     return sb.toString()
-        .chunked(3)
+        .chunked(4)
         .joinToString("-")
 }

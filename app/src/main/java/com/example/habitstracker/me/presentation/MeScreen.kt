@@ -5,9 +5,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -18,32 +21,27 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.CloudUpload
 import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.Logout
 import androidx.compose.material.icons.outlined.PeopleOutline
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
@@ -67,7 +65,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.theme.AppTheme
@@ -79,10 +76,12 @@ import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.me.presentation.component.AccountButton
 import com.example.habitstracker.me.presentation.component.AccountSettingsBottomSheet
 import com.example.habitstracker.me.presentation.component.BannerStatus
+import com.example.habitstracker.me.presentation.component.FriendIdChip
 import com.example.habitstracker.me.presentation.component.LoadingOverlay
 import com.example.habitstracker.me.presentation.component.MeTopBar
-import com.example.habitstracker.me.presentation.component.SyncIcon
+import com.example.habitstracker.me.presentation.component.SignInButton
 import com.example.habitstracker.me.presentation.component.TopBanner
+import com.example.habitstracker.me.presentation.component.userCard
 import com.example.habitstracker.me.presentation.sign_in.SignInBannerStatus
 import com.example.habitstracker.me.presentation.sign_in.SignInViewModel
 import com.example.habitstracker.me.presentation.sign_in.UserData
@@ -109,6 +108,7 @@ fun MeScreenRoot(
 
     MeScreen(
         user = signInState.userData,
+        profileFriendId = syncViewModel.profileState.value?.friendCode ?: "",
         isLoading = signInState.isLoading || syncState.isLoading,
         bannerStatus = signInState.banner,
         syncBannerState = syncState.banner,
@@ -127,6 +127,7 @@ fun MeScreenRoot(
 fun MeScreen(
     modifier: Modifier = Modifier,
     user: UserData?,
+    profileFriendId: String,
     isLoading: Boolean,
     bannerStatus: BannerStatus,
     syncBannerState: BannerStatus,
@@ -146,6 +147,13 @@ fun MeScreen(
         label = "arrowRotation"
     )
 
+    val interactionSourceAddButton = remember { MutableInteractionSource() }
+    val isPressedAddButton by interactionSourceAddButton.collectIsPressedAsState()
+    val scale by animateFloatAsState(
+        targetValue = if (isPressedAddButton) 0.96f else 1f,
+        label = "scaleButton"
+    )
+
     Scaffold(topBar = { MeTopBar() }) { paddingValues ->
         Column(
             modifier = modifier
@@ -153,204 +161,66 @@ fun MeScreen(
                 .padding(paddingValues)
                 .background(screenBackgroundDark)
         ) {
-            Card(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .wrapContentHeight()
-                    .padding(horizontal = 16.dp, vertical = 16.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .clickable { syncToCloud() },
-                colors = CardDefaults.cardColors(containerColor = containerBackgroundDark),
-            ) {
-                Row(
-                    modifier = modifier
-                        .wrapContentHeight()
-                        .fillMaxWidth()
-                        .padding(top = 16.dp, start = 12.dp, end = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Box(
-                        modifier
-                            .clip(CircleShape)
-                            .size(70.dp)
-                            .background(HabitColor.Teal.light)
-                            .border(2.dp, Color.Gray, CircleShape)
-                            .padding()
-                    ) {
-                        // userAvatar
-                        AsyncImage(
-                            model = user?.profilePictureUrl,
-                            contentDescription = "User avatar",
-                            modifier = Modifier
-                                .size(70.dp)
-                                .clip(CircleShape)
-                                .border(2.dp, Color.Gray, CircleShape),
-                            contentScale = ContentScale.Crop,
-                            placeholder = painterResource(R.drawable.avataaar), // is shown when downloading
-                            error = painterResource(R.drawable.avataaars)
-                        )
-                    }
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(end = 8.dp),
-                        verticalAlignment = Alignment.Top,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-
-                        Column(
-                            modifier = modifier
-                                .wrapContentWidth()
-                                .padding(start = 12.dp),
-                            verticalArrangement = Arrangement.Center,
-                        ) {
-
-                            if (user == null) {
-                                Text(
-                                    text = "Backup & Restore",
-                                    color = Color.White.copy(alpha = 0.95f),
-                                    fontSize = 21.sp,
-                                    fontFamily = PoppinsFontFamily,
-                                )
-
-                                Text(
-                                    text = "Connect your Google account to back up your progress and find your friends",
-                                    color = Color.White.copy(alpha = 0.80f),
-                                    lineHeight = 14.sp,
-                                    fontSize = 10.sp,
-                                    fontFamily = PoppinsFontFamily,
-                                )
-                            } else {
-                                Text(
-                                    text = "Welcome Back,",
-                                    color = Color.White.copy(alpha = 0.90f),
-                                    fontSize = 14.sp,
-                                    fontFamily = PoppinsFontFamily,
-                                )
-                                Spacer(modifier.height(0.dp))
-                                Row(
-                                    modifier = Modifier
-                                        .clickable { openBottomSheet = true },
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = "${user.userName}",
-                                        color = Color.White.copy(alpha = 0.95f),
-                                        fontSize = 21.sp,
-                                        fontFamily = PoppinsFontFamily,
-                                    )
-                                    Icon(
-                                        modifier = Modifier
-                                            .padding()
-                                            .graphicsLayer {
-                                                rotationZ = rotation
-                                            },
-                                        imageVector = Icons.Default.ArrowDropDown,
-                                        contentDescription = "Account Settings Menu",
-                                        tint = Color.White.copy(alpha = 0.9f),
-                                    )
-                                }
-
-                                Spacer(modifier.height(2.dp))
-
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.Center
-                                ) {
-                                    Text(
-                                        text = lastSync?.let {
-                                            "last synchronized: $it"
-                                        } ?: "Sync failed",
-                                        fontFamily = PoppinsFontFamily,
-                                        color = Color.White.copy(alpha = 0.8f),
-                                        fontSize = 12.sp
-                                    )
-                                    Spacer(modifier.width(4.dp))
-
-                                    SyncIcon(syncInProcess = syncInProgress)
-                                }
-                            }
-                        }
-                    }
-                }
-
-                // Sign in with Google
-                if (user == null) {
-                    Button(
-                        modifier = Modifier
-                            .fillMaxWidth(0.6f)
-                            .height(48.dp)
-                            .align(Alignment.CenterHorizontally),
-                        onClick = {
-                            onSignInClick()
-                            //syncFromCloud()
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF3F5162),
-                            contentColor = Color.White
-                        ),
-                        shape = RoundedCornerShape(12.dp),
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.Center
-                        ) {
-                            Image(
-                                painter = painterResource(id = R.drawable.google_icon_logo),
-                                contentDescription = "Google logo",
-                                modifier = Modifier.size(20.dp)
-                            )
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Text(
-                                text = "Sign in with Google",
-                                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium)
-                            )
-                        }
-                    }
-                }
-                Spacer(modifier.height(12.dp))
-            }
+            // User card
+            openBottomSheet = userCard(
+                modifier = Modifier,
+                syncToCloud,
+                user,
+                openBottomSheet,
+                rotation,
+                lastSync,
+                syncInProgress,
+                onSignInClick
+            )
 
             // friends section
             Card(
                 modifier = modifier
                     .fillMaxWidth()
-                    .heightIn(min = 250.dp) // min height
+                    .heightIn(min = 250.dp)
                     .padding(horizontal = 16.dp),
                 colors = CardDefaults.cardColors(containerColor = containerBackgroundDark),
             ) {
                 Column(
                     modifier = modifier
                         .fillMaxWidth()
-                        .wrapContentHeight()
+                        .fillMaxHeight(0.90f)
                         .padding(vertical = 16.dp, horizontal = 8.dp)
                 ) {
-                    Text(
-                        modifier = modifier.align(Alignment.CenterHorizontally),
-                        text = "Friends",
-                        color = Color.White.copy(alpha = 0.95f),
-                        fontSize = 21.sp,
-                        fontFamily = PoppinsFontFamily,
-                    )
-                    Spacer(modifier.height(8.dp))
+                    Box(
+                        modifier = Modifier.fillMaxWidth(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            modifier = modifier.align(Alignment.Center),
+                            text = "Friends",
+                            color = Color.White.copy(alpha = 0.95f),
+                            fontSize = 21.sp,
+                            fontFamily = PoppinsFontFamily,
+                        )
+                        FriendIdChip(
+                            friendCode = profileFriendId,
+                            modifier = Modifier.align(Alignment.CenterEnd)
+                        )
+                    }
+                    Spacer(modifier.height(16.dp))
 
                     val friendsList: List<FriendEntity> = listOf(
-                        /*
                         FriendEntity("Friend 1", R.drawable.avataaar),
-                                              FriendEntity("Friend 2", R.drawable.avataaar),
-                                              FriendEntity("Friend 3", R.drawable.avataaar),
-                                              FriendEntity("Friend 4", R.drawable.avataaar),*/
-
-
+                        FriendEntity("Friend 1", R.drawable.avataaar),
+                        FriendEntity("Friend 1", R.drawable.avataaar),
+                        FriendEntity("Friend 1", R.drawable.avataaar),
+                        FriendEntity("Friend 1", R.drawable.avataaar),
+                        FriendEntity("Friend 1", R.drawable.avataaar),
+                        FriendEntity("Friend 1", R.drawable.avataaar),
                     )
 
-                    // user is not signed in
+                    // --- NOT SIGNED IN ------------------------------------------------------
                     if (user == null) {
                         Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .heightIn(min = 250.dp)
+                                .weight(1f)
                                 .background(
                                     Color.Black.copy(alpha = 0.4f),
                                     shape = RoundedCornerShape(12.dp)
@@ -375,47 +245,24 @@ fun MeScreen(
                                     fontFamily = PoppinsFontFamily
                                 )
                                 Spacer(Modifier.height(12.dp))
-                                Button(
-                                    modifier = Modifier
-                                        .fillMaxWidth(0.6f)
-                                        .height(48.dp)
-                                        .align(Alignment.CenterHorizontally),
-                                    onClick = { },
-                                    colors = ButtonDefaults.buttonColors(
-                                        containerColor = Color(0xFF3F5162),
-                                        contentColor = Color.White
-                                    ),
-                                    shape = RoundedCornerShape(12.dp),
-                                ) {
-
-                                    Row(
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.Center
-                                    ) {
-                                        Image(
-                                            painter = painterResource(id = R.drawable.google_icon_logo),
-                                            contentDescription = "Google logo",
-                                            modifier = Modifier.size(20.dp)
-                                        )
-                                        Spacer(modifier = Modifier.width(12.dp))
-                                        Text(
-                                            text = "Sign in with Google",
-                                            style = MaterialTheme.typography.bodyMedium.copy(
-                                                fontWeight = FontWeight.Medium
-                                            )
-                                        )
-                                    }
-                                }
+                                SignInButton {  }
                             }
                         }
-                    } else {
+                        return@Column
+                    }
 
+                    // friends section when signedIn
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                    ) {
                         if (friendsList.isEmpty()) {
-
                             Column(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(24.dp),
+                                    .wrapContentSize()
+                                    .padding(bottom = 18.dp)
+                                    .align(Alignment.Center),
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Icon(
@@ -432,185 +279,189 @@ fun MeScreen(
                                     fontFamily = PoppinsFontFamily
                                 )
                             }
+                        } else {
 
-                            Column(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalAlignment = Alignment.CenterHorizontally
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .heightIn(max = 700.dp),
+                                contentPadding = PaddingValues(
+                                    horizontal = 6.dp,
+                                    vertical = 4.dp
+                                ),
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
-
-
-                                Box(
-                                    modifier = Modifier
-                                        .fillMaxWidth(0.6f)
-                                        .height(48.dp)
-                                        .clip(RoundedCornerShape(10.dp))
-                                        .background(
-                                            Brush.linearGradient(
-                                                listOf(
-                                                    Color(0xFF5865F2),
-                                                    Color(0xFF4752C4)
-                                                )
-                                            )
-                                        )
-                                        .clickable { /* handle click */ },
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Text(
-                                        "Share link",
-                                        color = Color.White,
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.SemiBold
-                                    )
-                                }
-
-                                Spacer(modifier = Modifier.height(8.dp))
-
-                                Text(
-                                    text = "or",
-                                    color = Color.White.copy(alpha = 0.75f),
-                                )
-
-                                Spacer(modifier = Modifier.height(8.dp))
-
-
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 16.dp),
-                                    horizontalArrangement = Arrangement.Center,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    TextField(
-                                        value = typedText,
-                                        onValueChange = { typedText = it },
-                                        placeholder = {
-                                            Text(
-                                                "Enter friend's ID",
-                                                color = Color.Gray
-                                            )
-                                        },
-                                        singleLine = true,
-                                        shape = RoundedCornerShape(8.dp),
-                                        colors = TextFieldDefaults.colors(
-                                            focusedIndicatorColor = Color.Transparent,
-                                            unfocusedIndicatorColor = Color.Transparent,
-                                            disabledIndicatorColor = Color.Transparent,
-                                            errorIndicatorColor = Color.Transparent,
-                                            focusedContainerColor = Color(0xFF1E1F22),
-                                            unfocusedContainerColor = Color(0xFF1E1F22),
-                                            cursorColor = Color.White,
-                                            focusedTextColor = Color.White,
-                                            unfocusedTextColor = Color.White
-                                        ),
-                                        textStyle = LocalTextStyle.current.copy(color = Color.White),
-                                        modifier = Modifier
-                                            .weight(1f)
-                                            .height(48.dp)
-                                    )
-
-                                    Spacer(modifier = Modifier.width(8.dp))
-
+                                items(friendsList) { friend ->
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .height(48.dp)
-                                            .clip(RoundedCornerShape(8.dp))
-                                            .background(Color(0xFF1E1F22))
+                                            .background(
+                                                Color.White.copy(alpha = 0.08f),
+                                                RoundedCornerShape(8.dp)
+                                            )
+                                            .padding(6.dp),
+                                        verticalAlignment = Alignment.CenterVertically,
                                     ) {
-                                        BasicTextField(
-                                            value = typedText,
-                                            onValueChange = { typedText = it },
-                                            modifier = Modifier
-                                                .weight(1f)
-                                                .padding(
-                                                    start = 12.dp,
-                                                    top = 12.dp,
-                                                    bottom = 12.dp
-                                                ),
-                                            singleLine = true,
-                                            textStyle = LocalTextStyle.current.copy(color = Color.White),
-                                            decorationBox = { innerTextField ->
-                                                if (typedText.isEmpty()) Text(
-                                                    "Enter friend's ID",
-                                                    color = Color.Gray
-                                                )
-                                                innerTextField()
-                                            }
-                                        )
-
+                                        // Avatar
                                         Box(
                                             modifier = Modifier
-                                                .fillMaxHeight()
-                                                .background(Color(0xD75865F2))
-                                                .clickable { /* add click */ }
-                                                .padding(horizontal = 16.dp),
+                                                .size(56.dp)
+                                                .clip(CircleShape)
+                                                .background(HabitColor.Teal.light)
+                                                .border(2.dp, Color.Gray, CircleShape),
                                             contentAlignment = Alignment.Center
                                         ) {
-                                            Text(
-                                                text = "ADD",
-                                                color = Color.White,
-                                                fontWeight = FontWeight.Bold,
-                                                fontSize = 14.sp
+                                            Image(
+                                                painter = painterResource(R.drawable.avataaar),
+                                                contentDescription = "Avatar",
+                                                contentScale = ContentScale.Crop
+                                            )
+                                        }
+
+                                        Spacer(modifier = Modifier.width(12.dp))
+
+                                        // Name
+                                        Text(
+                                            text = friend.name,
+                                            color = Color.White.copy(alpha = 0.92f),
+                                            fontSize = 15.sp,
+                                            fontFamily = Fonts.Raleway,
+                                            fontWeight = FontWeight.Bold,
+                                            modifier = Modifier.weight(1f)
+                                        )
+
+                                        // Delete
+                                        IconButton(
+                                            onClick = { /* remove friend */ },
+                                            modifier = Modifier.size(32.dp)
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Outlined.Close,
+                                                contentDescription = "Delete Friend",
+                                                tint = Color.White.copy(alpha = 0.7f)
                                             )
                                         }
                                     }
                                 }
                             }
 
+                        }
+                    }
+                    Spacer(Modifier.height(22.dp))
 
-                        } else {
-                            friendsList.forEach { friend ->
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 6.dp, vertical = 4.dp)
-                                        .background(
-                                            Color.White.copy(alpha = 0.08f),
-                                            RoundedCornerShape(8.dp)
-                                        )
-                                        .padding(6.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                ) {
-                                    // --- Avatar ---
-                                    Box(
-                                        modifier = Modifier
-                                            .size(56.dp)
-                                            .clip(CircleShape)
-                                            .background(HabitColor.Teal.light)
-                                            .border(2.dp, Color.Gray, CircleShape),
-                                        contentAlignment = Alignment.Center
-                                    ) {
-                                        Image(
-                                            painter = painterResource(R.drawable.avataaar),
-                                            contentDescription = "Avatar",
-                                            contentScale = ContentScale.Crop
-                                        )
+                    // --- bottom section: Share link / or / ADD (if the user is logged in) ---
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        val interactionSourceAddButton = remember { MutableInteractionSource() }
+                        val isPressedAddButton by interactionSourceAddButton.collectIsPressedAsState()
+                        val scaleAddButton by animateFloatAsState(
+                            targetValue = if (isPressedAddButton) 0.96f else 1f,
+                            label = "scaleButton"
+                        )
+                        Row(
+                            modifier = Modifier
+                                .weight(1.5f)
+                                .height(40.dp)
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color(0xFF1E1F22)),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .graphicsLayer {
+                                        scaleX = scaleAddButton
+                                        scaleY = scaleAddButton
                                     }
-                                    Spacer(modifier = Modifier.width(12.dp))
-
-                                    // --- Friend name ---
-                                    Text(
-                                        text = friend.name,
-                                        color = Color.White.copy(alpha = 0.92f),
-                                        fontSize = 15.sp,
-                                        fontFamily = Fonts.Raleway,
-                                        fontWeight = FontWeight.Bold,
-                                        modifier = Modifier.weight(1f)
-                                    )
-
-                                    // --- Delete icon ---
-                                    IconButton(
-                                        onClick = { /* #TODO handle remove friend */ },
-                                        modifier = Modifier.size(32.dp)
-                                    ) {
-                                        Icon(
-                                            imageVector = Icons.Outlined.Close,
-                                            contentDescription = "Delete Friend",
-                                            tint = Color.White.copy(alpha = 0.7f)
-                                        )
-                                    }
-                                }
+                                    .fillMaxHeight()
+                                    .background(Color(0xD75865F2))
+                                    .clickable(
+                                        interactionSource = interactionSourceAddButton,
+                                        indication = null
+                                    ) { /* TODO add friend by typedText */ }
+                                    .padding(horizontal = 16.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "ADD",
+                                    color = Color.White,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 13.sp
+                                )
                             }
+
+                            BasicTextField(
+                                value = typedText,
+                                onValueChange = { typedText = it },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(start = 10.dp, top = 8.dp, bottom = 8.dp),
+                                singleLine = true,
+                                textStyle = LocalTextStyle.current.copy(
+                                    color = Color.White,
+                                    fontSize = 13.sp
+                                ),
+                                decorationBox = { innerTextField ->
+                                    if (typedText.isEmpty()) {
+                                        Text(
+                                            text = "Enter friend's ID",
+                                            color = Color.Gray,
+                                            fontSize = 13.sp
+                                        )
+                                    }
+                                    innerTextField()
+                                }
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        Text(
+                            text = "or",
+                            color = Color.White.copy(alpha = 0.75f),
+                            fontSize = 13.sp
+                        )
+
+                        Spacer(modifier = Modifier.width(8.dp))
+
+                        val interSourceShareLink = remember { MutableInteractionSource() }
+                        val isPressedShareLink by interSourceShareLink.collectIsPressedAsState()
+                        val scaleSharedLink by animateFloatAsState(
+                            targetValue = if (isPressedShareLink) 0.96f else 1f,
+                            label = "scaleSharedLinkButton"
+                        )
+                        Box(
+                            modifier = Modifier
+                                .graphicsLayer {
+                                    scaleX = scaleSharedLink
+                                    scaleY = scaleSharedLink
+                                }.clickable(
+                                    interactionSource = interSourceShareLink,
+                                    indication = null
+                                ) {
+                                    /*TODO share link on click*/
+                                }
+                                .height(40.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(
+                                    Brush.linearGradient(
+                                        listOf(
+                                            Color(0xFF5865F2),
+                                            Color(0xFF4752C4)
+                                        )
+                                    )
+                                )
+                                .padding(horizontal = 16.dp)
+                                .weight(1f),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "Share link",
+                                color = Color.White,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.SemiBold
+                            )
                         }
                     }
                 }
@@ -679,13 +530,14 @@ private fun Preview() {
     val mockNavController = rememberNavController()
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
         AppTheme(darkTheme = true) {
+            val user = UserData(
+                "1",
+                email = "12345@gmail.com",
+                userName = "test name",
+                profilePictureUrl = null
+            )
             MeScreen(
-                user = UserData(
-                    "1",
-                    email = "12345@gmail.com",
-                    userName = "test name",
-                    profilePictureUrl = null
-                ),
+                user = /*null*/ user,
                 onSignInClick = { },
                 onSignOutClick = { },
                 clearCloudData = {},
@@ -695,7 +547,8 @@ private fun Preview() {
                 syncFromCloud = {},
                 syncBannerState = SyncBannerStatus.NONE,
                 lastSync = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")),
-                syncInProgress = true
+                syncInProgress = true,
+                profileFriendId = "GPAA-JOJA"
             )
         }
     }

@@ -1,4 +1,4 @@
-package com.example.habitstracker.me.presentation.component
+package com.example.habitstracker.me.presentation.sync.components
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode

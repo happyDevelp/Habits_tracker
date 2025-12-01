@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.history.domain.AchievementEntity
 import com.example.habitstracker.me.data.local.SyncPreferences
+import com.example.habitstracker.me.data.remote.model.UserProfile
 import com.example.habitstracker.me.data.remote.model.UserStats
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -25,11 +26,19 @@ class SyncViewModel @Inject constructor(
     private val _state = MutableStateFlow(SyncState())
     val state = _state.asStateFlow()
 
+    private val _profileState: MutableStateFlow<UserProfile?> = MutableStateFlow(UserProfile())
+    val profileState = _profileState.asStateFlow()
+
     init {
         viewModelScope.launch {
             preferences.lastSync.collect { lastSync ->
                 _state.update { it.copy(lastSync = lastSync) }
             }
+        }
+        viewModelScope.launch {
+            val profile = syncManager.getUserProfile()
+            _profileState.value = profile
+
         }
     }
 

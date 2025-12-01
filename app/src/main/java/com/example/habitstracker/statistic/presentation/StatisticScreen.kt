@@ -141,7 +141,8 @@ private fun groupHabitsByWeek(dateHabitList: List<DateHabitEntity>)
 private fun ProfileScreenPreview() {
     AppTheme(darkTheme = true) {
         StatisticScreen(
-            dateHabitList = emptyList(),
+            dateHabitList = listOf(
+            ),
             consistency = 25,
             weeklyMap = mapOf(
                 Pair(
@@ -150,14 +151,14 @@ private fun ProfileScreenPreview() {
                         DateHabitEntity(
                             id = 1,
                             habitId = 1,
-                            currentDate = "2025-10-30",
+                            currentDate = "2025-11-30",
                             completed = true
                         ),
                         DateHabitEntity(
                             id = 2,
                             habitId = 2,
-                            currentDate = "2025-10-30",
-                            completed = false
+                            currentDate = "2025-11-31",
+                            completed = true
                         )
                     )
                 )
