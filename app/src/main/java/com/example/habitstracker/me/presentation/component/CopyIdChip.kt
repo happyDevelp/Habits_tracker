@@ -42,7 +42,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun ProfileFriendIdChip(
+fun CopyIdChip(
     modifier: Modifier = Modifier,
     friendCode: String,
 ) {

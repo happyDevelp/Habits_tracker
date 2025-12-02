@@ -1,5 +1,6 @@
 package com.example.habitstracker.me.presentation.sync
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habitstracker.habit.domain.HabitEntity
@@ -35,10 +36,12 @@ class SyncViewModel @Inject constructor(
                 _state.update { it.copy(lastSync = lastSync) }
             }
         }
-        viewModelScope.launch {
-            val profile = syncManager.getUserProfile()
-            _profileState.value = profile
+    }
 
+    fun loadUserProfile() {
+        viewModelScope.launch {
+                val profile = syncManager.getUserProfile()
+                _profileState.value = profile
         }
     }
 

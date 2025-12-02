@@ -46,13 +46,12 @@ fun userCard(
     modifier: Modifier,
     syncToCloud: () -> Unit,
     user: UserData?,
-    openBottomSheet: Boolean,
+    openBottomSheet: () -> Unit,
     rotation: Float,
     lastSync: String?,
     syncInProgress: Boolean,
     onSignInClick: () -> Unit
-): Boolean {
-    var openBottomSheet = openBottomSheet
+) {
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -131,7 +130,7 @@ fun userCard(
                         Spacer(modifier.height(0.dp))
                         Row(
                             modifier = Modifier
-                                .clickable { openBottomSheet = true },
+                                .clickable { openBottomSheet() },
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
@@ -186,5 +185,4 @@ fun userCard(
         }
         Spacer(modifier.height(12.dp))
     }
-    return openBottomSheet
 }

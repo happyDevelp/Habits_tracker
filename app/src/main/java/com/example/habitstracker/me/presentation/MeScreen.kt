@@ -76,9 +76,11 @@ import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.me.presentation.component.AccountButton
 import com.example.habitstracker.me.presentation.component.AccountSettingsBottomSheet
 import com.example.habitstracker.me.presentation.component.BannerStatus
-import com.example.habitstracker.me.presentation.component.FriendIdChip
+import com.example.habitstracker.me.presentation.component.FriendRequestUi
+import com.example.habitstracker.me.presentation.component.CopyIdChip
 import com.example.habitstracker.me.presentation.component.LoadingOverlay
 import com.example.habitstracker.me.presentation.component.MeTopBar
+import com.example.habitstracker.me.presentation.component.NotificationDialog
 import com.example.habitstracker.me.presentation.component.SignInButton
 import com.example.habitstracker.me.presentation.component.TopBanner
 import com.example.habitstracker.me.presentation.component.userCard
@@ -97,6 +99,15 @@ fun MeScreenRoot(
 ) {
     val signInState by signInViewModel.state.collectAsStateWithLifecycle()
     val syncState by syncViewModel.state.collectAsStateWithLifecycle()
+    val userProfile by syncViewModel.profileState.collectAsStateWithLifecycle()
+
+    // When the user is logged in, pull the profile
+    LaunchedEffect(signInState.userData?.userId) {
+        val uid = signInState.userData?.userId
+        if (uid != null) {
+            syncViewModel.loadUserProfile()
+        }
+    }
 
     // As soon as the login is successful, launch syncFromCloud
     LaunchedEffect(signInState.loginSuccessful) {
@@ -108,7 +119,7 @@ fun MeScreenRoot(
 
     MeScreen(
         user = signInState.userData,
-        profileFriendId = syncViewModel.profileState.value?.friendCode ?: "",
+        profileFriendId = userProfile?.friendCode ?: "",
         isLoading = signInState.isLoading || syncState.isLoading,
         bannerStatus = signInState.banner,
         syncBannerState = syncState.banner,
@@ -142,19 +153,14 @@ fun MeScreen(
     var typedText by remember { mutableStateOf("") }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var openBottomSheet by remember { mutableStateOf(false) }
+    var openNotificationBox by remember { mutableStateOf(true) }
+
     val rotation by animateFloatAsState(
         targetValue = if (openBottomSheet) 180f else 0f,
         label = "arrowRotation"
     )
 
-    val interactionSourceAddButton = remember { MutableInteractionSource() }
-    val isPressedAddButton by interactionSourceAddButton.collectIsPressedAsState()
-    val scale by animateFloatAsState(
-        targetValue = if (isPressedAddButton) 0.96f else 1f,
-        label = "scaleButton"
-    )
-
-    Scaffold(topBar = { MeTopBar() }) { paddingValues ->
+    Scaffold(topBar = { MeTopBar { openNotificationBox = true } }) { paddingValues ->
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -162,11 +168,11 @@ fun MeScreen(
                 .background(screenBackgroundDark)
         ) {
             // User card
-            openBottomSheet = userCard(
+            userCard(
                 modifier = Modifier,
                 syncToCloud,
                 user,
-                openBottomSheet,
+                openBottomSheet = { openBottomSheet = true },
                 rotation,
                 lastSync,
                 syncInProgress,
@@ -198,10 +204,12 @@ fun MeScreen(
                             fontSize = 21.sp,
                             fontFamily = PoppinsFontFamily,
                         )
-                        FriendIdChip(
-                            friendCode = profileFriendId,
-                            modifier = Modifier.align(Alignment.CenterEnd)
-                        )
+                        if (user != null) {
+                            CopyIdChip(
+                                friendCode = profileFriendId,
+                                modifier = Modifier.align(Alignment.CenterEnd)
+                            )
+                        }
                     }
                     Spacer(modifier.height(16.dp))
 
@@ -245,7 +253,7 @@ fun MeScreen(
                                     fontFamily = PoppinsFontFamily
                                 )
                                 Spacer(Modifier.height(12.dp))
-                                SignInButton {  }
+                                SignInButton { onSignInClick() }
                             }
                         }
                         return@Column
@@ -436,7 +444,8 @@ fun MeScreen(
                                 .graphicsLayer {
                                     scaleX = scaleSharedLink
                                     scaleY = scaleSharedLink
-                                }.clickable(
+                                }
+                                .clickable(
                                     interactionSource = interSourceShareLink,
                                     indication = null
                                 ) {
@@ -503,6 +512,26 @@ fun MeScreen(
                     closeBottomSheet = { openBottomSheet = false }
                 )
             }
+
+            if (openNotificationBox) {
+                NotificationDialog(
+                    requests = listOf(
+                        FriendRequestUi(
+                            id = "1",
+                            name = "John Doe",
+                            avatarUrl = null
+                        ),
+                        FriendRequestUi(
+                            id = "12",
+                            name = "Matteus Müller",
+                            avatarUrl = null
+                        )
+                    ),
+                    onAccept = {},
+                    onIgnore = {},
+                    onDismiss = { openNotificationBox = false }
+                )
+            }
         }
     }
     if (isLoading) {
@@ -516,7 +545,6 @@ fun MeScreen(
     TopBanner(
         status = syncBannerState,
     )
-
 }
 
 data class FriendEntity(
