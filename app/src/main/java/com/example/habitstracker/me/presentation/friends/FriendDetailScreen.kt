@@ -1,4 +1,4 @@
-package com.example.habitstracker.me.presentation
+package com.example.habitstracker.me.presentation.friends
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background

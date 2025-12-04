@@ -12,12 +12,40 @@ import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthRecentLoginRequiredException
 import com.google.firebase.auth.GoogleAuthProvider
+import kotlinx.coroutines.channels.awaitClose
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 
 
 class GoogleAuthUiClient(
     private val context: Context,
 ) {
+    // ----------------------------
+    //  AUTH STATE as Flow<UserData?>
+    // ----------------------------
+    val authState: Flow<UserData?> = callbackFlow {
+
+        val listener = FirebaseAuth.AuthStateListener { firebaseAuth ->
+            val u = firebaseAuth.currentUser
+            val mapped = u?.let {
+                UserData(
+                    userId = it.uid,
+                    email = it.email,
+                    userName = it.displayName ?: "",
+                    profilePictureUrl = it.photoUrl?.toString()
+                )
+            }
+            trySend(mapped)
+        }
+
+        auth.addAuthStateListener(listener)
+
+        awaitClose {
+            auth.removeAuthStateListener(listener)
+        }
+    }
+
     private val auth = FirebaseAuth.getInstance()
     private val credentialManager = CredentialManager.create(context)
 

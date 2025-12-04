@@ -35,6 +35,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -42,12 +43,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import coil.compose.AsyncImage
+import com.example.habitstracker.R
+import com.example.habitstracker.me.domain.model.FriendRequest
 
 @Composable
 fun NotificationDialog(
-    requests: List<FriendRequestUi>,
-    onAccept: (FriendRequestUi) -> Unit,
-    onIgnore: (FriendRequestUi) -> Unit,
+    requests: List<FriendRequest>,
+    onAccept: (FriendRequest) -> Unit,
+    onIgnore: (FriendRequest) -> Unit,
     onDismiss: () -> Unit
 ) {
     Dialog(
@@ -96,8 +100,7 @@ fun NotificationDialog(
                             fontWeight = FontWeight.SemiBold
                         )
                     }
-                    IconButton(
-                        onClick = {}) {
+                    IconButton(onClick = onDismiss) {
                         Icon(
                             imageVector = Icons.Default.Close,
                             tint = Color(0xFF8BB0FF),
@@ -110,10 +113,12 @@ fun NotificationDialog(
 
                 if (requests.isEmpty()) {
                     Column(
-                        modifier = Modifier.fillMaxSize().padding(bottom = 50.dp),
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(bottom = 50.dp),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
+                    ) {
                         // Empty state
                         Icon(
                             imageVector = Icons.Outlined.NotificationsNone,
@@ -156,15 +161,9 @@ fun NotificationDialog(
     }
 }
 
-data class FriendRequestUi(
-    val id: String,
-    val name: String,
-    val avatarUrl: String?
-)
-
 @Composable
 private fun FriendRequestItem(
-    request: FriendRequestUi,
+    request: FriendRequest,
     onAccept: () -> Unit,
     onIgnore: () -> Unit
 ) {
@@ -189,11 +188,11 @@ private fun FriendRequestItem(
                         .background(Color(0xFF2ECC71)),
                     contentAlignment = Alignment.Center
                 ) {
-                    // TODO REMOVE test: So far, just the first letter
-                    Text(
-                        text = request.name.firstOrNull()?.uppercase() ?: "?",
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
+                    AsyncImage(
+                        model = request.fromAvatarUrl ?: R.drawable.avataaar,
+                        contentDescription = "request Avatar",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier.fillMaxSize()
                     )
                 }
                 Spacer(Modifier.width(12.dp))
@@ -204,7 +203,7 @@ private fun FriendRequestItem(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = request.name,
+                            text = request.fromDisplayName,
                             color = Color.White,
                             fontWeight = FontWeight.SemiBold,
                             fontSize = 15.sp
@@ -261,16 +260,20 @@ private fun Preview() {
     Box(modifier = Modifier.fillMaxSize()) {
         NotificationDialog(
             requests = listOf(
-                /*FriendRequestUi(
+                FriendRequest(
                     id = "1",
-                    name = "John Doe",
-                    avatarUrl = null
+                    fromUserId = "1",
+                    toUserId = "2",
+                    fromDisplayName = "John Doe",
+                    fromAvatarUrl = null
                 ),
-                FriendRequestUi(
+                FriendRequest(
                     id = "12",
-                    name = "Matteus Müller",
-                    avatarUrl = null
-                )*/
+                    fromUserId = "2",
+                    toUserId = "1",
+                    fromDisplayName = "Matteus Müller",
+                    fromAvatarUrl = null
+                )
             ), onAccept = {}, onIgnore = {}, onDismiss = {})
     }
 }

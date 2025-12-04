@@ -14,6 +14,8 @@ import com.example.habitstracker.me.data.DefaultSyncRepository
 import com.example.habitstracker.me.data.local.LocalSyncRepository
 import com.example.habitstracker.me.data.local.SyncPreferences
 import com.example.habitstracker.me.data.remote.CloudSyncRepository
+import com.example.habitstracker.me.data.remote.FriendsRepositoryImpl
+import com.example.habitstracker.me.domain.FriendsRepository
 import com.example.habitstracker.me.domain.SyncRepository
 import com.example.habitstracker.me.presentation.sign_in.GoogleAuthUiClient
 import com.example.habitstracker.me.presentation.sync.SyncManager
@@ -69,6 +71,12 @@ object AppModule {
         cloud: CloudSyncRepository
     ): SyncRepository {
         return DefaultSyncRepository(local = local, cloud = cloud)
+    }
+
+    @Singleton
+    @Provides
+    fun provideFriendsRepository(): FriendsRepository {
+        return FriendsRepositoryImpl(FirebaseFirestore.getInstance())
     }
 
     @Provides

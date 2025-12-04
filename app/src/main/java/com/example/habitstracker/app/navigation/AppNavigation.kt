@@ -66,7 +66,6 @@ fun AppNavigation() {
 
     Scaffold(
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
-
         containerColor = screenBackgroundDark,
         bottomBar = {
             AnimatedVisibility(

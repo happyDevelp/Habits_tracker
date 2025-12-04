@@ -1,7 +1,6 @@
 package com.example.habitstracker.me.presentation
 
 import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -57,7 +56,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -65,6 +63,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.theme.AppTheme
@@ -73,10 +72,11 @@ import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
+import com.example.habitstracker.me.domain.model.FriendEntry
+import com.example.habitstracker.me.domain.model.FriendRequest
 import com.example.habitstracker.me.presentation.component.AccountButton
 import com.example.habitstracker.me.presentation.component.AccountSettingsBottomSheet
 import com.example.habitstracker.me.presentation.component.BannerStatus
-import com.example.habitstracker.me.presentation.component.FriendRequestUi
 import com.example.habitstracker.me.presentation.component.CopyIdChip
 import com.example.habitstracker.me.presentation.component.LoadingOverlay
 import com.example.habitstracker.me.presentation.component.MeTopBar
@@ -84,6 +84,7 @@ import com.example.habitstracker.me.presentation.component.NotificationDialog
 import com.example.habitstracker.me.presentation.component.SignInButton
 import com.example.habitstracker.me.presentation.component.TopBanner
 import com.example.habitstracker.me.presentation.component.userCard
+import com.example.habitstracker.me.presentation.friends.FriendsViewModel
 import com.example.habitstracker.me.presentation.sign_in.SignInBannerStatus
 import com.example.habitstracker.me.presentation.sign_in.SignInViewModel
 import com.example.habitstracker.me.presentation.sign_in.UserData
@@ -95,11 +96,14 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun MeScreenRoot(
     signInViewModel: SignInViewModel = hiltViewModel<SignInViewModel>(),
-    syncViewModel: SyncViewModel = hiltViewModel<SyncViewModel>()
+    syncViewModel: SyncViewModel = hiltViewModel<SyncViewModel>(),
+    friendsViewModel: FriendsViewModel = hiltViewModel<FriendsViewModel>()
 ) {
     val signInState by signInViewModel.state.collectAsStateWithLifecycle()
     val syncState by syncViewModel.state.collectAsStateWithLifecycle()
     val userProfile by syncViewModel.profileState.collectAsStateWithLifecycle()
+    val friendsState by friendsViewModel.state.collectAsStateWithLifecycle()
+
 
     // When the user is logged in, pull the profile
     LaunchedEffect(signInState.userData?.userId) {
@@ -130,6 +134,16 @@ fun MeScreenRoot(
         clearCloudData = { syncViewModel.clearCloudData() },
         syncToCloud = { syncViewModel.syncToCloud() },
         syncFromCloud = { syncViewModel.syncFromCloud() },
+
+        // friends
+        friendsList = friendsState.friends,
+        pendingRequests = friendsState.incomingRequests,
+        addFriendInput = friendsState.addFriendInput,
+        onAddFriendInputChange = friendsViewModel::onAddFriendInputChange,
+        onAddFriendClick = friendsViewModel::onAddFriendClicked,
+        onAcceptRequestClick = friendsViewModel::onAcceptRequest,
+        onRejectRequestClick = friendsViewModel::onRejectRequest,
+        onShareLinkClick = { /* shareIntent with friendCode */ },
     )
 }
 
@@ -149,11 +163,21 @@ fun MeScreen(
     clearCloudData: () -> Unit,
     syncToCloud: () -> Unit,
     syncFromCloud: () -> Unit,
+
+    //friends
+    friendsList: List<FriendEntry>,
+    pendingRequests: List<FriendRequest>,
+    addFriendInput: String,
+    onAddFriendInputChange: (String) -> Unit,
+    onAcceptRequestClick: (FriendRequest) -> Unit,
+    onRejectRequestClick: (FriendRequest) -> Unit,
+    onAddFriendClick: () -> Unit,
+    onShareLinkClick: () -> Unit,
 ) {
     var typedText by remember { mutableStateOf("") }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var openBottomSheet by remember { mutableStateOf(false) }
-    var openNotificationBox by remember { mutableStateOf(true) }
+    var openNotificationBox by remember { mutableStateOf(false) }
 
     val rotation by animateFloatAsState(
         targetValue = if (openBottomSheet) 180f else 0f,
@@ -213,7 +237,7 @@ fun MeScreen(
                     }
                     Spacer(modifier.height(16.dp))
 
-                    val friendsList: List<FriendEntity> = listOf(
+                    /*val friendsList: List<FriendEntity> = listOf(
                         FriendEntity("Friend 1", R.drawable.avataaar),
                         FriendEntity("Friend 1", R.drawable.avataaar),
                         FriendEntity("Friend 1", R.drawable.avataaar),
@@ -221,7 +245,8 @@ fun MeScreen(
                         FriendEntity("Friend 1", R.drawable.avataaar),
                         FriendEntity("Friend 1", R.drawable.avataaar),
                         FriendEntity("Friend 1", R.drawable.avataaar),
-                    )
+                    )*/
+
 
                     // --- NOT SIGNED IN ------------------------------------------------------
                     if (user == null) {
@@ -319,10 +344,11 @@ fun MeScreen(
                                                 .border(2.dp, Color.Gray, CircleShape),
                                             contentAlignment = Alignment.Center
                                         ) {
-                                            Image(
-                                                painter = painterResource(R.drawable.avataaar),
+                                            AsyncImage(
+                                                model = friend.avatarUrl ?: R.drawable.avataaar,
                                                 contentDescription = "Avatar",
-                                                contentScale = ContentScale.Crop
+                                                contentScale = ContentScale.Crop,
+                                                modifier = Modifier.fillMaxSize()
                                             )
                                         }
 
@@ -330,7 +356,7 @@ fun MeScreen(
 
                                         // Name
                                         Text(
-                                            text = friend.name,
+                                            text = friend.displayName,
                                             color = Color.White.copy(alpha = 0.92f),
                                             fontSize = 15.sp,
                                             fontFamily = Fonts.Raleway,
@@ -340,7 +366,7 @@ fun MeScreen(
 
                                         // Delete
                                         IconButton(
-                                            onClick = { /* remove friend */ },
+                                            onClick = { /* TODO remove friend */ },
                                             modifier = Modifier.size(32.dp)
                                         ) {
                                             Icon(
@@ -387,7 +413,7 @@ fun MeScreen(
                                     .clickable(
                                         interactionSource = interactionSourceAddButton,
                                         indication = null
-                                    ) { /* TODO add friend by typedText */ }
+                                    ) { onAddFriendClick() }
                                     .padding(horizontal = 16.dp),
                                 contentAlignment = Alignment.Center
                             ) {
@@ -401,7 +427,10 @@ fun MeScreen(
 
                             BasicTextField(
                                 value = typedText,
-                                onValueChange = { typedText = it },
+                                onValueChange = {
+                                    typedText = it
+                                    onAddFriendInputChange(it)
+                                },
                                 modifier = Modifier
                                     .weight(1f)
                                     .padding(start = 10.dp, top = 8.dp, bottom = 8.dp),
@@ -515,20 +544,20 @@ fun MeScreen(
 
             if (openNotificationBox) {
                 NotificationDialog(
-                    requests = listOf(
-                        FriendRequestUi(
-                            id = "1",
-                            name = "John Doe",
-                            avatarUrl = null
-                        ),
-                        FriendRequestUi(
-                            id = "12",
-                            name = "Matteus Müller",
-                            avatarUrl = null
-                        )
-                    ),
-                    onAccept = {},
-                    onIgnore = {},
+                    requests = pendingRequests,
+                    /*listOf(
+                            FriendRequestUi(
+                                id = "1",
+                                name = "John Doe",
+                                avatarUrl = null
+                            ),
+                            FriendRequestUi(
+                                id = "12",
+                                name = "Matteus Müller",
+                                avatarUrl = null
+                            ))*/
+                    onAccept = { onAcceptRequestClick(it) },
+                    onIgnore = { onRejectRequestClick(it) },
                     onDismiss = { openNotificationBox = false }
                 )
             }
@@ -576,7 +605,35 @@ private fun Preview() {
                 syncBannerState = SyncBannerStatus.NONE,
                 lastSync = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")),
                 syncInProgress = true,
-                profileFriendId = "GPAA-JOJA"
+                profileFriendId = "GPAA-JOJA",
+                friendsList = listOf(
+                    FriendEntry(
+                        displayName = "Matteus Müller",
+                        avatarUrl = null,
+                        userId = "KFBA-W921",
+                        since = 123456
+                    ),
+                    FriendEntry(
+                        displayName = "Jon Doe",
+                        avatarUrl = null,
+                        userId = "GPAA-JOJA",
+                        since = 123456
+                    ),
+                    FriendEntry(
+                        displayName = "Mattew Himars",
+                        avatarUrl = null,
+                        userId = "GPAA-JOJA",
+                        since = 123456
+                    ),
+
+                ),
+                pendingRequests = emptyList(),
+                addFriendInput = "",
+                onAddFriendInputChange = {},
+                onAddFriendClick = {},
+                onShareLinkClick = {},
+                onAcceptRequestClick = {},
+                onRejectRequestClick = {}
             )
         }
     }

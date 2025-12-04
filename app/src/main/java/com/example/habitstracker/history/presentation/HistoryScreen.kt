@@ -217,7 +217,7 @@ private fun HistoryScreenPreview() {
                     HabitEntity(
                         iconName = "SentimentSatisfied",
                         colorHex = HabitColor.DeepBlue.light.toHex(),
-                        name = "Wake up"
+                        name = "Read a book"
                     ),
                     HabitEntity(iconName = "SentimentSatisfied", name = "Make the bad")
                 ),
