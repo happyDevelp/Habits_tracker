@@ -5,8 +5,8 @@ import android.util.Log
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.history.domain.AchievementEntity
-import com.example.habitstracker.me.data.remote.model.UserProfile
-import com.example.habitstracker.me.data.remote.model.UserStats
+import com.example.habitstracker.me.domain.model.UserProfile
+import com.example.habitstracker.me.domain.model.UserStats
 import com.example.habitstracker.me.domain.SyncRepository
 import com.example.habitstracker.me.presentation.sign_in.GoogleAuthUiClient
 import com.example.habitstracker.me.presentation.sign_in.isInternetAvailable

@@ -4,8 +4,8 @@ import android.util.Log
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.history.domain.AchievementEntity
-import com.example.habitstracker.me.data.remote.model.UserProfile
-import com.example.habitstracker.me.data.remote.model.UserStats
+import com.example.habitstracker.me.domain.model.UserProfile
+import com.example.habitstracker.me.domain.model.UserStats
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
@@ -36,7 +36,7 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
     private fun profileDoc(userId: String): DocumentReference =
         userDoc(userId)
             .collection("profile")
-            .document("profile")
+            .document("main")
 
     private fun statsDoc(userId: String): DocumentReference =
         userDoc(userId)

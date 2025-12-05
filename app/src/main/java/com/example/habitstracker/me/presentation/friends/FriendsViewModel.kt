@@ -3,9 +3,10 @@ package com.example.habitstracker.me.presentation.friends
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.habitstracker.me.domain.FriendsRepository
 import com.example.habitstracker.me.domain.model.FriendEntry
 import com.example.habitstracker.me.domain.model.FriendRequest
+import com.example.habitstracker.me.domain.model.UserProfile
+import com.example.habitstracker.me.domain.repository.FriendsRepository
 import com.example.habitstracker.me.presentation.sign_in.GoogleAuthUiClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -75,10 +76,14 @@ class FriendsViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isSending = true, error = null, infoMessage = null) }
             try {
+                val fromProfile = UserProfile(
+                    displayName = user.userName ?: "",
+                    avatarUrl = user.profilePictureUrl,
+                    friendCode = user.userId
+                )
                 friendsRepository.sendFriendRequest(
-                    fromUserId = user.userId,
-                    fromDisplayName = user.userName ?: "",
-                    fromAvatarUrl = user.profilePictureUrl,
+                    currentUserId = user.userId,
+                    fromUser = fromProfile,
                     targetFriendCode = code
                 )
                 _state.update {

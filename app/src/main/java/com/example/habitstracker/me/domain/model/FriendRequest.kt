@@ -1,13 +1,12 @@
 package com.example.habitstracker.me.domain.model
 
+/**
+ * Incoming friend request under users/{uid}/friendRequests/{fromUserId}.
+ */
 data class FriendRequest(
-    val id: String = "",
+    val id: String = "", // document id = fromUserId
     val fromUserId: String = "",
-    val toUserId: String = "",
     val fromDisplayName: String = "",
     val fromAvatarUrl: String? = null,
-
-    val status: String = "pending",   // pending | accepted | rejected
-    val sentAt: Long = 0L,            // timestamp
-    val handledAt: Long? = null       // When accepted/rejected
+    val sentAt: Long = 0L
 )

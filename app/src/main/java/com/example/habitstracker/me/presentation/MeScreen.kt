@@ -345,7 +345,7 @@ fun MeScreen(
                                             contentAlignment = Alignment.Center
                                         ) {
                                             AsyncImage(
-                                                model = friend.avatarUrl ?: R.drawable.avataaar,
+                                                model = friend.friendAvatarUrl ?: R.drawable.avataaar,
                                                 contentDescription = "Avatar",
                                                 contentScale = ContentScale.Crop,
                                                 modifier = Modifier.fillMaxSize()
@@ -356,7 +356,7 @@ fun MeScreen(
 
                                         // Name
                                         Text(
-                                            text = friend.displayName,
+                                            text = friend.friendDisplayName,
                                             color = Color.White.copy(alpha = 0.92f),
                                             fontSize = 15.sp,
                                             fontFamily = Fonts.Raleway,
@@ -608,22 +608,22 @@ private fun Preview() {
                 profileFriendId = "GPAA-JOJA",
                 friendsList = listOf(
                     FriendEntry(
-                        displayName = "Matteus Müller",
-                        avatarUrl = null,
-                        userId = "KFBA-W921",
-                        since = 123456
+                        friendDisplayName = "Matteus Müller",
+                        friendAvatarUrl = null,
+                        friendUserId = "KFBA-W921",
+                        friendSince = 123456
                     ),
                     FriendEntry(
-                        displayName = "Jon Doe",
-                        avatarUrl = null,
-                        userId = "GPAA-JOJA",
-                        since = 123456
+                        friendDisplayName = "Jon Doe",
+                        friendAvatarUrl = null,
+                        friendUserId = "GPAA-JOJA",
+                        friendSince = 123456
                     ),
                     FriendEntry(
-                        displayName = "Mattew Himars",
-                        avatarUrl = null,
-                        userId = "GPAA-JOJA",
-                        since = 123456
+                        friendDisplayName = "Mattew Himars",
+                        friendAvatarUrl = null,
+                        friendUserId = "GPAA-JOJA",
+                        friendSince = 123456
                     ),
 
                 ),
