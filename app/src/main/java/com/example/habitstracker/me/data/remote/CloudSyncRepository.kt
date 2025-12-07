@@ -43,8 +43,6 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
             .collection("stats")
             .document("stats")
 
-    private fun friendsCollection(userId: String): CollectionReference =
-        userDoc(userId).collection("friends")
 
     // ---------- PUSH ----------
 
@@ -245,11 +243,6 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
             updatedAt = com.google.firebase.Timestamp.now()
         )
         statsDoc(userId).set(data).await()
-    }
-
-    suspend fun getUserStats(userId: String): UserStats? {
-        val snapshot = statsDoc(userId).get().await()
-        return snapshot.toObject(UserStats::class.java)
     }
 }
 

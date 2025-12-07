@@ -51,5 +51,4 @@ interface SyncRepository {
     suspend fun getUserProfile(userId: String): UserProfile?
     suspend fun findUserIdByFriendCode(friendCode: String): String?
     suspend fun pushUserStats(userId: String, stats: UserStats): Boolean
-    suspend fun getUserStats(userId: String): UserStats?
 }

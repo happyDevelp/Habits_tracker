@@ -28,6 +28,7 @@ class SyncManager@Inject constructor(
 
     suspend fun syncFromCloud(): Boolean {
         val user = googleAuthUiClient.getSignedInUser() ?: return false
+
         return syncRepo.syncFromCloud(user.userId)
     }
 
@@ -133,10 +134,5 @@ class SyncManager@Inject constructor(
     suspend fun pushUserStats(stats: UserStats): Boolean {
         val user = googleAuthUiClient.getSignedInUser() ?: return false
         return syncRepo.pushUserStats(user.userId, stats)
-    }
-
-    suspend fun getUserStats(): UserStats? {
-        val user = googleAuthUiClient.getSignedInUser() ?: return null
-        return syncRepo.getUserStats(user.userId)
     }
 }

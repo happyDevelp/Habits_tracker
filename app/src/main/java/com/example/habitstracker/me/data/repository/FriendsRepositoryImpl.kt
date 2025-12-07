@@ -4,6 +4,7 @@ import com.example.habitstracker.me.data.remote.firebase.UserFirebaseDataSource
 import com.example.habitstracker.me.domain.model.FriendEntry
 import com.example.habitstracker.me.domain.model.FriendRequest
 import com.example.habitstracker.me.domain.model.UserProfile
+import com.example.habitstracker.me.domain.model.UserStats
 import com.example.habitstracker.me.domain.repository.FriendsRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
@@ -30,5 +31,9 @@ class FriendsRepositoryImpl @Inject constructor(
 
     override suspend fun rejectRequest(currentUserId: String, requestId: String) {
         firebase.rejectFriendRequest(currentUserId, requestId)
+    }
+
+    override suspend fun getFriendStats(friendUserId: String): UserStats? {
+        return firebase.getFriendStats(friendUserId)
     }
 }

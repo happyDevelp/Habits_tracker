@@ -290,13 +290,4 @@ class DefaultSyncRepository @Inject constructor(
             false
         }
     }
-
-    override suspend fun getUserStats(userId: String): UserStats? {
-        return try {
-            cloud.getUserStats(userId)
-        } catch (e: Exception) {
-            Log.e("SYNC_DEBUG", "getUserStats failed", e)
-            null
-        }
-    }
 }

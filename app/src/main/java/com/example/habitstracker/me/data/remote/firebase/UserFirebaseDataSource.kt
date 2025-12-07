@@ -1,5 +1,6 @@
 package com.example.habitstracker.me.data.remote.firebase
 
+import android.util.Log
 import com.example.habitstracker.me.domain.model.FriendEntry
 import com.example.habitstracker.me.domain.model.FriendRequest
 import com.example.habitstracker.me.domain.model.UserProfile
@@ -118,7 +119,11 @@ class UserFirebaseDataSource @Inject constructor(
         awaitClose { registration.remove() }
     }
 
-    suspend fun sendFriendRequest(fromUser: UserProfile, fromUserId: String, targetFriendCode: String) {
+    suspend fun sendFriendRequest(
+        fromUser: UserProfile,
+        fromUserId: String,
+        targetFriendCode: String
+    ) {
         val query = firestore
             .collectionGroup("profile")
             .whereEqualTo("friendCode", targetFriendCode.uppercase())
@@ -186,6 +191,13 @@ class UserFirebaseDataSource @Inject constructor(
 
     suspend fun rejectFriendRequest(currentUserId: String, requestId: String) {
         requestsCollection(currentUserId).document(requestId).delete().await()
+    }
+
+    suspend fun getFriendStats(friendUserId: String): UserStats? {
+        Log.d("FriendsRepositoryImpl", "getFriendStats: $friendUserId")
+        val statsDoc = statsDoc(friendUserId).get().await()
+        Log.d("FriendsRepositoryImpl", "getFriendStats: ${statsDoc.exists()}")
+        return statsDoc.toObject(UserStats::class.java)
     }
 }
 

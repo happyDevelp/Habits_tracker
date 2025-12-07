@@ -75,7 +75,7 @@ class SignInViewModel @Inject constructor(
                     it.copy(
                         userData = googleAuthUiClient.getSignedInUser(),
                         isLoading = false,
-                        loginSuccessful = true
+                        loginSuccessful = true,
                     )
                 }
                 showBanner(status = SignInBannerStatus.LOGIN_SUCCESS)
@@ -84,7 +84,7 @@ class SignInViewModel @Inject constructor(
                 showBanner(status = SignInBannerStatus.LOGIN_FAILED)
             }
         }
-    }
+}
 
     fun signOut() {
         if (context.isInternetAvailable() == false) {

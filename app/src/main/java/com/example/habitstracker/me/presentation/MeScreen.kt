@@ -48,6 +48,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -74,6 +75,7 @@ import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.me.domain.model.FriendEntry
 import com.example.habitstracker.me.domain.model.FriendRequest
+import com.example.habitstracker.me.domain.model.UserStats
 import com.example.habitstracker.me.presentation.component.AccountButton
 import com.example.habitstracker.me.presentation.component.AccountSettingsBottomSheet
 import com.example.habitstracker.me.presentation.component.BannerStatus
@@ -84,12 +86,14 @@ import com.example.habitstracker.me.presentation.component.NotificationDialog
 import com.example.habitstracker.me.presentation.component.SignInButton
 import com.example.habitstracker.me.presentation.component.TopBanner
 import com.example.habitstracker.me.presentation.component.userCard
+import com.example.habitstracker.me.presentation.friends.FriendStatsDialog
 import com.example.habitstracker.me.presentation.friends.FriendsViewModel
 import com.example.habitstracker.me.presentation.sign_in.SignInBannerStatus
 import com.example.habitstracker.me.presentation.sign_in.SignInViewModel
 import com.example.habitstracker.me.presentation.sign_in.UserData
 import com.example.habitstracker.me.presentation.sync.SyncBannerStatus
 import com.example.habitstracker.me.presentation.sync.SyncViewModel
+import kotlinx.coroutines.launch
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
@@ -99,23 +103,16 @@ fun MeScreenRoot(
     syncViewModel: SyncViewModel = hiltViewModel<SyncViewModel>(),
     friendsViewModel: FriendsViewModel = hiltViewModel<FriendsViewModel>()
 ) {
+    val coroutineScope = rememberCoroutineScope()
     val signInState by signInViewModel.state.collectAsStateWithLifecycle()
     val syncState by syncViewModel.state.collectAsStateWithLifecycle()
     val userProfile by syncViewModel.profileState.collectAsStateWithLifecycle()
     val friendsState by friendsViewModel.state.collectAsStateWithLifecycle()
 
-
-    // When the user is logged in, pull the profile
-    LaunchedEffect(signInState.userData?.userId) {
-        val uid = signInState.userData?.userId
-        if (uid != null) {
-            syncViewModel.loadUserProfile()
-        }
-    }
-
     // As soon as the login is successful, launch syncFromCloud
     LaunchedEffect(signInState.loginSuccessful) {
         if (signInState.loginSuccessful == true) {
+            syncViewModel.loadUserProfile()
             syncViewModel.syncFromCloud()
             signInViewModel.resetLoginSuccessful()
         }
@@ -137,6 +134,7 @@ fun MeScreenRoot(
 
         // friends
         friendsList = friendsState.friends,
+        friendStats = friendsState.friendStats ?: UserStats(),
         pendingRequests = friendsState.incomingRequests,
         addFriendInput = friendsState.addFriendInput,
         onAddFriendInputChange = friendsViewModel::onAddFriendInputChange,
@@ -144,6 +142,11 @@ fun MeScreenRoot(
         onAcceptRequestClick = friendsViewModel::onAcceptRequest,
         onRejectRequestClick = friendsViewModel::onRejectRequest,
         onShareLinkClick = { /* shareIntent with friendCode */ },
+        getFriendStats = {
+            coroutineScope.launch {
+                friendsViewModel.getFriendStats(it)
+            }
+        }
     )
 }
 
@@ -165,6 +168,7 @@ fun MeScreen(
     syncFromCloud: () -> Unit,
 
     //friends
+    friendStats: UserStats,
     friendsList: List<FriendEntry>,
     pendingRequests: List<FriendRequest>,
     addFriendInput: String,
@@ -173,18 +177,29 @@ fun MeScreen(
     onRejectRequestClick: (FriendRequest) -> Unit,
     onAddFriendClick: () -> Unit,
     onShareLinkClick: () -> Unit,
+    getFriendStats: (String) -> Unit
 ) {
     var typedText by remember { mutableStateOf("") }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var openBottomSheet by remember { mutableStateOf(false) }
     var openNotificationBox by remember { mutableStateOf(false) }
+    var openStatsDialog by remember { mutableStateOf(false) }
+
+    var selectedFriend by remember { mutableStateOf<FriendEntry?>(null) }
 
     val rotation by animateFloatAsState(
         targetValue = if (openBottomSheet) 180f else 0f,
         label = "arrowRotation"
     )
 
-    Scaffold(topBar = { MeTopBar { openNotificationBox = true } }) { paddingValues ->
+    Scaffold(
+        topBar = {
+            MeTopBar(
+                notificationBoxOpen = { openNotificationBox = true },
+                badgeCount = pendingRequests.size
+            )
+        }
+    ) { paddingValues ->
         Column(
             modifier = modifier
                 .fillMaxSize()
@@ -332,7 +347,12 @@ fun MeScreen(
                                                 Color.White.copy(alpha = 0.08f),
                                                 RoundedCornerShape(8.dp)
                                             )
-                                            .padding(6.dp),
+                                            .padding(6.dp)
+                                            .clickable {
+                                                getFriendStats(friend.friendUserId)
+                                                openStatsDialog = true
+                                                selectedFriend = friend
+                                            },
                                         verticalAlignment = Alignment.CenterVertically,
                                     ) {
                                         // Avatar
@@ -345,7 +365,8 @@ fun MeScreen(
                                             contentAlignment = Alignment.Center
                                         ) {
                                             AsyncImage(
-                                                model = friend.friendAvatarUrl ?: R.drawable.avataaar,
+                                                model = friend.friendAvatarUrl
+                                                    ?: R.drawable.avataaar,
                                                 contentDescription = "Avatar",
                                                 contentScale = ContentScale.Crop,
                                                 modifier = Modifier.fillMaxSize()
@@ -561,6 +582,17 @@ fun MeScreen(
                     onDismiss = { openNotificationBox = false }
                 )
             }
+
+            if (openStatsDialog) {
+                FriendStatsDialog(
+                    stats = friendStats,
+                    friend = selectedFriend ?: FriendEntry(),
+                    closeFriendStats = {
+                        openStatsDialog = false
+                        selectedFriend = null
+                    }
+                )
+            }
         }
     }
     if (isLoading) {
@@ -575,11 +607,6 @@ fun MeScreen(
         status = syncBannerState,
     )
 }
-
-data class FriendEntity(
-    val name: String,
-    val image: Int
-)
 
 @Preview
 @Composable
@@ -597,7 +624,7 @@ private fun Preview() {
                 user = /*null*/ user,
                 onSignInClick = { },
                 onSignOutClick = { },
-                clearCloudData = {},
+                clearCloudData = { },
                 isLoading = false,
                 bannerStatus = SignInBannerStatus.NONE,
                 syncToCloud = {},
@@ -626,14 +653,16 @@ private fun Preview() {
                         friendSince = 123456
                     ),
 
-                ),
+                    ),
                 pendingRequests = emptyList(),
                 addFriendInput = "",
                 onAddFriendInputChange = {},
                 onAddFriendClick = {},
                 onShareLinkClick = {},
                 onAcceptRequestClick = {},
-                onRejectRequestClick = {}
+                onRejectRequestClick = {},
+                getFriendStats = { },
+                friendStats = UserStats()
             )
         }
     }

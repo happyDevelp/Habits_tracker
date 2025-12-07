@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.habitstracker.me.domain.model.FriendEntry
 import com.example.habitstracker.me.domain.model.FriendRequest
 import com.example.habitstracker.me.domain.model.UserProfile
+import com.example.habitstracker.me.domain.model.UserStats
 import com.example.habitstracker.me.domain.repository.FriendsRepository
 import com.example.habitstracker.me.presentation.sign_in.GoogleAuthUiClient
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,6 +24,7 @@ class FriendsViewModel @Inject constructor(
 
     data class UiState(
         val friends: List<FriendEntry> = emptyList(),
+        val friendStats: UserStats? = null,
         val incomingRequests: List<FriendRequest> = emptyList(),
         val addFriendInput: String = "",
         val isSending: Boolean = false,
@@ -121,6 +123,13 @@ class FriendsViewModel @Inject constructor(
                 friendsRepository.rejectRequest(user.userId, request.id)
             } catch (_: Exception) {
             }
+        }
+    }
+
+    fun getFriendStats(friendUserId: String) {
+        viewModelScope.launch {
+            val stats = friendsRepository.getFriendStats(friendUserId)
+            _state.update { it.copy(friendStats = stats) }
         }
     }
 

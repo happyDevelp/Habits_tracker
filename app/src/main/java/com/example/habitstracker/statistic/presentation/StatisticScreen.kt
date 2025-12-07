@@ -157,7 +157,7 @@ private fun ProfileScreenPreview() {
                         DateHabitEntity(
                             id = 2,
                             habitId = 2,
-                            currentDate = "2025-11-31",
+                            currentDate = "2025-11-10",
                             completed = true
                         )
                     )

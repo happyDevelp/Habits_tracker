@@ -2,6 +2,7 @@ package com.example.habitstracker.habit.domain
 
 import com.example.habitstracker.core.presentation.theme.MyPalette.blueColor
 import com.example.habitstracker.core.presentation.utils.toHex
+import java.time.LocalDate
 
 data class ShownHabit (
     val habitId: Int = 0,
@@ -14,6 +15,13 @@ data class ShownHabit (
     val executionTime: String = "", // There are 4 variants: Doesn`t matter, Morning, Day, Evening
     val reminder: Boolean = false, // Advanced setting for habit
     val isSelected: Boolean = false
+)
+
+fun ShownHabit.toDateHabitEntity(date: String) = DateHabitEntity(
+    id = dateHabitId,
+    habitId = habitId,
+    currentDate = date,
+    completed = isSelected
 )
 
 fun mapToShownHabits(
