@@ -13,8 +13,10 @@ interface FriendsRepository {
     fun observeFriends(currentUserId: String): Flow<List<FriendEntry>>
     fun observeIncomingRequests(currentUserId: String): Flow<List<FriendRequest>>
 
-    suspend fun sendFriendRequest(currentUserId: String, fromUser: UserProfile, targetFriendCode: String)
+    suspend fun sendFriendRequest(currentUserId: String, fromUser: UserProfile, targetProfileCode: String)
     suspend fun acceptRequest(currentUserId: String, request: FriendRequest)
     suspend fun rejectRequest(currentUserId: String, requestId: String)
     suspend fun getFriendStats(friendUserId: String): UserStats?
+    suspend fun deleteFriend(currentUserId: String, friendUserId: String)
+
 }

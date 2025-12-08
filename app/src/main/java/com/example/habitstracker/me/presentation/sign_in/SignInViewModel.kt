@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.habitstracker.me.data.local.AppPreferences
 import com.example.habitstracker.me.presentation.sync.SyncManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -19,6 +20,7 @@ class SignInViewModel @Inject constructor(
     @ApplicationContext private val context: Context,
     private val googleAuthUiClient: GoogleAuthUiClient,
     private val syncManager: SyncManager,
+    private val preferences: AppPreferences
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SignInState())
@@ -61,10 +63,14 @@ class SignInViewModel @Inject constructor(
                 // 2) guarantee a profile in Firestore
                 signedInUser?.let { user ->
                     try {
-                        syncManager.ensureUserProfile(
+                        val fullProfile = syncManager.ensureUserProfile(
                             displayName = user.userName,
                             avatarUrl = user.profilePictureUrl
                         )
+                        Log.d("SIGN_IN", "ensureUserProfile success: $fullProfile")
+                        if (fullProfile != null && fullProfile.profileCode.isNotEmpty()) {
+                            preferences.saveProfileCode(fullProfile.profileCode)
+                        }
                     } catch (e: Exception) {
                         Log.e("SIGN_IN", "ensureUserProfile failed", e)
                     }
@@ -84,7 +90,7 @@ class SignInViewModel @Inject constructor(
                 showBanner(status = SignInBannerStatus.LOGIN_FAILED)
             }
         }
-}
+    }
 
     fun signOut() {
         if (context.isInternetAvailable() == false) {

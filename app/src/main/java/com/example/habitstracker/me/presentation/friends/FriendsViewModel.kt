@@ -26,7 +26,6 @@ class FriendsViewModel @Inject constructor(
         val friends: List<FriendEntry> = emptyList(),
         val friendStats: UserStats? = null,
         val incomingRequests: List<FriendRequest> = emptyList(),
-        val addFriendInput: String = "",
         val isSending: Boolean = false,
         val error: String? = null,
         val infoMessage: String? = null
@@ -61,12 +60,8 @@ class FriendsViewModel @Inject constructor(
         }
     }
 
-    fun onAddFriendInputChange(value: String) {
-        _state.update { it.copy(addFriendInput = value, error = null, infoMessage = null) }
-    }
-
-    fun onAddFriendClicked() {
-        val code = _state.value.addFriendInput.trim()
+    fun onAddFriendClicked(profileCodeInput: String) {
+        val code = profileCodeInput.trim()
         Log.d("FriendsViewModel", "onAddFriendClicked: $code")
         val user = authClient.getSignedInUser() ?: return
 
@@ -81,17 +76,16 @@ class FriendsViewModel @Inject constructor(
                 val fromProfile = UserProfile(
                     displayName = user.userName ?: "",
                     avatarUrl = user.profilePictureUrl,
-                    friendCode = user.userId
+                    profileCode = user.userId
                 )
                 friendsRepository.sendFriendRequest(
                     currentUserId = user.userId,
                     fromUser = fromProfile,
-                    targetFriendCode = code
+                    targetProfileCode = code
                 )
                 _state.update {
                     it.copy(
                         isSending = false,
-                        addFriendInput = "",
                         infoMessage = "Request sent"
                     )
                 }
@@ -130,6 +124,13 @@ class FriendsViewModel @Inject constructor(
         viewModelScope.launch {
             val stats = friendsRepository.getFriendStats(friendUserId)
             _state.update { it.copy(friendStats = stats) }
+        }
+    }
+
+    fun deleteFriend(friendUserId: String) {
+        val currentUserId = authClient.getSignedInUser()?.userId ?: return
+        viewModelScope.launch {
+            friendsRepository.deleteFriend(currentUserId, friendUserId)
         }
     }
 

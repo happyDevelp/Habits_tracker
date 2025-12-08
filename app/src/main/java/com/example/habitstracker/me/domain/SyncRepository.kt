@@ -47,8 +47,8 @@ interface SyncRepository {
 
     suspend fun syncAchievementsFromCloud(userId: String): Boolean
 
-    suspend fun ensureUserProfile(userId: String, displayName: String?, avatarUrl: String?): Boolean
+    suspend fun ensureUserProfile(userId: String, displayName: String?, avatarUrl: String?): UserProfile?
     suspend fun getUserProfile(userId: String): UserProfile?
-    suspend fun findUserIdByFriendCode(friendCode: String): String?
+    suspend fun findUserIdByProfileCode(friendCode: String): String?
     suspend fun pushUserStats(userId: String, stats: UserStats): Boolean
 }

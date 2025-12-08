@@ -9,14 +9,19 @@ import kotlinx.coroutines.flow.map
 
 val Context.dataStore by preferencesDataStore("sync_prefs")
 
-class SyncPreferences(private val context: Context) {
+class AppPreferences(private val context: Context) {
     companion object {
         val LAST_SYNC_KEY = stringPreferencesKey("last_sync")
-        val PROFILE_ID_KEY = stringPreferencesKey("last_sync")
+        val PROFILE_ID_KEY = stringPreferencesKey("profile_code")
     }
     val lastSync: Flow<String?> = context.dataStore.data.map { prefs ->
         prefs[LAST_SYNC_KEY]
     }
+
+    val profileCode: Flow<String?> = context.dataStore.data.map { prefs ->
+        prefs[PROFILE_ID_KEY]
+    }
+
 
     suspend fun saveLastSync(value: String) {
         context.dataStore.edit { prefs ->
@@ -24,11 +29,14 @@ class SyncPreferences(private val context: Context) {
         }
     }
 
-    /*val profileId: Flow<String?> = context.syncDataStore.data.map { prefs ->
-        prefs[PROFILE_ID_KEY]
+    suspend fun saveProfileCode(code: String) {
+        context.dataStore.edit { prefs ->
+            prefs[PROFILE_ID_KEY] = code
+        }
     }
 
-    */
-
-
+    // Method for clearing data when logging out of account
+    suspend fun clearAll() {
+        context.dataStore.edit { it.clear() }
+    }
 }

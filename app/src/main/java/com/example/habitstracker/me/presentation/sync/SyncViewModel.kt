@@ -1,10 +1,11 @@
 package com.example.habitstracker.me.presentation.sync
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.history.domain.AchievementEntity
-import com.example.habitstracker.me.data.local.SyncPreferences
+import com.example.habitstracker.me.data.local.AppPreferences
 import com.example.habitstracker.me.domain.model.UserProfile
 import com.example.habitstracker.me.domain.model.UserStats
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,19 +21,36 @@ import javax.inject.Inject
 @HiltViewModel
 class SyncViewModel @Inject constructor(
     private val syncManager: SyncManager,
-    private val preferences: SyncPreferences
+    private val preferences: AppPreferences
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(SyncState())
     val state = _state.asStateFlow()
 
-    private val _profileState: MutableStateFlow<UserProfile?> = MutableStateFlow(UserProfile())
+    private val _profileState: MutableStateFlow<UserProfile?> = MutableStateFlow(null)
     val profileState = _profileState.asStateFlow()
 
     init {
+        // 1. Listen to the time of the last synchronization
         viewModelScope.launch {
             preferences.lastSync.collect { lastSync ->
                 _state.update { it.copy(lastSync = lastSync) }
+            }
+        }
+
+        // 2. Listen to the locally saved ID (Profile Code)
+        viewModelScope.launch {
+            preferences.profileCode.collect { savedCode ->
+                Log.d("SyncViewModel", "Loaded profile code: $savedCode")
+
+                if (!savedCode.isNullOrEmpty()) {
+                    _profileState.update { currentProfile ->
+                        Log.d("SyncViewModel", "Current profile: $currentProfile")
+                        // If there is no profile yet (null), create a "stub" with the code
+                        // If there is, just update the code field
+                        currentProfile?.copy(profileCode = savedCode) ?: UserProfile(profileCode = savedCode)
+                    }
+                }
             }
         }
     }
@@ -40,7 +58,13 @@ class SyncViewModel @Inject constructor(
     fun loadUserProfile() {
         viewModelScope.launch {
             val profile = syncManager.getUserProfile()
-            _profileState.value = profile
+
+            if (profile != null) {
+                _profileState.value = profile
+                if (profile.profileCode.isNotEmpty()) {
+                    preferences.saveProfileCode(profile.profileCode)
+                }
+            }
         }
     }
 

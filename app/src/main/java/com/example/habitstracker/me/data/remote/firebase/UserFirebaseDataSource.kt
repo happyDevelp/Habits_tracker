@@ -1,6 +1,5 @@
 package com.example.habitstracker.me.data.remote.firebase
 
-import android.util.Log
 import com.example.habitstracker.me.domain.model.FriendEntry
 import com.example.habitstracker.me.domain.model.FriendRequest
 import com.example.habitstracker.me.domain.model.UserProfile
@@ -53,7 +52,7 @@ class UserFirebaseDataSource @Inject constructor(
             val profile = UserProfile(
                 displayName = displayName ?: "User",
                 avatarUrl = avatarUrl,
-                friendCode = generateFriendCodeFromUid(userId)
+                profileCode = generateProfileCodeFromUid(userId)
             )
             doc.set(profile).await()
         } else {
@@ -122,14 +121,15 @@ class UserFirebaseDataSource @Inject constructor(
     suspend fun sendFriendRequest(
         fromUser: UserProfile,
         fromUserId: String,
-        targetFriendCode: String
+        targetProfileCode: String
     ) {
-        val query = firestore
-            .collectionGroup("profile")
-            .whereEqualTo("friendCode", targetFriendCode.uppercase())
-            .limit(1)
-            .get()
-            .await()
+
+            val query = firestore
+                .collectionGroup("profile") // Пошук по всіх колекціях "profile"
+                .whereEqualTo("profileCode", targetProfileCode.uppercase()) // Перевір назву поля!
+                .limit(1)
+                .get()
+                .await()
 
         val profileDoc = query.documents.firstOrNull()
             ?: throw IllegalArgumentException("User with this code not found")
@@ -194,23 +194,37 @@ class UserFirebaseDataSource @Inject constructor(
     }
 
     suspend fun getFriendStats(friendUserId: String): UserStats? {
-        Log.d("FriendsRepositoryImpl", "getFriendStats: $friendUserId")
         val statsDoc = statsDoc(friendUserId).get().await()
-        Log.d("FriendsRepositoryImpl", "getFriendStats: ${statsDoc.exists()}")
         return statsDoc.toObject(UserStats::class.java)
+    }
+
+    // У UserFirebaseDataSource
+    suspend fun deleteFriend(currentUserId: String, friendUserId: String) {
+        val batch = firestore.batch()
+
+        // 1. DELETION FROM MY COLLECTION (users/{currentUserId}/friends/{friendUserId})
+        val myFriendDoc = friendsCollection(currentUserId).document(friendUserId)
+
+        // 2. REMOVE A FRIEND FROM A FRIEND'S COLLECTION (users/{friendUserId}/friends/{currentUserId})
+        val theirFriendDoc = friendsCollection(friendUserId).document(currentUserId)
+
+        batch.delete(myFriendDoc)
+        batch.delete(theirFriendDoc)
+
+        batch.commit().await()
     }
 }
 
-private const val FRIEND_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+private const val PROFILE_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 
-private fun generateFriendCodeFromUid(uid: String, length: Int = 8): String {
+private fun generateProfileCodeFromUid(uid: String, length: Int = 8): String {
     var value = uid.hashCode().toUInt().toLong()
-    val base = FRIEND_CODE_ALPHABET.length
+    val base = PROFILE_CODE_ALPHABET.length
     val sb = StringBuilder()
 
     repeat(length) {
         val index = (value % base).toInt().coerceIn(0, base - 1)
-        sb.append(FRIEND_CODE_ALPHABET[index])
+        sb.append(PROFILE_CODE_ALPHABET[index])
         value /= base
     }
 

@@ -12,7 +12,7 @@ import com.example.habitstracker.history.data.repository.DefaultHistoryRepositor
 import com.example.habitstracker.history.domain.HistoryRepository
 import com.example.habitstracker.me.data.DefaultSyncRepository
 import com.example.habitstracker.me.data.local.LocalSyncRepository
-import com.example.habitstracker.me.data.local.SyncPreferences
+import com.example.habitstracker.me.data.local.AppPreferences
 import com.example.habitstracker.me.data.remote.CloudSyncRepository
 import com.example.habitstracker.me.data.remote.firebase.UserFirebaseDataSource
 import com.example.habitstracker.me.data.repository.FriendsRepositoryImpl
@@ -113,7 +113,7 @@ object AppModule {
     @Singleton
     fun provideSyncPreferences(
         @ApplicationContext context: Context
-    ): SyncPreferences = SyncPreferences(context)
+    ): AppPreferences = AppPreferences(context)
 
     @Singleton
     @Provides

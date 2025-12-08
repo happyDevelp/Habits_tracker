@@ -185,35 +185,46 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
         userId: String,
         displayName: String?,
         avatarUrl: String?
-    ) {
+    ): UserProfile? {
         val doc = profileDoc(userId)
         val snapshot = doc.get().await()
 
-        if (!snapshot.exists()) {
-            // First login — create a profile
-            val profile = UserProfile(
+        if (snapshot.exists() == false) {
+            // --- scenario 1 new user ---
+            val newProfile = UserProfile(
                 displayName = displayName ?: "User",
                 avatarUrl = avatarUrl,
-                friendCode = generateFriendCodeFromUid(userId)
+                profileCode = generateProfileCodeFromUid(userId)
             )
-            doc.set(profile).await()
+            doc.set(newProfile).await()
+
+            return newProfile
         } else {
-            // The profile is already there — check if the name/avatar has changed
-            val current = snapshot.toObject(UserProfile::class.java) ?: return
+            // --- scenario 2 the user already exists ---
+            val current = snapshot.toObject(UserProfile::class.java) ?: return null
+            Log.d("CloudSyncRepository", "ensureUserProfile: $current")
 
             val updates = mutableMapOf<String, Any>()
 
+            // Create a copy for return to have the latest data in memory
+            var resultingProfile = current
+
             if (!displayName.isNullOrBlank() && displayName != current.displayName) {
                 updates["displayName"] = displayName
-            }
-            if (avatarUrl != null && avatarUrl != current.avatarUrl) {
-                updates["avatarUrl"] = avatarUrl
+                resultingProfile = resultingProfile.copy(displayName = displayName)
             }
 
-            // friendCode is NOT touched, even if something has changed
+            if (avatarUrl != null && avatarUrl != current.avatarUrl) {
+                updates["avatarUrl"] = avatarUrl
+                resultingProfile = resultingProfile.copy(avatarUrl = avatarUrl)
+            }
+
+            // if there were changes push into the database
             if (updates.isNotEmpty()) {
                 doc.update(updates).await()
             }
+
+            return resultingProfile // Return the current profile
         }
     }
 
@@ -223,10 +234,10 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
         return snapshot.toObject(UserProfile::class.java)
     }
 
-    suspend fun findUserIdByFriendCode(friendCode: String): String? {
+    suspend fun findUserIdByProfileCode(friendPfCode: String): String? {
         val query = firestore
             .collectionGroup("profile")       // searches among all users/{uid}/profile
-            .whereEqualTo("friendCode", friendCode.uppercase())
+            .whereEqualTo("profileCode", friendPfCode.uppercase())
             .limit(1)
             .get()
             .await()
@@ -246,16 +257,16 @@ class CloudSyncRepository @Inject constructor(private val firestore: FirebaseFir
     }
 }
 
-private const val FRIEND_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+private const val PROFILE_CODE_ALPHABET = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
 
-private fun generateFriendCodeFromUid(uid: String, length: Int = 8): String {
+private fun generateProfileCodeFromUid(uid: String, length: Int = 8): String {
     var value = uid.hashCode().toUInt().toLong()
-    val base = FRIEND_CODE_ALPHABET.length
+    val base = PROFILE_CODE_ALPHABET.length
     val sb = StringBuilder()
 
     repeat(length) {
         val index = (value % base).toInt().coerceIn(0, base - 1)
-        sb.append(FRIEND_CODE_ALPHABET[index])
+        sb.append(PROFILE_CODE_ALPHABET[index])
         value /= base
     }
 

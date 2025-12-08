@@ -21,8 +21,8 @@ class FriendsRepositoryImpl @Inject constructor(
     override fun observeIncomingRequests(currentUserId: String): Flow<List<FriendRequest>> =
         firebase.observeIncomingRequests(currentUserId)
 
-    override suspend fun sendFriendRequest(currentUserId: String, fromUser: UserProfile, targetFriendCode: String) {
-        firebase.sendFriendRequest(fromUser, currentUserId, targetFriendCode)
+    override suspend fun sendFriendRequest(currentUserId: String, fromUser: UserProfile, targetProfileCode: String) {
+        firebase.sendFriendRequest(fromUser, currentUserId, targetProfileCode)
     }
 
     override suspend fun acceptRequest(currentUserId: String, request: FriendRequest) {
@@ -35,5 +35,9 @@ class FriendsRepositoryImpl @Inject constructor(
 
     override suspend fun getFriendStats(friendUserId: String): UserStats? {
         return firebase.getFriendStats(friendUserId)
+    }
+
+    override suspend fun deleteFriend(currentUserId: String, friendUserId: String) {
+        return firebase.deleteFriend(currentUserId, friendUserId)
     }
 }

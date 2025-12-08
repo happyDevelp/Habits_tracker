@@ -78,6 +78,8 @@
     <string name="web_client_id">320317569531-pjhcn24vdjomh7hne23v4lkdeqsq7rgj.apps.googleusercontent.com</string>
     <string name="log_out">Log Out</string>
     <string name="clear_cloud_data">Clear Cloud Data</string>
+    <string name="confirm_clear_data_from_cloud">Confirm Clear Data From Cloud</string>
+    <string name="are_you_sure_you_want_to_permanently_delete_all_your_cloud_stored_habit_data">Are you sure you want to permanently delete all your cloud-stored habit data?</string>
 
 
 </resources>

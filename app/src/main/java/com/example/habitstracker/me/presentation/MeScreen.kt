@@ -2,7 +2,6 @@ package com.example.habitstracker.me.presentation
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -23,11 +22,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.CloudUpload
 import androidx.compose.material.icons.outlined.DeleteForever
 import androidx.compose.material.icons.outlined.Lock
@@ -37,7 +34,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -56,20 +52,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
-import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.theme.AppTheme
-import com.example.habitstracker.core.presentation.theme.Fonts
-import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
@@ -82,12 +76,14 @@ import com.example.habitstracker.me.presentation.component.BannerStatus
 import com.example.habitstracker.me.presentation.component.CopyIdChip
 import com.example.habitstracker.me.presentation.component.LoadingOverlay
 import com.example.habitstracker.me.presentation.component.MeTopBar
+import com.example.habitstracker.me.presentation.component.MyAlertDialog
 import com.example.habitstracker.me.presentation.component.NotificationDialog
 import com.example.habitstracker.me.presentation.component.SignInButton
 import com.example.habitstracker.me.presentation.component.TopBanner
 import com.example.habitstracker.me.presentation.component.userCard
-import com.example.habitstracker.me.presentation.friends.FriendStatsDialog
 import com.example.habitstracker.me.presentation.friends.FriendsViewModel
+import com.example.habitstracker.me.presentation.friends.components.FriendListItem
+import com.example.habitstracker.me.presentation.friends.components.FriendStatsDialog
 import com.example.habitstracker.me.presentation.sign_in.SignInBannerStatus
 import com.example.habitstracker.me.presentation.sign_in.SignInViewModel
 import com.example.habitstracker.me.presentation.sign_in.UserData
@@ -120,7 +116,7 @@ fun MeScreenRoot(
 
     MeScreen(
         user = signInState.userData,
-        profileFriendId = userProfile?.friendCode ?: "",
+        profileId = userProfile?.profileCode ?: "",
         isLoading = signInState.isLoading || syncState.isLoading,
         bannerStatus = signInState.banner,
         syncBannerState = syncState.banner,
@@ -136,9 +132,7 @@ fun MeScreenRoot(
         friendsList = friendsState.friends,
         friendStats = friendsState.friendStats ?: UserStats(),
         pendingRequests = friendsState.incomingRequests,
-        addFriendInput = friendsState.addFriendInput,
-        onAddFriendInputChange = friendsViewModel::onAddFriendInputChange,
-        onAddFriendClick = friendsViewModel::onAddFriendClicked,
+        onAddFriendClick = { friendsViewModel.onAddFriendClicked(it) },
         onAcceptRequestClick = friendsViewModel::onAcceptRequest,
         onRejectRequestClick = friendsViewModel::onRejectRequest,
         onShareLinkClick = { /* shareIntent with friendCode */ },
@@ -146,16 +140,20 @@ fun MeScreenRoot(
             coroutineScope.launch {
                 friendsViewModel.getFriendStats(it)
             }
-        }
+        },
+        onDeleteFriendClick = {
+            friendsViewModel.deleteFriend(it)
+        },
     )
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MeScreen(
     modifier: Modifier = Modifier,
     user: UserData?,
-    profileFriendId: String,
+    profileId: String,
     isLoading: Boolean,
     bannerStatus: BannerStatus,
     syncBannerState: BannerStatus,
@@ -171,24 +169,24 @@ fun MeScreen(
     friendStats: UserStats,
     friendsList: List<FriendEntry>,
     pendingRequests: List<FriendRequest>,
-    addFriendInput: String,
-    onAddFriendInputChange: (String) -> Unit,
     onAcceptRequestClick: (FriendRequest) -> Unit,
     onRejectRequestClick: (FriendRequest) -> Unit,
-    onAddFriendClick: () -> Unit,
+    onAddFriendClick: (String) -> Unit,
     onShareLinkClick: () -> Unit,
-    getFriendStats: (String) -> Unit
+    getFriendStats: (String) -> Unit,
+    onDeleteFriendClick: (String) -> Unit
 ) {
     var typedText by remember { mutableStateOf("") }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var openBottomSheet by remember { mutableStateOf(false) }
+    var openButtonsSheet by remember { mutableStateOf(false) }
     var openNotificationBox by remember { mutableStateOf(false) }
     var openStatsDialog by remember { mutableStateOf(false) }
+    var openFriendDeleteConfirmation by remember { mutableStateOf(false) }
 
     var selectedFriend by remember { mutableStateOf<FriendEntry?>(null) }
 
     val rotation by animateFloatAsState(
-        targetValue = if (openBottomSheet) 180f else 0f,
+        targetValue = if (openButtonsSheet) 180f else 0f,
         label = "arrowRotation"
     )
 
@@ -211,7 +209,7 @@ fun MeScreen(
                 modifier = Modifier,
                 syncToCloud,
                 user,
-                openBottomSheet = { openBottomSheet = true },
+                openBottomSheet = { openButtonsSheet = true },
                 rotation,
                 lastSync,
                 syncInProgress,
@@ -245,23 +243,12 @@ fun MeScreen(
                         )
                         if (user != null) {
                             CopyIdChip(
-                                friendCode = profileFriendId,
+                                profileCode = profileId,
                                 modifier = Modifier.align(Alignment.CenterEnd)
                             )
                         }
                     }
                     Spacer(modifier.height(16.dp))
-
-                    /*val friendsList: List<FriendEntity> = listOf(
-                        FriendEntity("Friend 1", R.drawable.avataaar),
-                        FriendEntity("Friend 1", R.drawable.avataaar),
-                        FriendEntity("Friend 1", R.drawable.avataaar),
-                        FriendEntity("Friend 1", R.drawable.avataaar),
-                        FriendEntity("Friend 1", R.drawable.avataaar),
-                        FriendEntity("Friend 1", R.drawable.avataaar),
-                        FriendEntity("Friend 1", R.drawable.avataaar),
-                    )*/
-
 
                     // --- NOT SIGNED IN ------------------------------------------------------
                     if (user == null) {
@@ -340,66 +327,21 @@ fun MeScreen(
                                 verticalArrangement = Arrangement.spacedBy(4.dp)
                             ) {
                                 items(friendsList) { friend ->
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .background(
-                                                Color.White.copy(alpha = 0.08f),
-                                                RoundedCornerShape(8.dp)
-                                            )
-                                            .padding(6.dp)
-                                            .clickable {
-                                                getFriendStats(friend.friendUserId)
-                                                openStatsDialog = true
-                                                selectedFriend = friend
-                                            },
-                                        verticalAlignment = Alignment.CenterVertically,
-                                    ) {
-                                        // Avatar
-                                        Box(
-                                            modifier = Modifier
-                                                .size(56.dp)
-                                                .clip(CircleShape)
-                                                .background(HabitColor.Teal.light)
-                                                .border(2.dp, Color.Gray, CircleShape),
-                                            contentAlignment = Alignment.Center
-                                        ) {
-                                            AsyncImage(
-                                                model = friend.friendAvatarUrl
-                                                    ?: R.drawable.avataaar,
-                                                contentDescription = "Avatar",
-                                                contentScale = ContentScale.Crop,
-                                                modifier = Modifier.fillMaxSize()
-                                            )
-                                        }
-
-                                        Spacer(modifier = Modifier.width(12.dp))
-
-                                        // Name
-                                        Text(
-                                            text = friend.friendDisplayName,
-                                            color = Color.White.copy(alpha = 0.92f),
-                                            fontSize = 15.sp,
-                                            fontFamily = Fonts.Raleway,
-                                            fontWeight = FontWeight.Bold,
-                                            modifier = Modifier.weight(1f)
-                                        )
-
-                                        // Delete
-                                        IconButton(
-                                            onClick = { /* TODO remove friend */ },
-                                            modifier = Modifier.size(32.dp)
-                                        ) {
-                                            Icon(
-                                                imageVector = Icons.Outlined.Close,
-                                                contentDescription = "Delete Friend",
-                                                tint = Color.White.copy(alpha = 0.7f)
-                                            )
-                                        }
-                                    }
+                                    FriendListItem(
+                                        name = friend.friendDisplayName,
+                                        avatarUrl = friend.friendAvatarUrl,
+                                        onClick = {
+                                            openStatsDialog = true
+                                            getFriendStats(friend.friendUserId)
+                                            selectedFriend = friend
+                                        },
+                                        onDeleteClick = {
+                                            selectedFriend = friend
+                                            openFriendDeleteConfirmation = true
+                                        },
+                                    )
                                 }
                             }
-
                         }
                     }
                     Spacer(Modifier.height(22.dp))
@@ -434,7 +376,7 @@ fun MeScreen(
                                     .clickable(
                                         interactionSource = interactionSourceAddButton,
                                         indication = null
-                                    ) { onAddFriendClick() }
+                                    ) { onAddFriendClick(typedText) }
                                     .padding(horizontal = 16.dp),
                                 contentAlignment = Alignment.Center
                             ) {
@@ -448,10 +390,7 @@ fun MeScreen(
 
                             BasicTextField(
                                 value = typedText,
-                                onValueChange = {
-                                    typedText = it
-                                    onAddFriendInputChange(it)
-                                },
+                                onValueChange = { typedText = it },
                                 modifier = Modifier
                                     .weight(1f)
                                     .padding(start = 10.dp, top = 8.dp, bottom = 8.dp),
@@ -533,7 +472,7 @@ fun MeScreen(
                             "Upload Data From Cloud",
                             Icons.Outlined.CloudUpload,
                             onClick = {
-                                openBottomSheet = false
+                                openButtonsSheet = false
                                 syncFromCloud()
                             }
                         ),
@@ -541,7 +480,7 @@ fun MeScreen(
                             "Log Out",
                             Icons.Outlined.Logout,
                             onClick = {
-                                openBottomSheet = false
+                                openButtonsSheet = false
                                 onSignOutClick()
                             }
                         ),
@@ -554,12 +493,12 @@ fun MeScreen(
                     )
                 )
             }
-            if (openBottomSheet) {
+            if (openButtonsSheet) {
                 AccountSettingsBottomSheet(
                     sheetState = sheetState,
                     buttons = buttons,
                     onCloudDataClear = clearCloudData,
-                    closeBottomSheet = { openBottomSheet = false }
+                    closeBottomSheet = { openButtonsSheet = false }
                 )
             }
 
@@ -592,6 +531,39 @@ fun MeScreen(
                         selectedFriend = null
                     }
                 )
+            }
+
+            if (openFriendDeleteConfirmation) {
+                selectedFriend?.let { friendToDelete ->
+                    // 1. Create a "smart" string
+                    val styledMessage = buildAnnotatedString {
+                        // First part (grayed by default from dialog)
+                        append("Are you sure you want to remove ")
+
+                        withStyle( // Part with the name (White and Bold)
+                            style = SpanStyle(
+                                color = Color.White,
+                                fontWeight = FontWeight.Bold
+                            )
+                        ) {
+                            append(friendToDelete.friendDisplayName)
+                        }
+                        append(" from friends?") // End of sentence
+                    }
+                    MyAlertDialog(
+                        title = "Delete friend",
+                        annotatedMessage = styledMessage,
+                        onConfirm = {
+                            onDeleteFriendClick(friendToDelete.friendUserId)
+                            openFriendDeleteConfirmation = false
+                            selectedFriend = null
+                        },
+                        onDismiss = {
+                            openFriendDeleteConfirmation = false
+                            selectedFriend = null
+                        }
+                    )
+                }
             }
         }
     }
@@ -632,7 +604,7 @@ private fun Preview() {
                 syncBannerState = SyncBannerStatus.NONE,
                 lastSync = LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm")),
                 syncInProgress = true,
-                profileFriendId = "GPAA-JOJA",
+                profileId = "GPAA-JOJA",
                 friendsList = listOf(
                     FriendEntry(
                         friendDisplayName = "Matteus Müller",
@@ -655,14 +627,13 @@ private fun Preview() {
 
                     ),
                 pendingRequests = emptyList(),
-                addFriendInput = "",
-                onAddFriendInputChange = {},
                 onAddFriendClick = {},
                 onShareLinkClick = {},
                 onAcceptRequestClick = {},
                 onRejectRequestClick = {},
                 getFriendStats = { },
-                friendStats = UserStats()
+                friendStats = UserStats(),
+                onDeleteFriendClick = {}
             )
         }
     }

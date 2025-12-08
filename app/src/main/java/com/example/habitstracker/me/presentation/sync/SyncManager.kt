@@ -1,13 +1,12 @@
 package com.example.habitstracker.me.presentation.sync
 
 import android.content.Context
-import android.util.Log
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.history.domain.AchievementEntity
+import com.example.habitstracker.me.domain.SyncRepository
 import com.example.habitstracker.me.domain.model.UserProfile
 import com.example.habitstracker.me.domain.model.UserStats
-import com.example.habitstracker.me.domain.SyncRepository
 import com.example.habitstracker.me.presentation.sign_in.GoogleAuthUiClient
 import com.example.habitstracker.me.presentation.sign_in.isInternetAvailable
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -117,8 +116,8 @@ class SyncManager@Inject constructor(
         return syncRepo.syncAchievementsFromCloud(user.userId)
     }
 
-    suspend fun ensureUserProfile(displayName: String?, avatarUrl: String?): Boolean {
-        val user = googleAuthUiClient.getSignedInUser() ?: return false
+    suspend fun ensureUserProfile(displayName: String?, avatarUrl: String?): UserProfile? {
+        val user = googleAuthUiClient.getSignedInUser() ?: return null
         return syncRepo.ensureUserProfile(user.userId, displayName, avatarUrl)
     }
 
@@ -128,7 +127,7 @@ class SyncManager@Inject constructor(
     }
 
     suspend fun findUserIdByFriendCode(friendCode: String): String? {
-        return syncRepo.findUserIdByFriendCode(friendCode)
+        return syncRepo.findUserIdByProfileCode(friendCode)
     }
 
     suspend fun pushUserStats(stats: UserStats): Boolean {

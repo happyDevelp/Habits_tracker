@@ -1,7 +1,6 @@
-package com.example.habitstracker.me.presentation.friends
+package com.example.habitstracker.me.presentation.friends.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,9 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -28,10 +25,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -39,14 +34,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.navigation.compose.rememberNavController
-import coil.compose.AsyncImage
-import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
-import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.utils.gradientColor
 import com.example.habitstracker.me.domain.model.FriendEntry
 import com.example.habitstracker.me.domain.model.UserStats
-import com.example.habitstracker.me.presentation.friends.components.FriendAvatarWithGlow
 import com.example.habitstracker.statistic.presentation.components.DrawConsistencyContainer
 import java.time.Instant
 import java.time.ZoneId
