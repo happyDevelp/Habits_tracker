@@ -3,8 +3,8 @@ package com.example.habitstracker.me.domain
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.history.domain.AchievementEntity
-import com.example.habitstracker.me.data.remote.model.UserProfile
-import com.example.habitstracker.me.data.remote.model.UserStats
+import com.example.habitstracker.me.domain.model.UserProfile
+import com.example.habitstracker.me.domain.model.UserStats
 
 interface SyncRepository {
     suspend fun syncFromCloud(userId: String): Boolean
@@ -47,9 +47,8 @@ interface SyncRepository {
 
     suspend fun syncAchievementsFromCloud(userId: String): Boolean
 
-    suspend fun ensureUserProfile(userId: String, displayName: String?, avatarUrl: String?): Boolean
+    suspend fun ensureUserProfile(userId: String, displayName: String?, avatarUrl: String?): UserProfile?
     suspend fun getUserProfile(userId: String): UserProfile?
-    suspend fun findUserIdByFriendCode(friendCode: String): String?
+    suspend fun findUserIdByProfileCode(friendCode: String): String?
     suspend fun pushUserStats(userId: String, stats: UserStats): Boolean
-    suspend fun getUserStats(userId: String): UserStats?
 }

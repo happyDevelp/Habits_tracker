@@ -105,6 +105,8 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.compose.runtime)
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.palette.ktx)
     testImplementation(libs.junit.junit)
 
     ksp(libs.androidx.room.compiler)

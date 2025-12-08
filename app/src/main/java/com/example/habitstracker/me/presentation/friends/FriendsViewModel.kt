@@ -3,9 +3,11 @@ package com.example.habitstracker.me.presentation.friends
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.habitstracker.me.domain.FriendsRepository
 import com.example.habitstracker.me.domain.model.FriendEntry
 import com.example.habitstracker.me.domain.model.FriendRequest
+import com.example.habitstracker.me.domain.model.UserProfile
+import com.example.habitstracker.me.domain.model.UserStats
+import com.example.habitstracker.me.domain.repository.FriendsRepository
 import com.example.habitstracker.me.presentation.sign_in.GoogleAuthUiClient
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,8 +24,8 @@ class FriendsViewModel @Inject constructor(
 
     data class UiState(
         val friends: List<FriendEntry> = emptyList(),
+        val friendStats: UserStats? = null,
         val incomingRequests: List<FriendRequest> = emptyList(),
-        val addFriendInput: String = "",
         val isSending: Boolean = false,
         val error: String? = null,
         val infoMessage: String? = null
@@ -58,12 +60,8 @@ class FriendsViewModel @Inject constructor(
         }
     }
 
-    fun onAddFriendInputChange(value: String) {
-        _state.update { it.copy(addFriendInput = value, error = null, infoMessage = null) }
-    }
-
-    fun onAddFriendClicked() {
-        val code = _state.value.addFriendInput.trim()
+    fun onAddFriendClicked(profileCodeInput: String) {
+        val code = profileCodeInput.trim()
         Log.d("FriendsViewModel", "onAddFriendClicked: $code")
         val user = authClient.getSignedInUser() ?: return
 
@@ -75,16 +73,19 @@ class FriendsViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isSending = true, error = null, infoMessage = null) }
             try {
+                val fromProfile = UserProfile(
+                    displayName = user.userName ?: "",
+                    avatarUrl = user.profilePictureUrl,
+                    profileCode = user.userId
+                )
                 friendsRepository.sendFriendRequest(
-                    fromUserId = user.userId,
-                    fromDisplayName = user.userName ?: "",
-                    fromAvatarUrl = user.profilePictureUrl,
-                    targetFriendCode = code
+                    currentUserId = user.userId,
+                    fromUser = fromProfile,
+                    targetProfileCode = code
                 )
                 _state.update {
                     it.copy(
                         isSending = false,
-                        addFriendInput = "",
                         infoMessage = "Request sent"
                     )
                 }
@@ -116,6 +117,20 @@ class FriendsViewModel @Inject constructor(
                 friendsRepository.rejectRequest(user.userId, request.id)
             } catch (_: Exception) {
             }
+        }
+    }
+
+    fun getFriendStats(friendUserId: String) {
+        viewModelScope.launch {
+            val stats = friendsRepository.getFriendStats(friendUserId)
+            _state.update { it.copy(friendStats = stats) }
+        }
+    }
+
+    fun deleteFriend(friendUserId: String) {
+        val currentUserId = authClient.getSignedInUser()?.userId ?: return
+        viewModelScope.launch {
+            friendsRepository.deleteFriend(currentUserId, friendUserId)
         }
     }
 

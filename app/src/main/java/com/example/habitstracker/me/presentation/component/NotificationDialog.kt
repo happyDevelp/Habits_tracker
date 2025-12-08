@@ -263,14 +263,12 @@ private fun Preview() {
                 FriendRequest(
                     id = "1",
                     fromUserId = "1",
-                    toUserId = "2",
                     fromDisplayName = "John Doe",
                     fromAvatarUrl = null
                 ),
                 FriendRequest(
                     id = "12",
                     fromUserId = "2",
-                    toUserId = "1",
                     fromDisplayName = "Matteus Müller",
                     fromAvatarUrl = null
                 )

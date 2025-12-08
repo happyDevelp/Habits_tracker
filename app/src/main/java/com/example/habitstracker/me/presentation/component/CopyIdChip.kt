@@ -44,7 +44,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun CopyIdChip(
     modifier: Modifier = Modifier,
-    friendCode: String,
+    profileCode: String,
 ) {
     val coroutineScope = rememberCoroutineScope()
     val clipboard = LocalClipboard.current
@@ -109,7 +109,7 @@ fun CopyIdChip(
                     indication = null
                 ) {
                     val clipData = ClipData.newPlainText(
-                        "my friend id", friendCode
+                        "my friend id", profileCode
                     )
                     coroutineScope.launch {
                         clipboard.setClipEntry(clipData.toClipEntry())
@@ -123,7 +123,7 @@ fun CopyIdChip(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "ID: $friendCode",
+                    text = "ID: $profileCode",
                     color = Color.White,
                     fontSize = 9.sp,
                     fontWeight = FontWeight.SemiBold,

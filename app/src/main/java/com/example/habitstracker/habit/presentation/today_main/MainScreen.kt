@@ -66,6 +66,7 @@ import com.example.habitstracker.habit.presentation.today_main.components.calcul
 import com.example.habitstracker.habit.presentation.today_main.components.calendar.CalendarRowList
 import com.example.habitstracker.habit.presentation.today_main.utility.AchievementSection
 import com.example.habitstracker.history.presentation.HistoryViewModel
+import com.example.habitstracker.me.presentation.sign_in.SignInViewModel
 import com.example.habitstracker.me.presentation.sync.SyncViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -75,6 +76,7 @@ fun TodayScreenRoot(
     todayViewModel: MainScreenViewModel = hiltViewModel<MainScreenViewModel>(),
     historyViewModel: HistoryViewModel = hiltViewModel<HistoryViewModel>(),
     syncViewModel: SyncViewModel = hiltViewModel<SyncViewModel>(),
+    signInViewModel: SignInViewModel = hiltViewModel<SignInViewModel>(),
     historyDate: String?,
     changeSelectedItemState: (index: Int) -> Unit
 ) {
@@ -88,6 +90,7 @@ fun TodayScreenRoot(
     // sync methods
     LaunchedEffect(Unit) {
         syncViewModel.fullSync()
+ /*       signInViewModel.resetNeedFullSync()*/
     }
 
     val coroutineScope = rememberCoroutineScope()

@@ -14,10 +14,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CloudUpload
 import androidx.compose.material.icons.outlined.Logout
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -89,7 +88,10 @@ fun AccountManagementButtons(
     }
 
     if (showDeleteDialog) {
-        DeleteAccountDialog(
+        MyAlertDialog(
+            title = stringResource(R.string.confirm_clear_data_from_cloud),
+            message = stringResource(R.string.are_you_sure_you_want_to_permanently_delete_all_your_cloud_stored_habit_data) +
+                    "\n\nThis action cannot be undone.",
             onConfirm = {
                 showDeleteDialog = false
                 onCloudDataClear()
@@ -99,45 +101,6 @@ fun AccountManagementButtons(
     }
 
     Spacer(modifier = Modifier.height(10.dp))
-}
-
-@Composable
-fun DeleteAccountDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
-    AlertDialog(
-        onDismissRequest = { onDismiss() },
-        title = {
-            Text(
-                text = "Confirm Clear Data From Cloud",
-                fontFamily = PoppinsFontFamily
-            )
-        },
-        text = {
-            Text(
-                text = "Are you sure you want to permanently delete all your cloud-stored habit data?" +
-                        "\n\nThis action cannot be undone.",
-                fontFamily = PoppinsFontFamily
-            )
-        },
-        confirmButton = {
-            TextButton(onClick = onConfirm) {
-                Text(
-                    text = "Delete",
-                    color = Color(0xFFFF1000),
-                    fontFamily = PoppinsFontFamily
-                )
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismiss) {
-                Text(
-                    text = "Cancel",
-                    color = Color.White,
-                    fontFamily = PoppinsFontFamily
-                )
-            }
-        },
-        containerColor = containerBackgroundDark
-    )
 }
 
 

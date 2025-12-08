@@ -12,10 +12,15 @@ import com.example.habitstracker.history.data.repository.DefaultHistoryRepositor
 import com.example.habitstracker.history.domain.HistoryRepository
 import com.example.habitstracker.me.data.DefaultSyncRepository
 import com.example.habitstracker.me.data.local.LocalSyncRepository
-import com.example.habitstracker.me.data.local.SyncPreferences
+import com.example.habitstracker.me.data.local.AppPreferences
 import com.example.habitstracker.me.data.remote.CloudSyncRepository
-import com.example.habitstracker.me.data.remote.FriendsRepositoryImpl
-import com.example.habitstracker.me.domain.FriendsRepository
+import com.example.habitstracker.me.data.remote.firebase.UserFirebaseDataSource
+import com.example.habitstracker.me.data.repository.FriendsRepositoryImpl
+import com.example.habitstracker.me.data.repository.UserProfileRepositoryImpl
+import com.example.habitstracker.me.data.repository.UserStatsRepositoryImpl
+import com.example.habitstracker.me.domain.repository.FriendsRepository
+import com.example.habitstracker.me.domain.repository.UserProfileRepository
+import com.example.habitstracker.me.domain.repository.UserStatsRepository
 import com.example.habitstracker.me.domain.SyncRepository
 import com.example.habitstracker.me.presentation.sign_in.GoogleAuthUiClient
 import com.example.habitstracker.me.presentation.sync.SyncManager
@@ -66,6 +71,12 @@ object AppModule {
 
     @Provides
     @Singleton
+    fun provideUserFirebaseDataSource(
+        firestore: FirebaseFirestore
+    ): UserFirebaseDataSource = UserFirebaseDataSource(firestore)
+
+    @Provides
+    @Singleton
     fun provideSyncRepository(
         local: LocalSyncRepository,
         cloud: CloudSyncRepository
@@ -75,9 +86,18 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideFriendsRepository(): FriendsRepository {
-        return FriendsRepositoryImpl(FirebaseFirestore.getInstance())
-    }
+    fun provideUserProfileRepository(firebaseDataSource: UserFirebaseDataSource): UserProfileRepository =
+        UserProfileRepositoryImpl(firebaseDataSource)
+
+    @Singleton
+    @Provides
+    fun provideUserStatsRepository(firebaseDataSource: UserFirebaseDataSource): UserStatsRepository =
+        UserStatsRepositoryImpl(firebaseDataSource)
+
+    @Singleton
+    @Provides
+    fun provideFriendsRepository(firebaseDataSource: UserFirebaseDataSource): FriendsRepository =
+        FriendsRepositoryImpl(firebaseDataSource)
 
     @Provides
     @Singleton
@@ -93,7 +113,7 @@ object AppModule {
     @Singleton
     fun provideSyncPreferences(
         @ApplicationContext context: Context
-    ): SyncPreferences = SyncPreferences(context)
+    ): AppPreferences = AppPreferences(context)
 
     @Singleton
     @Provides

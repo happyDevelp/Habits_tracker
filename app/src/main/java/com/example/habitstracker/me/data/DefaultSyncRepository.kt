@@ -6,9 +6,9 @@ import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.history.domain.AchievementEntity
 import com.example.habitstracker.me.data.local.LocalSyncRepository
 import com.example.habitstracker.me.data.remote.CloudSyncRepository
-import com.example.habitstracker.me.data.remote.model.UserProfile
-import com.example.habitstracker.me.data.remote.model.UserStats
 import com.example.habitstracker.me.domain.SyncRepository
+import com.example.habitstracker.me.domain.model.UserProfile
+import com.example.habitstracker.me.domain.model.UserStats
 import javax.inject.Inject
 
 class DefaultSyncRepository @Inject constructor(
@@ -250,13 +250,13 @@ class DefaultSyncRepository @Inject constructor(
         userId: String,
         displayName: String?,
         avatarUrl: String?
-    ): Boolean {
+    ): UserProfile? {
         return try {
+            //cloud.getUserProfile(userId)
             cloud.ensureUserProfile(userId, displayName, avatarUrl)
-            true
         } catch (e: Exception) {
             Log.e("SYNC_DEBUG", "ensureUserProfile failed", e)
-            false
+            null
         }
     }
 
@@ -269,9 +269,9 @@ class DefaultSyncRepository @Inject constructor(
         }
     }
 
-    override suspend fun findUserIdByFriendCode(friendCode: String): String? {
+    override suspend fun findUserIdByProfileCode(friendCode: String): String? {
         return try {
-            cloud.findUserIdByFriendCode(friendCode)
+            cloud.findUserIdByProfileCode(friendCode)
         } catch (e: Exception) {
             Log.e("SYNC_DEBUG", "findUserIdByFriendCode failed", e)
             null
@@ -288,15 +288,6 @@ class DefaultSyncRepository @Inject constructor(
         } catch (e: Exception) {
             Log.e("SYNC_DEBUG", "pushUserStats failed", e)
             false
-        }
-    }
-
-    override suspend fun getUserStats(userId: String): UserStats? {
-        return try {
-            cloud.getUserStats(userId)
-        } catch (e: Exception) {
-            Log.e("SYNC_DEBUG", "getUserStats failed", e)
-            null
         }
     }
 }

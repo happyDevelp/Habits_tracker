@@ -1,12 +1,14 @@
 package com.example.habitstracker.habit.presentation.today_main.components
 
+import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.ShownHabit
+import com.example.habitstracker.habit.domain.toDateHabitEntity
 import com.example.habitstracker.habit.presentation.today_main.utility.getBestStreak
-import com.example.habitstracker.me.data.remote.model.UserStats
+import com.example.habitstracker.me.domain.model.UserStats
+import com.example.habitstracker.statistic.presentation.rolling30DayConsistency
 import java.time.LocalDate
 import java.time.temporal.WeekFields
 import java.util.Locale
-import kotlin.math.roundToInt
 
 fun calculateUserStats(
     map: Map<LocalDate, List<ShownHabit>>
@@ -18,7 +20,7 @@ fun calculateUserStats(
             currentStreak = 0,
             perfectDaysTotal = 0,
             perfectDaysThisWeek = 0,
-            consistencyPercent = 0
+            consistencyPercent = 0.0
         )
     }
 
@@ -64,12 +66,14 @@ fun calculateUserStats(
                 habits.all { it.isSelected }
     }
 
-    // 6) consistency
     val consistencyPercent =
         if (totalItems == 0) 0
-        else ((totalCompletedHabits.toDouble() / totalItems.toDouble()) * 100)
-            .roundToInt()
-            .coerceIn(0, 100)
+        else  {
+            val allDateHabits = map.flatMap { (date, habits) ->
+                habits.map { it.toDateHabitEntity(date = date.toString()) }
+            }
+            rolling30DayConsistency(allDateHabits)
+        }
 
     return UserStats(
         totalCompletedHabits = totalCompletedHabits,
@@ -77,6 +81,6 @@ fun calculateUserStats(
         currentStreak = currentStreak,
         perfectDaysTotal = perfectDaysTotal,
         perfectDaysThisWeek = perfectDaysThisWeek,
-        consistencyPercent = consistencyPercent
+        consistencyPercent = consistencyPercent.toDouble()
     )
 }
