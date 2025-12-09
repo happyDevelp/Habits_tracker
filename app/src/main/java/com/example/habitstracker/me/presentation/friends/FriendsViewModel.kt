@@ -1,6 +1,5 @@
 package com.example.habitstracker.me.presentation.friends
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.habitstracker.me.domain.model.FriendEntry
@@ -8,30 +7,34 @@ import com.example.habitstracker.me.domain.model.FriendRequest
 import com.example.habitstracker.me.domain.model.UserProfile
 import com.example.habitstracker.me.domain.model.UserStats
 import com.example.habitstracker.me.domain.repository.FriendsRepository
+import com.example.habitstracker.me.presentation.component.BannerStatus
+import com.example.habitstracker.me.presentation.friends.components.FriendsBannerStatus
 import com.example.habitstracker.me.presentation.sign_in.GoogleAuthUiClient
+import com.example.habitstracker.me.presentation.sync.SyncManager
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+data class FriendsState(
+    val friends: List<FriendEntry> = emptyList(),
+    val friendStats: UserStats = UserStats(),
+    val banner: BannerStatus = FriendsBannerStatus.NONE,
+    val incomingRequests: List<FriendRequest> = emptyList(),
+    val isSending: Boolean = false,
+)
+
 @HiltViewModel
 class FriendsViewModel @Inject constructor(
     private val friendsRepository: FriendsRepository,
-    private val authClient: GoogleAuthUiClient
+    private val authClient: GoogleAuthUiClient,
+    private val syncManager: SyncManager
 ) : ViewModel() {
 
-    data class UiState(
-        val friends: List<FriendEntry> = emptyList(),
-        val friendStats: UserStats? = null,
-        val incomingRequests: List<FriendRequest> = emptyList(),
-        val isSending: Boolean = false,
-        val error: String? = null,
-        val infoMessage: String? = null
-    )
-
-    private val _state = MutableStateFlow(UiState())
+    private val _state = MutableStateFlow(FriendsState())
     val state = _state.asStateFlow()
 
     init {
@@ -39,7 +42,7 @@ class FriendsViewModel @Inject constructor(
             authClient.authState
                 .collect { user ->
                     if (user == null) {
-                        _state.value = UiState() // reset
+                        _state.value = FriendsState() // reset
                     } else {
                         observeForUser(user.userId)
                     }
@@ -61,17 +64,18 @@ class FriendsViewModel @Inject constructor(
     }
 
     fun onAddFriendClicked(profileCodeInput: String) {
-        val code = profileCodeInput.trim()
-        Log.d("FriendsViewModel", "onAddFriendClicked: $code")
         val user = authClient.getSignedInUser() ?: return
 
-        if (code.isEmpty()) {
-            _state.update { it.copy(error = "Friend ID cannot be empty") }
-            return
-        }
+        // 1. Clean up the spaces
+        val code = profileCodeInput.trim()
 
         viewModelScope.launch {
-            _state.update { it.copy(isSending = true, error = null, infoMessage = null) }
+            if (syncManager.hasInternet() == false) {
+                showBanner(FriendsBannerStatus.NO_INTERNET)
+                return@launch
+            }
+
+            _state.update { it.copy(isSending = true) }
             try {
                 val fromProfile = UserProfile(
                     displayName = user.userName ?: "",
@@ -83,46 +87,70 @@ class FriendsViewModel @Inject constructor(
                     fromUser = fromProfile,
                     targetProfileCode = code
                 )
-                _state.update {
-                    it.copy(
-                        isSending = false,
-                        infoMessage = "Request sent"
-                    )
+                showBanner(FriendsBannerStatus.REQUEST_SENT_SUCCESS)
+            } catch (e: IllegalArgumentException) {
+                // Handling specific bugs (logic from the repository\UserFirebaseDataSource)
+                val msg = e.message ?: ""
+
+                when {
+                    // The user is probably trying to add themselves
+                    msg.contains("yourself", ignoreCase = true) -> {
+                        showBanner(FriendsBannerStatus.CANNOT_ADD_SELF)
+                    }
+
+                    msg.contains("already friends", ignoreCase = true) -> {
+                        showBanner(FriendsBannerStatus.ALREADY_FRIENDS)
+                    }
+
+                    else -> {
+                        // probably impossible to find a user with that ID
+                        showBanner(FriendsBannerStatus.REQUEST_FAILED)
+                    }
                 }
             } catch (e: Exception) {
-                _state.update {
-                    it.copy(
-                        isSending = false,
-                        error = e.message ?: "Failed to send request"
-                    )
-                }
+                showBanner(FriendsBannerStatus.REQUEST_FAILED)
+                e.printStackTrace()
+            } finally {
+                _state.update { it.copy(isSending = false) }
             }
         }
+    }
+
+    private suspend fun showBanner(status: FriendsBannerStatus) {
+        _state.update { it.copy(banner = status) }
+        delay(3000)
+        _state.update { it.copy(banner = FriendsBannerStatus.NONE) }
     }
 
     fun onAcceptRequest(request: FriendRequest) {
         val user = authClient.getSignedInUser() ?: return
         viewModelScope.launch {
-            try {
-                friendsRepository.acceptRequest(user.userId, request)
-            } catch (_: Exception) {
-            }
+            /*if (syncManager.hasInternet() == false) {
+                showBanner(FriendsBannerStatus.NO_INTERNET)
+                return@launch
+            }*/
+            friendsRepository.acceptRequest(user.userId, request)
         }
     }
 
     fun onRejectRequest(request: FriendRequest) {
         val user = authClient.getSignedInUser() ?: return
         viewModelScope.launch {
-            try {
-                friendsRepository.rejectRequest(user.userId, request.id)
-            } catch (_: Exception) {
-            }
+           /* if (syncManager.hasInternet() == false) {
+                showBanner(FriendsBannerStatus.NO_INTERNET)
+                return@launch
+            }*/
+            friendsRepository.rejectRequest(user.userId, request.id)
         }
     }
 
     fun getFriendStats(friendUserId: String) {
         viewModelScope.launch {
-            val stats = friendsRepository.getFriendStats(friendUserId)
+/*            if(syncManager.hasInternet() == false) {
+                showBanner(FriendsBannerStatus.NO_INTERNET)
+                return@launch
+            }*/
+            val stats = friendsRepository.getFriendStats(friendUserId) ?: UserStats()
             _state.update { it.copy(friendStats = stats) }
         }
     }
@@ -132,9 +160,5 @@ class FriendsViewModel @Inject constructor(
         viewModelScope.launch {
             friendsRepository.deleteFriend(currentUserId, friendUserId)
         }
-    }
-
-    fun consumeMessage() {
-        _state.update { it.copy(error = null, infoMessage = null) }
     }
 }

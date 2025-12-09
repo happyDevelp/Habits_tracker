@@ -16,6 +16,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.Group
+import androidx.compose.material.icons.filled.PersonOff
+import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -32,6 +36,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
+import com.example.habitstracker.me.presentation.friends.components.FriendsBannerStatus
 import com.example.habitstracker.me.presentation.sign_in.SignInBannerStatus
 import com.example.habitstracker.me.presentation.sync.SyncBannerStatus
 
@@ -49,7 +54,7 @@ fun TopBanner(status: BannerStatus) {
 
     val newData = when (status) {
 
-        // SIGN IN BANNER
+        /** SIGN IN BANNER */
         SignInBannerStatus.LOGIN_SUCCESS -> BannerData(
             "Logged in successfully",
             Icons.Default.CheckCircle,
@@ -72,7 +77,7 @@ fun TopBanner(status: BannerStatus) {
         SignInBannerStatus.NONE -> null
 
 
-        // SYNC BANNER
+        /** SYNC BANNER */
         SyncBannerStatus.NO_INTERNET -> BannerData(
             "No internet connection",
             Icons.Default.WifiOff,
@@ -109,6 +114,40 @@ fun TopBanner(status: BannerStatus) {
             fail
         )
         SyncBannerStatus.NONE -> null
+
+        /** FRIENDS BANNER */
+        FriendsBannerStatus.REQUEST_SENT_SUCCESS -> BannerData(
+            "Friend request sent!",
+            Icons.Default.Send,
+            success
+        )
+        FriendsBannerStatus.USER_NOT_FOUND -> BannerData(
+            "User with this ID not found",
+            Icons.Default.PersonOff,
+            fail
+        )
+        FriendsBannerStatus.ALREADY_FRIENDS -> BannerData(
+            "You are already friends with this user",
+            Icons.Default.Group,
+            Color(0xFF9C6B00)
+        )
+        FriendsBannerStatus.CANNOT_ADD_SELF -> BannerData(
+            "You cannot add yourself",
+            Icons.Default.Warning,
+            warning
+        )
+        FriendsBannerStatus.REQUEST_FAILED -> BannerData(
+            "Failed to send request",
+            Icons.Default.Error,
+            fail
+        )
+        FriendsBannerStatus.NO_INTERNET -> BannerData(
+            "No internet connection",
+            Icons.Default.WifiOff,
+            warning
+        )
+
+        FriendsBannerStatus.NONE -> null
 
         else -> null
     }

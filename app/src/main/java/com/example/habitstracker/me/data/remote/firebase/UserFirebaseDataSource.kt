@@ -1,5 +1,6 @@
 package com.example.habitstracker.me.data.remote.firebase
 
+import android.util.Log
 import com.example.habitstracker.me.domain.model.FriendEntry
 import com.example.habitstracker.me.domain.model.FriendRequest
 import com.example.habitstracker.me.domain.model.UserProfile
@@ -131,17 +132,24 @@ class UserFirebaseDataSource @Inject constructor(
                 .get()
                 .await()
 
+
         val profileDoc = query.documents.firstOrNull()
             ?: throw IllegalArgumentException("User with this code not found")
 
         val targetUserDoc = profileDoc.reference.parent.parent
             ?: throw IllegalStateException("Profile without parent user doc")
 
+        // Checking for "Myself"
         val targetUserId = targetUserDoc.id
         if (targetUserId == fromUserId) {
             throw IllegalArgumentException("You can't add yourself")
         }
 
+        // are we already friends
+        val friendshipDoc = friendsCollection(fromUserId).document(targetUserId).get().await()
+        if (friendshipDoc.exists()) {
+            throw IllegalArgumentException("You are already friends")
+        }
         val requestDoc = requestsCollection(targetUserId).document(fromUserId)
 
         val requestData = mapOf(
@@ -194,8 +202,19 @@ class UserFirebaseDataSource @Inject constructor(
     }
 
     suspend fun getFriendStats(friendUserId: String): UserStats? {
-        val statsDoc = statsDoc(friendUserId).get().await()
-        return statsDoc.toObject(UserStats::class.java)
+        return try {
+            val statsDoc = statsDoc(friendUserId).get().await()
+
+            if(statsDoc.exists()) {
+                statsDoc.toObject(UserStats::class.java)
+            } else {
+                // The document is not yet available (the user is new)
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("UserFirebaseDataSource", "Error getting friend stats", e)
+            null
+        }
     }
 
     // У UserFirebaseDataSource

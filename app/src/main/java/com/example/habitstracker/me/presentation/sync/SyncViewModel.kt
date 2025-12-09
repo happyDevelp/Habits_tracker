@@ -27,7 +27,7 @@ class SyncViewModel @Inject constructor(
     private val _state = MutableStateFlow(SyncState())
     val state = _state.asStateFlow()
 
-    private val _profileState: MutableStateFlow<UserProfile?> = MutableStateFlow(null)
+    private val _profileState: MutableStateFlow<UserProfile> = MutableStateFlow(UserProfile())
     val profileState = _profileState.asStateFlow()
 
     init {

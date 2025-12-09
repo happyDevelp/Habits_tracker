@@ -107,6 +107,7 @@ dependencies {
     implementation(libs.androidx.compose.runtime)
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.palette.ktx)
+    implementation(libs.androidx.compose.foundation)
     testImplementation(libs.junit.junit)
 
     ksp(libs.androidx.room.compiler)
