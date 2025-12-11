@@ -136,7 +136,7 @@ private fun getBestStreak(streakList: List<DateHabitEntity>): Int {
     return bestStreak
 }
 
-private fun getCurrentStreak(streakList: List<DateHabitEntity>): Int {
+fun getCurrentStreak(streakList: List<DateHabitEntity>): Int {
     if (streakList.isEmpty()) return 0
 
     var streak = 0
