@@ -126,12 +126,11 @@ class UserFirebaseDataSource @Inject constructor(
     ) {
 
             val query = firestore
-                .collectionGroup("profile") // Пошук по всіх колекціях "profile"
-                .whereEqualTo("profileCode", targetProfileCode.uppercase()) // Перевір назву поля!
+                .collectionGroup("profile") // Search all collections "profile"
+                .whereEqualTo("profileCode", targetProfileCode.uppercase())
                 .limit(1)
                 .get()
                 .await()
-
 
         val profileDoc = query.documents.firstOrNull()
             ?: throw IllegalArgumentException("User with this code not found")
@@ -139,17 +138,11 @@ class UserFirebaseDataSource @Inject constructor(
         val targetUserDoc = profileDoc.reference.parent.parent
             ?: throw IllegalStateException("Profile without parent user doc")
 
-        // Checking for "Myself"
         val targetUserId = targetUserDoc.id
         if (targetUserId == fromUserId) {
             throw IllegalArgumentException("You can't add yourself")
         }
 
-        // are we already friends
-        val friendshipDoc = friendsCollection(fromUserId).document(targetUserId).get().await()
-        if (friendshipDoc.exists()) {
-            throw IllegalArgumentException("You are already friends")
-        }
         val requestDoc = requestsCollection(targetUserId).document(fromUserId)
 
         val requestData = mapOf(
