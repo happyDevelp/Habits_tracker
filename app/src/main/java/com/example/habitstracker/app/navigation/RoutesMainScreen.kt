@@ -19,6 +19,9 @@ sealed interface Route {
     @Serializable
     data object Statistic : Route
 
+    @Serializable
+    data object Me : Route
+
     object Settings {
         @Serializable
         data object Account : Route

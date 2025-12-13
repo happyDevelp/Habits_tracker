@@ -26,9 +26,6 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -51,6 +48,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
@@ -73,75 +71,80 @@ import com.example.habitstracker.habit.presentation.today_main.components.Notifi
 import com.example.habitstracker.habit.presentation.today_main.components.SettingsBottomSheet
 import com.example.habitstracker.habit.presentation.today_main.components.TopBarMainScreen
 import com.example.habitstracker.habit.presentation.today_main.components.UnlockedAchievement
+import com.example.habitstracker.habit.presentation.today_main.components.calculateUserStats
 import com.example.habitstracker.habit.presentation.today_main.components.calendar.CalendarRowList
 import com.example.habitstracker.habit.presentation.today_main.utility.AchievementSection
-import com.example.habitstracker.habit.presentation.today_main.utility.getBestStreak
 import com.example.habitstracker.history.presentation.HistoryViewModel
-import com.example.habitstracker.statistic.presentation.components.SettingsButtons
+import com.example.habitstracker.me.presentation.sign_in.SignInViewModel
+import com.example.habitstracker.me.presentation.sync.SyncViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
 @Composable
 fun TodayScreenRoot(
-    viewModel: MainScreenViewModel,
-    historyViewModel: HistoryViewModel,
+    todayViewModel: MainScreenViewModel = hiltViewModel<MainScreenViewModel>(),
+    historyViewModel: HistoryViewModel = hiltViewModel<HistoryViewModel>(),
+    syncViewModel: SyncViewModel = hiltViewModel<SyncViewModel>(),
+    signInViewModel: SignInViewModel = hiltViewModel<SignInViewModel>(),
     historyDate: String?,
     changeSelectedItemState: (index: Int) -> Unit
 ) {
     val isHistoryHandled = false
     LaunchedEffect(historyDate) {
         if (historyDate != null && !isHistoryHandled) {
-            viewModel.updateSelectedDate(LocalDate.parse(historyDate))
+            todayViewModel.updateSelectedDate(LocalDate.parse(historyDate))
         }
+    }
+
+    // sync methods
+    LaunchedEffect(Unit) {
+        syncViewModel.fullSync()
+ /*       signInViewModel.resetNeedFullSync()*/
     }
 
     val coroutineScope = rememberCoroutineScope()
     val context = LocalContext.current
 
-    val habitListState by viewModel.habitsListState.collectAsStateWithLifecycle()
-    val dateState by viewModel.selectedDate.collectAsStateWithLifecycle()
-    val mapDateToHabits by viewModel.dateHabitsMap.collectAsStateWithLifecycle()
+    val habitListState by todayViewModel.habitsListState.collectAsStateWithLifecycle()
+    val dateState by todayViewModel.selectedDate.collectAsStateWithLifecycle()
+    val mapDateToHabits by todayViewModel.dateHabitsMap.collectAsStateWithLifecycle()
 
     val allAchievements = historyViewModel.allAchievements.collectAsStateWithLifecycle().value
     val unlockedAchievement by historyViewModel.unlockedAchievement.collectAsStateWithLifecycle()
 
     val onDismiss = { historyViewModel.clearUnlockedAchievement() }
 
-    val onSelectClick: (id: Int, isDone: Boolean, selectDate: String) -> Unit =
-        { id, isDone, selectDate ->
+    val onSelectClick: (habitId: Int, habitDateId: Int, isDone: Boolean, selectDate: String) -> Unit =
+        { habitId, habitDateId, isDone, selectDate ->
             coroutineScope.launch {
-                viewModel.updateDateSelectState(id, isDone, selectDate)
+                todayViewModel.updateDateSelectState(habitId, isDone, selectDate)
 
-                val map = viewModel.dateHabitsMap.value
+                val date = LocalDate.parse(selectDate)
+
+                val map = todayViewModel.dateHabitsMap.value
                     .toMutableMap().apply {
-                        val habitsForDate = getOrDefault(LocalDate.parse(selectDate), emptyList())
+                        val habitsForDate = getOrDefault(date, emptyList())
                         val updatedHabits = habitsForDate.map {
-                            if (it.id == id) it.copy(isSelected = isDone) else it
+                            if (it.habitId == habitId) it.copy(isSelected = isDone) else it
                         }
-                        this[LocalDate.parse(selectDate)] = updatedHabits
+                        this[date] = updatedHabits
                     }
 
-                // 1. count
-                val completedHabits = map.values.flatten().count { it.isSelected }
-                val bestStreak = getBestStreak(map)
-                val perfectDays =
-                    map.values.count { habits -> habits.isNotEmpty() && habits.all { it.isSelected } }
+                // ---- 1. count all stats once ----
+                val stats = calculateUserStats(map)
 
-                // 2.Metric dictionary by sections
+                // 2. For achievements, we take part from stats
                 val metrics = mapOf(
-                    AchievementSection.HABITS_FINISHED to completedHabits,
-                    AchievementSection.BEST_STREAK to bestStreak,
-                    AchievementSection.PERFECT_DAYS to perfectDays,
+                    AchievementSection.HABITS_FINISHED to stats.totalCompletedHabits,
+                    AchievementSection.BEST_STREAK to stats.bestStreak,
+                    AchievementSection.PERFECT_DAYS to stats.perfectDaysTotal,
                 )
 
-                // 3. Find all the achievements that are now done but not notified yet
                 val newlyUnlocked = allAchievements.filter { ach ->
                     val section = AchievementSection.fromString(ach.section, context)
-                    !ach.isNotified && (metrics[section] ?: 0) >= ach.target
+                    !ach.notified && (metrics[section] ?: 0) >= ach.target
                 }
 
-                // 4.If several are one - choose one (policy: priority by section)
-                // Example -Priority: Best Streak -> Perfect Days -> Habits Finished
                 fun sectionPriority(section: String) = when (section) {
                     "Best Streak" -> 0
                     "Perfect Days" -> 1
@@ -151,13 +154,14 @@ fun TodayScreenRoot(
 
                 val toShow = newlyUnlocked.sortedWith(
                     compareBy(
-                        { sectionPriority(it.section) }, { it.target }
+                        { sectionPriority(it.section) },
+                        { it.target }
                     )
                 ).firstOrNull()
 
-                // If there are new unlocked achievement and they are isNotified then we show a dialogue and update the data
                 if (toShow != null) {
                     val today = LocalDate.now().toString()
+                    val unlockedAchievement = toShow.copy(unlockedAt = today, notified = true)
                     historyViewModel.updateUnlockedDate(today, true, toShow.id)
                     historyViewModel.onAchievementUnlocked(
                         UnlockedAchievement(
@@ -167,19 +171,19 @@ fun TodayScreenRoot(
                             textPadding = AchievementMetadata.textPadding(toShow.section, context)
                         )
                     )
+                    syncViewModel.pushAchievementToCloud(unlockedAchievement)
                 }
+
+                // update a specific DateHabit in the cloud
+                syncViewModel.updateDateHabitOnCloud(
+                    dateHabitId = habitDateId.toString(),
+                    isDone = isDone
+                )
+
+                // ---- 3. Sync stats into the cloud ----
+                syncViewModel.updateMyStatsOnCloud(stats)
             }
         }
-
-    val onDeleteClick: (id: Int) -> Unit = { habitId ->
-        coroutineScope.launch {
-            viewModel.deleteHabit(habitId)
-        }
-    }
-
-    val onDateChangeClick: (newDate: LocalDate) -> Unit = { newDate ->
-        viewModel.updateSelectedDate(newDate)
-    }
 
     TodayScreen(
         habitListState = habitListState,
@@ -187,8 +191,11 @@ fun TodayScreenRoot(
         mapDateToHabits = mapDateToHabits,
         unlockedAchievement = unlockedAchievement,
         onSelectClick = onSelectClick,
-        onDeleteClick = onDeleteClick,
-        onDateChangeClick = onDateChangeClick,
+        onDeleteClick = {
+            todayViewModel.deleteHabit(it)
+            syncViewModel.deleteHabitOnCloud(it.toString())
+        },
+        onDateChangeClick = { todayViewModel.updateSelectedDate(it) },
         changeSelectedItemState = changeSelectedItemState,
         onDismiss = onDismiss,
     )
@@ -203,23 +210,25 @@ fun TodayScreen(
     mapDateToHabits: Map<LocalDate, List<ShownHabit>>,
     unlockedAchievement: UnlockedAchievement?,
     onDismiss: () -> Unit,
-    onSelectClick: (id: Int, isDone: Boolean, selectDate: String) -> Unit,
+    onSelectClick: (habitId: Int, habitDateId: Int, isDone: Boolean, selectDate: String) -> Unit,
     onDeleteClick: (id: Int) -> Unit,
     onDateChangeClick: (newDate: LocalDate) -> Unit,
-    changeSelectedItemState: (index: Int) -> Unit
+    changeSelectedItemState: (index: Int) -> Unit,
 ) {
     val navController = LocalNavController.current
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var openBottomSheet by remember { mutableStateOf(false) }
 
-    Box(modifier = modifier.fillMaxSize()) {
-        Scaffold(topBar = { TopBarMainScreen(modifier) { openBottomSheet = true } }
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            modifier = modifier.fillMaxSize(),
+            topBar = { TopBarMainScreen(modifier = Modifier) { openBottomSheet = true } }
         ) { paddingValues ->
             Card(
-                modifier = modifier
-                    .fillMaxSize()
-                    .padding(paddingValues),
+                modifier = Modifier
+                    .padding(paddingValues)
+                    .fillMaxSize(),
                 colors = CardDefaults.cardColors(
                     containerColor = screenBackgroundDark,
                 ),
@@ -233,7 +242,7 @@ fun TodayScreen(
                     )
 
                 Box(
-                    modifier = modifier
+                    modifier = Modifier
                         .padding(top = 20.dp)
                         .fillMaxSize(),
                     contentAlignment = Alignment.TopCenter
@@ -385,7 +394,7 @@ private fun Preview() {
         AppTheme(darkTheme = true) {
             TodayScreen(
                 habitListState = mockList,
-                onSelectClick = { _, _, _ -> },
+                onSelectClick = { _, _, _, _ -> },
                 onDeleteClick = { _ -> },
                 onDateChangeClick = {},
                 dateState = LocalDate.now(),

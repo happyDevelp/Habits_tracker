@@ -45,6 +45,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
@@ -66,12 +67,13 @@ import com.example.habitstracker.habit.presentation.add_habit.components.Executi
 import com.example.habitstracker.habit.presentation.add_habit.components.IconAndColorPicker
 import com.example.habitstracker.habit.presentation.create_own_habit.components.HabitNameTextField
 import com.example.habitstracker.habit.presentation.today_main.MainScreenViewModel
-import kotlinx.coroutines.launch
+import com.example.habitstracker.me.presentation.sync.SyncViewModel
 import java.time.LocalDate
 
 @Composable
 fun CreateOwnHabitRoot(
-    viewModel: MainScreenViewModel,
+    todayViewModel: MainScreenViewModel = hiltViewModel<MainScreenViewModel>(),
+    syncViewModel: SyncViewModel = hiltViewModel<SyncViewModel>(),
     isEditMode: Boolean,
     id: Int?,
     name: String,
@@ -80,17 +82,20 @@ fun CreateOwnHabitRoot(
 ) {
     val onActionButtonClick: (habit: HabitEntity) -> Unit = { habit ->
         if (isEditMode) {
-            viewModel.updateHabit(habit)
+            todayViewModel.updateHabit(habit)
+            syncViewModel.updateHabitOnCloud(habit)
         } else {
-            viewModel.insertHabit(habit) { habitId ->
+            todayViewModel.insertHabit(habit) { habitId ->
                 val currentDate = LocalDate.now().toString()
 
-                viewModel.insertHabitDate(
+                todayViewModel.insertHabitDate(
                     DateHabitEntity(
                         habitId = habitId.toInt(),
                         currentDate = currentDate,
                     )
                 )
+
+                syncViewModel.pushHabitToCloud(habit.copy(id = habitId.toInt()))
             }
         }
     }
@@ -201,7 +206,6 @@ fun CreateOwnHabitScreen(
                     AdvancedSettings()
                 }
             }
-            val coroutineScope = rememberCoroutineScope()
 
             val habit = HabitEntity(
                 id = id ?: 0,
@@ -225,10 +229,8 @@ fun CreateOwnHabitScreen(
                     ),
                 enabled = habit.name.length >= 4,
                 onClick = {
-                    coroutineScope.launch {
-                        onActionButtonClick(habit)
-                        navController.popBackStack(Route.Today(), false)
-                    }
+                    onActionButtonClick(habit)
+                    navController.popBackStack(Route.Today(), false)
                 },
 
                 colors = ButtonDefaults.buttonColors(
@@ -366,7 +368,7 @@ private fun Preview() {
                 icon = getIconName(Icons.Filled.SentimentVerySatisfied),
                 iconColor = HabitColor.Orange.light.toHex(),
                 isEditMode = false,
-                id = null
+                id = null,
             )
         }
     }

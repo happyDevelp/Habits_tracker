@@ -7,6 +7,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -41,16 +42,15 @@ import com.example.habitstracker.habit.presentation.today_main.MainScreenViewMod
 import com.example.habitstracker.habit.presentation.today_main.TodayScreenRoot
 import com.example.habitstracker.history.presentation.HistoryScreenRoot
 import com.example.habitstracker.history.presentation.HistoryViewModel
+import com.example.habitstracker.me.presentation.MeScreenRoot
+import com.example.habitstracker.me.presentation.sign_in.SignInViewModel
+import com.example.habitstracker.me.presentation.sync.SyncViewModel
 import com.example.habitstracker.statistic.presentation.StatisticScreenRoot
 import com.example.habitstracker.statistic.presentation.StatisticViewModel
 
 @Composable
 fun AppNavigation() {
     val navController = LocalNavController.current
-
-    val mainScreenViewModel = hiltViewModel<MainScreenViewModel>()
-    val historyViewModel = hiltViewModel<HistoryViewModel>()
-    val statisticViewModel = hiltViewModel<StatisticViewModel>()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val showBottomBar = getBottomBarState(navBackStackEntry)
@@ -65,6 +65,7 @@ fun AppNavigation() {
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         containerColor = screenBackgroundDark,
         bottomBar = {
             AnimatedVisibility(
@@ -101,8 +102,6 @@ fun AppNavigation() {
                     val args = backStackEntry.toRoute<Route.Today>()
                     val date = backStackEntry.savedStateHandle.get<String>("current_date")
                     TodayScreenRoot(
-                        viewModel = mainScreenViewModel,
-                        historyViewModel = historyViewModel,
                         historyDate = if (date == null) args.historyDate else date,
                         changeSelectedItemState = changeSelectedItemState
                     )
@@ -111,14 +110,17 @@ fun AppNavigation() {
                 composable<Route.History> { backStackEntry ->
                     val args = backStackEntry.toRoute<Route.History>()
                     HistoryScreenRoot(
-                        historyViewModel = historyViewModel,
                         startTab = args.startTab,
                         changeSelectedItemState = changeSelectedItemState,
                     )
                 }
 
                 composable<Route.Statistic> {
-                    StatisticScreenRoot(viewModel = statisticViewModel)
+                    StatisticScreenRoot()
+                }
+
+                composable<Route.Me> {
+                    MeScreenRoot()
                 }
             }
 
@@ -137,7 +139,6 @@ fun AppNavigation() {
                     name = args.name,
                     icon = args.icon,
                     iconColor = args.iconColor,
-                    viewModel = mainScreenViewModel,
                     isEditMode = args.isEditMode,
                     id = args.id
                 )
@@ -181,6 +182,7 @@ fun getBottomBarState(navBackStackEntry: NavBackStackEntry?): Boolean {
         baseRouteName + "Today" -> true
         baseRouteName + "History" -> true
         baseRouteName + "Statistic" -> true
+        baseRouteName + "Me" -> true
         else -> false
     }
    /* return when (currentRoute) {

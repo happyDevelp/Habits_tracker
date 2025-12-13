@@ -2,6 +2,7 @@ package com.example.habitstracker.habit.presentation.today_main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.habitstracker.habit.data.db.toShownHabit
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
 import com.example.habitstracker.habit.domain.HabitRepository
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
@@ -55,15 +57,15 @@ class MainScreenViewModel @Inject constructor(
         val today = LocalDate.now()
 
         habitsListState.value.forEach { shownHabit ->
-            val allDatesById = getAllDatesByHabitId(shownHabit.id)
+            val allDatesById = getAllDatesByHabitId(shownHabit.habitId)
 
             // If there is no dates at all - we create for 'today'
             if (allDatesById.isEmpty()) {
                 insertHabitDate(
                     DateHabitEntity(
-                        habitId = shownHabit.id,
+                        habitId = shownHabit.habitId,
                         currentDate = today.toString(),
-                        isCompleted = false
+                        completed = false
                     )
                 )
                 return@forEach
@@ -73,13 +75,13 @@ class MainScreenViewModel @Inject constructor(
             var currentDate = lastDate.plusDays(1)
 
             while (!currentDate.isAfter(today)) {
-                val alreadyExists = dateExistsForHabit(shownHabit.id, currentDate.toString())
+                val alreadyExists = dateExistsForHabit(shownHabit.habitId, currentDate.toString())
                 if (!alreadyExists) {
                     insertHabitDate(
                         DateHabitEntity(
-                            habitId = shownHabit.id,
+                            habitId = shownHabit.habitId,
                             currentDate = currentDate.toString(),
-                            isCompleted = false
+                            completed = false
                         )
                     )
                 }
@@ -136,7 +138,9 @@ class MainScreenViewModel @Inject constructor(
     }
 
     private fun getHabitsByDate(date: String): Flow<List<ShownHabit>> {
-        return habitRepository.getHabitsByDate(date)
+        return habitRepository.getHabitsByDate(date).map { list ->
+            list.map { it.toShownHabit() }
+        }
     }
 
     private suspend fun dateExistsForHabit(habitId: Int, date: String): Boolean {

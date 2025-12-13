@@ -57,9 +57,8 @@ fun ColorPicker(
     clickAddColor: (Color) -> Unit = { },
 ) {
 
-    Surface {
-
-        val sheetState = rememberModalBottomSheetState()
+    Box(contentAlignment = Alignment.BottomCenter) {
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         val scope = rememberCoroutineScope()
 
         val colorList = listOf(
@@ -82,7 +81,6 @@ fun ColorPicker(
         )
 
         ModalBottomSheet(
-            modifier = modifier.fillMaxHeight(0.5f),
             sheetState = sheetState,
             onDismissRequest = {
                 closingSheet.invoke()

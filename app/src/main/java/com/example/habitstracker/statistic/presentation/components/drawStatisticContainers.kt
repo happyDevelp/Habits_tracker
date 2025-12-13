@@ -29,7 +29,7 @@ fun DrawStatisticContainers(dateHabitList: List<DateHabitEntity>) {
     val bestStreak = getBestStreak(dateHabitList)
 
     /** total completed habits  */
-    val totalCompletedHabits = dateHabitList.count { it.isCompleted }
+    val totalCompletedHabits = dateHabitList.count { it.completed }
 
 
     /** total completed habits this week */
@@ -40,7 +40,7 @@ fun DrawStatisticContainers(dateHabitList: List<DateHabitEntity>) {
         }
     val thisWeekSelectedHabits = dateHabitList
         .filter { it.currentDate >= lastMonday.toString() }
-        .count { it.isCompleted }
+        .count { it.completed }
 
 
     /** Percentage of completed habits */
@@ -52,7 +52,7 @@ fun DrawStatisticContainers(dateHabitList: List<DateHabitEntity>) {
         mutableIntStateOf(
             dateHabitList
                 .groupBy { it.currentDate }
-                .count { (_, habits) -> habits.all { it.isCompleted } }
+                .count { (_, habits) -> habits.all { it.completed } }
         )
     }
 
@@ -61,7 +61,7 @@ fun DrawStatisticContainers(dateHabitList: List<DateHabitEntity>) {
             dateHabitList
                 .filter { it.currentDate >= lastMonday.toString() }
                 .groupBy { it.currentDate }
-                .count { (_, habits) -> habits.all { it.isCompleted } }
+                .count { (_, habits) -> habits.all { it.completed } }
         )
     }
 
@@ -115,7 +115,7 @@ private fun getBestStreak(streakList: List<DateHabitEntity>): Int {
     for (date in sortedDates) {
         val habitsForDate = mapDateToHabits[date].orEmpty()
         val total = habitsForDate.size
-        val completed = habitsForDate.count { it.isCompleted }
+        val completed = habitsForDate.count { it.completed }
 
         val allCompleted = (total == completed)
 
@@ -136,7 +136,7 @@ private fun getBestStreak(streakList: List<DateHabitEntity>): Int {
     return bestStreak
 }
 
-private fun getCurrentStreak(streakList: List<DateHabitEntity>): Int {
+fun getCurrentStreak(streakList: List<DateHabitEntity>): Int {
     if (streakList.isEmpty()) return 0
 
     var streak = 0
@@ -144,7 +144,7 @@ private fun getCurrentStreak(streakList: List<DateHabitEntity>): Int {
 
     groupedStreakList.forEach { mapDateAndHabits ->
         val habitsCount = mapDateAndHabits.value.count()
-        val isCompletedCount = mapDateAndHabits.value.count { it.isCompleted }
+        val isCompletedCount = mapDateAndHabits.value.count { it.completed }
         if (habitsCount == isCompletedCount)
             streak++
         else return streak

@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.AppTheme
@@ -33,7 +34,7 @@ import java.time.temporal.TemporalAdjusters
 import kotlin.math.roundToInt
 
 @Composable
-fun StatisticScreenRoot(viewModel: StatisticViewModel) {
+fun StatisticScreenRoot(viewModel: StatisticViewModel = hiltViewModel<StatisticViewModel>()) {
     val dateHabitList by viewModel.dateHabitList.collectAsStateWithLifecycle()
 
     val consistency = rolling30DayConsistency(dateHabitList)
@@ -80,7 +81,7 @@ fun StatisticScreen(
 
             DrawStatisticContainers(dateHabitList = dateHabitList)
 
-            DrawConsistencyContainer(consistency)
+            DrawConsistencyContainer(percentage = consistency)
             Spacer(Modifier.height(18.dp))
 
             WeekDiagramContainer(_weeklyMap = weeklyMap)
@@ -110,7 +111,7 @@ fun rolling30DayConsistency(allHabits: List<DateHabitEntity>): Int {
     while (!current.isAfter(today)) {
         val habitsForDay = habitsByDate[current].orEmpty()
         val totalForDay = habitsForDay.size
-        val completedForDay = habitsForDay.count { it.isCompleted }
+        val completedForDay = habitsForDay.count { it.completed }
 
         val ratio = if (totalForDay > 0) {
             completedForDay.toDouble() / totalForDay
@@ -140,7 +141,8 @@ private fun groupHabitsByWeek(dateHabitList: List<DateHabitEntity>)
 private fun ProfileScreenPreview() {
     AppTheme(darkTheme = true) {
         StatisticScreen(
-            dateHabitList = emptyList(),
+            dateHabitList = listOf(
+            ),
             consistency = 25,
             weeklyMap = mapOf(
                 Pair(
@@ -149,14 +151,14 @@ private fun ProfileScreenPreview() {
                         DateHabitEntity(
                             id = 1,
                             habitId = 1,
-                            currentDate = "2025-10-30",
-                            isCompleted = true
+                            currentDate = "2025-11-30",
+                            completed = true
                         ),
                         DateHabitEntity(
                             id = 2,
                             habitId = 2,
-                            currentDate = "2025-10-30",
-                            isCompleted = false
+                            currentDate = "2025-11-10",
+                            completed = true
                         )
                     )
                 )

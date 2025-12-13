@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 16,
-    "identityHash": "f2fa97982ce3387962bbe833abe55dc5",
+    "identityHash": "d52ad289903223d51bb4324b62d28df5",
     "entities": [
       {
         "tableName": "habit_table",
@@ -62,7 +62,7 @@
       },
       {
         "tableName": "date_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `habitId` INTEGER NOT NULL, `currentDate` TEXT NOT NULL, `isCompleted` INTEGER NOT NULL, FOREIGN KEY(`habitId`) REFERENCES `habit_table`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `habitId` INTEGER NOT NULL, `currentDate` TEXT NOT NULL, `completed` INTEGER NOT NULL, FOREIGN KEY(`habitId`) REFERENCES `habit_table`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -83,8 +83,8 @@
             "notNull": true
           },
           {
-            "fieldPath": "isCompleted",
-            "columnName": "isCompleted",
+            "fieldPath": "completed",
+            "columnName": "completed",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -158,7 +158,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f2fa97982ce3387962bbe833abe55dc5')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd52ad289903223d51bb4324b62d28df5')"
     ]
   }
 }

@@ -62,11 +62,9 @@ fun HistoryCalendarScreen(
     onDeleteClick:(habit: HabitEntity)-> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
-
     var currentDate by remember {
         mutableStateOf(LocalDate.now().withDayOfMonth(1))
     }
-
     val pagerState = rememberPagerState(
         initialPage = currentDate.monthValue,
         /** Must be as many month as the user use the app **/
@@ -81,6 +79,7 @@ fun HistoryCalendarScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
+                .padding(start = 16.dp)
         ) {
             MyText(
                 modifier = modifier.align(Alignment.Center),
@@ -140,28 +139,25 @@ fun HistoryCalendarScreen(
 
         Spacer(Modifier.height(24.dp))
 
-        Box(
+        Row(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
+                .padding(start = 16.dp, bottom = 12.dp, end = 20.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             MyText(
-                modifier = modifier.padding(start = 12.dp),
+
                 text = "My Habits",
                 textSize = 18.sp
             )
-
             MyText(
-                modifier = modifier
-                    .padding(top = 15.dp, end = 28.dp, bottom = 4.dp)
-                    .align(Alignment.CenterEnd),
                 text = "Consistency",
                 textSize = 13.sp,
                 color = Color.White.copy(0.7f)
             )
         }
-
-        Spacer(Modifier.height(4.dp))
 
         myHabits.forEach { habit ->
             HistoryHabitItem(
@@ -189,7 +185,7 @@ private fun buildMonthGrid(yearMonth: LocalDate): List<LocalDate?> {
 }
 
 private fun isPerfectDay(list: List<DateHabitEntity>?): Boolean =
-    list?.isNotEmpty() == true && list.all { it.isCompleted }
+    list?.isNotEmpty() == true && list.all { it.completed }
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
@@ -368,7 +364,7 @@ fun HistoryCalendarScreenPreview() {
                     HabitEntity(
                         iconName = "SentimentSatisfied",
                         colorHex = HabitColor.DeepBlue.light.toHex(),
-                        name = "Wake up"
+                        name = "GUTEN Tag HERR PROFFESOR HARAKIRI"
                     ),
                     HabitEntity(iconName = "SentimentSatisfied", name = "Make the bad")
                 ),

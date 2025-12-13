@@ -3,6 +3,7 @@ package com.example.habitstracker.history.data.db
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
@@ -12,8 +13,14 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 sealed interface HistoryDAO {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAchievements(achievementEntityList: List<AchievementEntity>)
+
+    @Query("DELETE FROM achievement_table")
+    suspend fun clearAchievements()
+
+    @Query("select * from achievement_table")
+    suspend fun getAllAchievementsOnce(): List<AchievementEntity>
 
     @Query("select * from habit_table")
     fun getALlMyHabits(): Flow<List<HabitEntity>>
@@ -24,7 +31,7 @@ sealed interface HistoryDAO {
     @Query("select * from achievement_table")
     fun getAllAchievement(): Flow<List<AchievementEntity>>
 
-    @Query("update achievement_table set isNotified =:isNotified, unlockedAt =:unlockedAt where id =:id")
+    @Query("update achievement_table set notified =:isNotified, unlockedAt =:unlockedAt where id =:id")
     suspend fun updateUnlockedDate(unlockedAt: String, isNotified: Boolean, id: Int)
 
 

@@ -20,7 +20,7 @@ fun MyText(
     textSize: TextUnit = 20.sp
 ) {
     Text(
-        modifier = modifier,
+        modifier = Modifier,
         text = text,
         color = color,
         fontFamily = fontFamily,

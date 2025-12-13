@@ -5,10 +5,7 @@ import androidx.compose.material.icons.filled.AccountCircle
 import androidx.compose.material.icons.filled.BarChart
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.outlined.AccountCircle
-import androidx.compose.material.icons.outlined.DateRange
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.ShowChart
+import androidx.compose.material.icons.rounded.AccountCircle
 import androidx.compose.material.icons.rounded.BarChart
 import androidx.compose.material.icons.rounded.DateRange
 import androidx.compose.material.icons.rounded.Home
@@ -40,5 +37,11 @@ val listOfNavItems = listOf(
         selectedIcon = Icons.Filled.BarChart,
         unSelectedIcon = Icons.Rounded.BarChart,
         route = Route.Statistic
+    ),
+    BottomNavigationItem(
+        title = "Me",
+        selectedIcon = Icons.Filled.AccountCircle,
+        unSelectedIcon = Icons.Rounded.AccountCircle,
+        route = Route.Me
     )
 )

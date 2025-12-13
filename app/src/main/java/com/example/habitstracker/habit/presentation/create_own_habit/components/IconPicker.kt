@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -20,7 +22,6 @@ import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -30,6 +31,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.remember
@@ -85,7 +87,7 @@ fun IconPicker(
 
     Surface {
         val coroutineScope = rememberCoroutineScope()
-        val sheetState = rememberModalBottomSheetState()
+        val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
         val pagerState = rememberPagerState(
             initialPage = 0,
             initialPageOffsetFraction = 0f
@@ -100,11 +102,10 @@ fun IconPicker(
         )
 
         val selectedItems = remember {
-            mutableStateMapOf<Int, IconItem?>() // Ключ - індекс вкладки, значення - обрана іконка
+            mutableStateMapOf<Int, IconItem?>() // Key - tab index, value - selected icon
         }
 
         ModalBottomSheet(
-            modifier = modifier.fillMaxHeight(0.5f),
             sheetState = sheetState,
             onDismissRequest = {
                 onCloseClick.invoke()
@@ -114,7 +115,8 @@ fun IconPicker(
             containerColor = containerBackgroundDark,
         ) {
             Column(
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier.fillMaxWidth()
+                    .fillMaxHeight(0.6f),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Top
             ) {
@@ -137,12 +139,9 @@ fun IconPicker(
                                 )
                                 .selectable(
                                     selected = isSelected,
-                                    onClick = { },
+                                    onClick = { /* handle tab click */ },
                                     interactionSource = interactionSource,
-                                    indication = rememberRipple(
-                                        bounded = false,
-                                        color = Color.White.copy(alpha = 0.3f)
-                                    )
+                                    indication = ripple()
                                 ),
                             selectedContentColor = Color(0xFF3B04BD),
                             unselectedContentColor = Color.Transparent,
@@ -208,7 +207,6 @@ fun IconPicker(
                         }
                     }
 
-
                     Row(
                         modifier
                             .padding(all = 10.dp)
@@ -216,6 +214,21 @@ fun IconPicker(
                             .align(Alignment.BottomEnd),
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
+                        MyButton(
+                            modifier = modifier.weight(1f),
+                            color = containerBackgroundDark,
+                            onClick = {
+                                onCloseClick.invoke()
+                                coroutineScope.launch { sheetState.hide() }
+                            }
+                        ) {
+                            Text(
+                                text = stringResource(R.string.cancel),
+                                fontSize = 20.sp,
+                                color = Color.White
+                            )
+                        }
+
                         MyButton(
                             modifier = modifier.weight(1f),
                             onClick = {
@@ -229,21 +242,6 @@ fun IconPicker(
                         ) {
                             Text(
                                 text = stringResource(R.string.add),
-                                fontSize = 20.sp,
-                                color = Color.White
-                            )
-                        }
-
-                        MyButton(
-                            modifier = modifier.weight(1f),
-                            color = containerBackgroundDark,
-                            onClick = {
-                                onCloseClick.invoke()
-                                coroutineScope.launch { sheetState.hide() }
-                            }
-                        ) {
-                            Text(
-                                text = stringResource(R.string.cancel),
                                 fontSize = 20.sp,
                                 color = Color.White
                             )

@@ -10,9 +10,25 @@ import com.example.habitstracker.habit.domain.HabitRepository
 import com.example.habitstracker.history.data.db.HistoryDAO
 import com.example.habitstracker.history.data.repository.DefaultHistoryRepository
 import com.example.habitstracker.history.domain.HistoryRepository
+import com.example.habitstracker.me.data.DefaultSyncRepository
+import com.example.habitstracker.me.data.local.LocalSyncRepository
+import com.example.habitstracker.me.data.local.AppPreferences
+import com.example.habitstracker.me.data.remote.CloudSyncRepository
+import com.example.habitstracker.me.data.remote.firebase.UserFirebaseDataSource
+import com.example.habitstracker.me.data.repository.FriendsRepositoryImpl
+import com.example.habitstracker.me.data.repository.UserProfileRepositoryImpl
+import com.example.habitstracker.me.data.repository.UserStatsRepositoryImpl
+import com.example.habitstracker.me.domain.repository.FriendsRepository
+import com.example.habitstracker.me.domain.repository.UserProfileRepository
+import com.example.habitstracker.me.domain.repository.UserStatsRepository
+import com.example.habitstracker.me.domain.SyncRepository
+import com.example.habitstracker.me.presentation.sign_in.GoogleAuthUiClient
+import com.example.habitstracker.me.presentation.sync.SyncManager
 import com.example.habitstracker.statistic.data.db.StatisticDao
 import com.example.habitstracker.statistic.data.repository.DefaultStatisticRepository
 import com.example.habitstracker.statistic.domain.StatisticRepository
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -23,6 +39,81 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
+
+    @Provides
+    @Singleton
+    fun provideFirestore(): FirebaseFirestore {
+        return FirebaseFirestore.getInstance()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFirebaseAuth(): FirebaseAuth {
+        return FirebaseAuth.getInstance()
+    }
+
+    @Provides
+    @Singleton
+    fun providerLocalSyncRepository(
+        habitDao: HabitDao,
+        historyDAO: HistoryDAO
+    ): LocalSyncRepository {
+        return LocalSyncRepository(habitDao, historyDAO)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCloudSyncRepository(
+        firestore: FirebaseFirestore
+    ): CloudSyncRepository {
+        return CloudSyncRepository(firestore)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserFirebaseDataSource(
+        firestore: FirebaseFirestore
+    ): UserFirebaseDataSource = UserFirebaseDataSource(firestore)
+
+    @Provides
+    @Singleton
+    fun provideSyncRepository(
+        local: LocalSyncRepository,
+        cloud: CloudSyncRepository
+    ): SyncRepository {
+        return DefaultSyncRepository(local = local, cloud = cloud)
+    }
+
+    @Singleton
+    @Provides
+    fun provideUserProfileRepository(firebaseDataSource: UserFirebaseDataSource): UserProfileRepository =
+        UserProfileRepositoryImpl(firebaseDataSource)
+
+    @Singleton
+    @Provides
+    fun provideUserStatsRepository(firebaseDataSource: UserFirebaseDataSource): UserStatsRepository =
+        UserStatsRepositoryImpl(firebaseDataSource)
+
+    @Singleton
+    @Provides
+    fun provideFriendsRepository(firebaseDataSource: UserFirebaseDataSource): FriendsRepository =
+        FriendsRepositoryImpl(firebaseDataSource)
+
+    @Provides
+    @Singleton
+    fun provideSyncManager(
+        syncRepository: SyncRepository,
+        googleAuthUiClient: GoogleAuthUiClient,
+        @ApplicationContext context: Context
+    ): SyncManager {
+        return SyncManager(syncRepository, googleAuthUiClient, context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSyncPreferences(
+        @ApplicationContext context: Context
+    ): AppPreferences = AppPreferences(context)
 
     @Singleton
     @Provides
@@ -59,6 +150,12 @@ object AppModule {
     fun provideStatisticDao(database: HabitDatabase): StatisticDao {
         return database.statisticDao
     }
+
+    @Provides
+    @Singleton
+    fun provideGoogleAuthUiClient(
+        @ApplicationContext context: Context
+    ): GoogleAuthUiClient = GoogleAuthUiClient(context)
 
     @Singleton
     @Provides

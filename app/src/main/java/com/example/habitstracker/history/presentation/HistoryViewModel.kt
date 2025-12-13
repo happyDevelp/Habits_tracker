@@ -81,8 +81,11 @@ class HistoryViewModel @Inject constructor(
         repository.updateUnlockedDate(unlockedAt, isNotified, id)
     }
 
-    suspend fun deleteHabit(habit: HabitEntity) {
-        repository.deleteHabit(habit)
+    fun deleteHabit(habit: HabitEntity) {
+        viewModelScope.launch {
+            repository.deleteHabit(habit)
+        }
+
     }
 
     private fun getAllAchievements(): Flow<List<AchievementEntity>> {

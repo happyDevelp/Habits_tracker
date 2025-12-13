@@ -281,8 +281,8 @@ object HabitColor {
     )
 
     val Golden = ColorGradient(
-        light = Color(0xFFFFE259),
-        dark = Color(0xFFFFA751)
+        light = Color(0xFFFFDD00),
+        dark = Color(0xFFF69503)
     )
 
     val Lime = ColorGradient(

@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -214,14 +215,15 @@ fun HistoryHabitItem(
                         ) {
                             Text(
                                 modifier = modifier.padding(0.dp),
-                                text = habit.name,
-                                fontSize = 20.sp,
+                                text = limitChars(habit.name),
+                                fontSize = 18.sp,
                                 color = Color.White,
                                 fontWeight = FontWeight.Bold,
                                 style = MaterialTheme.typography.titleSmall,
+                                maxLines = 2,
+                                overflow = TextOverflow.Ellipsis
                             )
                         }
-
 
                         Row(
                             modifier = modifier
@@ -242,6 +244,14 @@ fun HistoryHabitItem(
                 }
             }
         }
+    }
+}
+
+fun limitChars(text: String, limit: Int = 17): String {
+    return if (text.length <= limit) {
+        text
+    } else {
+        text.substring(0, limit) + "\n" + text.substring(limit)
     }
 }
 
