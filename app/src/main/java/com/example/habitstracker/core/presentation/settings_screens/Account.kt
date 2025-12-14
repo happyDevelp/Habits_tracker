@@ -1,4 +1,4 @@
-package com.example.habitstracker.core.presentation.settingsScreens
+package com.example.habitstracker.core.presentation.settings_screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -30,9 +30,10 @@ import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PreferencesScreen(
+fun AccountScreenPage(
     modifier: Modifier = Modifier
 ) {
     val navController = LocalNavController.current
@@ -48,7 +49,7 @@ fun PreferencesScreen(
                         modifier = modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = "Preferences",
+                            text = "Account",
                             color = Color.White,
                             fontFamily = PoppinsFontFamily,
                             fontSize = 20.sp
@@ -89,7 +90,7 @@ fun PreferencesScreen(
                 .background(screenBackgroundDark),
         ) {
             Text(
-                text = "Preferences",
+                text = "Account",
                 color = Color.White,
                 fontFamily = PoppinsFontFamily,
                 fontSize = 20.sp
@@ -104,7 +105,7 @@ private fun Preview() {
     val mockNavController = rememberNavController()
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
         AppTheme(darkTheme = true) {
-            PreferencesScreen()
+            AccountScreenPage()
         }
     }
 }

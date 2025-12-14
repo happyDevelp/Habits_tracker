@@ -17,7 +17,6 @@ import com.example.habitstracker.habit.domain.ShownHabit
 import java.time.LocalDate
 import androidx.core.graphics.toColorInt
 
-const val APP_VERSION = "0.8.0.alpha"
 fun List<LocalDate>.chunked(size: Int): List<List<LocalDate>> {
     return this.withIndex().groupBy { it.index / size }.values.map { it.map { it.value } }
 }

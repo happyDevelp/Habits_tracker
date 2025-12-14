@@ -42,7 +42,7 @@ import com.example.habitstracker.me.presentation.sign_in.UserData
 import com.example.habitstracker.me.presentation.sync.components.SyncIcon
 
 @Composable
-fun userCard(
+fun UserCardSection(
     modifier: Modifier,
     syncToCloud: () -> Unit,
     user: UserData?,

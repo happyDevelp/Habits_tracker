@@ -1,10 +1,9 @@
-package com.example.habitstracker.core.presentation.settingsScreens
+package com.example.habitstracker.core.presentation.settings_screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -33,7 +32,7 @@ import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SupportScreen(
+fun RateUsScreen(
     modifier: Modifier = Modifier
 ) {
     val navController = LocalNavController.current
@@ -49,7 +48,7 @@ fun SupportScreen(
                         modifier = modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = "Support",
+                            text = "RateUs",
                             color = Color.White,
                             fontFamily = PoppinsFontFamily,
                             fontSize = 20.sp
@@ -90,7 +89,7 @@ fun SupportScreen(
                 .background(screenBackgroundDark),
         ) {
             Text(
-                text = "Support",
+                text = "RateUs",
                 color = Color.White,
                 fontFamily = PoppinsFontFamily,
                 fontSize = 20.sp
@@ -105,7 +104,7 @@ private fun Preview() {
     val mockNavController = rememberNavController()
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
         AppTheme(darkTheme = true) {
-            SupportScreen()
+            RateUsScreen()
         }
     }
 }
