@@ -12,10 +12,10 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.core.graphics.toColorInt
 import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.habit.domain.ShownHabit
 import java.time.LocalDate
-import androidx.core.graphics.toColorInt
 
 fun List<LocalDate>.chunked(size: Int): List<List<LocalDate>> {
     return this.withIndex().groupBy { it.index / size }.values.map { it.map { it.value } }
