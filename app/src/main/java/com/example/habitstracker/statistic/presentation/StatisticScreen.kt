@@ -13,7 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -22,7 +21,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
-import com.example.habitstracker.core.presentation.utils.APP_VERSION
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.statistic.presentation.components.DrawConsistencyContainer
 import com.example.habitstracker.statistic.presentation.components.DrawStatisticContainers
@@ -85,12 +83,6 @@ fun StatisticScreen(
             Spacer(Modifier.height(18.dp))
 
             WeekDiagramContainer(_weeklyMap = weeklyMap)
-            MyText(
-                modifier = Modifier.padding(top = 12.dp),
-                text = "Version $APP_VERSION",
-                textSize = 15.sp,
-                color = Color.White.copy(0.6f)
-            )
         }
     }
 }

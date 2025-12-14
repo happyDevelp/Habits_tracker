@@ -13,6 +13,7 @@ class AppPreferences(private val context: Context) {
     companion object {
         val LAST_SYNC_KEY = stringPreferencesKey("last_sync")
         val PROFILE_ID_KEY = stringPreferencesKey("profile_code")
+        val DEEP_LINK_FRIEND_ID = stringPreferencesKey("deep_link_friend_id")
     }
     val lastSync: Flow<String?> = context.dataStore.data.map { prefs ->
         prefs[LAST_SYNC_KEY]
@@ -22,6 +23,9 @@ class AppPreferences(private val context: Context) {
         prefs[PROFILE_ID_KEY]
     }
 
+    val deepLinkFriendId: Flow<String?> = context.dataStore.data.map { prefs ->
+        prefs[DEEP_LINK_FRIEND_ID]
+    }
 
     suspend fun saveLastSync(value: String) {
         context.dataStore.edit { prefs ->
@@ -32,6 +36,12 @@ class AppPreferences(private val context: Context) {
     suspend fun saveProfileCode(code: String) {
         context.dataStore.edit { prefs ->
             prefs[PROFILE_ID_KEY] = code
+        }
+    }
+
+    suspend fun saveDeepLinkFriendId(id: String) {
+        context.dataStore.edit { prefs ->
+            prefs[DEEP_LINK_FRIEND_ID] = id
         }
     }
 

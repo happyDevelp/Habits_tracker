@@ -9,6 +9,10 @@ plugins {
     alias(libs.plugins.compose.compiler)
 }
 
+val versionMajor = 0
+val versionMinor = 9
+val versionPatch = 0
+val versionClassifier = "beta" // Can be alpha, beta or "" if the release
 android {
     namespace = "com.example.habitstracker"
     compileSdk = 35
@@ -17,12 +21,19 @@ android {
         applicationId = "com.example.habitstracker"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
+        versionName = "$versionMajor.$versionMinor.$versionPatch"
+        if (versionClassifier.isNotEmpty())
+            versionName += "-$versionClassifier"
 
         testInstrumentationRunner = "com.example.habitstracker.CustomTestRunner"
         vectorDrawables {
             useSupportLibrary = true
+        }
+
+        buildFeatures {
+            compose = true
+            buildConfig = true
         }
 
         //Room schema directory path
@@ -65,9 +76,6 @@ android {
     }
     kotlinOptions {
         jvmTarget = "17"
-    }
-    buildFeatures {
-        compose = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.14"
