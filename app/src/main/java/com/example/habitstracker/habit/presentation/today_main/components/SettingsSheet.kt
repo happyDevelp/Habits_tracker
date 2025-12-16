@@ -21,26 +21,33 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
+import com.example.habitstracker.app.LocalSettingsSheetController
+import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.statistic.presentation.components.SettingsButtons
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsBottomSheet(sheetState: SheetState, closeSheet: () -> Unit) {
+fun SettingsSheet(sheetState: SheetState) {
     val navController = LocalNavController.current
+    val settingsController = LocalSettingsSheetController.current
     ModalBottomSheet(
-        onDismissRequest = { closeSheet() },
+        onDismissRequest = { settingsController.close() },
         sheetState = sheetState,
         dragHandle = null
     ) {
@@ -54,7 +61,7 @@ fun SettingsBottomSheet(sheetState: SheetState, closeSheet: () -> Unit) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                IconButton(onClick = { closeSheet() }) {
+                IconButton(onClick = { settingsController.close() }) {
                     Icon(
                         modifier = Modifier.size(26.dp),
                         imageVector = Icons.Default.Close,
@@ -77,7 +84,7 @@ fun SettingsBottomSheet(sheetState: SheetState, closeSheet: () -> Unit) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-                            closeSheet()
+                            settingsController.close()
                             navController.navigate(button.route)
                         },
                     contentAlignment = Alignment.Center
@@ -122,6 +129,20 @@ fun SettingsBottomSheet(sheetState: SheetState, closeSheet: () -> Unit) {
                 }
                 Spacer(modifier = Modifier.height(8.dp))
             }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Preview
+@Composable
+private fun Preview() {
+    val mockNavController = rememberNavController()
+    CompositionLocalProvider(value = LocalNavController provides mockNavController) {
+        AppTheme(darkTheme = true) {
+            SettingsSheet(
+                sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+            )
         }
     }
 }

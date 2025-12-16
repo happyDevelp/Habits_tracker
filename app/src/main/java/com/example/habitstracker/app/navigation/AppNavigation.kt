@@ -19,7 +19,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -28,25 +27,20 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.bottombar.NavigationBottomBar
-import com.example.habitstracker.core.presentation.settingsScreens.AccountScreen
-import com.example.habitstracker.core.presentation.settingsScreens.LanguageScreen
-import com.example.habitstracker.core.presentation.settingsScreens.NotificationScreen
-import com.example.habitstracker.core.presentation.settingsScreens.PreferencesScreen
-import com.example.habitstracker.core.presentation.settingsScreens.RateUsScreen
-import com.example.habitstracker.core.presentation.settingsScreens.SupportScreen
+import com.example.habitstracker.core.presentation.settings_screens.AccountScreen
+import com.example.habitstracker.core.presentation.settings_screens.LanguageScreen
+import com.example.habitstracker.core.presentation.settings_screens.NotificationScreen
+import com.example.habitstracker.core.presentation.settings_screens.PreferencesScreen
+import com.example.habitstracker.core.presentation.settings_screens.RateUsScreen
+import com.example.habitstracker.core.presentation.settings_screens.SupportScreen
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.habit.presentation.add_habit.AddHabitScreen
 import com.example.habitstracker.habit.presentation.create_own_habit.CreateOwnHabitRoot
 import com.example.habitstracker.habit.presentation.detail_habit.DetailHabitScreen
-import com.example.habitstracker.habit.presentation.today_main.MainScreenViewModel
 import com.example.habitstracker.habit.presentation.today_main.TodayScreenRoot
 import com.example.habitstracker.history.presentation.HistoryScreenRoot
-import com.example.habitstracker.history.presentation.HistoryViewModel
 import com.example.habitstracker.me.presentation.MeScreenRoot
-import com.example.habitstracker.me.presentation.sign_in.SignInViewModel
-import com.example.habitstracker.me.presentation.sync.SyncViewModel
 import com.example.habitstracker.statistic.presentation.StatisticScreenRoot
-import com.example.habitstracker.statistic.presentation.StatisticViewModel
 
 @Composable
 fun AppNavigation() {

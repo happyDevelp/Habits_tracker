@@ -6,7 +6,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.remember
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.app.navigation.AppNavigation
 import com.example.habitstracker.core.presentation.theme.AppTheme
@@ -14,6 +16,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // check if we have started through the link
@@ -21,12 +24,17 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val navController = rememberNavController()
+            val settingsController = remember { SettingsSheetController() }
 
-            CompositionLocalProvider(value = LocalNavController provides navController) {
+            CompositionLocalProvider(
+                LocalNavController provides navController,
+                LocalSettingsSheetController provides settingsController,
+            ) {
                 AppTheme(darkTheme = true) {
                     AppNavigation()
                 }
             }
+
         }
     }
 
@@ -46,11 +54,9 @@ class MainActivity : ComponentActivity() {
                 Log.d("FriendDeepLink", "Friend ID Found: $friendId")
 
 
-
-
-                // ТУТ ВАЖЛИВО:
-                // 1. Збережи цей ID десь (наприклад, у ViewModel або SharedPrefs)
-                // 2. Відкрий діалог "Додати друга?" або автоматично надішли запит
+                //IT IS IMPORTANT HERE:
+                // 1. Save this ID somewhere (e.g. in ViewModel or SharedPrefs)
+                // 2. Open the "Add a friend?" dialog or automatically send a request
                 // friendViewModel.sendFriendRequest(friendId)
             }
         }

@@ -33,7 +33,7 @@ import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AccountScreenPage(
+fun AccountScreen(
     modifier: Modifier = Modifier
 ) {
     val navController = LocalNavController.current
@@ -105,7 +105,7 @@ private fun Preview() {
     val mockNavController = rememberNavController()
     CompositionLocalProvider(value = LocalNavController provides mockNavController) {
         AppTheme(darkTheme = true) {
-            AccountScreenPage()
+            AccountScreen()
         }
     }
 }

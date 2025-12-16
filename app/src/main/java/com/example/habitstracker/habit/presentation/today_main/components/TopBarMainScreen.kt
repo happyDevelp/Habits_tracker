@@ -20,6 +20,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
+import com.example.habitstracker.app.LocalSettingsSheetController
 import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import java.time.LocalDate
@@ -27,10 +28,9 @@ import java.time.format.DateTimeFormatter
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class)
-fun TopBarMainScreen(
-    modifier: Modifier,
-    onSettingsClick: () -> Unit
-) {
+fun TopBarMainScreen(modifier: Modifier) {
+    val settingsController = LocalSettingsSheetController.current
+
     TopAppBar(
         modifier = modifier.padding(vertical = 8.dp),
 
@@ -68,7 +68,7 @@ fun TopBarMainScreen(
         actions = {
             IconButton(
                 onClick = {
-                    onSettingsClick()
+                    settingsController.open()
                 },
 
                 colors = IconButtonDefaults.iconButtonColors(

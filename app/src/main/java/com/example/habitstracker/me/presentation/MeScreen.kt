@@ -37,10 +37,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.BuildConfig
 import com.example.habitstracker.app.LocalNavController
+import com.example.habitstracker.app.LocalSettingsSheetController
+import com.example.habitstracker.app.SettingsSheetController
 import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
+import com.example.habitstracker.habit.presentation.today_main.components.SettingsSheet
 import com.example.habitstracker.me.domain.model.FriendEntry
 import com.example.habitstracker.me.domain.model.FriendRequest
 import com.example.habitstracker.me.domain.model.UserProfile
@@ -146,7 +149,8 @@ fun MeScreen(
     getFriendStats: (String) -> Unit,
     onDeleteFriendClick: (String) -> Unit
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val settingsController = LocalSettingsSheetController.current
+    val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     var openButtonsSheet by remember { mutableStateOf(false) }
     var openNotificationBox by remember { mutableStateOf(false) }
     var openStatsDialog by remember { mutableStateOf(false) }
@@ -263,6 +267,10 @@ fun MeScreen(
                 }
             }
 
+            if (settingsController.isOpen) {
+                SettingsSheet(sheetState = settingsSheetState)
+            }
+
             val accountButtons by remember {
                 getAccountButtons(
                     { openButtonsSheet = false },
@@ -273,7 +281,7 @@ fun MeScreen(
 
             if (openButtonsSheet) {
                 AccountSettingsBottomSheet(
-                    sheetState = sheetState,
+                    sheetState = settingsSheetState,
                     buttons = accountButtons,
                     onCloudDataClear = clearCloudData,
                     closeBottomSheet = { openButtonsSheet = false }
@@ -323,11 +331,17 @@ fun MeScreen(
     TopBanner(status = friendsState.banner)
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview
 @Composable
 private fun Preview() {
     val mockNavController = rememberNavController()
-    CompositionLocalProvider(value = LocalNavController provides mockNavController) {
+    val mockSettingsController = remember { SettingsSheetController() }
+
+    CompositionLocalProvider(
+        LocalNavController provides mockNavController,
+        LocalSettingsSheetController provides mockSettingsController,
+    ) {
         AppTheme(darkTheme = true) {
             val user = UserData(
                 "1",

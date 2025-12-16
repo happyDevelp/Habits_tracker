@@ -1,9 +1,6 @@
 package com.example.habitstracker.habit.presentation.today_main
 
-import android.content.Context
 import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,13 +11,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.outlined.ChevronRight
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -33,13 +26,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
@@ -53,8 +42,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
+import com.example.habitstracker.app.LocalSettingsSheetController
+import com.example.habitstracker.app.SettingsSheetController
 import com.example.habitstracker.app.navigation.Route
-import com.example.habitstracker.core.presentation.UiText
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.QuickSandFontFamily
@@ -68,14 +58,13 @@ import com.example.habitstracker.habit.domain.ShownHabit
 import com.example.habitstracker.habit.presentation.today_main.components.AchievementMetadata
 import com.example.habitstracker.habit.presentation.today_main.components.HabitItem
 import com.example.habitstracker.habit.presentation.today_main.components.NotificationDialog
-import com.example.habitstracker.habit.presentation.today_main.components.SettingsBottomSheet
+import com.example.habitstracker.habit.presentation.today_main.components.SettingsSheet
 import com.example.habitstracker.habit.presentation.today_main.components.TopBarMainScreen
 import com.example.habitstracker.habit.presentation.today_main.components.UnlockedAchievement
 import com.example.habitstracker.habit.presentation.today_main.components.calculateUserStats
 import com.example.habitstracker.habit.presentation.today_main.components.calendar.CalendarRowList
 import com.example.habitstracker.habit.presentation.today_main.utility.AchievementSection
 import com.example.habitstracker.history.presentation.HistoryViewModel
-import com.example.habitstracker.me.presentation.sign_in.SignInViewModel
 import com.example.habitstracker.me.presentation.sync.SyncViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
@@ -85,7 +74,6 @@ fun TodayScreenRoot(
     todayViewModel: MainScreenViewModel = hiltViewModel<MainScreenViewModel>(),
     historyViewModel: HistoryViewModel = hiltViewModel<HistoryViewModel>(),
     syncViewModel: SyncViewModel = hiltViewModel<SyncViewModel>(),
-    signInViewModel: SignInViewModel = hiltViewModel<SignInViewModel>(),
     historyDate: String?,
     changeSelectedItemState: (index: Int) -> Unit
 ) {
@@ -99,7 +87,7 @@ fun TodayScreenRoot(
     // sync methods
     LaunchedEffect(Unit) {
         syncViewModel.fullSync()
- /*       signInViewModel.resetNeedFullSync()*/
+        /*       signInViewModel.resetNeedFullSync()*/
     }
 
     val coroutineScope = rememberCoroutineScope()
@@ -216,14 +204,13 @@ fun TodayScreen(
     changeSelectedItemState: (index: Int) -> Unit,
 ) {
     val navController = LocalNavController.current
-
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-    var openBottomSheet by remember { mutableStateOf(false) }
+    val settingsController = LocalSettingsSheetController.current
+    val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     Box(modifier = Modifier.fillMaxSize()) {
         Scaffold(
             modifier = modifier.fillMaxSize(),
-            topBar = { TopBarMainScreen(modifier = Modifier) { openBottomSheet = true } }
+            topBar = { TopBarMainScreen(modifier = Modifier) }
         ) { paddingValues ->
             Card(
                 modifier = Modifier
@@ -235,11 +222,8 @@ fun TodayScreen(
                 shape = RoundedCornerShape(topStart = 27.dp, topEnd = 27.dp)
             )
             {
-                if (openBottomSheet)
-                    SettingsBottomSheet(
-                        sheetState = sheetState,
-                        closeSheet = { openBottomSheet = false }
-                    )
+                if (settingsController.isOpen)
+                    SettingsSheet(sheetState = settingsSheetState)
 
                 Box(
                     modifier = Modifier
@@ -380,17 +364,23 @@ fun TodayScreen(
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview(showSystemUi = false)
 private fun Preview() {
     val mockNavController = rememberNavController()
+    val mockSettingsController = SettingsSheetController()
+
     val mockList = listOf(
         shownHabitExample1,
         shownHabitExample2,
         shownHabitExample3
     )
 
-    CompositionLocalProvider(value = LocalNavController provides mockNavController) {
+    CompositionLocalProvider(
+        LocalNavController provides mockNavController,
+        LocalSettingsSheetController provides mockSettingsController,
+    ) {
         AppTheme(darkTheme = true) {
             TodayScreen(
                 habitListState = mockList,

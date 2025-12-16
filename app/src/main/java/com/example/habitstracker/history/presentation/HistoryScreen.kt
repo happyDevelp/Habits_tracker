@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerState
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
@@ -21,6 +22,7 @@ import androidx.compose.material3.TabPosition
 import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults.SecondaryIndicator
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
@@ -37,6 +39,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.app.LocalNavController
+import com.example.habitstracker.app.LocalSettingsSheetController
+import com.example.habitstracker.app.SettingsSheetController
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
@@ -44,6 +48,7 @@ import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.core.presentation.utils.toHex
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.HabitEntity
+import com.example.habitstracker.habit.presentation.today_main.components.SettingsSheet
 import com.example.habitstracker.history.domain.AchievementEntity
 import com.example.habitstracker.history.presentation.components.scaffold.TopBarHistoryScreen
 import com.example.habitstracker.history.presentation.tab_screens.AchievementsScreen
@@ -77,6 +82,7 @@ fun HistoryScreenRoot(
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
     modifier: Modifier = Modifier,
@@ -87,6 +93,9 @@ fun HistoryScreen(
     changeSelectedItemState: (index: Int) -> Unit,
     onDeleteClick: (habit: HabitEntity) -> Unit
 ) {
+    val settingsController = LocalSettingsSheetController.current
+    val settingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
     Scaffold(
         topBar = { TopBarHistoryScreen() },
         containerColor = screenBackgroundDark
@@ -171,6 +180,9 @@ fun HistoryScreen(
                 }
             }
         }
+        if (settingsController.isOpen) {
+            SettingsSheet(sheetState = settingsSheetState)
+        }
     }
 }
 
@@ -206,7 +218,13 @@ fun Modifier.tabIndicatorOffset(pagerState: PagerState, tabPositions: List<TabPo
 @Preview(showSystemUi = false)
 private fun HistoryScreenPreview() {
     val mockNavController = rememberNavController()
-    CompositionLocalProvider(value = LocalNavController provides mockNavController) {
+    val mockSettingsController = SettingsSheetController()
+
+
+    CompositionLocalProvider(
+        LocalNavController provides mockNavController,
+        LocalSettingsSheetController provides mockSettingsController
+    ) {
         AppTheme(darkTheme = true) {
             HistoryScreen(
                 changeSelectedItemState = {},
