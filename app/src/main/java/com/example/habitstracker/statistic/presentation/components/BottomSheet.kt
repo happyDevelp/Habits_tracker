@@ -1,12 +1,10 @@
 package com.example.habitstracker.statistic.presentation.components
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.AccountCircle
 import androidx.compose.material.icons.outlined.Language
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.StarRate
 import androidx.compose.material.icons.outlined.SupportAgent
-import androidx.compose.material.icons.outlined.Tune
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.example.habitstracker.app.navigation.Route
@@ -15,12 +13,6 @@ import com.example.habitstracker.core.presentation.theme.HabitColor
 object SettingsButtons {
 
     val list = listOf(
-        SettingsButtonItem(
-            text = "Account",
-            icon = Icons.Outlined.AccountCircle,
-            iconBackground = HabitColor.LeafGreen.dark,
-            route = Route.Settings.Account
-        ),
         SettingsButtonItem(
             text = "Notifications",
             icon = Icons.Outlined.Notifications,
@@ -33,12 +25,12 @@ object SettingsButtons {
             iconBackground = HabitColor.DeepBlue.dark,
             route = Route.Settings.Language
         ),
-        SettingsButtonItem(
+/*        SettingsButtonItem(
             text = "Preferences",
             icon = Icons.Outlined.Tune,
             iconBackground = HabitColor.Rose.light,
             route = Route.Settings.Preferences
-        ),
+        ),*/
         SettingsButtonItem(
             text = "Support",
             icon = Icons.Outlined.SupportAgent,

@@ -27,10 +27,8 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.toRoute
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.bottombar.NavigationBottomBar
-import com.example.habitstracker.core.presentation.settings_screens.AccountScreen
 import com.example.habitstracker.core.presentation.settings_screens.LanguageScreen
 import com.example.habitstracker.core.presentation.settings_screens.NotificationScreen
-import com.example.habitstracker.core.presentation.settings_screens.PreferencesScreen
 import com.example.habitstracker.core.presentation.settings_screens.RateUsScreen
 import com.example.habitstracker.core.presentation.settings_screens.SupportScreen
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
@@ -139,20 +137,12 @@ fun AppNavigation() {
             }
 
             /* SETTINGS */
-            composable<Route.Settings.Account> {
-                AccountScreen()
-            }
-
             composable<Route.Settings.Notifications> {
                 NotificationScreen()
             }
 
             composable<Route.Settings.Language> {
                 LanguageScreen()
-            }
-
-            composable<Route.Settings.Preferences> {
-                PreferencesScreen()
             }
 
             composable<Route.Settings.Support> {

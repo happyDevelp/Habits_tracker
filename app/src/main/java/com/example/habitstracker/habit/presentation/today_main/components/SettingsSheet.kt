@@ -36,6 +36,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.LocalSettingsSheetController
+import com.example.habitstracker.app.SettingsSheetController
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
@@ -138,7 +139,11 @@ fun SettingsSheet(sheetState: SheetState) {
 @Composable
 private fun Preview() {
     val mockNavController = rememberNavController()
-    CompositionLocalProvider(value = LocalNavController provides mockNavController) {
+    val mockSettingsSheetController = SettingsSheetController()
+    CompositionLocalProvider(
+        LocalNavController provides mockNavController,
+        LocalSettingsSheetController provides mockSettingsSheetController
+        ) {
         AppTheme(darkTheme = true) {
             SettingsSheet(
                 sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
