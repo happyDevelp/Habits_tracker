@@ -47,7 +47,7 @@ fun TopBarMainScreen(modifier: Modifier) {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     MyText(
-                        text = "Today",
+                        text = stringResource(R.string.today),
                         textSize = 26.sp,
                     )
 

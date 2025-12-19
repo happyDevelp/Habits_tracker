@@ -31,11 +31,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -123,7 +121,11 @@ fun CreateOwnHabitScreen(
     val navController = LocalNavController.current
     Scaffold(
         topBar = {
-            CustomTopBar(navController, title = if (isEditMode) "Edit" else "Create")
+            CustomTopBar(
+                navController,
+                title = if (isEditMode) stringResource(R.string.edit)
+                else stringResource(R.string.create)
+            )
         },
         containerColor = screenBackgroundDark,
     ) { paddingValues ->
@@ -184,7 +186,7 @@ fun CreateOwnHabitScreen(
                     Spacer(modifier = modifier.height(28.dp))
 
                     Text(
-                        text = "Repetitions",
+                        text = stringResource(R.string.repetitions),
                         fontFamily = PoppinsFontFamily,
                         fontSize = 13.sp,
                         color = Color.White.copy(alpha = 0.50f),

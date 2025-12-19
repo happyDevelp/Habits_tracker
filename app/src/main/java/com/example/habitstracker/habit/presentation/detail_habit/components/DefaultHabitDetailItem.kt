@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,6 +35,8 @@ import com.example.habitstracker.core.presentation.utils.toHex
 @Composable
 fun DefaultHabitDetailItem(item: DefaultHabitDetailItem) {
     val navController = LocalNavController.current
+    val context = LocalContext.current
+
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -41,7 +44,7 @@ fun DefaultHabitDetailItem(item: DefaultHabitDetailItem) {
             .clickable {
                 navController.navigate(
                     Route.CreateHabit(
-                        name = item.name,
+                        name = item.name.asString(context),
                         icon = getIconName(item.icon),
                         iconColor = item.iconColor.toHex()
                     )
@@ -72,7 +75,7 @@ fun DefaultHabitDetailItem(item: DefaultHabitDetailItem) {
                 ) {
                     Text(
                         modifier = Modifier.padding(top = 4.dp, bottom = 2.dp),
-                        text = item.name,
+                        text = item.name.asString(),
                         fontSize = 17.sp,
                         color = Color.White.copy(alpha = 0.88f),
                         fontWeight = FontWeight.Bold,
@@ -85,8 +88,8 @@ fun DefaultHabitDetailItem(item: DefaultHabitDetailItem) {
 }
 
 data class DefaultHabitDetailItem(
-    val name: String,
-    val describe: String,
+    val name: UiText,
+    val describe: UiText,
     val icon: ImageVector,
     val iconColor: Color
 )

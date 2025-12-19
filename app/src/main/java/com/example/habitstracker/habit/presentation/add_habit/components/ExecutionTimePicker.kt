@@ -40,7 +40,7 @@ fun ExecutionTimePicker(
     onButtonClicked: (text: String) -> Unit,
 ) {
     Text(
-        text = "Executing time",
+        text = stringResource(R.string.executing_time),
         fontFamily = PoppinsFontFamily,
         fontSize = 13.sp,
         color = Color.White.copy(alpha = 0.50f),
@@ -55,10 +55,10 @@ fun ExecutionTimePicker(
             .clip(RoundedCornerShape(18.dp))
             .background(color = Color.Transparent),
     ) {
-        val anytimeText = stringResource(id = R.string.anytime_create_habit)
-        val morningText = stringResource(id = R.string.morning_create_habit)
-        val dayText = stringResource(id = R.string.day_create_habit)
-        val eveningText = stringResource(id = R.string.evening_create_habit)
+        val anytimeText = stringResource(id = R.string.anytime)
+        val morningText = stringResource(id = R.string.morning)
+        val dayText = stringResource(id = R.string.day)
+        val eveningText = stringResource(id = R.string.evening)
 
         var selectedOption by remember {
             mutableStateOf(anytimeText)

@@ -1,20 +1,27 @@
 package com.example.habitstracker.habit.presentation.today_main.utility
 
-import android.content.Context
 import com.example.habitstracker.R
-import com.example.habitstracker.core.presentation.UiText
 
-enum class AchievementSection() {
-    HABITS_FINISHED, BEST_STREAK, PERFECT_DAYS;
+enum class AchievementSection(val titleResId: Int) {
+    // Linking the resource ID to the Enum element
+    HABITS_FINISHED(R.string.achiev_habits_finished),
+    BEST_STREAK(R.string.achiev_best_streak),
+    PERFECT_DAYS(R.string.achiev_perfect_days);
 
     companion object {
-        fun fromString(section: String, context: Context) = when (section) {
-            UiText.StringResources(R.string.achiev_habits_finished)
-                .asString(context) -> HABITS_FINISHED
+        // Context is no longer needed here because we parse technical names
+        fun fromString(section: String): AchievementSection {
+            return when (section) {
+                //There should be exactly those lines that come from your DB/Logic
+                "Habits Finished" -> HABITS_FINISHED
+                "Best Streak" -> BEST_STREAK
+                "Perfect Days" -> PERFECT_DAYS
 
-            UiText.StringResources(R.string.achiev_best_streak).asString(context) -> BEST_STREAK
-            UiText.StringResources(R.string.achiev_perfect_days).asString(context) -> PERFECT_DAYS
-            else -> throw IllegalArgumentException("Invalid section: $section")
+                // Additional protection: if suddenly a translated line arrives,
+                // you can try to find it among resources (optional),
+                // But it is better to keep logic on English keys.
+                else -> throw IllegalArgumentException("Invalid section: $section")
+            }
         }
     }
 }

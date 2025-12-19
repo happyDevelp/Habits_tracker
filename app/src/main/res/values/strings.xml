@@ -1,20 +1,17 @@
 <resources>
-    <string name="app_name">Habit tracker</string>
+    <string name="app_name" translatable="false">Habit tracker</string>
     <string name="add_habit">Add Habit</string>
     <string name="today">Today</string>
     <string name="history">History</string>
     <string name="profile">Profile</string>
     <string name="create_a_new_habit">CREATE A NEW HABIT</string>
     <string name="healthy_eating">Healthy eating</string>
-    <string name="create_own_habit_navigation">CreateOwnHabitScreen</string>
-    <string name="add_habit_screen_navigation">AddHabitScreen</string>
-    <string name="main_screen_navigation">MainScreen</string>
+    <string name="create_own_habit_navigation" translatable="false">CreateOwnHabitScreen</string>
+    <string name="add_habit_screen_navigation" translatable="false">AddHabitScreen</string>
+    <string name="main_screen_navigation" translatable="false">MainScreen</string>
     <string name="a_reminder_for_this_habit">A reminder for this habit</string>
-    <string name="anytime_create_habit">Anytime</string>
-    <string name="morning_create_habit">Morning</string>
-    <string name="day_create_habit">Day</string>
-    <string name="evening_create_habit">Evening</string>
-    <string name="repeat_picker_navigation">RepeatPickerScreen</string>
+
+    <string name="repeat_picker_navigation" translatable="false">RepeatPickerScreen</string>
     <string name="define_habit_days">Define habit days</string>
     <string name="quantity_per_week">Quantity per week</string>
     <string name="how_often_per_week">How often per week</string>
@@ -80,6 +77,218 @@
     <string name="clear_cloud_data">Clear Cloud Data</string>
     <string name="confirm_clear_data_from_cloud">Confirm Clear Data From Cloud</string>
     <string name="are_you_sure_you_want_to_permanently_delete_all_your_cloud_stored_habit_data">Are you sure you want to permanently delete all your cloud-stored habit data?</string>
+    <string name="anytime">Anytime</string>
+    <string name="morning">Morning</string>
+    <string name="day">Day</string>
+    <string name="evening">Evening</string>
+    <string name="close_settings">Close Settings</string>
+    <string name="notifications">Notifications</string>
+    <string name="language">Language</string>
+    <string name="support">Support</string>
+    <string name="new_habit">New Habit</string>
+    <string name="choose_a_habit">Choose a habit</string>
+    <string name="sweet_never_lies">Sweet never lies</string>
+    <string name="stick_to_healthy_eating">Stick to healthy eating</string>
+    <string name="in_the_morning_s_glow_let_the_right_path_show">In the morning\'s glow, let the right path show</string>
+    <string name="may_your_dream_be_sweat_tonight">May your dream be sweat tonight</string>
+    <string name="take_control_of_your_own_self_management">Take control of your own self-management</string>
+    <string name="live_your_life_to_the_max">Live your life to the max</string>
+    <string name="your_efforts_deserve_a_break">Your efforts deserve a break</string>
+    <string name="be_strategic_with_your_efforts_and_time">Be strategic with your efforts and time</string>
+    <string name="what_doesn_t_kill_you_makes_you_stronger">What doesn`t kill you makes you stronger</string>
+
+
+   <!-- Predefined Details -->
+    <string name="workout">Workout</string>
+    <string name="move_your_body_and_enjoy_burning_fat">Move your body and enjoy burning fat</string>
+    <string name="walking">Walking</string>
+    <string name="boost_your_steps_daily">Boost your steps daily</string>
+    <string name="running">Running</string>
+    <string name="increase_stamina_and_energy">Increase stamina and energy</string>
+    <string name="yoga">Yoga</string>
+    <string name="improve_flexibility_and_calm_your_mind">Improve flexibility and calm your mind</string>
+    <string name="swimming">Swimming</string>
+    <string name="full_body_workout_without_sweat">Full body workout without sweat</string>
+    <string name="stretching">Stretching</string>
+    <string name="release_tension_and_increase_flexibility">Release tension and increase flexibility</string>
+    <string name="cycling">Cycling</string>
+    <string name="strengthen_legs_and_explore_outdoors">Strengthen legs and explore outdoors</string>
+    <string name="hiking">Hiking</string>
+    <string name="embrace_nature_and_stay_active">Embrace nature and stay active</string>
+
+    <string name="no_alcohol">No alcohol</string>
+    <string name="life_is_way_better_without_alcohol">Life is way better without alcohol</string>
+    <string name="no_fried_food">No fried food</string>
+    <string name="an_easy_way_to_lose_fat">An easy way to lose fat</string>
+    <string name="go_sugar_free">Go sugar-free</string>
+    <string name="see_your_body_change_with_being_sugar_free">See your body change with being sugar-free</string>
+    <string name="limit_caffeine_intake">Limit caffeine intake</string>
+    <string name="replace_with_other_healthy_choices">Replace with other healthy choices</string>
+    <string name="monitor_your_portion_size">Monitor your portion size</string>
+    <string name="keep_your_servings_balanced">Keep your servings balanced</string>
+    <string name="intermittent_fasting">Intermittent fasting</string>
+    <string name="your_stomach_needs_a_little_rest">Your stomach needs a little rest</string>
+    <string name="take_greens_fruits">Take greens &amp; fruits</string>
+    <string name="dont_forget_the_natural_snacks">Don\'t forget the natural snacks</string>
+    <string name="have_breakfast">Have breakfast</string>
+    <string name="wake_up_your_body_with_energy">Wake up your body with energy</string>
+    <string name="drink_enough_water">Drink enough water</string>
+    <string name="keep_your_body_hydrated">Keep your body hydrated</string>
+    <string name="prepare_home_cooked_meals">Prepare home-cooked meals</string>
+    <string name="control_ingredients_and_portions">Control ingredients and portions</string>
+    <string name="avoid_processed_food">Avoid processed food</string>
+    <string name="stick_to_whole_and_fresh_ingredients">Stick to whole and fresh ingredients</string>
+
+    <string name="practice_meditation">Practice meditation</string>
+    <string name="connect_with_your_inner_peace">Connect with your inner peace</string>
+    <string name="practice_breathing">Practice breathing</string>
+    <string name="calm_yourself_from_every_in_and_out">Calm yourself from every in and out</string>
+    <string name="read_a_book">Read a book</string>
+    <string name="let_your_mind_wander_through_stories">Let your mind wander through stories</string>
+    <string name="keep_a_journal">Keep a journal</string>
+    <string name="know_yourself_better_through_writing">Know yourself better through writing</string>
+    <string name="do_stretching_exercises">Do stretching exercises</string>
+    <string name="release_tension_and_stress">Release tension and stress</string>
+    <string name="do_yoga">Do yoga</string>
+    <string name="calming_and_smoothing">Calming and smoothing</string>
+    <string name="get_enough_sleep">Get enough sleep</string>
+    <string name="allow_your_body_to_recover_and_recharge">Allow your body to recover and recharge</string>
+    <string name="enjoy_nature">Enjoy nature</string>
+    <string name="embrace_nature_to_calm_your_mind">Embrace nature to calm your mind</string>
+    <string name="disconnect_from_devices">Disconnect from devices</string>
+    <string name="take_a_break_from_screens_and_notifications">Take a break from screens and notifications</string>
+    <string name="practice_gratitude">Practice gratitude</string>
+    <string name="focus_on_positive_aspects_of_your_life">Focus on positive aspects of your life</string>
+    <string name="take_a_warm_bath">Take a warm bath</string>
+    <string name="feel_the_healing_power_of_relaxation">Feel the healing power of relaxation</string>
+    <string name="listen_to_calming_music">Listen to calming music</string>
+    <string name="let_soothing_melodies_relax_you">Let soothing melodies relax you</string>
+
+    <string name="limit_screen_time">Limit screen time</string>
+    <string name="reduce_distractions_by_controlling_screen_use">Reduce distractions by controlling screen use</string>
+    <string name="no_emotional_spending">No emotional spending</string>
+    <string name="distinguish_your_needs_and_wants">Distinguish your needs and wants</string>
+    <string name="avoid_alcohol">Avoid alcohol</string>
+    <string name="quit_smoking">Quit smoking</string>
+    <string name="dont_have_just_one">Don\'t have \'just one\'</string>
+    <string name="avoid_fried_food">Avoid fried food</string>
+    <string name="no_excessive_gaming">No excessive gaming</string>
+    <string name="winners_dont_just_exist_in_games">Winners don\'t just exist in games</string>
+    <string name="wake_up_early">Wake up early</string>
+    <string name="start_your_day_with_a_productive_mindset">Start your day with a productive mindset</string>
+    <string name="create_a_to_do_list">Create a to-do list</string>
+    <string name="plan_your_day_to_avoid_procrastination">Plan your day to avoid procrastination</string>
+    <string name="set_small_goals">Set small goals</string>
+    <string name="achieve_success_step_by_step">Achieve success step by step</string>
+    <string name="keep_a_daily_journal">Keep a daily journal</string>
+    <string name="track_your_progress_and_self_growth">Track your progress and self-growth</string>
+    <string name="clean_up_your_workspace">Clean up your workspace</string>
+    <string name="less_mess_equals_less_stress">Less mess equals less stress</string>
+    <string name="practice_delayed_gratification">Practice delayed gratification</string>
+    <string name="train_yourself_to_resist_instant_pleasures">Train yourself to resist instant pleasures</string>
+    <string name="stay_hydrated">Stay hydrated</string>
+    <string name="drink_water_to_maintain_focus_and_energy">Drink water to maintain focus and energy</string>
+
+    <string name="practice_a_hobby">Practice a hobby</string>
+    <string name="fill_your_time_life_wont_pass_you_by">Fill your time, life won\'t pass you by</string>
+    <string name="learn_a_musical_instrument">Learn a musical instrument</string>
+    <string name="run_your_fingers_through_your_soul">Run your fingers through your soul</string>
+    <string name="learn_a_language">Learn a language</string>
+    <string name="deepen_your_connection_to_other_cultures">Deepen your connection to other cultures</string>
+    <string name="watch_a_movie">Watch a movie</string>
+    <string name="get_yourself_a_film_therapy">Get yourself a film therapy</string>
+    <string name="take_a_photo">Take a photo</string>
+    <string name="record_it_as_lifetime_memories">Record it as lifetime memories</string>
+    <string name="time_for_self_care">Time for self-care</string>
+    <string name="take_time_to_nourish_your_body_properly">Take time to nourish your body properly</string>
+    <string name="lose_yourself_in_another_world">Lose yourself in another world</string>
+    <string name="go_for_a_nature_walk">Go for a nature walk</string>
+    <string name="reconnect_with_nature_and_yourself">Reconnect with nature and yourself</string>
+    <string name="attend_a_live_event">Attend a live event</string>
+    <string name="enjoy_live_music_theater_or_sports">Enjoy live music, theater, or sports</string>
+    <string name="call_a_friend">Call a friend</string>
+    <string name="strengthen_your_connections">Strengthen your connections</string>
+
+    <string name="get_up_early">Get up early</string>
+    <string name="shine_before_the_sun_does">Shine before the sun does</string>
+    <string name="dress_up">Dress up</string>
+    <string name="a_good_look_lights_up_your_day">A good look lights up your day</string>
+    <string name="make_the_bed">Make the bed</string>
+    <string name="clean_your_bed_clear_your_mind">Clean your bed, clear your mind</string>
+    <string name="empty_trash">Empty trash</string>
+    <string name="leave_home_with_no_mess">Leave home with no mess</string>
+    <string name="warm_up">Warm up</string>
+    <string name="a_natural_morning_pick_me_up">A natural morning pick-me-up</string>
+    <string name="plan_your_day">Plan your day</string>
+    <string name="set_your_intentions_and_priorities">Set your intentions and priorities</string>
+    <string name="meditate">Meditate</string>
+    <string name="hydrate">Hydrate</string>
+    <string name="start_your_day_with_a_glass_of_water">Start your day with a glass of water</string>
+
+    <string name="stop_eating_before_bed">Stop eating before bed</string>
+    <string name="your_stomach_also_needs_a_good_sleep">Your stomach also needs a good sleep</string>
+    <string name="go_to_bed_early">Go to bed early</string>
+    <string name="early_to_bed_early_to_rise">Early to bed, early to rise</string>
+    <string name="reflect_on_your_day_and_release_thoughts">Reflect on your day and release thoughts</string>
+    <string name="never_enough_books_before_bedtime">Never enough books before bedtime</string>
+    <string name="take_a_bath">Take a bath</string>
+    <string name="feel_the_healing_power_of_a_warm_bath">Feel the healing power of a warm bath</string>
+    <string name="set_tomorrows_plan">Set tomorrow\'s plan</string>
+    <string name="organize_your_tasks_for_a_smooth_day_ahead">Organize your tasks for a smooth day ahead</string>
+    <string name="dim_the_lights">Dim the lights</string>
+    <string name="create_a_calming_atmosphere">Create a calming atmosphere</string>
+    <string name="turn_off_screens">Turn off screens</string>
+    <string name="disconnect_and_let_your_mind_unwind">Disconnect and let your mind unwind</string>
+
+    <string name="make_goals_more_specific_and_achievable">Make goals more specific and achievable</string>
+    <string name="prepare_tomorrows_to_do_list">Prepare tomorrow\'s to-do list</string>
+    <string name="make_your_time_visible_and_countable">Make your time visible and countable</string>
+    <string name="clean_up_workspace">Clean up workspace</string>
+    <string name="block_screen_time">Block screen time</string>
+    <string name="lock_screen_and_glue_attention">Lock screen and glue attention</string>
+    <string name="check_all_unread">Check all unread</string>
+    <string name="zero_your_inbox">Zero your inbox</string>
+    <string name="focus_on_one_task">Focus on one task</string>
+    <string name="avoid_multitasking_to_increase_efficiency">Avoid multitasking to increase efficiency</string>
+    <string name="track_your_progress">Track your progress</string>
+    <string name="measure_your_achievements_daily">Measure your achievements daily</string>
+    <string name="take_regular_breaks">Take regular breaks</string>
+    <string name="stay_productive_without_burnout">Stay productive without burnout</string>
+    <string name="set_priorities">Set priorities</string>
+    <string name="handle_the_most_important_tasks_first">Handle the most important tasks first</string>
+    <string name="review_your_goals">Review your goals</string>
+    <string name="adjust_your_plans_for_continuous_improvement">Adjust your plans for continuous improvement</string>
+
+    <string name="read">Read</string>
+    <string name="expand_your_knowledge_and_creativity">Expand your knowledge and creativity</string>
+    <string name="improve_focus_and_reduce_anxiety">Improve focus and reduce anxiety</string>
+    <string name="learn_something_new">Learn something new</string>
+    <string name="expand_your_horizons_daily">Expand your horizons daily</string>
+    <string name="reflect_on_your_thoughts_and_experiences">Reflect on your thoughts and experiences</string>
+    <string name="appreciate_the_good_things_in_your_life">Appreciate the good things in your life</string>
+    <string name="solve_puzzles">Solve puzzles</string>
+    <string name="keep_your_brain_sharp_and_active">Keep your brain sharp and active</string>
+    <string name="avoid_negative_thoughts">Avoid negative thoughts</string>
+    <string name="train_your_mind_to_focus_on_positivity">Train your mind to focus on positivity</string>
+    <string name="practice_deep_breathing">Practice deep breathing</string>
+    <string name="calm_your_mind_and_body">Calm your mind and body</string>
+    <string name="develop_critical_thinking">Develop critical thinking</string>
+    <string name="question_and_analyze_everything_critically">Question and analyze everything critically</string>
+    <string name="limit_social_media">Limit social media</string>
+    <string name="protect_your_mind_from_digital_overload">Protect your mind from digital overload</string>
+    <string name="listen_to_podcasts">Listen to podcasts</string>
+    <string name="gain_new_perspectives_and_insights">Gain new perspectives and insights</string>
+    <string name="learn_language">Learn language</string>
+    <string name="enhance_your_cognitive_abilities">Enhance your cognitive abilities</string>
+    <string name="maintain_a_balanced_diet">Maintain a balanced diet</string>
+    <string name="fuel_your_brain_with_healthy_nutrients">Fuel your brain with healthy nutrients</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="create">Create</string>
+    <string name="repetitions">Repetitions</string>
+    <string name="advanced_settings">Advanced settings</string>
+    <string name="icon" translatable="false">Icon</string>
+    <string name="color">Color</string>
 
 
 </resources>

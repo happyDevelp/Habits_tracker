@@ -29,19 +29,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.UiText
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
+import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.habit.presentation.detail_habit.components.DefaultHabitDetailItem
 import com.example.habitstracker.habit.presentation.detail_habit.components.getGroupDetails
-import com.example.habitstracker.R
-import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 
 @Composable
 fun DetailHabitScreen(
@@ -114,7 +115,7 @@ private fun CustomTopBar(navController: NavController) {
     TopAppBar(
         title = {
             Text(
-                text = "Choose a habit",
+                text = stringResource(R.string.choose_a_habit),
                 fontSize = 20.sp,
                 color = Color.White.copy(0.85f),
                 fontFamily = PoppinsFontFamily
@@ -129,7 +130,7 @@ private fun CustomTopBar(navController: NavController) {
             ) {
                 Icon(
                     imageVector = Icons.Default.Close,
-                    contentDescription = "Go back button"
+                    contentDescription = "Go back button",
                 )
             }
         }

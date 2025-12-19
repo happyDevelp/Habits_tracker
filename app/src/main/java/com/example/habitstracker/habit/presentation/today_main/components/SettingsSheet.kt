@@ -66,7 +66,7 @@ fun SettingsSheet(sheetState: SheetState) {
                     Icon(
                         modifier = Modifier.size(26.dp),
                         imageVector = Icons.Default.Close,
-                        contentDescription = "Close Settings",
+                        contentDescription = stringResource(R.string.close_settings),
                         tint = Color.White
                     )
                 }
@@ -107,13 +107,13 @@ fun SettingsSheet(sheetState: SheetState) {
                         ) {
                             Icon(
                                 imageVector = button.icon,
-                                contentDescription = button.text,
+                                contentDescription = button.text.asString(),
                                 tint = Color.White
                             )
                         }
                         Text(
                             modifier = Modifier.padding(start = 20.dp),
-                            text = button.text,
+                            text = button.text.asString(),
                             fontSize = 17.sp,
                             color = Color.White,
                             fontFamily = PoppinsFontFamily

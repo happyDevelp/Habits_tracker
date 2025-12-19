@@ -52,7 +52,7 @@ fun AdvancedSettings(modifier: Modifier = Modifier) {
     ) {
 
         Text(
-            text = "Advanced settings",
+            text = stringResource(R.string.advanced_settings),
             modifier = modifier.padding(start = 8.dp),
             fontFamily = PoppinsFontFamily,
             color = Color.White,

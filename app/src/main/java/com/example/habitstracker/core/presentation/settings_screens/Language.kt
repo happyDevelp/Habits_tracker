@@ -1,5 +1,6 @@
 package com.example.habitstracker.core.presentation.settings_screens
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -30,29 +31,40 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.os.LocaleListCompat
 import androidx.navigation.compose.rememberNavController
+import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
+import java.util.Locale
+
+// 1. Оновлюємо Enum: додаємо код мови
+enum class AppLanguage(val title: String, val code: String) {
+    EN("English", "en"),
+    DE("Deutsch", "de")
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LanguageScreen(
     modifier: Modifier = Modifier,
-    selected: AppLanguage = AppLanguage.EN,
     onSelect: (AppLanguage) -> Unit = {}
 ) {
     val navController = LocalNavController.current
 
+    val currentLanguage = remember { getCurrentAppLanguage() }
     Scaffold(
         modifier = modifier.padding(vertical = 8.dp),
         containerColor = screenBackgroundDark,
@@ -60,7 +72,7 @@ fun LanguageScreen(
             CenterAlignedTopAppBar(
                 title = {
                     Text(
-                        text = "Language",
+                        text = stringResource(R.string.language),
                         color = Color.White,
                         fontFamily = PoppinsFontFamily,
                         fontSize = 20.sp
@@ -92,8 +104,8 @@ fun LanguageScreen(
             items(AppLanguage.entries) { item ->
                 LanguageOptionCard(
                     text = item.title,
-                    selected = item == selected,
-                    onClick = { onSelect(item) }
+                    selected = item == currentLanguage,
+                    onClick = { changeLanguage(item.code) }
                 )
             }
         }
@@ -165,27 +177,26 @@ private fun LanguageOptionCard(
     }
 }
 
-object Language {
-    val list = listOf(
-        LanguageItem(
-            text = "English",
-            isSelected = true
-        ),
-        LanguageItem(
-            text = "Deutsch",
-            isSelected = false
-        ),
-    )
+fun changeLanguage(languageCode: String) {
+    // languageCode
+    val appLocale: LocaleListCompat = LocaleListCompat.forLanguageTags(languageCode)
+    AppCompatDelegate.setApplicationLocales(appLocale)
 }
 
-data class LanguageItem(
-    val text: String,
-    val isSelected: Boolean
-)
+fun getCurrentAppLanguage(): AppLanguage {
+    // 1. Getting a list
+    val locales = AppCompatDelegate.getApplicationLocales()
 
-enum class AppLanguage(val title: String) {
-    EN("English"),
-    DE("Deutsch")
+    // 2. We check if it is empty
+    val languageCode = if (!locales.isEmpty) {
+        locales[0]?.language
+    } else {
+        // If it is empty, we take the language of the system
+        Locale.getDefault().language
+    }
+
+    // 3. Шwe put EN/DE in our list, if we don't find it, we return EN
+    return AppLanguage.entries.find { it.code == languageCode } ?: AppLanguage.EN
 }
 
 @Preview

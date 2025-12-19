@@ -41,7 +41,7 @@ import com.example.habitstracker.core.presentation.UiText
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 
 @Composable
-fun DefaultHabitGroupItem(item: DefaultHabitGroupItem, /*modifier: Modifier*/) {
+fun DefaultHabitGroupItem(item: DefaultHabitGroupItem) {
     val navController = LocalNavController.current
     val context = LocalContext.current
     Card(
@@ -127,56 +127,56 @@ data class DefaultHabitGroupItem(
 
 val defaultsHabitsGroupList = listOf(
     DefaultHabitGroupItem(
-        name = UiText.StringResources(resId = R.string.get_fit),
-        describe = UiText.DynamicString("Sweet never lies"),
+        name = UiText.StringResources(R.string.get_fit),
+        describe = UiText.StringResources((R.string.sweet_never_lies)),
         icon = Icons.Rounded.SportsFootball,
         iconColor = Color(0xFFE13C0B)
     ),
     DefaultHabitGroupItem(
         name = UiText.StringResources(R.string.eat_drink_healthily),
-        describe = UiText.DynamicString("Stick to healthy eating"),
+        describe = UiText.StringResources((R.string.stick_to_healthy_eating)),
         icon = Icons.Rounded.Restaurant,
         iconColor = Color(0xFF1BBCC2).copy(0.9f)
     ),
     DefaultHabitGroupItem(
         name = UiText.StringResources(R.string.good_morning),
-        describe = UiText.DynamicString("In the morning's glow, let the right path show"),
+        describe = UiText.StringResources(R.string.in_the_morning_s_glow_let_the_right_path_show),
         icon = Icons.Filled.WbSunny,
         iconColor = Color(0xFFE7DF0C)
     ),
     DefaultHabitGroupItem(
         name = UiText.StringResources(R.string.before_sleep),
-        describe = UiText.DynamicString("May your dream be sweat tonight"),
+        describe = UiText.StringResources(R.string.may_your_dream_be_sweat_tonight),
         icon = Icons.Filled.Bedtime,
         iconColor = Color(0xFF3673DE)
     ),
     DefaultHabitGroupItem(
         name = UiText.StringResources(R.string.self_discipline),
-        describe = UiText.DynamicString("Take control of your own self-management"),
+        describe = UiText.StringResources(R.string.take_control_of_your_own_self_management),
         icon = Icons.Filled.BackHand,
         iconColor = Color(0xFFD94141)
     ),
     DefaultHabitGroupItem(
         name = UiText.StringResources(R.string.leisure_moments),
-        describe = UiText.DynamicString("Live your life to the max"),
+        describe = UiText.StringResources(R.string.live_your_life_to_the_max),
         icon = Icons.Filled.SportsEsports,
         iconColor = Color(0xFF9CCC65)
     ),
     DefaultHabitGroupItem(
         name = UiText.StringResources(R.string.entertainment),
-        describe = UiText.DynamicString("Your efforts deserve a break"),
+        describe = UiText.StringResources(R.string.your_efforts_deserve_a_break),
         icon = Icons.Rounded.SentimentVerySatisfied,
         iconColor = Color(0xFF5AB91F)
     ),
     DefaultHabitGroupItem(
         name = UiText.StringResources(R.string.productivity),
-        describe = UiText.DynamicString("Be strategic with your efforts and time"),
+        describe = UiText.StringResources(R.string.be_strategic_with_your_efforts_and_time),
         icon = Icons.Filled.InsertChartOutlined,
         iconColor = Color(0xFF34D762)
     ),
     DefaultHabitGroupItem(
         name = UiText.StringResources(R.string.stronger_mind),
-        describe = UiText.DynamicString("What doesn`t kill you makes you stronger"),
+        describe = UiText.StringResources(R.string.what_doesn_t_kill_you_makes_you_stronger),
         icon = Icons.Filled.Lightbulb,
         iconColor = Color(0xFFECE82D)
     ),

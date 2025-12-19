@@ -129,7 +129,7 @@ fun TodayScreenRoot(
                 )
 
                 val newlyUnlocked = allAchievements.filter { ach ->
-                    val section = AchievementSection.fromString(ach.section, context)
+                    val section = AchievementSection.fromString(ach.section)
                     !ach.notified && (metrics[section] ?: 0) >= ach.target
                 }
 
@@ -261,7 +261,15 @@ fun TodayScreen(
 
                         val groupedHabits = habitListState.groupBy { it.executionTime }
 
-                        val dayPartsOrder = listOf("Anytime", "Morning", "Day", "Evening")
+// Define a pair: "Key from the database" -> "ID of the resource for translation"
+// Important: The first element ("Anytime", "Morning"...) must exactly match the one
+// stored in the it.executionTime field of your ShownHabit object
+                        val dayPartsMapping = listOf(
+                            "Anytime" to R.string.anytime,
+                            "Morning" to R.string.morning,
+                            "Day"     to R.string.day,
+                            "Evening" to R.string.evening
+                        )
 
                         Crossfade(
                             targetState = groupedHabits,
@@ -275,8 +283,8 @@ fun TodayScreen(
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
 
-                                dayPartsOrder.forEach { dayPart ->
-                                    val habitsInPart = habits[dayPart].orEmpty()
+                                dayPartsMapping.forEach { (dbKey, stringResId) ->
+                                    val habitsInPart = habits[dbKey].orEmpty()
                                     if (habitsInPart.isNotEmpty()) {
                                         item {
                                             Text(
@@ -287,7 +295,7 @@ fun TodayScreen(
                                                         start = 20.dp,
                                                         bottom = 12.dp
                                                     ),
-                                                text = dayPart,
+                                                text = stringResource(id = stringResId),
                                                 color = Color.White.copy(alpha = 0.8f),
                                                 fontSize = 15.sp,
                                                 fontWeight = FontWeight.Bold,

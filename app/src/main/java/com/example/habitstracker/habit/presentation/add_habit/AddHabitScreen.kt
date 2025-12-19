@@ -43,12 +43,10 @@ import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.navigation.Route
 import com.example.habitstracker.core.presentation.theme.AppTheme
-import com.example.habitstracker.core.presentation.theme.ColorGradient
 import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.core.presentation.utils.TestTags
-import com.example.habitstracker.core.presentation.utils.getColorFromHex
 import com.example.habitstracker.core.presentation.utils.getIconName
 import com.example.habitstracker.core.presentation.utils.toHex
 import com.example.habitstracker.habit.presentation.add_habit.components.DefaultHabitGroupItem
@@ -140,7 +138,7 @@ fun TopBarAddHabitScreen(navController: NavController) {
     TopAppBar(
         title = {
             Text(
-                text = "New Habit",
+                text = stringResource(R.string.new_habit),
                 fontSize = 20.sp,
                 color = Color.White,
                 fontFamily = PoppinsFontFamily

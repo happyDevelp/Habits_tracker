@@ -132,7 +132,7 @@ fun HabitItem(
                     ) {
 
                         DropdownMenuItem(
-                            text = { Text(text = "Edit") },
+                            text = { Text(text = stringResource(R.string.edit)) },
                             trailingIcon = { Icons.Default.Edit },
                             onClick = {
                                 isMenuExpanded = false
@@ -147,7 +147,7 @@ fun HabitItem(
                         )
 
                         DropdownMenuItem(
-                            text = { Text(text = "Delete") },
+                            text = { Text(text = stringResource(R.string.delete)) },
                             trailingIcon = { Icons.Default.Delete },
                             onClick = {
                                 isMenuExpanded = false

@@ -7,20 +7,22 @@ import androidx.compose.material.icons.outlined.StarRate
 import androidx.compose.material.icons.outlined.SupportAgent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.example.habitstracker.R
 import com.example.habitstracker.app.navigation.Route
+import com.example.habitstracker.core.presentation.UiText
 import com.example.habitstracker.core.presentation.theme.HabitColor
 
 object SettingsButtons {
 
     val list = listOf(
         SettingsButtonItem(
-            text = "Notifications",
+            text = UiText.StringResources(R.string.notifications),
             icon = Icons.Outlined.Notifications,
             iconBackground = HabitColor.Purple.light,
             route = Route.Settings.Notifications
         ),
         SettingsButtonItem(
-            text = "Language",
+            text = UiText.StringResources(R.string.language),
             icon = Icons.Outlined.Language,
             iconBackground = HabitColor.DeepBlue.dark,
             route = Route.Settings.Language
@@ -32,13 +34,13 @@ object SettingsButtons {
             route = Route.Settings.Preferences
         ),*/
         SettingsButtonItem(
-            text = "Support",
+            text = UiText.StringResources(R.string.support),
             icon = Icons.Outlined.SupportAgent,
             iconBackground = HabitColor.Teal.light,
             route = Route.Settings.Support
         ),
         SettingsButtonItem(
-            text = "Rate Us",
+            text = UiText.StringResources(R.string.rate_us),
             icon = Icons.Outlined.StarRate,
             iconBackground = HabitColor.Terracotta.light,
             route = Route.Settings.RateUs
@@ -47,7 +49,7 @@ object SettingsButtons {
 }
 
 data class SettingsButtonItem(
-    val text: String,
+    val text: UiText,
     val icon: ImageVector,
     val iconBackground: Color,
     val route: Route
