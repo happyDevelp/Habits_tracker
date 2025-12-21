@@ -293,5 +293,24 @@
     <string name="morning">Morgen</string>
     <string name="day">Tag</string>
     <string name="evening">Abend</string>
+    <string name="bottomnav_today">Heute</string>
+    <string name="bottomnav_history">Verlauf</string>
+    <string name="bottomnav_statistic">Statistik</string>
+    <string name="bottomnav_me">Profil</string>
+    <string name="calendar">Kalender</string>
+    <string name="achievements">Erfolge</string>
+    <string name="my_calendar">Mein Kalender</string>
+    <string name="my_habits">Meine Gewohnheiten</string>
+    <string name="consistency">Beständigkeit</string>
+    <string name="count_unlocked">%1$d/%2$d freigeschaltet</string>
+    <string name="count_habits_finished">%1$s beendet</string>
+    <string name="target_perfect_days">%1$s perfekte Tage</string>
+    <string name="count_days_streak">%1$s Tage in Folge</string>
+    <string name="preview_days_streak">%1$s Tage in Folge</string>
+    <string name="close">SCHLIESSEN</string>
+    <string name="unlocked">Freigeschaltet!</string>
+    <string name="keep_going">Weiter so!</string>
+    <string name="achieved_at">Erreicht am %2$d. %1$s %3$d</string>
+    <string name="not_achieved">Nicht erreicht</string>
 
 </resources>

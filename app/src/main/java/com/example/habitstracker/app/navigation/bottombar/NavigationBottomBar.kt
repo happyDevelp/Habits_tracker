@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -50,7 +51,7 @@ fun NavigationBottomBar(
                 },
                 label = {
                     Text(
-                        text = item.title,
+                        text = stringResource(id = item.titleResId),
                         fontSize = 12.sp,
                         fontFamily = PoppinsFontFamily,
                         color = Color.White.copy(0.7f)

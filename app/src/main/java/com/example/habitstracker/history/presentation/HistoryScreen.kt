@@ -31,6 +31,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,6 +39,7 @@ import androidx.compose.ui.unit.times
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.app.LocalSettingsSheetController
 import com.example.habitstracker.app.SettingsSheetController
@@ -52,7 +54,6 @@ import com.example.habitstracker.habit.presentation.today_main.components.Settin
 import com.example.habitstracker.history.domain.AchievementEntity
 import com.example.habitstracker.history.presentation.components.scaffold.TopBarHistoryScreen
 import com.example.habitstracker.history.presentation.tab_screens.AchievementsScreen
-import com.example.habitstracker.history.presentation.tab_screens.AllHabitScreen
 import com.example.habitstracker.history.presentation.tab_screens.HistoryCalendarScreen
 import com.example.habitstracker.me.presentation.sync.SyncViewModel
 import kotlinx.coroutines.launch
@@ -107,7 +108,10 @@ fun HistoryScreen(
             contentAlignment = Alignment.Center
         ) {
             val coroutineScope = rememberCoroutineScope()
-            val tabs = listOf("Calendar", "All habits", "Achievements")
+            val tabs = listOf(
+                stringResource(R.string.calendar),
+                stringResource(R.string.achievements)
+            )
             val pagerState = rememberPagerState(
                 initialPage = startTab,
                 pageCount = { tabs.size }
@@ -170,9 +174,7 @@ fun HistoryScreen(
                             onDeleteClick = onDeleteClick
                         )
 
-                        1 -> AllHabitScreen()
-
-                        2 -> AchievementsScreen(
+                        1 -> AchievementsScreen(
                             mapHabitsToDate = mapHabitsToDate,
                             allAchievements = allAchievements,
                         )

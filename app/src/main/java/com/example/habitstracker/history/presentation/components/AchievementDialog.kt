@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.example.habitstracker.R
+import com.example.habitstracker.core.presentation.UiText
 import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
@@ -70,14 +71,14 @@ fun AchievementDialog(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                var topText = "Not achieved"
+                var topText = stringResource(R.string.not_achieved)
                 if (isAchieved) {
                     val achDate = LocalDate.parse(date)
                     val month = achDate.month.name
                         .take(3).lowercase().replaceFirstChar { it.uppercase() }
                     val day = achDate.dayOfMonth
                     val year = achDate.year
-                    topText = "Achieved at $month $day, $year"
+                    topText = stringResource(R.string.achieved_at, month, day, year)
                 }
 
                 Text(
@@ -142,7 +143,9 @@ fun AchievementDialog(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Text(
-                    text = if (isAchieved) "Unlocked!" else "Keep Going!",
+                    text = if (isAchieved)
+                        stringResource(R.string.unlocked)
+                    else stringResource(R.string.keep_going),
                     fontSize = 18.sp,
                     fontFamily = PoppinsFontFamily,
                     fontWeight = FontWeight.Bold,
@@ -151,7 +154,7 @@ fun AchievementDialog(
                 )
                 Spacer(modifier = Modifier.height(18.dp))
                 Text(
-                    text = section.description.invoke(section.targets[index], index),
+                    text = section.description.invoke(section.targets[index], index).asString(),
                     fontSize = 14.sp,
                     fontFamily = PoppinsFontFamily,
                     color = Color.White.copy(0.8f),
@@ -168,7 +171,7 @@ fun AchievementDialog(
                     shape = RoundedCornerShape(50)
                 ) {
                     Text(
-                        text = "CLOSE",
+                        text = stringResource(R.string.close),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White
@@ -191,7 +194,7 @@ private fun AchievementDialogPreview() {
             targets = listOf("3", "5", "10", "20", "50", "100"),
             progress = 1,
             description = { target, index ->
-                "$target Days Streak"
+                UiText.StringResources(R.string.preview_days_streak, target)
             },
             isNotified = emptyList(),
             unlockedAt = emptyList()

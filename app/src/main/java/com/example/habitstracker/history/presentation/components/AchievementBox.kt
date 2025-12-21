@@ -35,6 +35,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.habitstracker.R
+import com.example.habitstracker.core.presentation.UiText
 import com.example.habitstracker.core.presentation.theme.MyPalette
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
@@ -83,7 +84,7 @@ fun AchievementBox(
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "$unlockedAchievements/$totalAchievements unlocked",
+                text = stringResource(R.string.count_unlocked, unlockedAchievements, totalAchievements),
                 fontSize = 11.sp,
                 fontFamily = PoppinsFontFamily,
                 color = Color.White.copy(0.7f),
@@ -105,7 +106,7 @@ fun AchievementBox(
                                 Column(
                                     modifier = Modifier
                                         .fillMaxWidth()
-                                        .clickable{
+                                        .clickable {
                                             showDialog = true
                                             selectedIndex = globalIndex
                                         },
@@ -155,14 +156,16 @@ fun AchievementBox(
                                                 fontSize = 15.sp,
                                                 fontFamily = PoppinsFontFamily,
                                                 fontWeight = FontWeight.Bold,
-                                                color = if (isAchieved) MyPalette.blueColor else Color.Black.copy(0.5f),
+                                                color = if (isAchieved) MyPalette.blueColor else Color.Black.copy(
+                                                    0.5f
+                                                ),
                                                 textAlign = TextAlign.Center
                                             )
                                         }
                                     }
                                     Spacer(modifier = Modifier.height(8.dp))
                                     Text(
-                                        text = section.description.invoke(targetValue, globalIndex),
+                                        text = section.description.invoke(targetValue, globalIndex).asString(),
                                         fontSize = 11.sp,
                                         fontFamily = PoppinsFontFamily,
                                         lineHeight = 12.sp,
@@ -200,7 +203,7 @@ fun HabitBoxPreview() {
             iconRes = R.drawable.dart_board,
             targets = listOf("10", "10", "10", "10", "10", "10", "10", "10", "10", "10"),
             progress = 10,
-            description = { a, _ -> a },
+            description = { a, _ -> UiText.DynamicString(a) },
             isNotified = emptyList(),
             unlockedAt = emptyList()
         ),

@@ -34,10 +34,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.compose.rememberNavController
+import com.example.habitstracker.R
 import com.example.habitstracker.app.LocalNavController
 import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.HabitColor
@@ -83,7 +85,7 @@ fun HistoryCalendarScreen(
         ) {
             MyText(
                 modifier = modifier.align(Alignment.Center),
-                text = "My Calendar",
+                text = stringResource(R.string.my_calendar),
                 textSize = 18.sp
             )
         }
@@ -148,12 +150,11 @@ fun HistoryCalendarScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             MyText(
-
-                text = "My Habits",
+                text = stringResource(R.string.my_habits),
                 textSize = 18.sp
             )
             MyText(
-                text = "Consistency",
+                text = stringResource(R.string.consistency),
                 textSize = 13.sp,
                 color = Color.White.copy(0.7f)
             )

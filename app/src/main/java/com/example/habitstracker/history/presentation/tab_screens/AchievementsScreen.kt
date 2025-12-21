@@ -1,5 +1,6 @@
 package com.example.habitstracker.history.presentation.tab_screens
 
+import android.util.Log
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -10,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.habitstracker.R
+import com.example.habitstracker.core.presentation.UiText
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.history.domain.AchievementEntity
@@ -34,40 +36,52 @@ fun AchievementsScreen(
 
     val bestStreak = getBestStreak(mapHabitsToDate)
 
+    Log.d("AchievementsScreen", "allAchievements: $allAchievements")
+
     val habitsFinished =
-        allAchievements.filter { it.section == stringResource(R.string.achiev_habits_finished) }
+        allAchievements.filter { it.section == "Habits Finished" }
     val perfectDays =
-        allAchievements.filter { it.section == stringResource(R.string.achiev_perfect_days) }
+        allAchievements.filter { it.section == "Perfect Days" }
     val bestStreaks =
-        allAchievements.filter { it.section == stringResource(R.string.achiev_best_streak) }
+        allAchievements.filter { it.section == "Best Streak" }
 
     val sections = listOf(
         AchievementSection(
-            title = "Habits Finished",
+            title = stringResource(R.string.achiev_habits_finished),
             iconRes = R.drawable.dart_board,
             targets = habitsFinished.map { it.target.toString() },
             progress = totalFinishedHabits,
             description = { target, index ->
-                 "$target Habits Finished"
+                UiText.StringResources(R.string.count_habits_finished, target)
             },
             isNotified = habitsFinished.map { it.notified },
             unlockedAt = habitsFinished.map { it.unlockedAt }
         ),
         AchievementSection(
-            title = "Perfect Days",
+            title = stringResource(R.string.achiev_perfect_days),
             iconRes = R.drawable.calendar_hexagon,
             targets = perfectDays.map { it.target.toString() },
             progress = totalPerfectDays,
-            description = { target, _ -> "$target Perfect Days" },
+            description = { target, _ ->
+                UiText.StringResources(
+                    R.string.target_perfect_days,
+                    target
+                )
+            },
             isNotified = habitsFinished.map { it.notified },
             unlockedAt = habitsFinished.map { it.unlockedAt }
         ),
         AchievementSection(
-            title = "Best Streak",
+            title = stringResource(R.string.achiev_best_streak),
             iconRes = R.drawable.streak_achiev,
             targets = bestStreaks.map { it.target.toString() },
             progress = bestStreak,
-            description = { target, _ -> "$target Days Streak" },
+            description = { target, _ ->
+                UiText.StringResources(
+                    R.string.count_days_streak,
+                    target
+                )
+            },
             isNotified = habitsFinished.map { it.notified },
             unlockedAt = habitsFinished.map { it.unlockedAt }
         )
@@ -103,14 +117,14 @@ data class AchievementSection(
     @DrawableRes val iconRes: Int,
     val targets: List<String>, // ["1","10","25",...]
     val progress: Int,
-    val description: (target: String, index: Int) -> String,
+    val description: (target: String, index: Int) -> UiText,
     val isNotified: List<Boolean>,
     val unlockedAt: List<String>
 )
 
 @Preview(showSystemUi = true)
 @Composable
-fun AchievementsScreenPreview(modifier: Modifier = Modifier) {
+private fun AchievementsScreenPreview(modifier: Modifier = Modifier) {
     val fakeAchievements = listOf(
         AchievementEntity(
             id = 1,

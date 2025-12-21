@@ -50,7 +50,6 @@ import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import java.util.Locale
 
-// 1. Оновлюємо Enum: додаємо код мови
 enum class AppLanguage(val title: String, val code: String) {
     EN("English", "en"),
     DE("Deutsch", "de")

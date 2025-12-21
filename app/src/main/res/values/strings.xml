@@ -290,5 +290,23 @@
     <string name="icon" translatable="false">Icon</string>
     <string name="color">Color</string>
 
-
+    <string name="bottomnav_today">Today</string>
+    <string name="bottomnav_history">History</string>
+    <string name="bottomnav_statistic">Statistic</string>
+    <string name="bottomnav_me">Me</string>
+    <string name="calendar">Calendar</string>
+    <string name="achievements">Achievements</string>
+    <string name="my_calendar">My Calendar</string>
+    <string name="my_habits">My Habits</string>
+    <string name="consistency">Consistency</string>
+    <string name="count_unlocked">%1$d/%2$d unlocked</string>
+    <string name="count_habits_finished">%1$s Finished</string>
+    <string name="target_perfect_days">%1$s Perfect Days</string>
+    <string name="count_days_streak">%1$s Days Streak</string>
+    <string name="preview_days_streak">%1$s Days Streak</string>
+    <string name="close">CLOSE</string>
+    <string name="unlocked">Unlocked!</string>
+    <string name="keep_going">Keep Going!</string>
+    <string name="achieved_at">Achieved at %1$s %2$d, %3$d</string>
+    <string name="not_achieved">Not achieved</string>
 </resources>
