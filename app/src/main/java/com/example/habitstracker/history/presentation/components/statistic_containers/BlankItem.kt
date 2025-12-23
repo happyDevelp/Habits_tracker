@@ -5,6 +5,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.habitstracker.R
+import com.example.habitstracker.core.presentation.UiText
 import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.core.presentation.utils.gradientColor
 
@@ -33,28 +34,28 @@ fun getFilledBlankList(
             gradientColor = gradientColor(HabitColor.DeepBlue.light, HabitColor.DeepBlue.dark),
             topText = context.getString(R.string.current_streak),
             middleText = "$currentStreak",
-            bottomText = "The best streak: $bestStreak",
+            bottomText = UiText.StringResources(R.string.the_best_streak, bestStreak).asString(context),
         ),
         BlankItem(
             width = 125.dp,
             gradientColor = gradientColor(HabitColor.BrickRed.light, HabitColor.BrickRed.dark),
             topText = context.getString(R.string.number_of_completed_habits),
             middleText = "$totalCompletedHabits",
-            bottomText = "This week: $thisWeekSelectedHabits"
+            bottomText = UiText.StringResources(R.string.this_week, thisWeekSelectedHabits).asString(context)
         ),
         BlankItem(
             width = 130.dp,
             gradientColor = gradientColor(HabitColor.Orange.light, HabitColor.Orange.dark),
             topText = context.getString(R.string.percentage_of_completed_habits),
             middleText = "${percentage.toInt()}%",
-            bottomText = "Habits: $totalCompletedHabits/$totalHabits",
+            bottomText = UiText.StringResources(R.string.habits, totalCompletedHabits, totalHabits).asString(context)
         ),
         BlankItem(
             width = 130.dp,
             gradientColor = gradientColor(HabitColor.LeafGreen.light, HabitColor.LeafGreen.dark),
             topText = context.getString(R.string.perfect_days),
             middleText = "$perfectDaysCounter",
-            bottomText = "This week: $thisWeekPerfectedDays",
+            bottomText = UiText.StringResources(R.string.this_week_statistic, thisWeekPerfectedDays).asString(context)
         )
     )
     return listOf

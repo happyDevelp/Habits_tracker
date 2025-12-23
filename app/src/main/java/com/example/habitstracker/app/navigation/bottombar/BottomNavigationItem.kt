@@ -44,6 +44,6 @@ val listOfNavItems = listOf(
         titleResId = R.string.bottomnav_me,
         selectedIcon = Icons.Filled.AccountCircle,
         unSelectedIcon = Icons.Rounded.AccountCircle,
-        route = Route.Me
+        route = Route.Profile
     )
 )

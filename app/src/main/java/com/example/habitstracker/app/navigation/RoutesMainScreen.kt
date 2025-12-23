@@ -20,11 +20,9 @@ sealed interface Route {
     data object Statistic : Route
 
     @Serializable
-    data object Me : Route
+    data object Profile : Route
 
     object Settings {
-        @Serializable
-        data object Account : Route
 
         @Serializable
         data object Notifications : Route
@@ -32,8 +30,6 @@ sealed interface Route {
         @Serializable
         data object Language : Route
 
-        @Serializable
-        data object Preferences : Route
 
         @Serializable
         data object Support : Route

@@ -20,7 +20,7 @@
     <string name="current_streak">Aktuelle\nSerie</string>
     <string name="number_of_completed_habits">Abgeschlossene Gewohnheiten gesamt</string>
     <string name="percentage_of_completed_habits">Prozentsatz abgeschlossener Gewohnheiten</string>
-    <string name="perfect_days">Perfekte\nTage</string>
+    <string name="perfect_days">Perfekte Tage</string>
     <string name="param_selected_days">paramSelectedDays</string>
 
     <!-- LocalDate patterns -->
@@ -74,7 +74,7 @@
     <string name="log_out">Abmelden</string>
     <string name="clear_cloud_data">Cloud-Daten löschen</string>
     <string name="confirm_clear_data_from_cloud">Löschen der Cloud-Daten bestätigen</string>
-    <string name="are_you_sure_you_want_to_permanently_delete_all_your_cloud_stored_habit_data">
+    <string name="confirmation_permanently_delete_all_cloud_data">
         Möchtest du wirklich alle in der Cloud gespeicherten Gewohnheitsdaten dauerhaft löschen?
     </string>
     <string name="close_settings">Einstellungen schließen</string>
@@ -312,5 +312,54 @@
     <string name="keep_going">Weiter so!</string>
     <string name="achieved_at">Erreicht am %2$d. %1$s %3$d</string>
     <string name="not_achieved">Nicht erreicht</string>
+    <string name="congratulations">Glückwunsch!</string>
+    <string name="the_best_streak">Beste Serie: %1$d</string>
+    <string name="this_week">Diese Woche: %1$d</string>
+    <string name="habits">Gewohnheiten: %1$d/%2$d</string>
+    <string name="this_week_statistic">Diese Woche: %1$d</string>
+    <string name="consistency_subtitle">Führe deine Gewohnheiten täglich aus, um deine Beständigkeit zu erhöhen.</string>
+    <string name="hide">Ausblenden</string>
+    <string name="show_more">Mehr anzeigen</string>
+    <string name="previous_weeks">Vorherige Wochen</string>
+    <string name="current_week">Aktuelle Woche</string>
+    <string name="conntect_to_backup_text">Verbinde dein Google-Konto, um deinen Fortschritt zu sichern und Freunde zu finden</string>
+    <string name="backup_restore"><![CDATA[Sichern & Wiederherstellen]]></string>
+    <string name="welcome_back">Willkommen zurück,</string>
+    <string name="me">Ich</string>
+    <string name="friends">Freunde</string>
+    <string name="enter_friend_s_id">ID des Freundes eingeben</string>
+    <string name="share_link">Link teilen</string>
+    <string name="or">oder</string>
+    <string name="no_friend_requests_yet">Noch keine Freundschaftsanfragen</string>
+    <string name="share_your_id_to_add_new_friends">Teile deine ID, um neue Freunde hinzuzufügen</string>
+    <string name="sent_you_a_friend_request">hat dir eine Freundschaftsanfrage gesendet</string>
+    <string name="accept">Annehmen</string>
+    <string name="ignore">Ignorieren</string>
+    <string name="delete_friend">Freund löschen</string>
+    <string name="confirmation_all_cload_data_delete">Bist du sicher, dass du alle deine in der Cloud gespeicherten Gewohnheitsdaten dauerhaft löschen möchtest? \n\nDiese Aktion kann nicht rückgängig gemacht werden.</string>
+    <string name="no_friends_yet">Noch keine Freunde</string>
+    <string name="friend_requests">Freundschaftsanfragen</string>
+    <string name="total_completed_habits">Gesamtzahl abgeschlossener Gewohnheiten</string>
+    <string name="best_streak">Beste Serie</string>
+    <string name="friend_since">befreundet seit: %1$s</string>
+    <string name="logged_in_successfully">Erfolgreich angemeldet</string>
+    <string name="logged_out_successfully">Erfolgreich abgemeldet</string>
+    <string name="login_failed">Anmeldung fehlgeschlagen</string>
+    <string name="no_internet_connection">Keine Internetverbindung</string>
+    <string name="sync_successful">Synchronisierung erfolgreich</string>
+    <string name="sync_failed">Synchronisierung fehlgeschlagen</string>
+    <string name="download_data_from_cloud_successful">Daten erfolgreich aus der Cloud heruntergeladen</string>
+    <string name="download_data_from_cloud_failed">Herunterladen der Daten aus der Cloud fehlgeschlagen</string>
+    <string name="cloud_data_successful_deleted">Cloud-Daten erfolgreich gelöscht</string>
+    <string name="cloud_data_deletion_failed">Löschen der Cloud-Daten fehlgeschlagen</string>
+    <string name="friend_request_sent">Freundschaftsanfrage gesendet!</string>
+    <string name="user_with_this_id_not_found">Benutzer з цієї ID nicht gefunden</string>
+    <string name="you_are_already_friends_with_this_user">Du bist bereits mit diesem Benutzer befreundet</string>
+    <string name="you_cannot_add_yourself">Du kannst dich nicht selbst hinzufügen</string>
+    <string name="failed_to_send_request">Anfrage konnte nicht gesendet werden</string>
+    <string name="upload_data_from_cloud">Daten aus Cloud laden</string>
+    <string name="account_management">Kontoverwaltung</string>
+    <string name="delete_friend_confirmation_template">Möchtest du %1$s wirklich aus deiner Freundesliste entfernen?</string>
+
 
 </resources>

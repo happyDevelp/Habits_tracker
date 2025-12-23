@@ -1,10 +1,9 @@
 package com.example.habitstracker.habit.presentation.today_main.components
 
-import com.example.habitstracker.habit.domain.DateHabitEntity
 import com.example.habitstracker.habit.domain.ShownHabit
 import com.example.habitstracker.habit.domain.toDateHabitEntity
 import com.example.habitstracker.habit.presentation.today_main.utility.getBestStreak
-import com.example.habitstracker.me.domain.model.UserStats
+import com.example.habitstracker.profile.domain.model.UserStats
 import com.example.habitstracker.statistic.presentation.rolling30DayConsistency
 import java.time.LocalDate
 import java.time.temporal.WeekFields

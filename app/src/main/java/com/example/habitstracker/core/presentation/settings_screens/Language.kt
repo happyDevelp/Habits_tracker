@@ -52,7 +52,8 @@ import java.util.Locale
 
 enum class AppLanguage(val title: String, val code: String) {
     EN("English", "en"),
-    DE("Deutsch", "de")
+    DE("Deutsch", "de"),
+    UA("Українська", "uk")
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,21 +46,17 @@ fun DrawStatisticContainers(dateHabitList: List<DateHabitEntity>) {
     val percentage = totalCompletedHabits / totalHabits.toFloat() * 100
 
     /** Perfect days */
-    val perfectDaysCounter by remember {
-        mutableIntStateOf(
-            dateHabitList
-                .groupBy { it.currentDate }
-                .count { (_, habits) -> habits.all { it.completed } }
-        )
+    val perfectDaysCounter = remember(dateHabitList) {
+        dateHabitList
+            .groupBy { it.currentDate }
+            .count { (_, habits) -> habits.all { it.completed } }
     }
 
-    val thisWeekPerfectedDays by remember {
-        mutableIntStateOf(
+    val thisWeekPerfectedDays = remember(dateHabitList) {
             dateHabitList
                 .filter { it.currentDate >= lastMonday.toString() }
                 .groupBy { it.currentDate }
                 .count { (_, habits) -> habits.all { it.completed } }
-        )
     }
 
     LazyRow(

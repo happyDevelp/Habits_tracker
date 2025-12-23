@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -33,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.habitstracker.R
 import com.example.habitstracker.core.presentation.theme.PoppinsFontFamily
 import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 
@@ -41,8 +43,8 @@ fun DrawConsistencyContainer(
     modifier: Modifier = Modifier,
     percentage: Int,
     // texts
-    title: String? = "Consistency",
-    subtitle: String? = "Perform your habits daily to increase your consistency percentage.",
+    title: String? = stringResource(R.string.consistency),
+    subtitle: String? = stringResource(R.string.consistency_subtitle),
     // sizes
     strokeWidth: Dp = 18.dp,
     diameter: Dp = 220.dp,

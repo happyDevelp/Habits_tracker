@@ -87,7 +87,7 @@ fun NotificationDialog(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = "Congratulations!",
+                    text = stringResource(R.string.congratulations),
                     fontSize = 21.sp,
                     fontWeight = FontWeight.Bold,
                     color = Color.White,
@@ -152,7 +152,7 @@ fun NotificationDialog(
                     shape = RoundedCornerShape(50)
                 ) {
                     Text(
-                        text = "CLOSE",
+                        text = stringResource(R.string.close),
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color.White

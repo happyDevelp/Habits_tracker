@@ -21,7 +21,7 @@
     <string name="current_streak">Current \nstreak</string>
     <string name="number_of_completed_habits">Total completed habits</string>
     <string name="percentage_of_completed_habits">Percentage of completed habits</string>
-    <string name="perfect_days">Perfect \ndays</string>
+    <string name="perfect_days">Perfect days</string>
     <string name="param_selected_days">paramSelectedDays</string>
 
     <!--LocalDate patterns-->
@@ -76,7 +76,7 @@
     <string name="log_out">Log Out</string>
     <string name="clear_cloud_data">Clear Cloud Data</string>
     <string name="confirm_clear_data_from_cloud">Confirm Clear Data From Cloud</string>
-    <string name="are_you_sure_you_want_to_permanently_delete_all_your_cloud_stored_habit_data">Are you sure you want to permanently delete all your cloud-stored habit data?</string>
+
     <string name="anytime">Anytime</string>
     <string name="morning">Morning</string>
     <string name="day">Day</string>
@@ -309,4 +309,52 @@
     <string name="keep_going">Keep Going!</string>
     <string name="achieved_at">Achieved at %1$s %2$d, %3$d</string>
     <string name="not_achieved">Not achieved</string>
+    <string name="congratulations">Congratulations!</string>
+    <string name="the_best_streak">The best streak: %1$d</string>
+    <string name="this_week">This week: %1$d</string>
+    <string name="habits">Habits: %1$d/%2$d</string>
+    <string name="this_week_statistic">This week: %1$d</string>
+    <string name="consistency_subtitle">Perform your habits daily to increase your consistency percentage.</string>
+    <string name="hide">Hide</string>
+    <string name="show_more">Show more</string>
+    <string name="previous_weeks">Previous Weeks</string>
+    <string name="current_week">Current Week</string>
+    <string name="conntect_to_backup_text">Connect your Google account to back up your progress and find your friends</string>
+    <string name="backup_restore"><![CDATA[Backup & Restore]]></string>
+    <string name="welcome_back">Welcome Back,</string>
+    <string name="friends">Friends</string>
+    <string name="enter_friend_s_id">Enter friend\'s ID</string>
+    <string name="share_link">Share link</string>
+    <string name="or">or</string>
+    <string name="no_friend_requests_yet">No friend requests yet</string>
+    <string name="share_your_id_to_add_new_friends">Share your ID to add new friends</string>
+    <string name="sent_you_a_friend_request">sent you a friend request</string>
+    <string name="accept">Accept</string>
+    <string name="ignore">Ignore</string>
+    <string name="delete_friend">Delete friend</string>
+    <string name="confirmation_all_cload_data_delete">Are you sure you want to permanently delete all your cloud-stored habit data? \n\nThis action cannot be undone.</string>
+    <string name="no_friends_yet">No friends yet</string>
+    <string name="friend_requests">Friend requests</string>
+    <string name="total_completed_habits">Total completed habits</string>
+    <string name="best_streak">Best streak</string>
+    <string name="friend_since">friend since: %1$s</string>
+    <string name="logged_in_successfully">Logged in successfully</string>
+    <string name="logged_out_successfully">Logged out successfully</string>
+    <string name="login_failed">Login failed</string>
+    <string name="no_internet_connection">No internet connection</string>
+    <string name="sync_successful">Sync successful</string>
+    <string name="sync_failed">Sync failed</string>
+    <string name="download_data_from_cloud_successful">Download data from cloud successful</string>
+    <string name="download_data_from_cloud_failed">Download data from cloud failed</string>
+    <string name="cloud_data_successful_deleted">Cloud data successful deleted</string>
+    <string name="cloud_data_deletion_failed">Cloud data deletion failed</string>
+    <string name="friend_request_sent">Friend request sent!</string>
+    <string name="user_with_this_id_not_found">User with this ID not found</string>
+    <string name="you_are_already_friends_with_this_user">You are already friends with this user</string>
+    <string name="you_cannot_add_yourself">You cannot add yourself</string>
+    <string name="failed_to_send_request">Failed to send request</string>
+    <string name="upload_data_from_cloud">Upload Data From Cloud</string>
+    <string name="account_management">Account Management</string>
+    <string name="delete_friend_confirmation_template">Are you sure you want to remove %1$s from friends?</string>
+
 </resources>

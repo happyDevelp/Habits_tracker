@@ -55,6 +55,8 @@ import com.example.habitstracker.core.presentation.theme.containerBackgroundDark
 import com.example.habitstracker.core.presentation.utils.gradientColor
 import com.example.habitstracker.habit.domain.DateHabitEntity
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun WeekDiagramContainer(_weeklyMap: Map<Pair<LocalDate, LocalDate>, List<DateHabitEntity>>) {
@@ -106,7 +108,7 @@ fun WeekDiagramContainer(_weeklyMap: Map<Pair<LocalDate, LocalDate>, List<DateHa
                     .wrapContentHeight()
             ) {
                 Text(
-                    text = "Current Week",
+                    text = stringResource(R.string.current_week),
                     fontSize = 17.sp,
                     color = Color.White.copy(0.88f),
                     fontFamily = PoppinsFontFamily,
@@ -130,7 +132,7 @@ fun WeekDiagramContainer(_weeklyMap: Map<Pair<LocalDate, LocalDate>, List<DateHa
                     .wrapContentHeight()
             ) {
                 Text(
-                    text = "Previous Weeks",
+                    text = stringResource(R.string.previous_weeks),
                     fontSize = 17.sp,
                     color = Color.White.copy(0.88f),
                     fontFamily = PoppinsFontFamily,
@@ -184,7 +186,9 @@ fun WeekDiagramContainer(_weeklyMap: Map<Pair<LocalDate, LocalDate>, List<DateHa
                     shape = RoundedCornerShape(12.dp)
                 ) {
                     Text(
-                        text = if (showAllPreviousWeeks) "Hide" else "Show more",
+                        text = if (showAllPreviousWeeks) stringResource(R.string.hide) else stringResource(
+                            R.string.show_more
+                        ),
                         color = Color.White.copy(0.88f),
                         fontFamily = PoppinsFontFamily
                     )
@@ -241,16 +245,19 @@ private fun WeekAvgCompletion(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Column(horizontalAlignment = Alignment.Start) {
+
+                // Use Locale.getDefault() to automatically select a language (German/English/Ukr)
+                val formatter = DateTimeFormatter.ofPattern("d MMM", Locale.getDefault())
+
+                val startText = monday.format(formatter)
+                val endText = sunday.format(formatter)
+
                 MyText(
-                    text = "${monday.dayOfMonth} ${
-                        monday.month.toString()
-                            .take(3).lowercase().replaceFirstChar { it.uppercase() }
-                    } - ${sunday.dayOfMonth} ${
-                        monday.month.toString()
-                            .take(3).lowercase().replaceFirstChar { it.uppercase() }
-                    }",
+                    text = "$startText - $endText",
                     textSize = 17.sp
                 )
+                // -----------------------------------
+
                 Text(
                     text = monday.year.toString(),
                     fontSize = 12.5.sp,
@@ -260,7 +267,7 @@ private fun WeekAvgCompletion(
             }
             Column(horizontalAlignment = Alignment.End) {
 
-                val avg = calcWeekAvgPercent(monday, allHabits)
+                val avg = calcWeekAvgPercent(monday, allHabits) // Перевірте чи доступна ця функція
                 MyText(
                     text = "$avg%", textSize = 17.sp, color = when {
                         avg >= 80 -> Color(0xFF1FE344)

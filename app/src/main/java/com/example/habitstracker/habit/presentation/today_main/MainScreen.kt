@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -34,6 +35,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -65,7 +67,7 @@ import com.example.habitstracker.habit.presentation.today_main.components.calcul
 import com.example.habitstracker.habit.presentation.today_main.components.calendar.CalendarRowList
 import com.example.habitstracker.habit.presentation.today_main.utility.AchievementSection
 import com.example.habitstracker.history.presentation.HistoryViewModel
-import com.example.habitstracker.me.presentation.sync.SyncViewModel
+import com.example.habitstracker.profile.presentation.sync.SyncViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 
@@ -267,7 +269,7 @@ fun TodayScreen(
                         val dayPartsMapping = listOf(
                             "Anytime" to R.string.anytime,
                             "Morning" to R.string.morning,
-                            "Day"     to R.string.day,
+                            "Day" to R.string.day,
                             "Evening" to R.string.evening
                         )
 
@@ -324,7 +326,7 @@ fun TodayScreen(
                                             modifier = modifier
                                                 .padding(bottom = 20.dp)
                                                 .fillMaxWidth(0.7f)
-                                                .height(50.dp)
+                                                .heightIn(min = 50.dp) // Allows the button to grow if there is a lot of text
                                                 .testTag(TestTags.CREATE_NEW_HABIT_BUTTON),
 
                                             onClick = {
@@ -341,9 +343,8 @@ fun TodayScreen(
                                             elevation = ButtonDefaults.buttonElevation(
                                                 defaultElevation = 6.dp,
                                                 pressedElevation = 16.dp
-                                            ),
-
-                                            ) {
+                                            )
+                                        ) {
                                             Text(
                                                 text = stringResource(R.string.create_a_new_habit),
                                                 modifier = modifier.padding(horizontal = 8.dp),
@@ -351,6 +352,7 @@ fun TodayScreen(
                                                 fontWeight = FontWeight.Bold,
                                                 fontFamily = PoppinsFontFamily,
                                                 color = Color.White,
+                                                textAlign = TextAlign.Center
                                             )
                                         }
                                     }

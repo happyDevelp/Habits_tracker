@@ -15,10 +15,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.example.habitstracker.core.presentation.MyText
 import com.example.habitstracker.core.presentation.theme.AppTheme
 import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
 import com.example.habitstracker.habit.domain.DateHabitEntity
@@ -69,14 +67,6 @@ fun StatisticScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Top
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
-
-            MyText(
-                modifier = Modifier.padding(start = 16.dp),
-                text = "STATISTICS",
-                textSize = 18.sp
-            )
-
             DrawStatisticContainers(dateHabitList = dateHabitList)
 
             DrawConsistencyContainer(percentage = consistency)

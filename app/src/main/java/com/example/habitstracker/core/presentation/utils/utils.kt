@@ -15,7 +15,11 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.core.graphics.toColorInt
 import com.example.habitstracker.core.presentation.theme.HabitColor
 import com.example.habitstracker.habit.domain.ShownHabit
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 fun List<LocalDate>.chunked(size: Int): List<List<LocalDate>> {
     return this.withIndex().groupBy { it.index / size }.values.map { it.map { it.value } }
@@ -93,3 +97,13 @@ fun gradientColor(lightColor: Color, darkColor: Color, radius: Float = 600f): Br
     center = Offset(50f, 20f),
     radius = radius // Distribution radius
 )
+
+fun Long.toFormattedDate(): String {
+    val instant = Instant.ofEpochMilli(this)
+
+    val formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy", Locale.getDefault())
+
+    return instant.atZone(ZoneId.systemDefault())
+        .toLocalDate()
+        .format(formatter)
+}

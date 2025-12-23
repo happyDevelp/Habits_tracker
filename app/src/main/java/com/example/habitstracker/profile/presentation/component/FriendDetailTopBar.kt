@@ -1,0 +1,25 @@
+package com.example.habitstracker.profile.presentation.component
+
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.unit.sp
+import com.example.habitstracker.core.presentation.MyText
+import com.example.habitstracker.core.presentation.theme.screenBackgroundDark
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun FrDetailTopBar() {
+    TopAppBar(
+        title = {
+            MyText(
+                text = "Insert friend name",
+                textSize = 26.sp,
+            )
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = screenBackgroundDark
+        ),
+    )
+}

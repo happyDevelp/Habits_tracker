@@ -55,7 +55,7 @@ import com.example.habitstracker.history.domain.AchievementEntity
 import com.example.habitstracker.history.presentation.components.scaffold.TopBarHistoryScreen
 import com.example.habitstracker.history.presentation.tab_screens.AchievementsScreen
 import com.example.habitstracker.history.presentation.tab_screens.HistoryCalendarScreen
-import com.example.habitstracker.me.presentation.sync.SyncViewModel
+import com.example.habitstracker.profile.presentation.sync.SyncViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 

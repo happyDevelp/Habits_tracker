@@ -65,7 +65,7 @@ import com.example.habitstracker.habit.presentation.add_habit.components.Executi
 import com.example.habitstracker.habit.presentation.add_habit.components.IconAndColorPicker
 import com.example.habitstracker.habit.presentation.create_own_habit.components.HabitNameTextField
 import com.example.habitstracker.habit.presentation.today_main.MainScreenViewModel
-import com.example.habitstracker.me.presentation.sync.SyncViewModel
+import com.example.habitstracker.profile.presentation.sync.SyncViewModel
 import java.time.LocalDate
 
 @Composable
