@@ -325,7 +325,6 @@
     <string name="conntect_to_backup_text">Verbinde dein Google-Konto, um deinen Fortschritt zu sichern und Freunde zu finden</string>
     <string name="backup_restore"><![CDATA[Sichern & Wiederherstellen]]></string>
     <string name="welcome_back">Willkommen zurück,</string>
-    <string name="me">Ich</string>
     <string name="friends">Freunde</string>
     <string name="enter_friend_s_id">ID des Freundes eingeben</string>
     <string name="share_link">Link teilen</string>
@@ -360,6 +359,8 @@
     <string name="upload_data_from_cloud">Daten aus Cloud laden</string>
     <string name="account_management">Kontoverwaltung</string>
     <string name="delete_friend_confirmation_template">Möchtest du %1$s wirklich aus deiner Freundesliste entfernen?</string>
-
+    <string name="don_t_forget_to_fulfill_your_goals_today">Vergiss nicht, deine heutigen Ziele zu erreichen.</string>
+    <string name="notifications_are_important">Benachrichtigungen sind wichtig</string>
+    <string name="no_thanks">Nein, danke</string>
 
 </resources>

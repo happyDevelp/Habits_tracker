@@ -356,5 +356,8 @@
     <string name="upload_data_from_cloud">Upload Data From Cloud</string>
     <string name="account_management">Account Management</string>
     <string name="delete_friend_confirmation_template">Are you sure you want to remove %1$s from friends?</string>
+    <string name="don_t_forget_to_fulfill_your_goals_today">Don\'t forget to fulfill your goals today.</string>
+    <string name="notifications_are_important">Notifications are important</string>
+    <string name="no_thanks">No, thanks</string>
 
 </resources>

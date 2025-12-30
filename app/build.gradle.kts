@@ -116,6 +116,7 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.palette.ktx)
     implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.work.runtime.ktx)
     testImplementation(libs.junit.junit)
 
     ksp(libs.androidx.room.compiler)
@@ -144,6 +145,7 @@ dependencies {
     implementation("androidx.credentials:credentials:1.3.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
     implementation("io.coil-kt:coil-compose:2.6.0")
+    //implementation("androidx.work:work-runtime-kotlin:2.9.0")
 
 
 }

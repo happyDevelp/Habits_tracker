@@ -354,5 +354,7 @@
     <string name="upload_data_from_cloud">Завантажити дані з хмари</string>
     <string name="account_management">Керування акаунтом</string>
     <string name="delete_friend_confirmation_template">Ви справді хочете видалити %1$s зі списку друзів?</string>
-
+    <string name="don_t_forget_to_fulfill_your_goals_today">Не забудь виконати свої цілі на сьогодні.</string>
+    <string name="notifications_are_important">Сповіщення важливі</string>
+    <string name="no_thanks">Ні, дякую</string>
 </resources>
