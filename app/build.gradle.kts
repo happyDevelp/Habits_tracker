@@ -10,15 +10,15 @@ plugins {
 }
 
 val versionMajor = 0
-val versionMinor = 9
+val versionMinor = 10
 val versionPatch = 0
 val versionClassifier = "beta" // Can be alpha, beta or "" if the release
 android {
-    namespace = "com.example.habitstracker"
+    namespace = "com.olesmalysh.habitstracker"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.habitstracker"
+        applicationId = "com.olesmalysh.habitstracker"
         minSdk = 26
         targetSdk = 35
         versionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
@@ -26,7 +26,7 @@ android {
         if (versionClassifier.isNotEmpty())
             versionName += "-$versionClassifier"
 
-        testInstrumentationRunner = "com.example.habitstracker.CustomTestRunner"
+        testInstrumentationRunner = "com.olesmalysh.habitstracker.CustomTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -116,6 +116,7 @@ dependencies {
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.palette.ktx)
     implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.work.runtime.ktx)
     testImplementation(libs.junit.junit)
 
     ksp(libs.androidx.room.compiler)
@@ -144,6 +145,7 @@ dependencies {
     implementation("androidx.credentials:credentials:1.3.0")
     implementation("com.google.android.libraries.identity.googleid:googleid:1.1.0")
     implementation("io.coil-kt:coil-compose:2.6.0")
+    //implementation("androidx.work:work-runtime-kotlin:2.9.0")
 
 
 }
