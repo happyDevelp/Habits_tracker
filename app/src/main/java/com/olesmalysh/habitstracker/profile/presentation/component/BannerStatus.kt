@@ -1,0 +1,3 @@
+package com.olesmalysh.habitstracker.profile.presentation.component
+
+interface BannerStatus

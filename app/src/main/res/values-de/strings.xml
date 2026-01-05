@@ -296,7 +296,7 @@
     <string name="bottomnav_today">Heute</string>
     <string name="bottomnav_history">Verlauf</string>
     <string name="bottomnav_statistic">Statistik</string>
-    <string name="bottomnav_me">Profil</string>
+    <string name="bottomnav_profile">Profil</string>
     <string name="calendar">Kalender</string>
     <string name="achievements">Erfolge</string>
     <string name="my_calendar">Mein Kalender</string>

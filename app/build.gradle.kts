@@ -10,15 +10,15 @@ plugins {
 }
 
 val versionMajor = 0
-val versionMinor = 9
+val versionMinor = 10
 val versionPatch = 0
 val versionClassifier = "beta" // Can be alpha, beta or "" if the release
 android {
-    namespace = "com.example.habitstracker"
+    namespace = "com.olesmalysh.habitstracker"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.example.habitstracker"
+        applicationId = "com.olesmalysh.habitstracker"
         minSdk = 26
         targetSdk = 35
         versionCode = versionMajor * 10000 + versionMinor * 100 + versionPatch
@@ -26,7 +26,7 @@ android {
         if (versionClassifier.isNotEmpty())
             versionName += "-$versionClassifier"
 
-        testInstrumentationRunner = "com.example.habitstracker.CustomTestRunner"
+        testInstrumentationRunner = "com.olesmalysh.habitstracker.CustomTestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }

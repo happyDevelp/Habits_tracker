@@ -293,7 +293,7 @@
     <string name="bottomnav_today">Today</string>
     <string name="bottomnav_history">History</string>
     <string name="bottomnav_statistic">Statistic</string>
-    <string name="bottomnav_me">Me</string>
+    <string name="bottomnav_profile">Profile</string>
     <string name="calendar">Calendar</string>
     <string name="achievements">Achievements</string>
     <string name="my_calendar">My Calendar</string>
