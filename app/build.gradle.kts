@@ -64,6 +64,10 @@ android {
                 "proguard-rules.pro"
             )
         }
+        debug {
+            applicationIdSuffix = ".debug"
+            manifestPlaceholders["appLabel"] = "HabTracker (Debug)"
+        }
         create("profile") {
             initWith(getByName("debug"))
             isDebuggable = false

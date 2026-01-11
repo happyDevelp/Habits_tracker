@@ -53,6 +53,7 @@ import com.olesmalysh.habitstracker.history.presentation.components.calendar.His
 import com.olesmalysh.habitstracker.history.presentation.components.calendar.TopPanel
 import kotlinx.coroutines.launch
 import java.time.LocalDate
+import java.time.temporal.ChronoUnit
 
 @Composable
 fun HistoryCalendarScreen(
@@ -61,20 +62,36 @@ fun HistoryCalendarScreen(
     myHabits: List<HabitEntity>,
     changeSelectedItemState: (index: Int) -> Unit,
     mapDateToHabits: Map<LocalDate, List<DateHabitEntity>>,
-    onDeleteClick:(habit: HabitEntity)-> Unit
+    onDeleteClick: (habit: HabitEntity) -> Unit
 ) {
     val coroutineScope = rememberCoroutineScope()
-    var currentDate by remember {
-        mutableStateOf(LocalDate.now().withDayOfMonth(1))
+
+    val today = remember { LocalDate.now().withDayOfMonth(1) }
+
+    //  calculate earliest date
+    val startDate = remember(mapDateToHabits) {
+        val earliestDate = mapDateToHabits.keys.minOrNull() ?: today
+        earliestDate.withDayOfMonth(1)
     }
+
+    // count the number of months
+    val totalMonths = remember(startDate, today) {
+        ChronoUnit.MONTHS.between(startDate, today).toInt() + 1
+    }
+
+    // initialPage is always 0, because 0 is now "Today"
     val pagerState = rememberPagerState(
-        initialPage = currentDate.monthValue,
-        /** Must be as many month as the user use the app **/
-        pageCount = { LocalDate.now().monthValue + 1 }
+        initialPage = 0,
+        pageCount = { totalMonths }
     )
 
+    var currentDateDisplay by remember { mutableStateOf(LocalDate.now()) }
+
+    LaunchedEffect(pagerState.currentPage, today) {
+        currentDateDisplay = today.minusMonths(pagerState.currentPage.toLong())
+    }
+
     LazyColumnContainer {
-        /** Statistic containers **/
         Spacer(modifier = modifier.height(18.dp))
 
         Box(
@@ -91,7 +108,7 @@ fun HistoryCalendarScreen(
         }
 
         Spacer(modifier = modifier.height(12.dp))
-        /** Calendar **/
+
         Card(
             modifier = modifier
                 .fillMaxWidth()
@@ -100,39 +117,36 @@ fun HistoryCalendarScreen(
             colors = CardDefaults.cardColors(containerColor = containerBackgroundDark),
         ) {
             Column(
-                modifier
-                    .fillMaxSize(),
+                modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 TopPanel(
-                    currentDate = currentDate,
-                    minusMonth = {
+                    currentDate = currentDateDisplay,
+                    startDate = startDate,
+                    //  change pagerState changing by reverseLayout to avoid unnecessary data upload
+                    minusMonth = { //  want to go back in time -> increase the page index (0 -> 1)
                         coroutineScope.launch {
-                            currentDate = currentDate.minusMonths(1)
-                            val currentMonth = currentDate.monthValue
-                            pagerState.animateScrollToPage(currentMonth)
+                            if (pagerState.currentPage < totalMonths - 1) {
+                                pagerState.animateScrollToPage(pagerState.currentPage + 1)
+                            }
                         }
                     },
-                    plusMonth = {
+                    plusMonth = { //  want to go forward in time -> decrease the index (1 -> 0)
                         coroutineScope.launch {
-                            currentDate = currentDate.plusMonths(1)
-                            pagerState.animateScrollToPage(currentDate.monthValue)
+                            if (pagerState.currentPage > 0) {
+                                pagerState.animateScrollToPage(pagerState.currentPage - 1)
+                            }
                         }
                     }
                 )
                 Spacer(modifier = modifier.height(4.dp))
 
-                //parameter means, if value is changed, do this code
-                LaunchedEffect(pagerState.currentPage) {
-                    currentDate = currentDate.withMonth(pagerState.currentPage)
-                }
-
-                // HorizontalPager to scroll between month
                 CalendarHorizontalPager(
                     pagerState = pagerState,
                     modifier = modifier,
-                    currentDate = currentDate,
+                    // Передаємо today, бо від нього йде відлік
+                    anchorDate = today,
                     mapDateToHabits = mapDateToHabits,
                     changeSelectedItemState = changeSelectedItemState
                 )
@@ -299,11 +313,10 @@ private fun WeekdayHeader() {
 private fun CalendarHorizontalPager(
     pagerState: PagerState,
     modifier: Modifier,
-    currentDate: LocalDate,
+    anchorDate: LocalDate,
     mapDateToHabits: Map<LocalDate, List<DateHabitEntity>>,
     changeSelectedItemState: (index: Int) -> Unit
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -312,8 +325,14 @@ private fun CalendarHorizontalPager(
         WeekdayHeader()
         Spacer(modifier = modifier.height(4.dp))
 
-        HorizontalPager(state = pagerState) { page ->
-            val ym = currentDate.withMonth(page)
+        HorizontalPager(
+            state = pagerState,
+            reverseLayout = true //let's flip the pagerState operation logic
+        ) { page ->
+
+            // Counting down the month for this page (now through minus)
+            val ym = anchorDate.minusMonths(page.toLong())
+
             val grid = buildMonthGrid(ym)
             val tail = (7 - (grid.size % 7)) % 7
             val weeks = (grid + List(tail) { null }).chunked(7)

@@ -39,7 +39,7 @@ fun HistoryCalendarDay(
         modifier = Modifier
             .size(40.dp) // The size of the circle
             .clip(CircleShape)
-            .let { m -> if (clickable)m .clickable { onClick(date!!) } else m },
+            .let { m -> if (clickable)m .clickable { onClick(date) } else m },
         contentAlignment = Alignment.Center,
     ) {
         Canvas(modifier = Modifier.fillMaxSize()) {

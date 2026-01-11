@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name" translatable="false">Habit tracker</string>
+    <string name="app_name" translatable="false">On Track: Habit Tracker</string>
     <string name="add_habit">Add Habit</string>
     <string name="today">Today</string>
     <string name="history">History</string>

@@ -1,6 +1,5 @@
 package com.olesmalysh.habitstracker.history.presentation.components.calendar
 
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -26,6 +25,7 @@ import java.util.Locale
 fun TopPanel(
     modifier: Modifier = Modifier,
     currentDate: LocalDate,
+    startDate: LocalDate,
     minusMonth: () -> Unit,
     plusMonth: () -> Unit,
 ) {
@@ -42,13 +42,15 @@ fun TopPanel(
         )
         val formattedCurrentDate = currentDate.format(formatter)
 
+        val isPrevEnable = currentDate.year > startDate.year ||
+                (currentDate.year == startDate.year && currentDate.monthValue > startDate.monthValue)
+
         IconButton(onClick = { minusMonth.invoke() }) {
             Icon(
                 modifier = modifier,
                 imageVector = Icons.Default.ChevronLeft,
                 contentDescription = stringResource(R.string.previous_month),
-                tint = Color.White.copy(0.85f)
-            )
+                tint = if (isPrevEnable) Color.White.copy(0.85f) else Color.Transparent            )
         }
 
         MyText(modifier = modifier, text = formattedCurrentDate, textSize = 15.sp)
