@@ -12,6 +12,10 @@ interface HabitRepository {
 
     suspend fun getLastAvailableDate(): DateHabitEntity?
 
+    suspend fun getAllDatesByHabitIdOnce(habitId: Int): List<DateHabitEntity>
+
+    suspend fun getLastDateForHabit(habitId: Int): DateHabitEntity?
+
     suspend fun updateHabit(habit: HabitEntity)
 
     suspend fun getAllDatesByHabitId(id: Int): List<DateHabitEntity>
@@ -23,6 +27,8 @@ interface HabitRepository {
     suspend fun dateExistsForHabit(habitId: Int, date: String): Boolean
 
      fun getAllHabits(): Flow<List<HabitEntity>>
+
+    suspend fun getAllHabitsOnce(): List<HabitEntity>
 
     fun getDateHabitsFor(date: String): Flow<List<DateHabitEntity>>
 

@@ -6,8 +6,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.olesmalysh.habitstracker.habit.domain.HabitEntity
 import com.olesmalysh.habitstracker.habit.domain.DateHabitEntity
+import com.olesmalysh.habitstracker.habit.domain.HabitEntity
 import kotlinx.coroutines.flow.Flow
 
 // Data Access Object
@@ -87,11 +87,20 @@ sealed interface HabitDao {
     @Query("SELECT * FROM habit_table")
     fun getAllHabits(): Flow<List<HabitEntity>>
 
+    @Query("SELECT * FROM habit_table")
+    suspend fun getAllHabitsOnce(): List<HabitEntity>
+
     @Query("SELECT * FROM date_table WHERE currentDate = :date")
     fun getDateHabitsFor(date: String): Flow<List<DateHabitEntity>>
 
     @Query("SELECT * FROM date_table")
     fun getAllDateHabits(): Flow<List<DateHabitEntity>>
+
+    @Query("SELECT * FROM date_table WHERE habitId = :habitId ORDER BY currentDate ASC")
+    suspend fun getAllDatesByHabitIdOnce(habitId: Int): List<DateHabitEntity>
+
+    @Query("SELECT * FROM date_table WHERE habitId = :habitId ORDER BY currentDate DESC LIMIT 1")
+    suspend fun getLastDateForHabit(habitId: Int): DateHabitEntity?
 
     @Query(
         """
