@@ -20,7 +20,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.LocalDate
 import javax.inject.Inject
-import kotlin.collections.groupBy
 
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
@@ -49,7 +48,7 @@ class MainScreenViewModel @Inject constructor(
             val habits =
                 getHabitsByDate(lastDateInDb.toString()).first() // take first value instead of collect
             _habitsListState.value = habits
-            fillMissingDates()
+            //fillMissingDates()
         }
     }
 

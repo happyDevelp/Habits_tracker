@@ -1,18 +1,29 @@
 package com.olesmalysh.habitstracker.app
 
 import android.app.Application
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
+import androidx.work.WorkManager
+import com.olesmalysh.habitstracker.core.filling_habits.data.DailyRolloverScheduler
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 
 @HiltAndroidApp
-class App: Application() {
+class App : Application() {
+
+    @Inject lateinit var workerFactory: HiltWorkerFactory
+
     override fun onCreate() {
         super.onCreate()
 
-       /* val settings = FirebaseFirestoreSettings.Builder()
-            .setPersistenceEnabled(true)
+        // Initialize WorkManager with HiltWorkerFactory (manual init)
+        val config = Configuration.Builder()
+            .setWorkerFactory(workerFactory)
             .build()
 
-        FirebaseFirestore.getInstance().firestoreSettings = settings*/
+        WorkManager.initialize(this, config)
 
+        // Schedule nightly DB rollover
+        DailyRolloverScheduler.schedule(this)
     }
 }
