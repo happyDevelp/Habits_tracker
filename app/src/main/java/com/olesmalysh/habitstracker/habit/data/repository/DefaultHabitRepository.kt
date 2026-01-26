@@ -42,6 +42,12 @@ class DefaultHabitRepository(private val habitDao: HabitDao) : HabitRepository {
         }
     }
 
+    override suspend fun countIncompleteForDate(date: String): Int {
+        return withContext(Dispatchers.IO) {
+            habitDao.countIncompleteForDate(date)
+        }
+    }
+
     override suspend fun updateDateSelectState(id: Int, isDone: Boolean, selectDate: String) {
         return withContext(Dispatchers.IO) {
             habitDao.updateDateSelectState(id, isDone, selectDate)

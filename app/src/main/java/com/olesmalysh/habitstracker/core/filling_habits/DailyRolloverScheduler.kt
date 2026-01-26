@@ -1,4 +1,4 @@
-package com.olesmalysh.habitstracker.core.filling_habits.data
+package com.olesmalysh.habitstracker.core.filling_habits
 
 import android.content.Context
 import androidx.work.ExistingWorkPolicy
@@ -12,10 +12,10 @@ object DailyRolloverScheduler {
     private const val UNIQUE_NAME = "DailyRollover"
 
     fun schedule(context: Context) {
-        //val delayMs = computeDelayToNext(hour = 0, minute = 5)
+        val delayMs = computeDelayToNext(hour = 0, minute = 5)
 
         //debug: run in 1 min
-        val delayMs = TimeUnit.MINUTES.toMillis(1)
+        //val delayMs = TimeUnit.MINUTES.toMillis(1)
 
         val request = OneTimeWorkRequestBuilder<DailyRolloverWorker>()
             .setInitialDelay(delayMs, TimeUnit.MILLISECONDS)

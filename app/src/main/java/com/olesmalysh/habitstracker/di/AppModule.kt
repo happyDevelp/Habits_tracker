@@ -2,6 +2,9 @@ package com.olesmalysh.habitstracker.di
 
 import android.content.Context
 import androidx.room.Room
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.olesmalysh.habitstracker.core.filling_habits.FillMissingDatesUseCase
 import com.olesmalysh.habitstracker.habit.data.db.HabitDao
 import com.olesmalysh.habitstracker.habit.data.db.HabitDatabase
 import com.olesmalysh.habitstracker.habit.data.repository.DefaultHabitRepository
@@ -11,24 +14,22 @@ import com.olesmalysh.habitstracker.history.data.db.HistoryDAO
 import com.olesmalysh.habitstracker.history.data.repository.DefaultHistoryRepository
 import com.olesmalysh.habitstracker.history.domain.HistoryRepository
 import com.olesmalysh.habitstracker.profile.data.DefaultSyncRepository
-import com.olesmalysh.habitstracker.profile.data.local.LocalSyncRepository
 import com.olesmalysh.habitstracker.profile.data.local.AppPreferences
+import com.olesmalysh.habitstracker.profile.data.local.LocalSyncRepository
 import com.olesmalysh.habitstracker.profile.data.remote.CloudSyncRepository
 import com.olesmalysh.habitstracker.profile.data.remote.firebase.UserFirebaseDataSource
 import com.olesmalysh.habitstracker.profile.data.repository.FriendsRepositoryImpl
 import com.olesmalysh.habitstracker.profile.data.repository.UserProfileRepositoryImpl
 import com.olesmalysh.habitstracker.profile.data.repository.UserStatsRepositoryImpl
+import com.olesmalysh.habitstracker.profile.domain.SyncRepository
 import com.olesmalysh.habitstracker.profile.domain.repository.FriendsRepository
 import com.olesmalysh.habitstracker.profile.domain.repository.UserProfileRepository
 import com.olesmalysh.habitstracker.profile.domain.repository.UserStatsRepository
-import com.olesmalysh.habitstracker.profile.domain.SyncRepository
 import com.olesmalysh.habitstracker.profile.presentation.sign_in.GoogleAuthUiClient
 import com.olesmalysh.habitstracker.profile.presentation.sync.SyncManager
 import com.olesmalysh.habitstracker.statistic.data.db.StatisticDao
 import com.olesmalysh.habitstracker.statistic.data.repository.DefaultStatisticRepository
 import com.olesmalysh.habitstracker.statistic.domain.StatisticRepository
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -104,10 +105,18 @@ object AppModule {
     fun provideSyncManager(
         syncRepository: SyncRepository,
         googleAuthUiClient: GoogleAuthUiClient,
-        @ApplicationContext context: Context
+        @ApplicationContext context: Context,
+        fillMissingDatesUseCase: FillMissingDatesUseCase
     ): SyncManager {
-        return SyncManager(syncRepository, googleAuthUiClient, context)
+        return SyncManager(syncRepository, googleAuthUiClient, context, fillMissingDatesUseCase)
     }
+
+    @Provides
+    @Singleton
+    fun fillMissingDatesUseCase(habitRepository: HabitRepository): FillMissingDatesUseCase {
+        return FillMissingDatesUseCase(habitRepository)
+    }
+
 
     @Provides
     @Singleton

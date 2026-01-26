@@ -1,6 +1,8 @@
 package com.olesmalysh.habitstracker.profile.presentation.sync
 
 import android.content.Context
+import android.util.Log
+import com.olesmalysh.habitstracker.core.filling_habits.FillMissingDatesUseCase
 import com.olesmalysh.habitstracker.habit.domain.DateHabitEntity
 import com.olesmalysh.habitstracker.habit.domain.HabitEntity
 import com.olesmalysh.habitstracker.history.domain.AchievementEntity
@@ -16,7 +18,8 @@ class SyncManager@Inject constructor(
     private val syncRepo: SyncRepository,
     private val googleAuthUiClient: GoogleAuthUiClient,
     @ApplicationContext private val context: Context,
-) {
+    private val fillMissingDatesUseCase: FillMissingDatesUseCase
+    ) {
 
     fun hasInternet(): Boolean = context.isInternetAvailable()
 
@@ -28,7 +31,18 @@ class SyncManager@Inject constructor(
     suspend fun syncFromCloud(): Boolean {
         val user = googleAuthUiClient.getSignedInUser() ?: return false
 
-        return syncRepo.syncFromCloud(user.userId)
+        return try {
+            val ok = syncRepo.syncFromCloud(user.userId)
+            if (!ok) return false
+
+            // Fill missing dates only after successful download into Room
+            fillMissingDatesUseCase()
+            true
+        }
+        catch (e: Exception) {
+            Log.e("SyncManager", "syncFromCloud failed", e)
+            false
+        }
     }
 
     suspend fun pushHabitToCloud(habit: HabitEntity): Boolean {

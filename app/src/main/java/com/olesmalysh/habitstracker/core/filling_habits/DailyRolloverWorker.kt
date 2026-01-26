@@ -1,4 +1,4 @@
-package com.olesmalysh.habitstracker.core.filling_habits.data
+package com.olesmalysh.habitstracker.core.filling_habits
 
 import android.content.Context
 import android.util.Log

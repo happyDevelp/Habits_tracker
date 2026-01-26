@@ -359,5 +359,12 @@
     <string name="don_t_forget_to_fulfill_your_goals_today">Don\'t forget to fulfill your goals today.</string>
     <string name="notifications_are_important">Notifications are important</string>
     <string name="no_thanks">No, thanks</string>
+    <string name="something_wrong_you_still_have_habits_left_for_today">⏰ Something wrong? You still have %1$d habits left for today</string>
+    <string name="don_t_forget_habits_are_still_unfinished_today">🔥 Don’t forget — %1$d habits are still unfinished today</string>
+    <string name="everything_okay_habits_are_still_waiting_for_you">👀 Everything okay? %1$d habits are still waiting for you</string>
+    <string name="stay_focused_habits_are_still_unfinished">🔥 Stay focused! %1$d habits are still unfinished.</string>
+    <string name="all_habits_for_today_are_completed_great_job">✅ All habits for today are completed. Great job!</string>
+    <string name="you_did_it_everything_is_done_for_today">🎉 You did it! Everything is done for today</string>
+    <string name="perfect_day_all_habits_completed">💪 Perfect day — all habits completed</string>
 
 </resources>

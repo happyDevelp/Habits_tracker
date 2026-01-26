@@ -71,6 +71,9 @@ sealed interface HabitDao {
     @Query("SELECT * FROM date_table WHERE habitId = :id")
     suspend fun getAllDatesByHabitId(id: Int): List<DateHabitEntity>
 
+    @Query("SELECT COUNT(*) FROM date_table WHERE currentDate = :date AND completed = 0")
+    suspend fun countIncompleteForDate(date: String): Int
+
     @Query(
         """
         SELECT EXISTS(

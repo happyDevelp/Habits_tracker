@@ -265,7 +265,6 @@ fun HabitItem(
                                         !shownHabit.isSelected,
                                         currentDate.toString()
                                     )
-
                                 }
                             )
                         }
