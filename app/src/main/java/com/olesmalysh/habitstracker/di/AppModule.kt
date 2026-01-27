@@ -2,9 +2,14 @@ package com.olesmalysh.habitstracker.di
 
 import android.content.Context
 import androidx.room.Room
+import androidx.work.WorkManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.olesmalysh.habitstracker.core.filling_habits.FillMissingDatesUseCase
+import com.olesmalysh.habitstracker.core.notification.DailyReminderScheduler
+import com.olesmalysh.habitstracker.core.notification.data.DefaultReminderSettingsRepository
+import com.olesmalysh.habitstracker.core.notification.data.ReminderBootstrapper
+import com.olesmalysh.habitstracker.core.notification.domain.ReminderSettingsRepository
 import com.olesmalysh.habitstracker.habit.data.db.HabitDao
 import com.olesmalysh.habitstracker.habit.data.db.HabitDatabase
 import com.olesmalysh.habitstracker.habit.data.repository.DefaultHabitRepository
@@ -117,6 +122,40 @@ object AppModule {
         return FillMissingDatesUseCase(habitRepository)
     }
 
+    @Provides
+    @Singleton
+    fun provideWorkManager(
+        @ApplicationContext context: Context
+    ): WorkManager {
+        return WorkManager.getInstance(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDailyReminderScheduler(
+        workManager: WorkManager
+    ): DailyReminderScheduler {
+        return DailyReminderScheduler(workManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideReminderSettingsRepository(
+        @ApplicationContext context: Context
+    ): ReminderSettingsRepository {
+        return DefaultReminderSettingsRepository(
+            prefs = AppPreferences(context)
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideReminderBootstrapper(
+        repository: ReminderSettingsRepository,
+        scheduler: DailyReminderScheduler
+    ): ReminderBootstrapper {
+        return ReminderBootstrapper(repository, scheduler)
+    }
 
     @Provides
     @Singleton
@@ -178,4 +217,5 @@ object AppModule {
             .fallbackToDestructiveMigration()
             .build()
     }
+
 }

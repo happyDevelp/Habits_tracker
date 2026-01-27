@@ -18,9 +18,15 @@ class AppPreferences(private val context: Context) {
         val DEEP_LINK_FRIEND_ID = stringPreferencesKey("deep_link_friend_id")
 
         // Reminder
+        val REMINDER_BOOTSTRAPPED_KEY = booleanPreferencesKey("reminder_bootstrapped")
         val REMINDER_ENABLED_KEY = booleanPreferencesKey("reminder_enabled")
         val REMINDER_HOUR_KEY = intPreferencesKey("reminder_hour")
         val REMINDER_MINUTE_KEY = intPreferencesKey("reminder_minute")
+
+    }
+    // Reminder bootstrap flag
+    val reminderBootstrapped: Flow<Boolean> = context.dataStore.data.map { prefs ->
+        prefs[REMINDER_BOOTSTRAPPED_KEY] ?: false
     }
     val lastSync: Flow<String?> = context.dataStore.data.map { prefs ->
         prefs[LAST_SYNC_KEY]
@@ -35,6 +41,11 @@ class AppPreferences(private val context: Context) {
     }
 
     // Reminder
+    suspend fun setReminderBootstrapped(value: Boolean) {
+        context.dataStore.edit { prefs ->
+            prefs[REMINDER_BOOTSTRAPPED_KEY] = value
+        }
+    }
     val reminderEnabled: Flow<Boolean> = context.dataStore.data.map { prefs ->
         prefs[REMINDER_ENABLED_KEY] ?: true
     }

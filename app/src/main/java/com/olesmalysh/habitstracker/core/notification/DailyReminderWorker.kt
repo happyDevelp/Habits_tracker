@@ -28,10 +28,10 @@ class DailyReminderWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
     private val habitRep: HabitRepository,
-    private val appPreferences: AppPreferences
+    private val appPreferences: AppPreferences,
+    private val dailyReminderScheduler: DailyReminderScheduler
 ) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
-
         return try {
             Log.d("DailyReminderWorker", "doWork START at=${ZonedDateTime.now()}")
 
@@ -56,8 +56,11 @@ class DailyReminderWorker @AssistedInject constructor(
 
             Log.d("DailyReminderWorker", "notification SHOWN at=${ZonedDateTime.now()}")
 
+            val hour = appPreferences.reminderHour.first()
+            val minute = appPreferences.reminderMinute.first()
+
             // 4) Schedule next run for tomorrow at selected time
-            DailyReminderScheduler.schedule(applicationContext, 21, 0)
+            dailyReminderScheduler.schedule(hour, minute)
 
             Log.d("DailyReminderWorker", "next schedule requested at=${ZonedDateTime.now()}")
 

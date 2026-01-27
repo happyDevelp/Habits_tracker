@@ -29,7 +29,7 @@ import androidx.navigation.toRoute
 import com.olesmalysh.habitstracker.app.LocalNavController
 import com.olesmalysh.habitstracker.app.navigation.bottombar.NavigationBottomBar
 import com.olesmalysh.habitstracker.core.presentation.settings_screens.LanguageScreen
-import com.olesmalysh.habitstracker.core.presentation.settings_screens.NotificationScreen
+import com.olesmalysh.habitstracker.core.presentation.settings_screens.NotificationScreenRoot
 import com.olesmalysh.habitstracker.core.presentation.settings_screens.RateUsScreen
 import com.olesmalysh.habitstracker.core.presentation.settings_screens.SupportScreen
 import com.olesmalysh.habitstracker.core.presentation.theme.screenBackgroundDark
@@ -140,7 +140,7 @@ fun AppNavigation() {
 
             /* SETTINGS */
             composable<Route.Settings.Notifications> {
-                NotificationScreen()
+                NotificationScreenRoot()
             }
 
             composable<Route.Settings.Language> {
