@@ -1,7 +1,9 @@
 package com.olesmalysh.habitstracker.profile.data.local
 
 import android.content.Context
+import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
@@ -14,6 +16,17 @@ class AppPreferences(private val context: Context) {
         val LAST_SYNC_KEY = stringPreferencesKey("last_sync")
         val PROFILE_ID_KEY = stringPreferencesKey("profile_code")
         val DEEP_LINK_FRIEND_ID = stringPreferencesKey("deep_link_friend_id")
+
+        // Reminder
+        val REMINDER_BOOTSTRAPPED_KEY = booleanPreferencesKey("reminder_bootstrapped")
+        val REMINDER_ENABLED_KEY = booleanPreferencesKey("reminder_enabled")
+        val REMINDER_HOUR_KEY = intPreferencesKey("reminder_hour")
+        val REMINDER_MINUTE_KEY = intPreferencesKey("reminder_minute")
+
+    }
+    // Reminder bootstrap flag
+    val reminderBootstrapped: Flow<Boolean> = context.dataStore.data.map { prefs ->
+        prefs[REMINDER_BOOTSTRAPPED_KEY] ?: false
     }
     val lastSync: Flow<String?> = context.dataStore.data.map { prefs ->
         prefs[LAST_SYNC_KEY]
@@ -25,6 +38,24 @@ class AppPreferences(private val context: Context) {
 
     val deepLinkFriendId: Flow<String?> = context.dataStore.data.map { prefs ->
         prefs[DEEP_LINK_FRIEND_ID]
+    }
+
+    // Reminder
+    suspend fun setReminderBootstrapped(value: Boolean) {
+        context.dataStore.edit { prefs ->
+            prefs[REMINDER_BOOTSTRAPPED_KEY] = value
+        }
+    }
+    val reminderEnabled: Flow<Boolean> = context.dataStore.data.map { prefs ->
+        prefs[REMINDER_ENABLED_KEY] ?: true
+    }
+
+    val reminderHour: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[REMINDER_HOUR_KEY] ?: 20
+    }
+
+    val reminderMinute: Flow<Int> = context.dataStore.data.map { prefs ->
+        prefs[REMINDER_MINUTE_KEY] ?: 0
     }
 
     suspend fun saveLastSync(value: String) {
@@ -42,6 +73,20 @@ class AppPreferences(private val context: Context) {
     suspend fun saveDeepLinkFriendId(id: String) {
         context.dataStore.edit { prefs ->
             prefs[DEEP_LINK_FRIEND_ID] = id
+        }
+    }
+
+    // Reminder
+    suspend fun setReminderEnabled(value: Boolean) {
+        context.dataStore.edit { prefs ->
+            prefs[REMINDER_ENABLED_KEY] = value
+        }
+    }
+
+    suspend fun setReminderTime(hour: Int, minute: Int) {
+        context.dataStore.edit {
+            it[REMINDER_HOUR_KEY] = hour
+            it[REMINDER_MINUTE_KEY] = minute
         }
     }
 

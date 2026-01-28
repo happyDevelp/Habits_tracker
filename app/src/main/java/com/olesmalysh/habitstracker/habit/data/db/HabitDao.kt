@@ -6,8 +6,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.olesmalysh.habitstracker.habit.domain.HabitEntity
 import com.olesmalysh.habitstracker.habit.domain.DateHabitEntity
+import com.olesmalysh.habitstracker.habit.domain.HabitEntity
 import kotlinx.coroutines.flow.Flow
 
 // Data Access Object
@@ -24,8 +24,8 @@ sealed interface HabitDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHabitDate(habitDate: DateHabitEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDates(dates: List<DateHabitEntity>)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertHabitDates(dates: List<DateHabitEntity>)
 
     @Update
     suspend fun updateHabit(habit: HabitEntity)
@@ -56,20 +56,23 @@ sealed interface HabitDao {
 
         // 2) first insert habits, then give (so that FK is valid)
         insertHabits(habits)
-        insertDates(dates)
+        insertHabitDates(dates)
     }
 
 
     // ----- DATE QUERIES -----
 
     @Query("UPDATE date_table SET completed = :isDone WHERE habitId = :id AND currentDate = :selectDate")
-    fun updateDateSelectState(id: Int, isDone: Boolean, selectDate: String)
+    suspend fun updateDateSelectState(id: Int, isDone: Boolean, selectDate: String)
 
     @Query("SELECT * FROM date_table ORDER BY currentDate DESC LIMIT 1")
-    fun getLastAvailableDate(): DateHabitEntity?
+    suspend fun getLastAvailableDate(): DateHabitEntity?
 
     @Query("SELECT * FROM date_table WHERE habitId = :id")
     suspend fun getAllDatesByHabitId(id: Int): List<DateHabitEntity>
+
+    @Query("SELECT COUNT(*) FROM date_table WHERE currentDate = :date AND completed = 0")
+    suspend fun countIncompleteForDate(date: String): Int
 
     @Query(
         """
@@ -82,16 +85,29 @@ sealed interface HabitDao {
     suspend fun dateExistsForHabit(habitId: Int, date: String): Boolean
 
 
+    @Query("SELECT MAX(currentDate) FROM date_table WHERE habitId = :habitId")
+    suspend fun getLastDateStringForHabit(habitId: Int): String?
+
+
     // ----- HABITS + FLOWS -----
 
     @Query("SELECT * FROM habit_table")
     fun getAllHabits(): Flow<List<HabitEntity>>
+
+    @Query("SELECT * FROM habit_table")
+    suspend fun getAllHabitsOnce(): List<HabitEntity>
 
     @Query("SELECT * FROM date_table WHERE currentDate = :date")
     fun getDateHabitsFor(date: String): Flow<List<DateHabitEntity>>
 
     @Query("SELECT * FROM date_table")
     fun getAllDateHabits(): Flow<List<DateHabitEntity>>
+
+    @Query("SELECT * FROM date_table WHERE habitId = :habitId ORDER BY currentDate ASC")
+    suspend fun getAllDatesByHabitIdOnce(habitId: Int): List<DateHabitEntity>
+
+    @Query("SELECT * FROM date_table WHERE habitId = :habitId ORDER BY currentDate DESC LIMIT 1")
+    suspend fun getLastDateForHabit(habitId: Int): DateHabitEntity?
 
     @Query(
         """

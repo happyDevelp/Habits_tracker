@@ -1,12 +1,12 @@
 {
   "formatVersion": 1,
   "database": {
-    "version": 18,
-    "identityHash": "ac3ba26e54577e01996670caa138cd5d",
+    "version": 19,
+    "identityHash": "3e4f9d43e7fda2731b0652902ef99cbb",
     "entities": [
       {
         "tableName": "habit_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uid` TEXT NOT NULL, `name` TEXT NOT NULL, `iconName` TEXT NOT NULL, `colorHex` TEXT NOT NULL, `days` TEXT NOT NULL, `executionTime` TEXT NOT NULL, `reminder` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uid` TEXT NOT NULL DEFAULT '', `name` TEXT NOT NULL, `iconName` TEXT NOT NULL, `colorHex` TEXT NOT NULL, `days` TEXT NOT NULL, `executionTime` TEXT NOT NULL, `reminder` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -18,7 +18,8 @@
             "fieldPath": "uid",
             "columnName": "uid",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": true,
+            "defaultValue": "''"
           },
           {
             "fieldPath": "name",
@@ -63,12 +64,22 @@
             "id"
           ]
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_habit_table_uid",
+            "unique": true,
+            "columnNames": [
+              "uid"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_habit_table_uid` ON `${TABLE_NAME}` (`uid`)"
+          }
+        ],
         "foreignKeys": []
       },
       {
         "tableName": "date_table",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `habitId` INTEGER NOT NULL, `currentDate` TEXT NOT NULL, `completed` INTEGER NOT NULL, FOREIGN KEY(`habitId`) REFERENCES `habit_table`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `habitId` INTEGER NOT NULL, `habitUid` TEXT NOT NULL DEFAULT '', `currentDate` TEXT NOT NULL, `completed` INTEGER NOT NULL, FOREIGN KEY(`habitId`) REFERENCES `habit_table`(`id`) ON UPDATE NO ACTION ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "id",
@@ -81,6 +92,13 @@
             "columnName": "habitId",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "habitUid",
+            "columnName": "habitUid",
+            "affinity": "TEXT",
+            "notNull": true,
+            "defaultValue": "''"
           },
           {
             "fieldPath": "currentDate",
@@ -101,7 +119,18 @@
             "id"
           ]
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_date_table_habitUid_currentDate",
+            "unique": true,
+            "columnNames": [
+              "habitUid",
+              "currentDate"
+            ],
+            "orders": [],
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_date_table_habitUid_currentDate` ON `${TABLE_NAME}` (`habitUid`, `currentDate`)"
+          }
+        ],
         "foreignKeys": [
           {
             "table": "habit_table",
@@ -164,7 +193,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'ac3ba26e54577e01996670caa138cd5d')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3e4f9d43e7fda2731b0652902ef99cbb')"
     ]
   }
 }

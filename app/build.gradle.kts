@@ -10,7 +10,7 @@ plugins {
 }
 
 val versionMajor = 0
-val versionMinor = 10
+val versionMinor = 11
 val versionPatch = 0
 val versionClassifier = "beta" // Can be alpha, beta or "" if the release
 android {
@@ -25,6 +25,8 @@ android {
         versionName = "$versionMajor.$versionMinor.$versionPatch"
         if (versionClassifier.isNotEmpty())
             versionName += "-$versionClassifier"
+
+        manifestPlaceholders["appLabel"] = "OnTrack: Habit Tracker"
 
         testInstrumentationRunner = "com.olesmalysh.habitstracker.CustomTestRunner"
         vectorDrawables {
@@ -59,10 +61,16 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            manifestPlaceholders["appLabel"] = "OnTrack: Habit Tracker"
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        debug {
+            applicationIdSuffix = ".debug"
+            manifestPlaceholders["appLabel"] = "HabTracker (Debug)"
         }
         create("profile") {
             initWith(getByName("debug"))
@@ -117,6 +125,9 @@ dependencies {
     implementation(libs.androidx.palette.ktx)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.lifecycle.process)
+    /*implementation(libs.androidx.hilt.common)
+    implementation(libs.androidx.hilt.work)*/
     testImplementation(libs.junit.junit)
 
     ksp(libs.androidx.room.compiler)
@@ -147,5 +158,12 @@ dependencies {
     implementation("io.coil-kt:coil-compose:2.6.0")
     //implementation("androidx.work:work-runtime-kotlin:2.9.0")
 
+    implementation("androidx.hilt:hilt-work:1.3.0")
+    implementation("androidx.hilt:hilt-common:1.3.0")
+
+    ksp("androidx.hilt:hilt-compiler:1.3.0")
+
+    // Needed for ListenableFuture (WorkManager / Google libs)
+    implementation("com.google.guava:guava:33.2.1-android")
 
 }

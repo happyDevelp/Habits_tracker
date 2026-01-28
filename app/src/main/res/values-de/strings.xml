@@ -363,4 +363,13 @@
     <string name="notifications_are_important">Benachrichtigungen sind wichtig</string>
     <string name="no_thanks">Nein, danke</string>
 
+    <string name="something_wrong_you_still_have_habits_left_for_today">⏰ Alles in Ordnung? Du hast heute noch %1$d Gewohnheiten offen</string>
+    <string name="don_t_forget_habits_are_still_unfinished_today">🔥 Nicht vergessen — %1$d Gewohnheiten sind heute noch unerledigt</string>
+    <string name="everything_okay_habits_are_still_waiting_for_you">👀 Alles gut? %1$d Gewohnheiten warten noch auf dich</string>
+    <string name="stay_focused_habits_are_still_unfinished">🔥 Bleib fokussiert! %1$d Gewohnheiten sind noch unerledigt.</string>
+    <string name="all_habits_for_today_are_completed_great_job">✅ Alle Gewohnheiten für heute sind erledigt. Gute Arbeit!</string>
+    <string name="you_did_it_everything_is_done_for_today">🎉 Geschafft! Alles für heute ist erledigt</string>
+    <string name="perfect_day_all_habits_completed">💪 Perfekter Tag — alle Gewohnheiten erledigt</string>
+
+
 </resources>

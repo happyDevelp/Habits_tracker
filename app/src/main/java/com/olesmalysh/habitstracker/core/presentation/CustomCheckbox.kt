@@ -1,12 +1,19 @@
 package com.olesmalysh.habitstracker.core.presentation
 
-import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.spring
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Indication
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.indication
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
@@ -15,12 +22,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.composed
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.testTag
@@ -37,67 +45,115 @@ fun CustomCheckbox(
     shownHabit: ShownHabit = ShownHabit(),
     onClick: () -> Unit = { },
 ) {
-    Card(
+    val interactionSource = remember { MutableInteractionSource() }
+
+    Box(
         modifier = modifier
-            .size(22.dp)
-            //.scale(checkboxIconSize)
-            .bounceClickable(
-                onAnimationFinished = {
-                    onClick.invoke()
-                },
-            )
+            .size(50.dp)
+            .clip(CircleShape)
+            .clip(CircleShape) // IMPORTANT: clip before bounceClickable
+            .bounceClickable { onClick() }
             .testTag(TestTags.CUSTOM_CHECK_BOX + "_" + shownHabit.name),
-
-        colors = CardDefaults.cardColors(
-            containerColor = if (!shownHabit.isSelected) Color.Transparent
-            else Color(0xFF3dbe57)
-        ),
-
-        border = if (!shownHabit.isSelected)
-            BorderStroke(2.dp, Color.LightGray.copy(alpha = 0.70f))
-        else
-            BorderStroke(0.dp, Color.Transparent),
-
-        shape = RoundedCornerShape(20.dp),
+        contentAlignment = Alignment.Center
     ) {
-        Icon(
-            modifier = modifier.padding(2.dp),
-            imageVector = Icons.Default.Check,
-            contentDescription = "Task is done button",
-            tint = if (shownHabit.isSelected) Color.White
-            else Color.Transparent
-        )
+        Card(
+            modifier = modifier
+                .size(24.dp)
+                //.scale(checkboxIconSize)
+                /*.bounceClickable(
+                    onAnimationFinished = {
+                        onClick.invoke()
+                    },
+                )*/
+                .testTag(TestTags.CUSTOM_CHECK_BOX + "_" + shownHabit.name),
+
+            colors = CardDefaults.cardColors(
+                containerColor = if (!shownHabit.isSelected) Color.Transparent
+                else Color(0xFF3dbe57)
+            ),
+
+            border = if (!shownHabit.isSelected)
+                BorderStroke(2.dp, Color.LightGray.copy(alpha = 0.70f))
+            else
+                BorderStroke(0.dp, Color.Transparent),
+
+
+        ) {
+            Icon(
+                modifier = Modifier.padding(0.dp),
+                imageVector = Icons.Default.Check,
+                contentDescription = "Task is done button",
+                tint = if (shownHabit.isSelected) Color.White
+                else Color.Transparent
+            )
+        }
     }
 }
 
 fun Modifier.bounceClickable(
-    minScale: Float = 0.7f,
-    onAnimationFinished: (() -> Unit)? = null,
-    onClick: (() -> Unit)? = null,
-) = composed {
-    val interactionSource = remember { MutableInteractionSource() }
+    enabled: Boolean = true,
+    pressedScale: Float = 0.88f,
+    downDurationMs: Int = 70,
+    interactionSource: MutableInteractionSource? = null,
+    indication: Indication? = null,
+    onAnimationFinished: () -> Unit
+): Modifier = composed {
 
-    var isPressed by remember { mutableStateOf(false) }
-    val scale by animateFloatAsState(
-        targetValue = if (isPressed) minScale else 1f,
-        label = ""
-    ) {
-        if (isPressed) {
-            isPressed = false
-            onAnimationFinished?.invoke()
+    val source = interactionSource ?: remember { MutableInteractionSource() }
+    val isPressed = source.collectIsPressedAsState()
+
+    val callback = rememberUpdatedState(onAnimationFinished)
+
+    val scale = remember { Animatable(1f) }
+    val rippleIndication = indication ?: ripple(bounded = true)
+
+    // This flag triggers "tap bounce" even if press state was too short to notice.
+    val tapBounce = remember { androidx.compose.runtime.mutableStateOf(0) }
+
+    // 1) Handle press/hold animation via LaunchedEffect (no launch inside composition)
+    LaunchedEffect(isPressed.value) {
+        if (isPressed.value) {
+            // Finger is down
+            scale.animateTo(
+                targetValue = pressedScale,
+                animationSpec = tween(durationMillis = downDurationMs)
+            )
+        } else {
+            // Finger released -> return to normal (if no tap bounce is running)
+            scale.animateTo(
+                targetValue = 1f,
+                animationSpec = spring(dampingRatio = 0.65f, stiffness = Spring.StiffnessMedium)
+            )
         }
+    }
+
+    // 2) Handle fast-tap bounce (force visible animation)
+    LaunchedEffect(tapBounce.value) {
+        if (tapBounce.value == 0) return@LaunchedEffect
+
+        // Force a short down-up even for very fast clicks
+        scale.snapTo(1f)
+        scale.animateTo(pressedScale, tween(durationMillis = downDurationMs))
+        scale.animateTo(
+            1f,
+            spring(dampingRatio = 0.65f, stiffness = Spring.StiffnessMedium)
+        )
+
+        callback.value.invoke()
     }
 
     this
         .graphicsLayer {
-            scaleX = scale
-            scaleY = scale
+            scaleX = scale.value
+            scaleY = scale.value
         }
+        .indication(source, rippleIndication)
         .clickable(
-            interactionSource = interactionSource,
-            indication = ripple()
+            enabled = enabled,
+            interactionSource = source,
+            indication = null
         ) {
-            isPressed = true
-            onClick?.invoke()
+            // Trigger tap bounce. Incrementing value retriggers LaunchedEffect.
+            tapBounce.value += 1
         }
 }
