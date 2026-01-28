@@ -26,6 +26,8 @@ android {
         if (versionClassifier.isNotEmpty())
             versionName += "-$versionClassifier"
 
+        manifestPlaceholders["appLabel"] = "OnTrack: Habit Tracker"
+
         testInstrumentationRunner = "com.olesmalysh.habitstracker.CustomTestRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -59,6 +61,8 @@ android {
     buildTypes {
         release {
             isMinifyEnabled = false
+            manifestPlaceholders["appLabel"] = "OnTrack: Habit Tracker"
+
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -158,5 +162,8 @@ dependencies {
     implementation("androidx.hilt:hilt-common:1.3.0")
 
     ksp("androidx.hilt:hilt-compiler:1.3.0")
+
+    // Needed for ListenableFuture (WorkManager / Google libs)
+    implementation("com.google.guava:guava:33.2.1-android")
 
 }
