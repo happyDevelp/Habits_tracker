@@ -63,10 +63,10 @@ sealed interface HabitDao {
     // ----- DATE QUERIES -----
 
     @Query("UPDATE date_table SET completed = :isDone WHERE habitId = :id AND currentDate = :selectDate")
-    fun updateDateSelectState(id: Int, isDone: Boolean, selectDate: String)
+    suspend fun updateDateSelectState(id: Int, isDone: Boolean, selectDate: String)
 
     @Query("SELECT * FROM date_table ORDER BY currentDate DESC LIMIT 1")
-    fun getLastAvailableDate(): DateHabitEntity?
+    suspend fun getLastAvailableDate(): DateHabitEntity?
 
     @Query("SELECT * FROM date_table WHERE habitId = :id")
     suspend fun getAllDatesByHabitId(id: Int): List<DateHabitEntity>
@@ -86,7 +86,7 @@ sealed interface HabitDao {
 
 
     @Query("SELECT MAX(currentDate) FROM date_table WHERE habitId = :habitId")
-    suspend fun getLastDateForHabit(habitId: Long): String?
+    suspend fun getLastDateStringForHabit(habitId: Int): String?
 
 
     // ----- HABITS + FLOWS -----

@@ -8,6 +8,7 @@ import com.olesmalysh.habitstracker.habit.domain.HabitRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
+import java.util.UUID
 
 // The Domain layer is independent of data sources.
 
@@ -16,7 +17,7 @@ class DefaultHabitRepository(private val habitDao: HabitDao) : HabitRepository {
         return withContext(Dispatchers.IO) {
 
             val habitToInsert = if (habit.uid.isBlank())
-                habit.copy(uid = java.util.UUID.randomUUID().toString())
+                habit.copy(uid = UUID.randomUUID().toString())
             else habit
 
             habitDao.insertHabit(habitToInsert)
@@ -50,6 +51,12 @@ class DefaultHabitRepository(private val habitDao: HabitDao) : HabitRepository {
     override suspend fun getLastDateForHabit(habitId: Int): DateHabitEntity? {
         return withContext(Dispatchers.IO) {
             habitDao.getLastDateForHabit(habitId)
+        }
+    }
+
+    override suspend fun getLastDateStringForHabit(habitId: Int): String? {
+        return withContext(Dispatchers.IO) {
+            habitDao.getLastDateStringForHabit(habitId)
         }
     }
 

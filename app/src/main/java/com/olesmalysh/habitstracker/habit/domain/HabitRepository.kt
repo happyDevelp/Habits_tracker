@@ -18,6 +18,8 @@ interface HabitRepository {
 
     suspend fun getLastDateForHabit(habitId: Int): DateHabitEntity?
 
+    suspend fun getLastDateStringForHabit(habitId: Int): String?
+
     suspend fun countIncompleteForDate(date: String): Int
 
     suspend fun updateHabit(habit: HabitEntity)

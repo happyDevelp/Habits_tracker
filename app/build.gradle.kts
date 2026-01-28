@@ -121,6 +121,7 @@ dependencies {
     implementation(libs.androidx.palette.ktx)
     implementation(libs.androidx.compose.foundation)
     implementation(libs.androidx.work.runtime.ktx)
+    implementation(libs.androidx.lifecycle.process)
     /*implementation(libs.androidx.hilt.common)
     implementation(libs.androidx.hilt.work)*/
     testImplementation(libs.junit.junit)

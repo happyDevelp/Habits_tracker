@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.work.WorkManager
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.olesmalysh.habitstracker.core.filling_habits.AppForegroundObserver
 import com.olesmalysh.habitstracker.core.filling_habits.FillMissingDatesUseCase
 import com.olesmalysh.habitstracker.core.notification.DailyReminderScheduler
 import com.olesmalysh.habitstracker.core.notification.data.DefaultReminderSettingsRepository
@@ -119,8 +120,8 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun fillMissingDatesUseCase(habitRepository: HabitRepository): FillMissingDatesUseCase {
-        return FillMissingDatesUseCase(habitRepository)
+    fun fillMissingDatesUseCase(habitRepository: HabitRepository, db: HabitDatabase): FillMissingDatesUseCase {
+        return FillMissingDatesUseCase(habitRepository, db)
     }
 
     @Provides
@@ -186,6 +187,14 @@ object AppModule {
     @Provides
     fun provideHistoryDao(database: HabitDatabase): HistoryDAO {
         return database.historyDao
+    }
+
+    @Provides
+    @Singleton
+    fun provideAppForegroundObserver(
+        fillMissingDatesUseCase: FillMissingDatesUseCase
+    ): AppForegroundObserver {
+        return AppForegroundObserver(fillMissingDatesUseCase)
     }
 
     @Singleton
