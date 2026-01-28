@@ -10,7 +10,7 @@ plugins {
 }
 
 val versionMajor = 0
-val versionMinor = 10
+val versionMinor = 11
 val versionPatch = 0
 val versionClassifier = "beta" // Can be alpha, beta or "" if the release
 android {
