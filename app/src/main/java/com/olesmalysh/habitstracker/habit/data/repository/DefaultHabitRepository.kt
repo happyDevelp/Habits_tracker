@@ -14,7 +14,18 @@ import kotlinx.coroutines.withContext
 class DefaultHabitRepository(private val habitDao: HabitDao) : HabitRepository {
     override suspend fun insertHabit(habit: HabitEntity): Long {
         return withContext(Dispatchers.IO) {
-            habitDao.insertHabit(habit)
+
+            val habitToInsert = if (habit.uid.isBlank())
+                habit.copy(uid = java.util.UUID.randomUUID().toString())
+            else habit
+
+            habitDao.insertHabit(habitToInsert)
+        }
+    }
+
+    override suspend fun insertHabitDates(list: List<DateHabitEntity>) {
+        return withContext(Dispatchers.IO) {
+            habitDao.insertHabitDates(list)
         }
     }
 

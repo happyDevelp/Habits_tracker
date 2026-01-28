@@ -36,7 +36,7 @@ class SyncManager@Inject constructor(
             if (!ok) return false
 
             // Fill missing dates only after successful download into Room
-            fillMissingDatesUseCase()
+            //fillMissingDatesUseCase()
             true
         }
         catch (e: Exception) {

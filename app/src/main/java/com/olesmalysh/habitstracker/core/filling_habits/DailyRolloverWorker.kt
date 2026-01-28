@@ -19,7 +19,7 @@ class DailyRolloverWorker @AssistedInject constructor(
         return try {
             Log.d("DailyRolloverWorker", "doWork started at=${ZonedDateTime.now()}")
 
-            fillMissingDatesUseCase()
+            //fillMissingDatesUseCase()
 
             Log.d("DailyRolloverWorker", "fillMissingDates finished at=${ZonedDateTime.now()}")
 

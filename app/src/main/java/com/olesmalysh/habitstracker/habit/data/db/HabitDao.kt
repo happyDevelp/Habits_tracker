@@ -24,8 +24,8 @@ sealed interface HabitDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertHabitDate(habitDate: DateHabitEntity)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertDates(dates: List<DateHabitEntity>)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertHabitDates(dates: List<DateHabitEntity>)
 
     @Update
     suspend fun updateHabit(habit: HabitEntity)
@@ -56,7 +56,7 @@ sealed interface HabitDao {
 
         // 2) first insert habits, then give (so that FK is valid)
         insertHabits(habits)
-        insertDates(dates)
+        insertHabitDates(dates)
     }
 
 
@@ -83,6 +83,10 @@ sealed interface HabitDao {
         """
     )
     suspend fun dateExistsForHabit(habitId: Int, date: String): Boolean
+
+
+    @Query("SELECT MAX(currentDate) FROM date_table WHERE habitId = :habitId")
+    suspend fun getLastDateForHabit(habitId: Long): String?
 
 
     // ----- HABITS + FLOWS -----

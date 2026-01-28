@@ -67,9 +67,13 @@ fun calculateUserStats(
 
     val consistencyPercent =
         if (totalItems == 0) 0
-        else  {
+        else {
             val allDateHabits = map.flatMap { (date, habits) ->
-                habits.map { it.toDateHabitEntity(date = date.toString()) }
+                habits.map {
+                    it.toDateHabitEntity(
+                        date = date.toString(),
+                    )
+                }
             }
             rolling30DayConsistency(allDateHabits)
         }

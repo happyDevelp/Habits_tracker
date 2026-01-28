@@ -12,6 +12,7 @@ import com.olesmalysh.habitstracker.core.notification.data.ReminderBootstrapper
 import com.olesmalysh.habitstracker.core.notification.domain.ReminderSettingsRepository
 import com.olesmalysh.habitstracker.habit.data.db.HabitDao
 import com.olesmalysh.habitstracker.habit.data.db.HabitDatabase
+import com.olesmalysh.habitstracker.habit.data.db.MIGRATION_18_19
 import com.olesmalysh.habitstracker.habit.data.repository.DefaultHabitRepository
 import com.olesmalysh.habitstracker.habit.domain.HABIT_TABLE_NAME
 import com.olesmalysh.habitstracker.habit.domain.HabitRepository
@@ -213,8 +214,8 @@ object AppModule {
             HabitDatabase::class.java,
             name = HABIT_TABLE_NAME
         )
-            //.addMigrations(MIGRATION_15_16)
-            .fallbackToDestructiveMigration()
+            .addMigrations(MIGRATION_18_19)
+            /*.fallbackToDestructiveMigration()*/
             .build()
     }
 

@@ -33,5 +33,6 @@ class App : Application(), Configuration.Provider {
 
         // Keep your rollover scheduling here if needed
         DailyRolloverScheduler.schedule(this)
+
     }
 }

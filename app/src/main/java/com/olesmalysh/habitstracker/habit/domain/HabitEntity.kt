@@ -1,6 +1,8 @@
 package com.olesmalysh.habitstracker.habit.domain
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.olesmalysh.habitstracker.core.presentation.theme.HabitColor
 import com.olesmalysh.habitstracker.core.presentation.utils.toHex
@@ -9,10 +11,19 @@ import com.olesmalysh.habitstracker.core.presentation.utils.toHex
 
 const val HABIT_TABLE_NAME = "habit_table"
 
-@Entity(tableName = HABIT_TABLE_NAME)
+@Entity(
+    tableName = HABIT_TABLE_NAME,
+    indices = [
+        Index(value = ["uid"], unique = true)
+    ]
+)
 data class  HabitEntity (
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
+
+    @ColumnInfo(defaultValue = "''")
+    val uid: String = "", // Global stable id for cloud sync (UUID)
+
     val name: String = "",
     val iconName: String = "",
     //val isCompleted: Boolean = false,

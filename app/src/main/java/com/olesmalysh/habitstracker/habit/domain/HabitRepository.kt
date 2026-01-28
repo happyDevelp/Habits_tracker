@@ -6,6 +6,8 @@ import kotlinx.coroutines.flow.Flow
 interface HabitRepository {
     suspend fun insertHabit(habit: HabitEntity): Long
 
+    suspend fun insertHabitDates(list: List<DateHabitEntity>)
+
     suspend fun updateDateSelectState(id: Int, isDone: Boolean, selectDate: String)
 
     suspend fun deleteHabit(id: Int)

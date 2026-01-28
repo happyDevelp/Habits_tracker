@@ -1,18 +1,40 @@
 package com.olesmalysh.habitstracker.core.filling_habits
 
 import android.content.Context
-import androidx.work.ExistingWorkPolicy
-import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
-import java.time.Duration
-import java.time.ZonedDateTime
 import java.util.concurrent.TimeUnit
 
 object DailyRolloverScheduler {
     private const val UNIQUE_NAME = "DailyRollover"
 
     fun schedule(context: Context) {
-        val delayMs = computeDelayToNext(hour = 0, minute = 5)
+        val request = PeriodicWorkRequestBuilder<DailyRolloverWorker>(
+            1, TimeUnit.DAYS
+        )
+            .addTag("daily_rollover")
+            .build()
+
+        WorkManager.getInstance(context)
+            .enqueueUniquePeriodicWork(
+                UNIQUE_NAME,
+                ExistingPeriodicWorkPolicy.UPDATE,
+                request
+            )
+    }
+
+    fun cancel(context: Context) {
+        WorkManager.getInstance(context).cancelUniqueWork(UNIQUE_NAME)
+    }
+}
+
+/*
+object DailyRolloverScheduler {
+    private const val UNIQUE_NAME = "DailyRollover"
+
+    fun schedule(context: Context) {
+        val delayMs = computeDelayToNext(hour = 20, minute = 10)
 
         //debug: run in 1 min
         //val delayMs = TimeUnit.MINUTES.toMillis(1)
@@ -34,5 +56,4 @@ object DailyRolloverScheduler {
         if (!next.isAfter(now)) next = next.plusDays(1)
         return Duration.between(now, next).toMillis()
     }
-}
-
+}*/

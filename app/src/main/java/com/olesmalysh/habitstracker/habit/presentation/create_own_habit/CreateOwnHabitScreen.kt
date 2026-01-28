@@ -88,6 +88,7 @@ fun CreateOwnHabitRoot(
 
                 todayViewModel.insertHabitDate(
                     DateHabitEntity(
+                        habitUid = habit.uid,
                         habitId = habitId.toInt(),
                         currentDate = currentDate,
                     )
@@ -211,6 +212,7 @@ fun CreateOwnHabitScreen(
 
             val habit = HabitEntity(
                 id = id ?: 0,
+                uid = java.util.UUID.randomUUID().toString(), // Generate stable id once
                 name = habitName,
                 iconName = habitIconName,
                 colorHex = habitColor.toHex(),
