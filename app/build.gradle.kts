@@ -163,6 +163,8 @@ dependencies {
 
     ksp("androidx.hilt:hilt-compiler:1.3.0")
 
+    implementation("com.android.installreferrer:installreferrer:2.2")
+
     // Needed for ListenableFuture (WorkManager / Google libs)
     implementation("com.google.guava:guava:33.2.1-android")
 

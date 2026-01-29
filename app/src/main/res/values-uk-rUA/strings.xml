@@ -365,4 +365,8 @@
     <string name="all_habits_for_today_are_completed_great_job">✅ Усі звички на сьогодні виконані. Чудова робота!</string>
     <string name="you_did_it_everything_is_done_for_today">🎉 Ти впорався! На сьогодні все виконано</string>
     <string name="perfect_day_all_habits_completed">💪 Ідеальний день — усі звички виконано</string>
+
+    <string name="get_a_reminder_every_day">Отримувати щоденне нагадування</string>
+    <string name="daily_reminders">Щоденні нагадування</string>
+    <string name="reminder_time">Час нагадування</string>
 </resources>

@@ -371,5 +371,9 @@
     <string name="you_did_it_everything_is_done_for_today">🎉 Geschafft! Alles für heute ist erledigt</string>
     <string name="perfect_day_all_habits_completed">💪 Perfekter Tag — alle Gewohnheiten erledigt</string>
 
+    <string name="get_a_reminder_every_day">Tägliche Erinnerung erhalten</string>
+    <string name="daily_reminders">Tägliche Erinnerungen</string>
+    <string name="reminder_time">Erinnerungszeit</string>
+
 
 </resources>
