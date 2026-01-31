@@ -28,7 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.platform.LocalFocusManager
@@ -149,51 +148,51 @@ fun AddFriendSection(
         }
 
         Spacer(modifier = Modifier.width(8.dp))
-
-        Text(
-            text = stringResource(R.string.or),
-            color = Color.White.copy(alpha = 0.75f),
-            fontSize = 13.sp
-        )
-
-        Spacer(modifier = Modifier.width(8.dp))
-
-        val interSourceShareLink = remember { MutableInteractionSource() }
-        val isPressedShareLink by interSourceShareLink.collectIsPressedAsState()
-        val scaleSharedLink by animateFloatAsState(
-            targetValue = if (isPressedShareLink) 0.96f else 1f,
-            label = "scaleSharedLinkButton"
-        )
-        Box(
-            modifier = Modifier
-                .graphicsLayer {
-                    scaleX = scaleSharedLink
-                    scaleY = scaleSharedLink
-                }
-                .clickable(
-                    interactionSource = interSourceShareLink,
-                    indication = null
-                ) { onShareLinkClick() }
-                .height(40.dp)
-                .clip(RoundedCornerShape(10.dp))
-                .background(
-                    Brush.linearGradient(
-                        listOf(
-                            Color(0xFF5865F2),
-                            Color(0xFF4752C4)
-                        )
-                    )
+        /*
+                Text(
+                    text = stringResource(R.string.or),
+                    color = Color.White.copy(alpha = 0.75f),
+                    fontSize = 13.sp
                 )
-                .padding(horizontal = 16.dp)
-                .weight(1f),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = stringResource(R.string.share_link),
-                color = Color.White,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.SemiBold
-            )
-        }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                val interSourceShareLink = remember { MutableInteractionSource() }
+                val isPressedShareLink by interSourceShareLink.collectIsPressedAsState()
+                val scaleSharedLink by animateFloatAsState(
+                    targetValue = if (isPressedShareLink) 0.96f else 1f,
+                    label = "scaleSharedLinkButton"
+                )
+               Box(
+                    modifier = Modifier
+                        .graphicsLayer {
+                            scaleX = scaleSharedLink
+                            scaleY = scaleSharedLink
+                        }
+                        .clickable(
+                            interactionSource = interSourceShareLink,
+                            indication = null
+                        ) { onShareLinkClick() }
+                        .height(40.dp)
+                        .clip(RoundedCornerShape(10.dp))
+                        .background(
+                            Brush.linearGradient(
+                                listOf(
+                                    Color(0xFF5865F2),
+                                    Color(0xFF4752C4)
+                                )
+                            )
+                        )
+                        .padding(horizontal = 16.dp)
+                        .weight(1f),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = stringResource(R.string.share_link),
+                        color = Color.White,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                }*/
     }
 }

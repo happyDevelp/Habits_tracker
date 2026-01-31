@@ -10,8 +10,8 @@ plugins {
 }
 
 val versionMajor = 0
-val versionMinor = 11
-val versionPatch = 0
+val versionMinor = 12
+val versionPatch = 1
 val versionClassifier = "beta" // Can be alpha, beta or "" if the release
 android {
     namespace = "com.olesmalysh.habitstracker"

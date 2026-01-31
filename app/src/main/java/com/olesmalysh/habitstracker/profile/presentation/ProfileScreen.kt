@@ -366,14 +366,14 @@ private fun Preview() {
                     displayName = "TEST name", profileCode = "1234567890",
                     avatarUrl = "hr01"
                 ),
-                signInState = SignInState(loginSuccessful = true, userData = null/*user*/),
+                signInState = SignInState(loginSuccessful = true, userData = /*null*/user),
                 friendsState = FriendsState(
-/*                    friends = listOf(
-                        FriendEntry(
-                            friendUserId = "1234567890", friendDisplayName = "test friend 1",
-                            friendAvatarUrl = null, friendSince = 1765196168851
-                        ),
-                    )*/
+                    /*                    friends = listOf(
+                                            FriendEntry(
+                                                friendUserId = "1234567890", friendDisplayName = "test friend 1",
+                                                friendAvatarUrl = null, friendSince = 1765196168851
+                                            ),
+                                        )*/
                 ),
                 syncState = SyncState()
             )
